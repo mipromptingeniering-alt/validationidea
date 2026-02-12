@@ -1,0 +1,27 @@
+{
+  "timestamp": "2026-02-12T20:54:13.019985",
+  "hacker_news_top": [
+    "An AI agent published a hit piece on me",
+    "Warcraft III Peon Voice Notifications for Claude Code",
+    "Improving 15 LLMs at Coding in One Afternoon. Only the Harness Changed",
+    "Gemini 3 Deep Think",
+    "Major European payment processor can't send email to Google Workspace users"
+  ],
+  "github_trending": [
+    "freeCodeCamp (TypeScript)",
+    "awesome (None)",
+    "free-programming-books (Python)",
+    "developer-roadmap (TypeScript)",
+    "awesome-python (Python)"
+  ],
+  "tech_stack_2026": [
+    "Next.js 15",
+    "React 19",
+    "Supabase",
+    "Vercel AI SDK",
+    "Tailwind CSS",
+    "TypeScript",
+    "Astro 5",
+    "Cloudflare Workers"
+  ]
+}
