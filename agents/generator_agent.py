@@ -48,7 +48,14 @@ def generate_with_groq(research_data, prompts, config):
     if not api_key:
         raise ValueError("GROQ_API_KEY no configurada")
     
-    client = Groq(api_key=api_key)
+    from groq import Groq
+import httpx
+
+client = Groq(
+    api_key=api_key,
+    http_client=httpx.Client()
+)
+
     
     system_prompt = prompts.get('generator_system', '')
     
