@@ -1,6 +1,6 @@
 {
   "score_minimo_generador": 70,
-  "score_minimo_critico": 60,
+  "score_minimo_critico": 40,
   "research_frequency": 10,
   "optimizer_frequency": 10,
   "groq_model": "llama-3.3-70b-versatile",
