@@ -1,0 +1,9 @@
+{
+  "frontend": ["Next.js 15", "React 19", "Astro 5", "SvelteKit 2", "Remix 2"],
+  "backend": ["Supabase", "Firebase", "Convex", "Neon", "PlanetScale"],
+  "deploy": ["Vercel", "Cloudflare Pages", "Netlify", "Railway"],
+  "pagos": ["Stripe", "Lemon Squeezy", "Paddle"],
+  "email": ["Resend", "Loops", "Plunk", "Mailgun"],
+  "auth": ["Clerk", "Supabase Auth", "NextAuth.js", "Lucia"],
+  "database": ["Supabase", "Neon", "Turso", "PlanetScale"]
+}
