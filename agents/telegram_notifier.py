@@ -29,9 +29,11 @@ def send_telegram_notification(idea, critique, landing_url, report_url):
     tam = idea.get('tam', 'N/A')
     
     # URL completas de GitHub Pages
-    base_url = "https://mipromptingeniering-alt.github.io/validationidea"
-    landing_full = f"{base_url}/{landing_url}"
-    report_full = f"{base_url}/{report_url}"
+    # URL del informe
+base_url = "https://mipromptingeniering-alt.github.io/validationidea"
+landing_full = f"{base_url}/{landing_url}"
+report_full = f"{base_url}/{report_url}"  # Ya será .html
+
     dashboard_full = f"{base_url}/landing-pages/index.html"
     
     message = f"""🚀 **NUEVA IDEA VALIDADA**
