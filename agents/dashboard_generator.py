@@ -1,0 +1,384 @@
+import os
+import json
+from datetime import datetime
+
+def load_all_ideas():
+    """Cargar todas las ideas del CSV"""
+    csv_file = 'data/ideas-validadas.csv'
+    if not os.path.exists(csv_file):
+        return []
+    ideas = []
+    with open(csv_file, 'r', encoding='utf-8') as f:
+        lines = f.readlines()[1:]
+        for line in lines:
+            parts = line.strip().split(',')
+            if len(parts) >= 7:
+                ideas.append({
+                    'timestamp': parts[0],
+                    'nombre': parts[1],
+                    'descripcion': parts[2],
+                    'score_gen': int(parts[3]),
+                    'score_crit': int(parts[4]),
+                    'tipo': parts[5],
+                    'dificultad': parts[6],
+                    'slug': parts[1].lower().replace(' ', '-').replace('/', '-')[:30]
+                })
+    return ideas
+
+def generate_dashboard():
+    """Generar dashboard principal con todas las ideas"""
+    ideas = load_all_ideas()
+    total = len(ideas)
+    if total == 0:
+        avg_score = 0
+        viabilidad_alta = viabilidad_media = viabilidad_baja = 0
+    else:
+        avg_score = sum([(i['score_gen'] + i['score_crit']) / 2 for i in ideas]) / total
+        viabilidad_alta = len([i for i in ideas if (i['score_gen'] + i['score_crit']) / 2 >= 80])
+        viabilidad_media = len([i for i in ideas if 70 <= (i['score_gen'] + i['score_crit']) / 2 < 80])
+        viabilidad_baja = len([i for i in ideas if (i['score_gen'] + i['score_crit']) / 2 < 70])
+    
+    os.makedirs('landing-pages', exist_ok=True)
+    html_file = 'landing-pages/index.html'
+    
+    cards_html = ""
+    for idea in sorted(ideas, key=lambda x: (x['score_gen'] + x['score_crit']) / 2, reverse=True):
+        score_promedio = (idea['score_gen'] + idea['score_crit']) / 2
+        if score_promedio >= 80:
+            viabilidad = "ALTA ⭐⭐⭐"
+            badge_color = "linear-gradient(135deg, #10b981 0%, #059669 100%)"
+        elif score_promedio >= 70:
+            viabilidad = "MEDIA ⭐⭐"
+            badge_color = "linear-gradient(135deg, #f59e0b 0%, #d97706 100%)"
+        else:
+            viabilidad = "BAJA ⭐"
+            badge_color = "linear-gradient(135deg, #ef4444 0%, #dc2626 100%)"
+        
+        slug_clean = ''.join(c for c in idea['slug'] if c.isalnum() or c == '-')
+        
+        cards_html += f"""
+        <div class="idea-card" data-viabilidad="{viabilidad.split()[0]}" data-nombre="{idea['nombre'].lower()}">
+            <div class="card-badge" style="background: {badge_color};">{viabilidad}</div>
+            <h3>{idea['nombre']}</h3>
+            <p class="card-description">{idea['descripcion']}</p>
+            <div class="card-stats">
+                <div class="stat">
+                    <span class="stat-label">Generador</span>
+                    <span class="stat-value">{idea['score_gen']}/100</span>
+                </div>
+                <div class="stat">
+                    <span class="stat-label">Crítico</span>
+                    <span class="stat-value">{idea['score_crit']}/100</span>
+                </div>
+                <div class="stat">
+                    <span class="stat-label">Promedio</span>
+                    <span class="stat-value">{score_promedio:.0f}/100</span>
+                </div>
+            </div>
+            <div class="card-actions">
+                <a href="{slug_clean}.html" class="btn-primary">Ver Landing</a>
+                <a href="../reports/{slug_clean}.md" class="btn-secondary">Informe</a>
+            </div>
+            <div class="card-footer">
+                <span>🏷️ {idea['tipo']}</span>
+                <span>⚡ {idea['dificultad']}</span>
+            </div>
+        </div>
+        """
+    
+    html_content = f"""<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Idea Validator - Dashboard de Ideas Validadas</title>
+    <meta name="description" content="Sistema automático de validación de ideas SaaS con IA">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        * {{ margin: 0; padding: 0; box-sizing: border-box; }}
+        body {{
+            font-family: 'Inter', -apple-system, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #1a202c;
+            line-height: 1.6;
+        }}
+        .header {{
+            background: white;
+            padding: 30px 20px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+            text-align: center;
+        }}
+        .header h1 {{
+            font-size: 2.5rem;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 10px;
+        }}
+        .header p {{ color: #4a5568; font-size: 1.1rem; }}
+        .container {{ max-width: 1400px; margin: 0 auto; padding: 40px 20px; }}
+        .stats-grid {{
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 40px;
+        }}
+        .stat-box {{
+            background: white;
+            padding: 25px;
+            border-radius: 15px;
+            text-align: center;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+        }}
+        .stat-number {{
+            font-size: 2.5rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }}
+        .stat-label {{ color: #718096; font-size: 0.9rem; margin-top: 5px; }}
+        .controls {{
+            background: white;
+            padding: 25px;
+            border-radius: 15px;
+            margin-bottom: 30px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+            align-items: center;
+        }}
+        .search-box {{
+            flex: 1;
+            min-width: 250px;
+            padding: 12px 20px;
+            border: 2px solid #e2e8f0;
+            border-radius: 10px;
+            font-size: 1rem;
+        }}
+        .filter-btn {{
+            padding: 12px 25px;
+            border: 2px solid #e2e8f0;
+            background: white;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+        }}
+        .filter-btn:hover {{ background: #f7fafc; }}
+        .filter-btn.active {{
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-color: transparent;
+        }}
+        .download-btn {{
+            padding: 12px 30px;
+            background: linear-gradient(90deg, #10b981 0%, #059669 100%);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-weight: 700;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3);
+            transition: transform 0.2s;
+        }}
+        .download-btn:hover {{ transform: scale(1.05); }}
+        .ideas-grid {{
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 25px;
+        }}
+        .idea-card {{
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+            transition: transform 0.3s, box-shadow 0.3s;
+            position: relative;
+        }}
+        .idea-card:hover {{
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+        }}
+        .card-badge {{
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            padding: 6px 15px;
+            border-radius: 20px;
+            color: white;
+            font-size: 0.8rem;
+            font-weight: 700;
+        }}
+        .idea-card h3 {{
+            font-size: 1.5rem;
+            margin-bottom: 15px;
+            color: #2d3748;
+        }}
+        .card-description {{
+            color: #4a5568;
+            margin-bottom: 20px;
+            font-size: 0.95rem;
+            line-height: 1.6;
+        }}
+        .card-stats {{
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            margin-bottom: 20px;
+            padding: 15px 0;
+            border-top: 1px solid #e2e8f0;
+            border-bottom: 1px solid #e2e8f0;
+        }}
+        .stat {{
+            text-align: center;
+        }}
+        .stat-label {{
+            display: block;
+            font-size: 0.75rem;
+            color: #a0aec0;
+            margin-bottom: 5px;
+        }}
+        .stat-value {{
+            display: block;
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: #2d3748;
+        }}
+        .card-actions {{
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+        }}
+        .btn-primary, .btn-secondary {{
+            flex: 1;
+            padding: 10px;
+            text-align: center;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: transform 0.2s;
+        }}
+        .btn-primary {{
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }}
+        .btn-secondary {{
+            background: #f7fafc;
+            color: #4a5568;
+            border: 2px solid #e2e8f0;
+        }}
+        .btn-primary:hover, .btn-secondary:hover {{ transform: scale(1.05); }}
+        .card-footer {{
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.85rem;
+            color: #718096;
+        }}
+        .empty-state {{
+            text-align: center;
+            padding: 80px 20px;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+        }}
+        .empty-state h2 {{
+            font-size: 2rem;
+            margin-bottom: 15px;
+            color: #2d3748;
+        }}
+        @media (max-width: 768px) {{
+            .header h1 {{ font-size: 1.8rem; }}
+            .ideas-grid {{ grid-template-columns: 1fr; }}
+            .controls {{ flex-direction: column; }}
+            .search-box {{ width: 100%; }}
+        }}
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>🚀 Idea Validator Dashboard</h1>
+        <p>Sistema automático de validación de ideas SaaS con Multi-Agente IA</p>
+    </div>
+
+    <div class="container">
+        <div class="stats-grid">
+            <div class="stat-box">
+                <div class="stat-number">{total}</div>
+                <div class="stat-label">Ideas Validadas</div>
+            </div>
+            <div class="stat-box">
+                <div class="stat-number">{avg_score:.0f}</div>
+                <div class="stat-label">Score Promedio</div>
+            </div>
+            <div class="stat-box">
+                <div class="stat-number">{viabilidad_alta}</div>
+                <div class="stat-label">Viabilidad Alta</div>
+            </div>
+            <div class="stat-box">
+                <div class="stat-number">{viabilidad_media}</div>
+                <div class="stat-label">Viabilidad Media</div>
+            </div>
+        </div>
+
+        <div class="controls">
+            <input type="text" class="search-box" id="searchBox" placeholder="🔍 Buscar ideas por nombre..." onkeyup="filterIdeas()">
+            <button class="filter-btn active" onclick="filterByViability('TODAS')">Todas</button>
+            <button class="filter-btn" onclick="filterByViability('ALTA')">Alta</button>
+            <button class="filter-btn" onclick="filterByViability('MEDIA')">Media</button>
+            <button class="filter-btn" onclick="filterByViability('BAJA')">Baja</button>
+            <button class="download-btn" onclick="downloadCSV()">📥 Descargar CSV</button>
+        </div>
+
+        <div class="ideas-grid" id="ideasGrid">
+            {cards_html if total > 0 else '<div class="empty-state"><h2>🤖 Sin ideas aún</h2><p>El sistema generará la primera idea automáticamente</p></div>'}
+        </div>
+    </div>
+
+    <script>
+        let currentFilter = 'TODAS';
+
+        function filterByViability(viability) {{
+            currentFilter = viability;
+            document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+            filterIdeas();
+        }}
+
+        function filterIdeas() {{
+            const searchTerm = document.getElementById('searchBox').value.toLowerCase();
+            const cards = document.querySelectorAll('.idea-card');
+            
+            cards.forEach(card => {{
+                const nombre = card.getAttribute('data-nombre');
+                const viabilidad = card.getAttribute('data-viabilidad');
+                const matchesSearch = nombre.includes(searchTerm);
+                const matchesFilter = currentFilter === 'TODAS' || viabilidad === currentFilter;
+                
+                if (matchesSearch && matchesFilter) {{
+                    card.style.display = 'block';
+                }} else {{
+                    card.style.display = 'none';
+                }}
+            }});
+        }}
+
+        function downloadCSV() {{
+            window.location.href = '../data/ideas-validadas.csv';
+        }}
+    </script>
+</body>
+</html>
+"""
+    
+    with open(html_file, 'w', encoding='utf-8') as f:
+        f.write(html_content)
+    
+    print(f"✅ Dashboard creado: {html_file}")
+    print(f"   📊 {total} ideas mostradas")
+
+if __name__ == "__main__":
+    generate_dashboard()
