@@ -103,12 +103,14 @@ def main():
     print("=" * 60)
     
     try:
+        # Fase 1: Research
         if should_research():
             print("\n📊 FASE 1: INVESTIGACIÓN MERCADO")
             researcher_agent.run()
         else:
             print("\n✅ Cache válido (research cada 5 ideas)")
         
+        # Fase 2-4: Generar con feedback
         idea, critique, should_publish = generate_with_feedback(max_iterations=3)
         
         if not idea:
@@ -118,25 +120,29 @@ def main():
         if should_publish:
             print("\n🎉 IDEA APROBADA - PUBLICANDO...")
             
+            # Guardar en CSV
             save_idea_to_csv(idea, critique)
             
+            # Generar landing
             print("\n🎨 LANDING...")
             landing_file = landing_generator.generate_landing(idea)
             slug = idea.get('slug', 'idea')
             landing_url = f"landing-pages/{slug}.html"
             
+            # Generar informe HTML
             print("\n📊 INFORME...")
-            # Línea donde generas el reporte:
-report_file = report_agent.generate_report(idea)
-report_url = f"reports/{slug}.html"  # Cambiar .md por .html
-
+            report_file = report_agent.generate_report(idea)
+            report_url = f"reports/{slug}.html"
             
+            # Dashboard
             print("\n🏠 DASHBOARD...")
             dashboard_generator.generate_dashboard()
             
+            # Telegram
             print("\n📱 TELEGRAM...")
             telegram_notifier.send_telegram_notification(idea, critique, landing_url, report_url)
             
+            # Optimización
             if should_optimize():
                 print("\n🚀 OPTIMIZACIÓN")
                 optimizer_agent.run()
