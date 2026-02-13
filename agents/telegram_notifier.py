@@ -42,9 +42,11 @@ def send_telegram_notification(idea, critique, landing_url, report_url):
     else:
         ingreso_anual = "€1,500-3,000"
     
-    base_url = "https://mipromptingeniering-alt.github.io/validationidea"
-    landing_full = f"{base_url}/{landing_url}"
-    report_full = f"{base_url}/{report_url}"
+  pages_url = "https://mipromptingeniering-alt.github.io/validationidea"
+repo_url = "https://github.com/mipromptingeniering-alt/validationidea/blob/main"
+landing_full = f"{pages_url}/{landing_url}"
+report_full = f"{repo_url}/{report_url}"
+
     
     message = f"""🚀 **NUEVA IDEA PUBLICADA**
 
