@@ -2,86 +2,112 @@ import os
 import json
 from datetime import datetime
 
-def load_all_ideas():
-    """Cargar todas las ideas del CSV"""
+def load_ideas_data():
+    """Carga todas las ideas desde CSV"""
     csv_file = 'data/ideas-validadas.csv'
-    if not os.path.exists(csv_file):
-        return []
     ideas = []
-    with open(csv_file, 'r', encoding='utf-8') as f:
-        lines = f.readlines()[1:]
-        for line in lines:
-            parts = line.strip().split(',')
-            if len(parts) >= 7:
-                ideas.append({
-                    'timestamp': parts[0],
-                    'nombre': parts[1],
-                    'descripcion': parts[2],
-                    'score_gen': int(parts[3]),
-                    'score_crit': int(parts[4]),
-                    'tipo': parts[5],
-                    'dificultad': parts[6],
-                    'slug': parts[1].lower().replace(' ', '-').replace('/', '-')[:30]
-                })
+    
+    if os.path.exists(csv_file):
+        with open(csv_file, 'r', encoding='utf-8') as f:
+            lines = f.readlines()[1:]  # Skip header
+            for line in lines:
+                parts = line.strip().split(',')
+                if len(parts) >= 8:
+                    ideas.append({
+                        'timestamp': parts[0],
+                        'nombre': parts[1],
+                        'descripcion': parts[2],
+                        'score_gen': int(parts[3]),
+                        'score_crit': int(parts[4]),
+                        'tipo': parts[5],
+                        'dificultad': parts[6],
+                        'fingerprint': parts[7]
+                    })
+    
     return ideas
 
+def load_rejected_ideas():
+    """Carga ideas rechazadas"""
+    rejected_file = 'data/rejected_ideas.json'
+    if os.path.exists(rejected_file):
+        with open(rejected_file, 'r', encoding='utf-8') as f:
+            return json.load(f)
+    return []
+
+def calculate_stats(ideas, rejected):
+    """Calcula estadísticas para gráficas"""
+    total_ideas = len(ideas)
+    total_rejected = len(rejected)
+    total_generated = total_ideas + total_rejected
+    
+    # Score promedio
+    avg_score_gen = sum(i['score_gen'] for i in ideas) / total_ideas if total_ideas > 0 else 0
+    avg_score_crit = sum(i['score_crit'] for i in ideas) / total_ideas if total_ideas > 0 else 0
+    
+    # Tasa aprobación
+    approval_rate = (total_ideas / total_generated * 100) if total_generated > 0 else 0
+    
+    # Ideas por día (últimos 7 días)
+    from collections import defaultdict
+    ideas_per_day = defaultdict(int)
+    for idea in ideas:
+        date = idea['timestamp'][:10]  # YYYY-MM-DD
+        ideas_per_day[date] += 1
+    
+    # Últimas 7 fechas
+    dates = sorted(ideas_per_day.keys())[-7:]
+    counts = [ideas_per_day[d] for d in dates]
+    
+    # Scores evolución (últimas 10 ideas)
+    recent_ideas = ideas[-10:] if len(ideas) >= 10 else ideas
+    scores_gen = [i['score_gen'] for i in recent_ideas]
+    scores_crit = [i['score_crit'] for i in recent_ideas]
+    nombres = [i['nombre'] for i in recent_ideas]
+    
+    return {
+        'total_ideas': total_ideas,
+        'total_rejected': total_rejected,
+        'total_generated': total_generated,
+        'avg_score_gen': round(avg_score_gen, 1),
+        'avg_score_crit': round(avg_score_crit, 1),
+        'approval_rate': round(approval_rate, 1),
+        'dates': dates,
+        'counts': counts,
+        'scores_gen': scores_gen,
+        'scores_crit': scores_crit,
+        'nombres': nombres
+    }
+
 def generate_dashboard():
-    """Generar dashboard principal con todas las ideas"""
-    ideas = load_all_ideas()
-    total = len(ideas)
-    if total == 0:
-        avg_score = 0
-        viabilidad_alta = viabilidad_media = viabilidad_baja = 0
-    else:
-        avg_score = sum([(i['score_gen'] + i['score_crit']) / 2 for i in ideas]) / total
-        viabilidad_alta = len([i for i in ideas if (i['score_gen'] + i['score_crit']) / 2 >= 80])
-        viabilidad_media = len([i for i in ideas if 70 <= (i['score_gen'] + i['score_crit']) / 2 < 80])
-        viabilidad_baja = len([i for i in ideas if (i['score_gen'] + i['score_crit']) / 2 < 70])
+    """Genera dashboard HTML con gráficas interactivas"""
     
-    os.makedirs('landing-pages', exist_ok=True)
-    html_file = 'landing-pages/index.html'
+    ideas = load_ideas_data()
+    rejected = load_rejected_ideas()
+    stats = calculate_stats(ideas, rejected)
     
-    cards_html = ""
-    for idea in sorted(ideas, key=lambda x: (x['score_gen'] + x['score_crit']) / 2, reverse=True):
-        score_promedio = (idea['score_gen'] + idea['score_crit']) / 2
-        if score_promedio >= 80:
-            viabilidad = "ALTA ⭐⭐⭐"
-            badge_color = "linear-gradient(135deg, #10b981 0%, #059669 100%)"
-        elif score_promedio >= 70:
-            viabilidad = "MEDIA ⭐⭐"
-            badge_color = "linear-gradient(135deg, #f59e0b 0%, #d97706 100%)"
-        else:
-            viabilidad = "BAJA ⭐"
-            badge_color = "linear-gradient(135deg, #ef4444 0%, #dc2626 100%)"
-        
-        slug_clean = ''.join(c for c in idea['slug'] if c.isalnum() or c == '-')
-        
-        cards_html += f"""
-        <div class="idea-card" data-viabilidad="{viabilidad.split()[0]}" data-nombre="{idea['nombre'].lower()}">
-            <div class="card-badge" style="background: {badge_color};">{viabilidad}</div>
+    # Preparar datos para gráficas
+    dates_json = json.dumps(stats['dates'])
+    counts_json = json.dumps(stats['counts'])
+    scores_gen_json = json.dumps(stats['scores_gen'])
+    scores_crit_json = json.dumps(stats['scores_crit'])
+    nombres_json = json.dumps(stats['nombres'])
+    
+    # Cards HTML de ideas
+    ideas_html = ""
+    for idea in reversed(ideas[-6:]):  # Últimas 6
+        slug = idea['nombre'].lower().replace(' ', '-')
+        ideas_html += f"""
+        <div class="idea-card">
             <h3>{idea['nombre']}</h3>
-            <p class="card-description">{idea['descripcion']}</p>
-            <div class="card-stats">
-                <div class="stat">
-                    <span class="stat-label">Generador</span>
-                    <span class="stat-value">{idea['score_gen']}/100</span>
-                </div>
-                <div class="stat">
-                    <span class="stat-label">Crítico</span>
-                    <span class="stat-value">{idea['score_crit']}/100</span>
-                </div>
-                <div class="stat">
-                    <span class="stat-label">Promedio</span>
-                    <span class="stat-value">{score_promedio:.0f}/100</span>
-                </div>
+            <p>{idea['descripcion'][:100]}...</p>
+            <div class="badges">
+                <span class="badge badge-gen">Gen: {idea['score_gen']}</span>
+                <span class="badge badge-crit">Crit: {idea['score_crit']}</span>
+                <span class="badge badge-diff">{idea['dificultad']}</span>
             </div>
-            <div class="card-actions">
-                <a href="{slug_clean}.html" class="btn-primary">Ver Landing</a>
-                <a href="../reports/{slug_clean}.md" class="btn-secondary">Informe</a>
-            </div>
-            <div class="card-footer">
-                <span>🏷️ {idea['tipo']}</span>
-                <span>⚡ {idea['dificultad']}</span>
+            <div class="actions">
+                <a href="{slug}.html" class="btn btn-primary">Ver Landing</a>
+                <a href="../reports/{slug}.html" class="btn btn-secondary">Informe</a>
             </div>
         </div>
         """
@@ -91,294 +117,333 @@ def generate_dashboard():
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Idea Validator - Dashboard de Ideas Validadas</title>
-    <meta name="description" content="Sistema automático de validación de ideas SaaS con IA">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <title>Dashboard - Ideas Validadas</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
     <style>
-        * {{ margin: 0; padding: 0; box-sizing: border-box; }}
+        * {{
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }}
+        
         body {{
-            font-family: 'Inter', -apple-system, sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: #1a202c;
-            line-height: 1.6;
+            min-height: 100vh;
+            padding: 2rem;
         }}
+        
+        .container {{
+            max-width: 1400px;
+            margin: 0 auto;
+        }}
+        
         .header {{
-            background: white;
-            padding: 30px 20px;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
             text-align: center;
+            color: white;
+            margin-bottom: 3rem;
         }}
+        
         .header h1 {{
-            font-size: 2.5rem;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            margin-bottom: 10px;
+            font-size: 3rem;
+            margin-bottom: 0.5rem;
         }}
-        .header p {{ color: #4a5568; font-size: 1.1rem; }}
-        .container {{ max-width: 1400px; margin: 0 auto; padding: 40px 20px; }}
+        
+        .header p {{
+            font-size: 1.2rem;
+            opacity: 0.9;
+        }}
+        
         .stats-grid {{
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 20px;
-            margin-bottom: 40px;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 3rem;
         }}
-        .stat-box {{
+        
+        .stat-card {{
             background: white;
-            padding: 25px;
-            border-radius: 15px;
+            padding: 2rem;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
             text-align: center;
-            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
         }}
-        .stat-number {{
-            font-size: 2.5rem;
-            font-weight: 800;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }}
-        .stat-label {{ color: #718096; font-size: 0.9rem; margin-top: 5px; }}
-        .controls {{
-            background: white;
-            padding: 25px;
-            border-radius: 15px;
-            margin-bottom: 30px;
-            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
-            display: flex;
-            gap: 15px;
-            flex-wrap: wrap;
-            align-items: center;
-        }}
-        .search-box {{
-            flex: 1;
-            min-width: 250px;
-            padding: 12px 20px;
-            border: 2px solid #e2e8f0;
-            border-radius: 10px;
+        
+        .stat-card h3 {{
+            color: #667eea;
             font-size: 1rem;
+            margin-bottom: 1rem;
         }}
-        .filter-btn {{
-            padding: 12px 25px;
-            border: 2px solid #e2e8f0;
+        
+        .stat-card .value {{
+            font-size: 3rem;
+            font-weight: bold;
+            color: #333;
+        }}
+        
+        .stat-card .label {{
+            color: #666;
+            font-size: 0.9rem;
+            margin-top: 0.5rem;
+        }}
+        
+        .charts-grid {{
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(500px, 1fr));
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }}
+        
+        .chart-card {{
             background: white;
-            border-radius: 10px;
-            cursor: pointer;
-            font-weight: 600;
-            transition: all 0.3s;
+            padding: 2rem;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
         }}
-        .filter-btn:hover {{ background: #f7fafc; }}
-        .filter-btn.active {{
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            border-color: transparent;
+        
+        .chart-card h3 {{
+            color: #667eea;
+            margin-bottom: 1.5rem;
+            font-size: 1.3rem;
         }}
-        .download-btn {{
-            padding: 12px 30px;
-            background: linear-gradient(90deg, #10b981 0%, #059669 100%);
-            color: white;
-            border: none;
-            border-radius: 10px;
-            font-weight: 700;
-            cursor: pointer;
-            box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3);
-            transition: transform 0.2s;
-        }}
-        .download-btn:hover {{ transform: scale(1.05); }}
+        
         .ideas-grid {{
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
-            gap: 25px;
+            gap: 1.5rem;
         }}
+        
         .idea-card {{
             background: white;
-            border-radius: 15px;
-            padding: 25px;
-            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
-            transition: transform 0.3s, box-shadow 0.3s;
-            position: relative;
+            padding: 1.5rem;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            transition: transform 0.3s;
         }}
+        
         .idea-card:hover {{
             transform: translateY(-5px);
-            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+            box-shadow: 0 6px 12px rgba(0,0,0,0.15);
         }}
-        .card-badge {{
-            position: absolute;
-            top: 15px;
-            right: 15px;
-            padding: 6px 15px;
-            border-radius: 20px;
-            color: white;
-            font-size: 0.8rem;
-            font-weight: 700;
-        }}
+        
         .idea-card h3 {{
-            font-size: 1.5rem;
-            margin-bottom: 15px;
-            color: #2d3748;
+            color: #667eea;
+            margin-bottom: 0.5rem;
+            font-size: 1.3rem;
         }}
-        .card-description {{
-            color: #4a5568;
-            margin-bottom: 20px;
-            font-size: 0.95rem;
-            line-height: 1.6;
+        
+        .idea-card p {{
+            color: #666;
+            margin-bottom: 1rem;
+            line-height: 1.5;
         }}
-        .card-stats {{
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 15px;
-            margin-bottom: 20px;
-            padding: 15px 0;
-            border-top: 1px solid #e2e8f0;
-            border-bottom: 1px solid #e2e8f0;
-        }}
-        .stat {{
-            text-align: center;
-        }}
-        .stat-label {{
-            display: block;
-            font-size: 0.75rem;
-            color: #a0aec0;
-            margin-bottom: 5px;
-        }}
-        .stat-value {{
-            display: block;
-            font-size: 1.2rem;
-            font-weight: 700;
-            color: #2d3748;
-        }}
-        .card-actions {{
+        
+        .badges {{
             display: flex;
-            gap: 10px;
-            margin-bottom: 15px;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+            flex-wrap: wrap;
         }}
-        .btn-primary, .btn-secondary {{
+        
+        .badge {{
+            padding: 0.3rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }}
+        
+        .badge-gen {{
+            background: #d4edda;
+            color: #155724;
+        }}
+        
+        .badge-crit {{
+            background: #d1ecf1;
+            color: #0c5460;
+        }}
+        
+        .badge-diff {{
+            background: #fff3cd;
+            color: #856404;
+        }}
+        
+        .actions {{
+            display: flex;
+            gap: 0.5rem;
+        }}
+        
+        .btn {{
             flex: 1;
-            padding: 10px;
-            text-align: center;
+            padding: 0.7rem;
             border-radius: 8px;
             text-decoration: none;
+            text-align: center;
             font-weight: 600;
-            transition: transform 0.2s;
+            transition: 0.3s;
         }}
+        
         .btn-primary {{
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: #667eea;
             color: white;
         }}
+        
+        .btn-primary:hover {{
+            background: #5568d3;
+        }}
+        
         .btn-secondary {{
-            background: #f7fafc;
-            color: #4a5568;
-            border: 2px solid #e2e8f0;
+            background: #f8f9fa;
+            color: #667eea;
+            border: 2px solid #667eea;
         }}
-        .btn-primary:hover, .btn-secondary:hover {{ transform: scale(1.05); }}
-        .card-footer {{
-            display: flex;
-            justify-content: space-between;
-            font-size: 0.85rem;
-            color: #718096;
+        
+        .btn-secondary:hover {{
+            background: #667eea;
+            color: white;
         }}
-        .empty-state {{
-            text-align: center;
-            padding: 80px 20px;
-            background: white;
-            border-radius: 15px;
-            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
-        }}
-        .empty-state h2 {{
-            font-size: 2rem;
-            margin-bottom: 15px;
-            color: #2d3748;
-        }}
+        
         @media (max-width: 768px) {{
-            .header h1 {{ font-size: 1.8rem; }}
-            .ideas-grid {{ grid-template-columns: 1fr; }}
-            .controls {{ flex-direction: column; }}
-            .search-box {{ width: 100%; }}
+            .header h1 {{
+                font-size: 2rem;
+            }}
+            
+            .charts-grid {{
+                grid-template-columns: 1fr;
+            }}
+            
+            .ideas-grid {{
+                grid-template-columns: 1fr;
+            }}
         }}
     </style>
 </head>
 <body>
-    <div class="header">
-        <h1>🚀 Idea Validator Dashboard</h1>
-        <p>Sistema automático de validación de ideas SaaS con Multi-Agente IA</p>
-    </div>
-
     <div class="container">
+        <div class="header">
+            <h1>🚀 Dashboard Ideas Validadas</h1>
+            <p>Sistema Multi-Agente de Generación y Validación</p>
+            <p style="font-size: 0.9rem; margin-top: 0.5rem;">Actualizado: {datetime.now().strftime('%d/%m/%Y %H:%M')}</p>
+        </div>
+        
         <div class="stats-grid">
-            <div class="stat-box">
-                <div class="stat-number">{total}</div>
-                <div class="stat-label">Ideas Validadas</div>
+            <div class="stat-card">
+                <h3>Ideas Publicadas</h3>
+                <div class="value">{stats['total_ideas']}</div>
+                <div class="label">Aprobadas y validadas</div>
             </div>
-            <div class="stat-box">
-                <div class="stat-number">{avg_score:.0f}</div>
-                <div class="stat-label">Score Promedio</div>
+            
+            <div class="stat-card">
+                <h3>Ideas Rechazadas</h3>
+                <div class="value">{stats['total_rejected']}</div>
+                <div class="label">No superaron validación</div>
             </div>
-            <div class="stat-box">
-                <div class="stat-number">{viabilidad_alta}</div>
-                <div class="stat-label">Viabilidad Alta</div>
+            
+            <div class="stat-card">
+                <h3>Tasa Aprobación</h3>
+                <div class="value">{stats['approval_rate']}%</div>
+                <div class="label">De {stats['total_generated']} generadas</div>
             </div>
-            <div class="stat-box">
-                <div class="stat-number">{viabilidad_media}</div>
-                <div class="stat-label">Viabilidad Media</div>
+            
+            <div class="stat-card">
+                <h3>Score Promedio</h3>
+                <div class="value">{int((stats['avg_score_gen'] + stats['avg_score_crit'])/2)}</div>
+                <div class="label">Gen: {stats['avg_score_gen']} | Crit: {stats['avg_score_crit']}</div>
             </div>
         </div>
-
-        <div class="controls">
-            <input type="text" class="search-box" id="searchBox" placeholder="🔍 Buscar ideas por nombre..." onkeyup="filterIdeas()">
-            <button class="filter-btn active" onclick="filterByViability('TODAS')">Todas</button>
-            <button class="filter-btn" onclick="filterByViability('ALTA')">Alta</button>
-            <button class="filter-btn" onclick="filterByViability('MEDIA')">Media</button>
-            <button class="filter-btn" onclick="filterByViability('BAJA')">Baja</button>
-            <button class="download-btn" onclick="downloadCSV()">📥 Descargar CSV</button>
+        
+        <div class="charts-grid">
+            <div class="chart-card">
+                <h3>📊 Ideas por Día (Últimos 7 días)</h3>
+                <canvas id="ideasPerDay"></canvas>
+            </div>
+            
+            <div class="chart-card">
+                <h3>📈 Evolución Scores (Últimas 10 ideas)</h3>
+                <canvas id="scoresEvolution"></canvas>
+            </div>
         </div>
-
-        <div class="ideas-grid" id="ideasGrid">
-            {cards_html if total > 0 else '<div class="empty-state"><h2>🤖 Sin ideas aún</h2><p>El sistema generará la primera idea automáticamente</p></div>'}
+        
+        <h2 style="color: white; margin-bottom: 2rem; font-size: 2rem;">💡 Últimas Ideas Publicadas</h2>
+        
+        <div class="ideas-grid">
+            {ideas_html}
         </div>
     </div>
-
+    
     <script>
-        let currentFilter = 'TODAS';
-
-        function filterByViability(viability) {{
-            currentFilter = viability;
-            document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'));
-            event.target.classList.add('active');
-            filterIdeas();
-        }}
-
-        function filterIdeas() {{
-            const searchTerm = document.getElementById('searchBox').value.toLowerCase();
-            const cards = document.querySelectorAll('.idea-card');
-            
-            cards.forEach(card => {{
-                const nombre = card.getAttribute('data-nombre');
-                const viabilidad = card.getAttribute('data-viabilidad');
-                const matchesSearch = nombre.includes(searchTerm);
-                const matchesFilter = currentFilter === 'TODAS' || viabilidad === currentFilter;
-                
-                if (matchesSearch && matchesFilter) {{
-                    card.style.display = 'block';
-                }} else {{
-                    card.style.display = 'none';
+        // Gráfica 1: Ideas por día
+        new Chart(document.getElementById('ideasPerDay'), {{
+            type: 'bar',
+            data: {{
+                labels: {dates_json},
+                datasets: [{{
+                    label: 'Ideas Publicadas',
+                    data: {counts_json},
+                    backgroundColor: 'rgba(102, 126, 234, 0.8)',
+                    borderColor: 'rgba(102, 126, 234, 1)',
+                    borderWidth: 2
+                }}]
+            }},
+            options: {{
+                responsive: true,
+                scales: {{
+                    y: {{
+                        beginAtZero: true,
+                        ticks: {{
+                            stepSize: 1
+                        }}
+                    }}
                 }}
-            }});
-        }}
-
-        function downloadCSV() {{
-            window.location.href = '../data/ideas-validadas.csv';
-        }}
+            }}
+        }});
+        
+        // Gráfica 2: Evolución scores
+        new Chart(document.getElementById('scoresEvolution'), {{
+            type: 'line',
+            data: {{
+                labels: {nombres_json},
+                datasets: [
+                    {{
+                        label: 'Score Generador',
+                        data: {scores_gen_json},
+                        borderColor: 'rgba(40, 167, 69, 1)',
+                        backgroundColor: 'rgba(40, 167, 69, 0.1)',
+                        tension: 0.4
+                    }},
+                    {{
+                        label: 'Score Crítico',
+                        data: {scores_crit_json},
+                        borderColor: 'rgba(0, 123, 255, 1)',
+                        backgroundColor: 'rgba(0, 123, 255, 0.1)',
+                        tension: 0.4
+                    }}
+                ]
+            }},
+            options: {{
+                responsive: true,
+                scales: {{
+                    y: {{
+                        beginAtZero: true,
+                        max: 100
+                    }}
+                }}
+            }}
+        }});
     </script>
 </body>
-</html>
-"""
+</html>"""
     
-    with open(html_file, 'w', encoding='utf-8') as f:
+    # Guardar
+    output_dir = 'landing-pages'
+    os.makedirs(output_dir, exist_ok=True)
+    
+    filename = f'{output_dir}/index.html'
+    with open(filename, 'w', encoding='utf-8') as f:
         f.write(html_content)
     
-    print(f"✅ Dashboard creado: {html_file}")
-    print(f"   📊 {total} ideas mostradas")
+    print(f"✅ Dashboard con gráficas generado: {filename}")
+    return filename
+
 
 if __name__ == "__main__":
     generate_dashboard()
