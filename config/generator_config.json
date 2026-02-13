@@ -1,0 +1,12 @@
+{
+  "umbral_minimo": 75,
+  "umbral_critico": 55,
+  "max_intentos": 5,
+  "feedback_enabled": true,
+  "research_frequency": 5,
+  "aprender_de_rechazos": true,
+  "categorias_saturadas_max": 2,
+  "tam_minimo": "10M€",
+  "precio_minimo": "15€/mes",
+  "precio_maximo": "150€/mes"
+}
