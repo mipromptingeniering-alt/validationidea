@@ -513,6 +513,177 @@ def generate_report(idea_data):
 | Baja conversión | Alta | Alto | A/B testing continuo, analizar métricas |
 
 ---
+def generate_leader_opinion(idea_data, critique_data):
+    """
+    Genera opinión profesional como líder de proyecto
+    """
+    nombre = idea_data.get('nombre', '')
+    tam = idea_data.get('tam', '')
+    score_gen = idea_data.get('score_generador', 0)
+    score_crit = critique_data.get('score_critico', 0)
+    diferenciacion = idea_data.get('diferenciacion', '')
+    competencia = idea_data.get('competencia', [])
+    precio = idea_data.get('precio_sugerido', '')
+    
+    # Análisis objetivo
+    score_promedio = (score_gen + score_crit) / 2
+    
+    # Factores decisión
+    factores_positivos = []
+    factores_negativos = []
+    
+    # TAM
+    if tam and tam != 'N/A':
+        tam_num = int(''.join(filter(str.isdigit, tam)))
+        if tam_num >= 50:
+            factores_positivos.append(f"Mercado grande ({tam})")
+        elif tam_num < 15:
+            factores_negativos.append(f"Mercado pequeño ({tam})")
+    
+    # Score
+    if score_promedio >= 75:
+        factores_positivos.append(f"Validación fuerte (Score: {int(score_promedio)})")
+    elif score_promedio < 60:
+        factores_negativos.append(f"Validación débil (Score: {int(score_promedio)})")
+    
+    # Diferenciación
+    if len(diferenciacion) > 50:
+        factores_positivos.append("Diferenciación clara")
+    else:
+        factores_negativos.append("Diferenciación poco clara")
+    
+    # Competencia
+    if len(competencia) <= 2:
+        factores_positivos.append("Poca competencia directa")
+    elif len(competencia) >= 5:
+        factores_negativos.append("Mercado muy competido")
+    
+    # Precio
+    if precio and precio != 'N/A':
+        precio_num = int(''.join(filter(str.isdigit, precio)))
+        if 20 <= precio_num <= 100:
+            factores_positivos.append(f"Precio viable ({precio})")
+        elif precio_num < 20:
+            factores_negativos.append(f"Precio bajo, difícil escalar ({precio})")
+    
+    # Decisión GO/NO-GO
+    decision = "GO" if len(factores_positivos) > len(factores_negativos) and score_promedio >= 70 else "NO-GO"
+    
+    if decision == "GO" and len(factores_negativos) > 0:
+        decision = "GO con CAUTELA"
+    
+    # Emojis según decisión
+    decision_emoji = "🟢" if decision == "GO" else "🟡" if "CAUTELA" in decision else "🔴"
+    
+    opinion_section = f"""---
+
+## 💼 OPINIÓN DEL LÍDER DE PROYECTO
+
+### {decision_emoji} Decisión: **{decision}**
+
+#### Mi Análisis Objetivo
+
+**Puntos que me convencen:**
+{chr(10).join([f"- ✅ {p}" for p in factores_positivos]) if factores_positivos else "- (Ninguno significativo)"}
+
+**Puntos que me preocupan:**
+{chr(10).join([f"- ⚠️ {p}" for p in factores_negativos]) if factores_negativos else "- (Ninguno significativo)"}
+
+---
+
+### 🎯 ¿Lo haría YO?
+
+"""
+    
+    if decision == "GO":
+        opinion_section += f"""**SÍ, lo haría.** Aquí está mi razonamiento:
+
+1. **Mercado validado:** {tam} es suficiente para ser rentable. Con solo capturar el SOM proyectado, ya es viable.
+
+2. **Timing:** El mercado está listo para esta solución. La combinación de {diferenciacion[:80]}... es única ahora mismo.
+
+3. **Riesgo controlado:** Con {idea_data.get('tiempo_estimado', '4-6 semanas')}, la inversión inicial es baja. Si no funciona, el coste de oportunidad es aceptable.
+
+4. **Tracción temprana predecible:** Los canales {', '.join(idea_data.get('canales_adquisicion', [])[:2])} son probados y accesibles sin presupuesto grande.
+
+**Mi estrategia:**
+- **Semana 1-2:** MVP ultra-mínimo (solo core feature principal)
+- **Semana 3:** Pre-venta con mockups (validar ANTES de construir todo)
+- **Semana 4-6:** Construir si hay 10+ pre-ventas confirmadas
+- **Plan B:** Si tras 50 conversaciones nadie paga, pivotar o abandonar
+
+**Riesgo principal que mitigaría:**
+{factores_negativos[0] if factores_negativos else "Construir demasiado sin validación de mercado"} → Solución: Validar con landing + pre-ventas ANTES de desarrollo completo.
+"""
+    
+    elif decision == "GO con CAUTELA":
+        opinion_section += f"""**SÍ, pero con condiciones.** Aquí está mi razonamiento:
+
+1. **Potencial claro:** {tam} y {diferenciacion[:60]}... muestran oportunidad real.
+
+2. **PERO hay señales de alerta:**
+{chr(10).join([f"   - {p}" for p in factores_negativos[:2]])}
+
+3. **Mi condición para continuar:** Validaría con **50 entrevistas cualitativas** ANTES de escribir código.
+   - Preguntar: ¿Pagarías {precio} por esto?
+   - Si <30% dice "sí definitivo" → NO-GO
+   - Si >40% dice "sí definitivo" → GO completo
+
+**Estrategia de-riesgo:**
+- No construir nada hasta tener 5 cartas de intención de compra
+- Landing page + video explicativo (sin producto)
+- Si 2% conversión de visita → registro → GO
+- Si <1% conversión → replantear valor propuesto
+
+**Timeline ajustado:**
+- Semana 1: Landing + 50 entrevistas
+- Semana 2: Analizar feedback → Decidir GO/NO-GO
+- Semana 3-6: Construir solo si validación positiva
+"""
+    
+    else:  # NO-GO
+        opinion_section += f"""**NO, no lo haría en este momento.** Aquí está mi razonamiento:
+
+1. **Señales rojas detectadas:**
+{chr(10).join([f"   - {p}" for p in factores_negativos])}
+
+2. **Ratio riesgo/recompensa desfavorable:** Con score {int(score_promedio)}/100 y estos factores negativos, hay mejores oportunidades.
+
+3. **Alternativas que consideraría:**
+   - Pivotar a un nicho más específico dentro del mismo problema
+   - Diferenciación más radical (no incremental)
+   - Esperar a que el mercado madure (si es muy temprano)
+
+**¿Qué necesitaría cambiar para que fuera GO?**
+- Mínimo: {70 - int(score_promedio)} puntos más de score (mejorar diferenciación o mercado)
+- Reducir competencia directa (encontrar sub-nicho no atendido)
+- Validación cualitativa fuerte (20+ entrevistas con "shut up and take my money")
+
+**Mi recomendación:**
+No malgastar las {idea_data.get('tiempo_estimado', '4-6 semanas')} en esto. Mejor generar 5 ideas más y elegir la mejor.
+"""
+    
+    opinion_section += f"""
+
+---
+
+### 📈 Conclusión Pragmática
+
+**Score final:** {int(score_promedio)}/100  
+**Probabilidad de éxito estimada:** {max(10, min(90, int(score_promedio * 0.9)))}%  
+**Inversión necesaria:** {idea_data.get('tiempo_estimado', '4-6 semanas')} + 100-500€
+
+**Si tuviera que apostar mi dinero:**  
+{"✅ Lo haría sin dudarlo" if decision == "GO" else "⚠️ Solo con validación previa fuerte" if "CAUTELA" in decision else "❌ Buscaría otra oportunidad"}
+
+---
+
+*Esta opinión se basa en datos objetivos del sistema de validación y mi experiencia liderando proyectos SaaS. No es asesoramiento financiero.*
+"""
+    
+    return opinion_section
+
+
 
 ## 💬 Dudas Frecuentes (para Emprendedores)
 
