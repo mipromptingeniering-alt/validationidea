@@ -1,87 +1,102 @@
 import os
 import requests
+from datetime import datetime
+import pytz
 
 def send_telegram_notification(idea, critique, landing_url, report_url):
-    bot_token = os.environ.get('TELEGRAM_BOT_TOKEN', '')
-    chat_id = os.environ.get('TELEGRAM_CHAT_ID', '')
+    """
+    Envía notificación Telegram con hora CORRECTA (CET/CEST)
+    """
+    
+    bot_token = os.environ.get('TELEGRAM_BOT_TOKEN')
+    chat_id = os.environ.get('TELEGRAM_CHAT_ID')
+    
     if not bot_token or not chat_id:
-        print("⚠️ Variables TELEGRAM_BOT_TOKEN o TELEGRAM_CHAT_ID no configuradas")
+        print("⚠️  Variables Telegram no configuradas (TELEGRAM_BOT_TOKEN, TELEGRAM_CHAT_ID)")
         return False
-    nombre = idea.get('nombre', 'Nueva Idea')
+    
+    # Obtener hora correcta en zona horaria española
+    tz = pytz.timezone('Europe/Madrid')
+    now = datetime.now(tz)
+    timestamp = now.strftime('%d/%m/%Y %H:%M CET')
+    
+    nombre = idea.get('nombre', 'Idea SaaS')
+    descripcion = idea.get('descripcion_corta', idea.get('descripcion', 'Sin descripción'))
     score_gen = idea.get('score_generador', 0)
-    score_crit = critique.get('score_critico', 0)
-    score_promedio = (score_gen + score_crit) / 2
-    if score_promedio >= 80:
-        viabilidad = "ALTA ⭐⭐⭐"
-        emoji = "🔥"
-    elif score_promedio >= 70:
-        viabilidad = "MEDIA ⭐⭐"
-        emoji = "💡"
-    else:
-        viabilidad = "BAJA ⭐"
-        emoji = "⚠️"
-    mercado = idea.get('mercado_objetivo', 'Mercado general')
-    tiempo = idea.get('tiempo_estimado', '4-6 semanas')
-    monetizacion = idea.get('monetizacion', 'Freemium')
-    precio_estimado = "€19-29/mes"
-    if '$29' in monetizacion or '€29' in monetizacion or '29' in monetizacion:
-        precio_estimado = "€29/mes"
-        ingreso_anual = "€2,175-4,350"
-    elif '$19' in monetizacion or '€19' in monetizacion or '19' in monetizacion:
-        precio_estimado = "€19/mes"
-        ingreso_anual = "€1,425-2,850"
-    elif '$49' in monetizacion or '€49' in monetizacion or '49' in monetizacion:
-        precio_estimado = "€49/mes"
-        ingreso_anual = "€3,675-7,350"
-    else:
-        ingreso_anual = "€1,500-3,000"
-    pages_url = "https://mipromptingeniering-alt.github.io/validationidea"
-    repo_url = "https://github.com/mipromptingeniering-alt/validationidea/blob/main"
-    landing_full = f"{pages_url}/{landing_url}"
-    report_full = f"{repo_url}/{report_url}"
-    message = f"""🚀 **NUEVA IDEA PUBLICADA**
+    score_crit = critique.get('score_critico', 0) if critique else 0
+    precio = idea.get('precio_sugerido', 'N/A')
+    publico = idea.get('publico_objetivo', 'N/A')
+    tam = idea.get('tam', 'N/A')
+    
+    # URL completas de GitHub Pages
+    base_url = "https://mipromptingeniering-alt.github.io/validationidea"
+    landing_full = f"{base_url}/{landing_url}"
+    report_full = f"{base_url}/{report_url}"
+    dashboard_full = f"{base_url}/landing-pages/index.html"
+    
+    message = f"""🚀 **NUEVA IDEA VALIDADA**
 
-{emoji} **{nombre}**
+📅 **Fecha:** {timestamp}
 
-📊 **Evaluación:**
-• Score Generador: {score_gen}/100
-• Score Crítico: {score_crit}/100
-• **Promedio: {score_promedio:.1f}/100**
-• Viabilidad: {viabilidad}
+**{nombre}**
+_{descripcion}_
 
-🎯 **Detalles:**
-• Mercado: {mercado}
-• Tiempo desarrollo: {tiempo}
-• Pricing: {precio_estimado}
-• Potencial año 1: {ingreso_anual}
+📊 **Scores:**
+• Generador: {score_gen}/100
+• Crítico: {score_crit}/100
+
+💰 **Precio:** {precio}
+👥 **Público:** {publico}
+📈 **TAM:** {tam}
 
 🔗 **Links:**
-• 🌐 [Landing Page]({landing_full})
-• 📄 [Informe Completo]({report_full})
-
-💼 **Descripción:**
-{idea.get('descripcion_corta', 'Sin descripción')}
-
-⚡ **Acción:** Revisa el informe completo para roadmap y prompt IA
+• [Landing Page]({landing_full})
+• [Informe Técnico]({report_full})
+• [Dashboard]({dashboard_full})
 
 ---
-🤖 Sistema Multi-Agente • Groq AI + GitHub Actions
+_Generado automáticamente por Idea Validator_
 """
+    
     url = f"https://api.telegram.org/bot{bot_token}/sendMessage"
-    payload = {'chat_id': chat_id, 'text': message, 'parse_mode': 'Markdown', 'disable_web_page_preview': False}
+    payload = {
+        'chat_id': chat_id,
+        'text': message,
+        'parse_mode': 'Markdown',
+        'disable_web_page_preview': False
+    }
+    
     try:
         response = requests.post(url, json=payload, timeout=10)
-        if response.status_code == 200:
-            print(f"✅ Notificación Telegram enviada: {nombre}")
-            return True
-        else:
-            print(f"❌ Error Telegram: {response.status_code} - {response.text}")
-            return False
-    except Exception as e:
-        print(f"❌ Error al enviar Telegram: {e}")
+        response.raise_for_status()
+        print(f"✅ Notificación Telegram enviada correctamente a {chat_id}")
+        return True
+    except requests.exceptions.RequestException as e:
+        print(f"❌ Error enviando Telegram: {e}")
+        if hasattr(e.response, 'text'):
+            print(f"Respuesta: {e.response.text}")
         return False
 
+
 if __name__ == "__main__":
-    test_idea = {"nombre": "TestApp", "descripcion_corta": "Test", "mercado_objetivo": "Devs", "tiempo_estimado": "4 sem", "monetizacion": "€29/mes", "score_generador": 85}
-    test_critique = {"score_critico": 72}
-    send_telegram_notification(test_idea, test_critique, "landing-pages/test.html", "reports/test.md")
+    # Test
+    test_idea = {
+        'nombre': 'Test SaaS',
+        'descripcion_corta': 'Idea de prueba',
+        'score_generador': 85,
+        'precio_sugerido': '49€/mes',
+        'publico_objetivo': 'Desarrolladores',
+        'tam': '100M€'
+    }
+    
+    test_critique = {
+        'score_critico': 72
+    }
+    
+    print("🧪 Enviando notificación de prueba...")
+    send_telegram_notification(
+        test_idea,
+        test_critique,
+        'landing-pages/test-saas.html',
+        'reports/test-saas.md'
+    )
