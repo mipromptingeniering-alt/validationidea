@@ -126,8 +126,10 @@ def main():
             landing_url = f"landing-pages/{slug}.html"
             
             print("\n📊 INFORME...")
-            report_file = report_agent.generate_report(idea)
-            report_url = f"reports/{slug}.md"
+            # Línea donde generas el reporte:
+report_file = report_agent.generate_report(idea)
+report_url = f"reports/{slug}.html"  # Cambiar .md por .html
+
             
             print("\n🏠 DASHBOARD...")
             dashboard_generator.generate_dashboard()
