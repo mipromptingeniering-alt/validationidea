@@ -1,6 +1,6 @@
-# 📋 INFORME TÉCNICO: AutoDocuFlow Plus
+# 📋 INFORME TÉCNICO: AutoDocu
 
-**Generado:** 2026-02-13 10:28  
+**Generado:** 2026-02-13 14:28  
 **Score Validación:** 0/100  
 **Complejidad:** MEDIA  
 **Tiempo Estimado:** 4-6 semanas
@@ -12,10 +12,10 @@
 Una idea innovadora
 
 **Problema:**
-Desarrolladores pierden 10h/semana en documentación manual de código
+Desarrolladores pierden 5h/semana en documentar código
 
 **Solución:**
-Utiliza IA para analizar el código y generar documentación automática y personalizable
+Utiliza Vercel AI SDK para analizar código y generar documentación automática
 
 ---
 
@@ -156,16 +156,16 @@ Copia y pega esto en tu IA de desarrollo favorita:
 
 ---
 
-Quiero construir un SaaS llamado "AutoDocuFlow Plus".
+Quiero construir un SaaS llamado "AutoDocu".
 
 **Descripción:**
 Una idea innovadora
 
 **Problema que resuelve:**
-Desarrolladores pierden 10h/semana en documentación manual de código
+Desarrolladores pierden 5h/semana en documentar código
 
 **Solución:**
-Utiliza IA para analizar el código y generar documentación automática y personalizable
+Utiliza Vercel AI SDK para analizar código y generar documentación automática
 
 **Stack técnico:**
 - Frontend: Next.js 14 (App Router) + Tailwind CSS + Shadcn/ui
