@@ -1,148 +1,177 @@
 import os
 import json
-import httpx
 from groq import Groq
 
-def load_config():
-    """Cargar configuración"""
-    config_file = 'config/system_config.json'
-    
-    if os.path.exists(config_file):
-        with open(config_file, 'r', encoding='utf-8') as f:
-            return json.load(f)
-    
-    return {
-        'score_minimo_critico': 60,
-        'groq_model': 'llama-3.1-70b-versatile'
-    }
+client = Groq(api_key=os.environ.get("GROQ_API_KEY"))
 
-def load_prompts():
-    """Cargar prompts"""
-    prompts_file = 'config/prompts.json'
+def critique(idea):
+    """
+    Crítica detallada con puntos débiles específicos para feedback
+    """
+    print("🎯 Agente Crítico iniciado...")
     
-    if os.path.exists(prompts_file):
-        with open(prompts_file, 'r', encoding='utf-8') as f:
-            return json.load(f)
+    nombre = idea.get('nombre', '')
+    descripcion = idea.get('descripcion', '')
+    problema = idea.get('problema', '')
+    solucion = idea.get('solucion', '')
+    publico = idea.get('publico_objetivo', '')
+    tam = idea.get('tam', '')
+    diferenciacion = idea.get('diferenciacion', '')
+    competencia = idea.get('competencia', [])
+    precio = idea.get('precio_sugerido', '')
     
-    return {
-        'critic_system': "Eres un inversor VC escéptico de Sequoia Capital. Has visto 10,000 pitches y solo invertiste en 50. Sé brutalmente honesto."
-    }
+    prompt = f"""Eres un crítico IMPLACABLE de ideas SaaS. Tu trabajo es encontrar TODOS los problemas.
 
-def critique_with_groq(idea, prompts, config):
-    """Criticar idea usando Groq API"""
-    
-    api_key = os.environ.get('GROQ_API_KEY')
-    if not api_key:
-        raise ValueError("GROQ_API_KEY no configurada")
-    
-    client = Groq(
-        api_key=api_key,
-        http_client=httpx.Client()
-    )
-    
-    system_prompt = prompts.get('critic_system', '')
-    
-    user_prompt = f"""IDEA A EVALUAR:
+IDEA A EVALUAR:
+Nombre: {nombre}
+Descripción: {descripcion}
+Problema: {problema}
+Solución: {solucion}
+Público: {publico}
+TAM: {tam}
+Diferenciación: {diferenciacion}
+Competencia: {', '.join(competencia)}
+Precio: {precio}
 
-Nombre: {idea.get('nombre')}
-Problema: {idea.get('problema')}
-Solución: {idea.get('solucion')}
-Mercado: {idea.get('mercado_objetivo')}
-Competencia: {', '.join(idea.get('competencia', []))}
-Diferenciación: {idea.get('diferenciacion')}
-Monetización: {idea.get('monetizacion')}
+EVALÚA CON CRITERIO ESTRICTO (escala 0-100):
 
-EVALÚA CRÍTICAMENTE:
-1. ¿Es realmente innovadora o una copia?
-2. ¿Mercado grande? (TAM > $50M)
-3. ¿Diferenciación real vs competencia?
-4. ¿Viable técnicamente para 1 persona?
-5. ¿Riesgos no mencionados?
-6. ¿El problema realmente duele?
-7. ¿Monetización realista?
+CRITERIOS (cada uno 0-20 puntos):
+1. MERCADO: ¿Es suficientemente grande? ¿Está en crecimiento?
+2. PROBLEMA: ¿Es real y urgente? ¿Tiene datos/evidencia?
+3. SOLUCIÓN: ¿Es única? ¿Factible técnicamente?
+4. DIFERENCIACIÓN: ¿Qué hace que sea 10x mejor que alternativas?
+5. VIABILIDAD: ¿Se puede construir en 4-6 semanas? ¿Monetizable?
 
-RESPONDE EN JSON:
+SÉ BRUTAL. Si algo es mediocre, penaliza fuerte.
+
+RESPONDE EN JSON EXACTO (sin markdown):
 {{
-  "score_critico": 65,
-  "fortalezas": ["Fortaleza real 1", "Fortaleza real 2", "Fortaleza real 3"],
-  "debilidades": ["Debilidad honesta 1", "Debilidad honesta 2", "Debilidad honesta 3"],
-  "riesgos_mayores": ["Riesgo 1", "Riesgo 2"],
-  "competencia_real": ["Competidor no mencionado 1", "Competidor no mencionado 2"],
-  "veredicto_honesto": "Tu veredicto sin filtros en 2-3 frases",
-  "probabilidad_exito": "25%",
-  "recomendacion": "Publicar"
-}}
-
-Score debe ser honesto (40-90). Sé duro pero justo."""
+  "score_critico": 75,
+  "puntos_fuertes": ["Punto fuerte 1", "Punto fuerte 2"],
+  "puntos_debiles": ["Problema específico 1", "Problema específico 2", "Problema 3"],
+  "recomendaciones": ["Mejora concreta 1", "Mejora 2", "Mejora 3"],
+  "score_mercado": 18,
+  "score_problema": 16,
+  "score_solucion": 14,
+  "score_diferenciacion": 12,
+  "score_viabilidad": 15,
+  "veredicto": "Explicación de 2-3 frases del veredicto final"
+}}"""
 
     try:
-        completion = client.chat.completions.create(
-            model=config.get('groq_model', 'llama-3.1-70b-versatile'),
+        chat_completion = client.chat.completions.create(
             messages=[
-                {"role": "system", "content": system_prompt},
-                {"role": "user", "content": user_prompt}
+                {
+                    "role": "system",
+                    "content": "Eres un crítico experto en startups SaaS. Eres IMPLACABLE pero justo. Respondes SOLO con JSON válido."
+                },
+                {
+                    "role": "user",
+                    "content": prompt
+                }
             ],
-            temperature=0.7,
-            max_tokens=2048,
-            response_format={"type": "json_object"}
+            model="llama-3.3-70b-versatile",
+            temperature=0.3,
+            max_tokens=1500
         )
         
-        critique_text = completion.choices[0].message.content
-        critique = json.loads(critique_text)
+        response_text = chat_completion.choices[0].message.content.strip()
         
-        return critique
+        if response_text.startswith('```'):
+            response_text = response_text.split('```')[1]
+            if response_text.startswith('json'):
+                response_text = response_text[4:]
+            response_text = response_text.strip()
         
+        critique_data = json.loads(response_text)
+        
+        # Validación adicional basada en reglas
+        puntos_debiles_extra = []
+        penalizacion = 0
+        
+        # Regla 1: Categorías saturadas
+        categorias_ban = ['documentacion', 'dashboard', 'analytics', 'gestor']
+        for cat in categorias_ban:
+            if cat in nombre.lower() or cat in descripcion.lower():
+                puntos_debiles_extra.append(f"Categoría saturada: '{cat}'")
+                penalizacion += 15
+        
+        # Regla 2: Mercado muy pequeño
+        if tam and tam != 'N/A':
+            valor = int(''.join(filter(str.isdigit, tam)))
+            if valor < 10:
+                puntos_debiles_extra.append(f"Mercado muy pequeño: {tam}")
+                penalizacion += 20
+        
+        # Regla 3: Diferenciación débil
+        if not diferenciacion or len(diferenciacion) < 30:
+            puntos_debiles_extra.append("Diferenciación poco clara o genérica")
+            penalizacion += 10
+        
+        # Regla 4: Precio irrealista
+        if precio and precio != 'N/A':
+            precio_num = int(''.join(filter(str.isdigit, precio)))
+            if precio_num < 10:
+                puntos_debiles_extra.append(f"Precio demasiado bajo: {precio}")
+                penalizacion += 5
+            elif precio_num > 200:
+                puntos_debiles_extra.append(f"Precio demasiado alto para validación: {precio}")
+                penalizacion += 5
+        
+        # Aplicar penalizaciones
+        if puntos_debiles_extra:
+            critique_data['puntos_debiles'].extend(puntos_debiles_extra)
+            critique_data['score_critico'] = max(0, critique_data['score_critico'] - penalizacion)
+        
+        score = critique_data.get('score_critico', 0)
+        print(f"✅ Crítica completada - Score: {score}")
+        
+        if puntos_debiles_extra:
+            print(f"⚠️  Penalizaciones aplicadas: -{penalizacion} puntos")
+        
+        return critique_data
+    
     except Exception as e:
-        print(f"❌ Error criticando con Groq: {e}")
-        raise
+        print(f"❌ Error en crítica: {e}")
+        return {
+            "score_critico": 0,
+            "puntos_fuertes": [],
+            "puntos_debiles": ["Error en evaluación"],
+            "recomendaciones": [],
+            "veredicto": "Error al evaluar"
+        }
 
 def decide_publish(idea, critique, config):
-    """Decidir si publicar la idea"""
-    
+    """
+    Decisión de publicación más estricta
+    """
     score_gen = idea.get('score_generador', 0)
     score_crit = critique.get('score_critico', 0)
     
-    score_min_gen = config.get('score_minimo_generador', 70)
-    score_min_crit = config.get('score_minimo_critico', 60)
+    umbral_min = config.get('umbral_minimo', 70)
+    umbral_crit = config.get('umbral_critico', 50)
     
-    if score_gen >= score_min_gen and score_crit >= score_min_crit:
+    # Ambos deben superar umbrales
+    if score_gen >= umbral_min and score_crit >= umbral_crit:
         print(f"✅ PUBLICAR - Gen:{score_gen} Crit:{score_crit}")
         return True
     else:
         print(f"❌ RECHAZAR - Gen:{score_gen} Crit:{score_crit}")
         return False
 
-def critique(idea):
-    """Criticar idea principal"""
-    
-    print("🎯 Agente Crítico iniciado...")
-    
-    config = load_config()
-    prompts = load_prompts()
-    
-    try:
-        critique_result = critique_with_groq(idea, prompts, config)
-        
-        score = critique_result.get('score_critico', 0)
-        print(f"✅ Crítica completada - Score: {score}")
-        
-        return critique_result
-        
-    except Exception as e:
-        print(f"❌ Error en crítica: {e}")
-        raise
-
 if __name__ == "__main__":
     test_idea = {
-        "nombre": "Test Idea",
-        "problema": "Test problem",
-        "solucion": "Test solution",
-        "mercado_objetivo": "Developers",
-        "competencia": ["Comp1"],
-        "diferenciacion": "Unique",
-        "monetizacion": "Freemium",
-        "score_generador": 75
+        'nombre': 'TestMaster Pro',
+        'descripcion': 'Testing automático con IA',
+        'problema': 'Devs pierden 15h/semana en tests manuales',
+        'solucion': 'IA genera tests automáticos en tiempo real',
+        'publico_objetivo': 'Equipos desarrollo',
+        'tam': '150M€',
+        'diferenciacion': 'Generación automática vs manual',
+        'competencia': ['Jest', 'Cypress'],
+        'precio_sugerido': '49€/mes'
     }
     
-    result = critique(test_idea)
-    print(json.dumps(result, indent=2, ensure_ascii=False))
+    print("🧪 Probando crítico...")
+    critique_result = critique(test_idea)
+    print(json.dumps(critique_result, indent=2, ensure_ascii=False))
