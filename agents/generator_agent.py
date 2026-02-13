@@ -12,13 +12,56 @@ def load_config():
         with open(config_file, 'r', encoding='utf-8') as f:
             return json.load(f)
     return {
-        "umbral_minimo": 65,
-        "umbral_critico": 45,
-        "max_intentos": 5
+        "umbral_minimo": 75,
+        "umbral_critico": 55,
+        "max_intentos": 5,
+        "aprender_de_rechazos": True
     }
 
+def analyze_rejected_patterns():
+    """
+    Analiza ideas rechazadas para aprender patrones
+    """
+    rejected_file = 'data/rejected_ideas.json'
+    if not os.path.exists(rejected_file):
+        return []
+    
+    with open(rejected_file, 'r', encoding='utf-8') as f:
+        rejected = json.load(f)
+    
+    # Últimas 10 rechazadas
+    recent = rejected[-10:] if len(rejected) > 10 else rejected
+    
+    patterns = []
+    for item in recent:
+        idea = item.get('idea', {})
+        reason = item.get('reason', '')
+        patterns.append({
+            'nombre': idea.get('nombre', ''),
+            'categoria': extract_category(idea.get('nombre', '')),
+            'reason': reason
+        })
+    
+    return patterns
+
+def extract_category(nombre):
+    """Extrae categoría de la idea"""
+    keywords = {
+        'documentacion': ['doc', 'documentation', 'documentacion'],
+        'dashboard': ['dashboard', 'panel', 'analytics'],
+        'automatizacion': ['auto', 'automation', 'automatiza'],
+        'gestion': ['gestor', 'management', 'manager']
+    }
+    
+    nombre_lower = nombre.lower()
+    for categoria, words in keywords.items():
+        for word in words:
+            if word in nombre_lower:
+                return categoria
+    return 'otra'
+
 def load_existing_ideas():
-    """Carga ideas existentes con más información para comparación"""
+    """Carga ideas existentes"""
     csv_file = 'data/ideas-validadas.csv'
     existing = []
     if os.path.exists(csv_file):
@@ -33,7 +76,6 @@ def load_existing_ideas():
                         'fingerprint': parts[7]
                     })
     
-    # También cargar rechazadas para evitar repetir
     rejected_file = 'data/rejected_ideas.json'
     if os.path.exists(rejected_file):
         with open(rejected_file, 'r', encoding='utf-8') as f:
@@ -50,65 +92,48 @@ def load_existing_ideas():
     return existing
 
 def calculate_fingerprint(idea_dict):
-    """Fingerprint más robusto"""
     text = f"{idea_dict.get('nombre', '')}{idea_dict.get('descripcion_corta', '')}".lower()
-    # Limpiar caracteres especiales
     text = ''.join(e for e in text if e.isalnum() or e.isspace())
     return hashlib.md5(text.encode()).hexdigest()[:8]
 
 def is_similar_semantic(new_idea, existing_ideas):
-    """Detecta similitud semántica usando palabras clave"""
-    
-    # Categorías prohibidas (muy repetidas)
-    banned_keywords = [
-        'documentacion', 'documentation', 'dashboard', 'panel',
-        'analytics', 'analitica', 'gestor', 'management', 'manager',
-        'automatiza', 'automation', 'automate'
-    ]
+    banned_keywords = ['documentacion', 'documentation', 'dashboard', 'panel', 'analytics', 'analitica', 'gestor', 'management', 'manager', 'automatiza', 'automation', 'automate']
     
     new_name = new_idea.get('nombre', '').lower()
     new_desc = new_idea.get('descripcion_corta', '').lower()
     new_text = f"{new_name} {new_desc}"
     
-    # Verificar palabras prohibidas
     for keyword in banned_keywords:
         count = sum(1 for ex in existing_ideas if keyword in ex['nombre'].lower() or keyword in ex['descripcion'].lower())
         if count >= 2 and keyword in new_text:
-            print(f"⚠️  Categoría saturada detectada: '{keyword}' (ya hay {count} ideas similares)")
+            print(f"⚠️  Categoría saturada: '{keyword}' ({count} existentes)")
             return True
     
-    # Comparar con existentes
     for existing in existing_ideas:
         ex_name = existing['nombre'].lower()
         ex_desc = existing['descripcion'].lower()
         
-        # Nombre exacto o muy similar
         if new_name in ex_name or ex_name in new_name:
-            print(f"⚠️  Nombre similar detectado: '{new_name}' ≈ '{ex_name}'")
+            print(f"⚠️  Nombre similar: '{new_name}' ≈ '{ex_name}'")
             return True
         
-        # Descripción muy similar (más de 50% palabras compartidas)
         new_words = set(new_desc.split())
         ex_words = set(ex_desc.split())
         if len(new_words) > 0:
             similarity = len(new_words & ex_words) / len(new_words)
             if similarity > 0.5:
-                print(f"⚠️  Descripción similar ({int(similarity*100)}%): '{new_desc[:50]}...' ≈ '{ex_desc[:50]}...'")
+                print(f"⚠️  Descripción similar ({int(similarity*100)}%)")
                 return True
     
     return False
 
 def is_duplicate(new_idea, existing_ideas):
-    """Verificación completa de duplicados"""
-    
-    # 1. Fingerprint exacto
     new_fp = calculate_fingerprint(new_idea)
     for existing in existing_ideas:
         if existing['fingerprint'] == new_fp:
             print(f"❌ Fingerprint duplicado: {new_fp}")
             return True
     
-    # 2. Similitud semántica
     if is_similar_semantic(new_idea, existing_ideas):
         return True
     
@@ -130,22 +155,29 @@ def generate():
     existing_ideas = load_existing_ideas()
     config = load_config()
     tendencias, problemas = load_research_cache()
+    rejected_patterns = analyze_rejected_patterns()
     
-    tendencias_text = ", ".join(tendencias[:3]) if tendencias else "IA, automatización, productividad"
-    problemas_text = ", ".join(problemas[:3]) if problemas else "pérdida de tiempo en tareas repetitivas"
+    tendencias_text = ", ".join(tendencias[:3]) if tendencias else "IA generativa, automatización inteligente, herramientas no-code"
+    problemas_text = ", ".join(problemas[:3]) if problemas else "pérdida de tiempo en tareas manuales, falta integración entre herramientas"
     
-    # Construir lista de categorías saturadas
+    # Analizar rechazos
+    rechazos_texto = ""
+    if rejected_patterns:
+        categorias_rechazadas = [p['categoria'] for p in rejected_patterns]
+        razones_comunes = [p['reason'] for p in rejected_patterns]
+        rechazos_texto = f"\n⚠️ EVITA ESTAS CATEGORÍAS (rechazadas recientemente): {', '.join(set(categorias_rechazadas))}\n⚠️ RAZONES DE RECHAZO COMUNES: {', '.join(set(razones_comunes[:3]))}"
+    
     categorias_saturadas = []
     keyword_count = {}
     for idea in existing_ideas:
         texto = f"{idea['nombre']} {idea['descripcion']}".lower()
-        for word in ['documentacion', 'dashboard', 'analytics', 'gestor', 'automatiza']:
+        for word in ['documentacion', 'dashboard', 'analytics', 'gestor', 'automatiza', 'panel', 'management']:
             if word in texto:
                 keyword_count[word] = keyword_count.get(word, 0) + 1
     
     for word, count in keyword_count.items():
         if count >= 2:
-            categorias_saturadas.append(word)
+            categorias_saturadas.append(f"{word}({count})")
     
     categorias_text = ", ".join(categorias_saturadas) if categorias_saturadas else "ninguna"
     
@@ -154,49 +186,51 @@ def generate():
     for attempt in range(max_attempts):
         print(f"📝 Intento {attempt + 1}/{max_attempts}...")
         
-        prompt = f"""Eres un experto en generar ideas SaaS innovadoras y ÚNICAS.
+        prompt = f"""Eres un GENIO generando ideas SaaS ÚNICAS y RENTABLES.
 
-CONTEXTO ACTUAL DEL MERCADO:
-- Tendencias: {tendencias_text}
-- Problemas detectados: {problemas_text}
+CONTEXTO MERCADO:
+- Tendencias HOT: {tendencias_text}
+- Pain Points detectados: {problemas_text}
 
-⚠️ CATEGORÍAS SATURADAS (NO GENERAR): {categorias_text}
-⚠️ EVITA ideas genéricas de: documentación automática, dashboards, gestión básica, analytics simples
+❌ CATEGORÍAS SATURADAS (NO TOCAR): {categorias_text}
+{rechazos_texto}
 
-GENERA UNA IDEA SAAS COMPLETAMENTE ÚNICA que cumpla:
-1. Resuelve un problema ESPECÍFICO y NICHO (no genérico)
-2. Tiene mercado definido con números realistas
-3. Monetizable desde día 1
-4. Implementable en 4-6 semanas
-5. Diferente a todo lo anterior
-6. INNOVADORA (combina 2+ conceptos únicos)
+GENERA UNA IDEA SaaS REVOLUCIONARIA:
 
-EJEMPLOS DE BUENAS IDEAS (únicas y específicas):
-- "SaaS para restaurantes que predice rotación de inventario con IA visual"
-- "Marketplace B2B de freelancers pre-vetados para startups de criptomonedas"
-- "Herramienta de compliance GDPR automatizado para e-commerce Shopify"
+REQUISITOS ESTRICTOS:
+1. ✅ Problema ESPECÍFICO con datos (ej: "Restaurantes pierden 3.2K€/mes en inventario caducado")
+2. ✅ Público NICHO (ej: "Dueños franquicias comida rápida 5-20 locales España", NO "restaurantes")
+3. ✅ TAM mínimo 15M€ (mercados pequeños = rechazo automático)
+4. ✅ Diferenciación RADICAL (no "mejor UX" o "más rápido", algo que nadie hace)
+5. ✅ Precio 20-100€/mes (nada de 5€/mes ni 500€/mes)
+6. ✅ INNOVADORA: combina 2+ conceptos únicos
 
-RESPONDE EN JSON EXACTO (sin markdown):
+INSPIRACIÓN (NO COPIES, INSPÍRATE):
+- "SaaS para clínicas veterinarias que predice enfermedades con IA análisis heces"
+- "Marketplace B2B verificado de proveedores sostenibles para retailers >1M€ facturación"
+- "Compliance GDPR automatizado para e-commerce Shopify con auditorías AI mensuales"
+
+JSON EXACTO (sin markdown):
 {{
-  "nombre": "Nombre corto único (max 3 palabras, evita genéricos)",
-  "slug": "nombre-url-friendly",
-  "descripcion_corta": "Valor único en 1 línea (max 80 caracteres)",
-  "descripcion": "Qué hace específicamente (2-3 frases con detalles)",
-  "problema": "Problema MUY específico con datos (ej: 'Restaurantes pierden 3K€/mes en inventario caducado')",
-  "solucion": "Cómo lo resuelve de forma única (tecnología/proceso específico)",
-  "publico_objetivo": "Nicho MUY específico (ej: 'Dueños de franquicias de comida rápida 5-20 locales en España')",
-  "tam": "Mercado total en € (realista, ej: '120M€')",
-  "sam": "Mercado alcanzable en € (10% TAM, ej: '12M€')",
-  "som": "Mercado objetivo año 1 en € (5% SAM, ej: '600K€')",
-  "competencia": ["Competidor 1 específico", "Competidor 2 específico", "Alternativa actual"],
-  "diferenciacion": "Qué te hace RADICALMENTE diferente (no 'mejor UX' o 'más rápido')",
-  "precio_sugerido": "Precio mensual realista (ej: '79€/mes' para B2B, '19€/mes' para B2C)",
+  "nombre": "Nombre pegadizo único (2-3 palabras)",
+  "slug": "url-friendly",
+  "descripcion_corta": "Valor único 1 frase (max 70 caracteres)",
+  "descripcion": "Qué hace específicamente con detalles técnicos (3-4 frases)",
+  "problema": "Problema específico con datos cuantitativos y urgencia",
+  "solucion": "Cómo resuelve técnicamente (algoritmos, procesos únicos)",
+  "publico_objetivo": "Nicho híper-específico con tamaño mercado",
+  "tam": "Mercado total € (mínimo 15M€, máximo 500M€)",
+  "sam": "10% TAM",
+  "som": "5% SAM",
+  "competencia": ["Competidor real 1", "Competidor 2", "Alternativa actual"],
+  "diferenciacion": "Ventaja competitiva ÚNICA que nadie más tiene (no genérica)",
+  "precio_sugerido": "Entre 20-100€/mes",
   "canales_adquisicion": ["Canal específico 1", "Canal 2", "Canal 3"],
-  "score_generador": 78,
+  "score_generador": 82,
   "dificultad": "Media",
   "tiempo_estimado": "4-6 semanas",
-  "stack_sugerido": ["Next.js", "Supabase", "Stripe"],
-  "features_core": ["Feature específica 1", "Feature 2", "Feature 3"]
+  "stack_sugerido": ["Next.js", "Supabase", "Stripe", "Herramienta específica"],
+  "features_core": ["Feature técnica específica 1", "Feature 2", "Feature 3"]
 }}"""
 
         try:
@@ -204,7 +238,7 @@ RESPONDE EN JSON EXACTO (sin markdown):
                 messages=[
                     {
                         "role": "system",
-                        "content": "Eres un experto en startups SaaS innovadoras. Respondes SOLO con JSON válido, sin markdown. Generas ideas ÚNICAS que nadie ha visto antes."
+                        "content": "Eres un GENIO en startups SaaS. Generas ideas que nadie ha pensado. Respondes SOLO JSON válido sin markdown. Tus ideas son específicas, únicas y rentables."
                     },
                     {
                         "role": "user",
@@ -212,7 +246,7 @@ RESPONDE EN JSON EXACTO (sin markdown):
                     }
                 ],
                 model="llama-3.3-70b-versatile",
-                temperature=0.9,  # Mayor creatividad
+                temperature=0.95,
                 max_tokens=2000
             )
             
@@ -226,30 +260,28 @@ RESPONDE EN JSON EXACTO (sin markdown):
             
             idea = json.loads(response_text)
             
-            # Validar que no sea duplicado
             if not is_duplicate(idea, existing_ideas):
                 fingerprint = calculate_fingerprint(idea)
                 idea['_fingerprint'] = fingerprint
                 idea['_timestamp'] = datetime.now().isoformat()
                 
                 score = idea.get('score_generador', 0)
-                print(f"✅ Idea ÚNICA validada - Score: {score} - Fingerprint: {fingerprint}")
-                print(f"✅ Idea generada: {idea.get('nombre')}")
+                print(f"✅ Idea ÚNICA - Score: {score} - FP: {fingerprint}")
+                print(f"✅ {idea.get('nombre')}")
                 return idea
             else:
-                print(f"⚠️  Idea duplicada/similar, reintentando...")
+                print(f"⚠️  Duplicada/similar, reintentando...")
         
         except json.JSONDecodeError as e:
-            print(f"❌ Error parseando JSON: {e}")
-            print(f"Respuesta recibida: {response_text[:200]}")
+            print(f"❌ JSON inválido: {e}")
         except Exception as e:
-            print(f"❌ Error generando idea: {e}")
+            print(f"❌ Error: {e}")
     
     print(f"❌ No se pudo generar idea única tras {max_attempts} intentos")
     return None
 
 if __name__ == "__main__":
-    print("🧪 Probando generador con anti-duplicación mejorado...")
+    print("🧪 Probando generador mejorado...")
     idea = generate()
     if idea:
         print("\n" + "="*60)
