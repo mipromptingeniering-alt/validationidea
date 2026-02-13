@@ -12,10 +12,10 @@ def send_telegram_notification(idea, critique, landing_url, report_url):
     chat_id = os.environ.get('TELEGRAM_CHAT_ID')
     
     if not bot_token or not chat_id:
-        print("⚠️  Variables Telegram no configuradas (TELEGRAM_BOT_TOKEN, TELEGRAM_CHAT_ID)")
+        print("⚠️  Variables Telegram no configuradas")
         return False
     
-    # Obtener hora correcta en zona horaria española
+    # Hora correcta en zona horaria española
     tz = pytz.timezone('Europe/Madrid')
     now = datetime.now(tz)
     timestamp = now.strftime('%d/%m/%Y %H:%M CET')
@@ -28,12 +28,10 @@ def send_telegram_notification(idea, critique, landing_url, report_url):
     publico = idea.get('publico_objetivo', 'N/A')
     tam = idea.get('tam', 'N/A')
     
-    # URL completas de GitHub Pages
-    # URL del informe
-base_url = "https://mipromptingeniering-alt.github.io/validationidea"
-landing_full = f"{base_url}/{landing_url}"
-report_full = f"{base_url}/{report_url}"  # Ya será .html
-
+    # URLs completas de GitHub Pages
+    base_url = "https://mipromptingeniering-alt.github.io/validationidea"
+    landing_full = f"{base_url}/{landing_url}"
+    report_full = f"{base_url}/{report_url}"
     dashboard_full = f"{base_url}/landing-pages/index.html"
     
     message = f"""🚀 **NUEVA IDEA VALIDADA**
@@ -57,7 +55,7 @@ _{descripcion}_
 • [Dashboard]({dashboard_full})
 
 ---
-_Generado automáticamente por Idea Validator_
+_Generado automáticamente_
 """
     
     url = f"https://api.telegram.org/bot{bot_token}/sendMessage"
@@ -71,11 +69,11 @@ _Generado automáticamente por Idea Validator_
     try:
         response = requests.post(url, json=payload, timeout=10)
         response.raise_for_status()
-        print(f"✅ Notificación Telegram enviada correctamente a {chat_id}")
+        print(f"✅ Telegram enviado a {chat_id}")
         return True
     except requests.exceptions.RequestException as e:
-        print(f"❌ Error enviando Telegram: {e}")
-        if hasattr(e.response, 'text'):
+        print(f"❌ Error Telegram: {e}")
+        if hasattr(e, 'response') and hasattr(e.response, 'text'):
             print(f"Respuesta: {e.response.text}")
         return False
 
@@ -100,5 +98,5 @@ if __name__ == "__main__":
         test_idea,
         test_critique,
         'landing-pages/test-saas.html',
-        'reports/test-saas.md'
+        'reports/test-saas.html'
     )
