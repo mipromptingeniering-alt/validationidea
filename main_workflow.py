@@ -78,11 +78,12 @@ def main():
             save_idea_to_csv(idea, critique)
             
             print("\n🎨 FASE 5: GENERANDO LANDING PAGE MARKETING...")
-            slug = landing_generator.generate_marketing_landing(idea, critique)
+            landing_file = landing_generator.generate_landing(idea)
+            slug = idea.get('slug', 'idea')
             landing_url = f"landing-pages/{slug}.html"
             
             print("\n📊 FASE 6: GENERANDO INFORME COMPLETO...")
-            report_agent.generate_report(idea, critique)
+            report_file = report_agent.generate_report(idea)
             report_url = f"reports/{slug}.md"
             
             print("\n🏠 FASE 7: ACTUALIZANDO DASHBOARD...")
