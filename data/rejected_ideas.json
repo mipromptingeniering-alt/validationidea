@@ -1,0 +1,70 @@
+[
+  {
+    "timestamp": "2026-02-13T15:43:50.099539",
+    "idea": {
+      "nombre": "EcoPuntos",
+      "slug": "ecopuntos",
+      "descripcion_corta": "Recompensa sostenibilidad",
+      "descripcion": "EcoPuntos es una plataforma SaaS que permite a los negocios de hospedaje y alojamiento recompensar a sus clientes por comportamientos sostenibles, como reducir el consumo de agua y energía, o elegir opciones de transporte ecológicas. La plataforma utiliza algoritmos de aprendizaje automático para analizar los patrones de comportamiento de los clientes y ofrecer recompensas personalizadas.",
+      "problema": "Los hoteles y resorts pierden hasta 15% de sus ganancias anuales debido a la falta de conciencia sobre la sostenibilidad entre sus clientes, lo que resulta en un impacto negativo en el medio ambiente y en la reputación de la empresa",
+      "solucion": "EcoPuntos utiliza tecnologías de IoT y aprendizaje automático para recopilar datos sobre el comportamiento de los clientes y ofrecer recompensas y descuentos personalizados para fomentar prácticas sostenibles",
+      "publico_objetivo": "Dueños de hoteles y resorts de 50-200 habitaciones en Europa y América del Norte",
+      "tam": "500M€",
+      "sam": "50M€",
+      "som": "2,5M€",
+      "competencia": [
+        "GreenKey",
+        "Sustainability Dashboard",
+        "Programas de fidelidad tradicionales"
+      ],
+      "diferenciacion": "EcoPuntos es la primera plataforma que combina el aprendizaje automático con la sostenibilidad para ofrecer recompensas personalizadas a los clientes",
+      "precio_sugerido": "99€/mes",
+      "canales_adquisicion": [
+        "Publicidad en redes sociales",
+        "Marketing de contenidos",
+        "Alianzas con asociaciones de hospedaje"
+      ],
+      "score_generador": 82,
+      "dificultad": "Media-Alta",
+      "tiempo_estimado": "5 semanas",
+      "stack_sugerido": [
+        "Next.js",
+        "Firebase",
+        "Stripe"
+      ],
+      "features_core": [
+        "Análisis de comportamiento de clientes",
+        "Recompensas personalizadas",
+        "Integración con sistemas de gestión de hotel"
+      ],
+      "_fingerprint": "7605db1a",
+      "_timestamp": "2026-02-13T15:43:48.695803"
+    },
+    "critique": {
+      "score_critico": 55,
+      "fortalezas": [
+        "La idea de utilizar tecnologías de IoT y aprendizaje automático para fomentar prácticas sostenibles es interesante",
+        "La diferenciación de ofrecer recompensas personalizadas a los clientes podría ser un punto de venta atractivo",
+        "El problema de la sostenibilidad en hoteles y resorts es real y significativo"
+      ],
+      "debilidades": [
+        "La falta de definición del mercado y la ausencia de un modelo de monetización claro son debilidades significativas",
+        "La competencia en el espacio de la sostenibilidad y los programas de fidelidad es intensa y establecida",
+        "La viabilidad técnica y la escalabilidad de la plataforma para una sola persona son cuestionables"
+      ],
+      "riesgos_mayores": [
+        "El riesgo de que los clientes no adopten el comportamiento sostenible a pesar de las recompensas",
+        "El riesgo de que la competencia establecida copie la idea y la implemente de manera más efectiva"
+      ],
+      "competencia_real": [
+        "GreenKey",
+        "Sustainability Dashboard",
+        "Programas de fidelidad tradicionales como loyalty rewards de hoteles y aerolíneas"
+      ],
+      "veredicto_honesto": "La idea de EcoPuntos tiene algunos puntos interesantes, pero carece de claridad en su modelo de negocio y enfrenta una competencia intensa. Sin un plan de monetización sólido y una estrategia de marketing efectiva, es difícil ver cómo esta startup podría destacarse en el mercado.",
+      "probabilidad_exito": "20%",
+      "recomendacion": "Rechazar la inversión hasta que se aborden las debilidades y se presente un plan de negocio más sólido"
+    },
+    "fingerprint": "7605db1a"
+  }
+]
