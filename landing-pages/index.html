@@ -208,13 +208,13 @@
         <div class="header">
             <h1>🚀 Dashboard Ideas Validadas</h1>
             <p>Sistema Multi-Agente de Generación y Validación</p>
-            <p style="font-size: 0.9rem; margin-top: 0.5rem;">Actualizado: 13/02/2026 19:30</p>
+            <p style="font-size: 0.9rem; margin-top: 0.5rem;">Actualizado: 13/02/2026 21:07</p>
         </div>
         
         <div class="stats-grid">
             <div class="stat-card">
                 <h3>Ideas Publicadas</h3>
-                <div class="value">10</div>
+                <div class="value">11</div>
                 <div class="label">Aprobadas y validadas</div>
             </div>
             
@@ -226,14 +226,14 @@
             
             <div class="stat-card">
                 <h3>Tasa Aprobación</h3>
-                <div class="value">90.9%</div>
-                <div class="label">De 11 generadas</div>
+                <div class="value">91.7%</div>
+                <div class="label">De 12 generadas</div>
             </div>
             
             <div class="stat-card">
                 <h3>Score Promedio</h3>
                 <div class="value">71</div>
-                <div class="label">Gen: 83.5 | Crit: 58.5</div>
+                <div class="label">Gen: 83.6 | Crit: 58.6</div>
             </div>
         </div>
         
@@ -253,6 +253,20 @@
         
         <div class="ideas-grid">
             
+        <div class="idea-card">
+            <h3>EcoSupply</h3>
+            <p>Optimiza tus cadenas de suministro sostenibles...</p>
+            <div class="badges">
+                <span class="badge badge-gen">Gen: 85</span>
+                <span class="badge badge-crit">Crit: 60</span>
+                <span class="badge badge-diff">Media</span>
+            </div>
+            <div class="actions">
+                <a href="ecosupply.html" class="btn btn-primary">Ver Landing</a>
+                <a href="../reports/ecosupply.html" class="btn btn-secondary">Informe</a>
+            </div>
+        </div>
+        
         <div class="idea-card">
             <h3>EcoSuppliers</h3>
             <p>Red de proveedores sostenibles...</p>
@@ -323,20 +337,6 @@
             </div>
         </div>
         
-        <div class="idea-card">
-            <h3>AutoDocuFlow Plus</h3>
-            <p>Automatiza la documentación de código con IA...</p>
-            <div class="badges">
-                <span class="badge badge-gen">Gen: 82</span>
-                <span class="badge badge-crit">Crit: 55</span>
-                <span class="badge badge-diff">Media</span>
-            </div>
-            <div class="actions">
-                <a href="autodocuflow-plus.html" class="btn btn-primary">Ver Landing</a>
-                <a href="../reports/autodocuflow-plus.html" class="btn btn-secondary">Informe</a>
-            </div>
-        </div>
-        
         </div>
     </div>
     
@@ -348,7 +348,7 @@
                 labels: ["2026-02-13"],
                 datasets: [{
                     label: 'Ideas Publicadas',
-                    data: [10],
+                    data: [11],
                     backgroundColor: 'rgba(102, 126, 234, 0.8)',
                     borderColor: 'rgba(102, 126, 234, 1)',
                     borderWidth: 2
@@ -371,18 +371,18 @@
         new Chart(document.getElementById('scoresEvolution'), {
             type: 'line',
             data: {
-                labels: ["AutoDoc", "Automatiza Documentos", "AutoDocuFlow", "AutoDocuFlow Pro", "AutoDocuFlow Plus", "AutoDocu", "PredictaStock", "Greenify Supply", "EcoInventory", "EcoSuppliers"],
+                labels: ["Automatiza Documentos", "AutoDocuFlow", "AutoDocuFlow Pro", "AutoDocuFlow Plus", "AutoDocu", "PredictaStock", "Greenify Supply", "EcoInventory", "EcoSuppliers", "EcoSupply"],
                 datasets: [
                     {
                         label: 'Score Generador',
-                        data: [85, 82, 82, 82, 82, 82, 85, 85, 85, 85],
+                        data: [82, 82, 82, 82, 82, 85, 85, 85, 85, 85],
                         borderColor: 'rgba(40, 167, 69, 1)',
                         backgroundColor: 'rgba(40, 167, 69, 0.1)',
                         tension: 0.4
                     },
                     {
                         label: 'Score Crítico',
-                        data: [60, 60, 60, 55, 55, 55, 60, 60, 60, 60],
+                        data: [60, 60, 55, 55, 55, 60, 60, 60, 60, 60],
                         borderColor: 'rgba(0, 123, 255, 1)',
                         backgroundColor: 'rgba(0, 123, 255, 0.1)',
                         tension: 0.4
