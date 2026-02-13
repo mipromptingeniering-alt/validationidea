@@ -3,648 +3,402 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Idea Validator - Dashboard de Ideas Validadas</title>
-    <meta name="description" content="Sistema automático de validación de ideas SaaS con IA">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <title>Dashboard - Ideas Validadas</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
         body {
-            font-family: 'Inter', -apple-system, sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: #1a202c;
-            line-height: 1.6;
+            min-height: 100vh;
+            padding: 2rem;
         }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        
         .header {
-            background: white;
-            padding: 30px 20px;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
             text-align: center;
+            color: white;
+            margin-bottom: 3rem;
         }
+        
         .header h1 {
-            font-size: 2.5rem;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            margin-bottom: 10px;
+            font-size: 3rem;
+            margin-bottom: 0.5rem;
         }
-        .header p { color: #4a5568; font-size: 1.1rem; }
-        .container { max-width: 1400px; margin: 0 auto; padding: 40px 20px; }
+        
+        .header p {
+            font-size: 1.2rem;
+            opacity: 0.9;
+        }
+        
         .stats-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 20px;
-            margin-bottom: 40px;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 3rem;
         }
-        .stat-box {
+        
+        .stat-card {
             background: white;
-            padding: 25px;
-            border-radius: 15px;
+            padding: 2rem;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
             text-align: center;
-            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
         }
-        .stat-number {
-            font-size: 2.5rem;
-            font-weight: 800;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-        .stat-label { color: #718096; font-size: 0.9rem; margin-top: 5px; }
-        .controls {
-            background: white;
-            padding: 25px;
-            border-radius: 15px;
-            margin-bottom: 30px;
-            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
-            display: flex;
-            gap: 15px;
-            flex-wrap: wrap;
-            align-items: center;
-        }
-        .search-box {
-            flex: 1;
-            min-width: 250px;
-            padding: 12px 20px;
-            border: 2px solid #e2e8f0;
-            border-radius: 10px;
+        
+        .stat-card h3 {
+            color: #667eea;
             font-size: 1rem;
+            margin-bottom: 1rem;
         }
-        .filter-btn {
-            padding: 12px 25px;
-            border: 2px solid #e2e8f0;
+        
+        .stat-card .value {
+            font-size: 3rem;
+            font-weight: bold;
+            color: #333;
+        }
+        
+        .stat-card .label {
+            color: #666;
+            font-size: 0.9rem;
+            margin-top: 0.5rem;
+        }
+        
+        .charts-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(500px, 1fr));
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+        
+        .chart-card {
             background: white;
-            border-radius: 10px;
-            cursor: pointer;
-            font-weight: 600;
-            transition: all 0.3s;
+            padding: 2rem;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
         }
-        .filter-btn:hover { background: #f7fafc; }
-        .filter-btn.active {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            border-color: transparent;
+        
+        .chart-card h3 {
+            color: #667eea;
+            margin-bottom: 1.5rem;
+            font-size: 1.3rem;
         }
-        .download-btn {
-            padding: 12px 30px;
-            background: linear-gradient(90deg, #10b981 0%, #059669 100%);
-            color: white;
-            border: none;
-            border-radius: 10px;
-            font-weight: 700;
-            cursor: pointer;
-            box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3);
-            transition: transform 0.2s;
-        }
-        .download-btn:hover { transform: scale(1.05); }
+        
         .ideas-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
-            gap: 25px;
+            gap: 1.5rem;
         }
+        
         .idea-card {
             background: white;
-            border-radius: 15px;
-            padding: 25px;
-            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
-            transition: transform 0.3s, box-shadow 0.3s;
-            position: relative;
+            padding: 1.5rem;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            transition: transform 0.3s;
         }
+        
         .idea-card:hover {
             transform: translateY(-5px);
-            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+            box-shadow: 0 6px 12px rgba(0,0,0,0.15);
         }
-        .card-badge {
-            position: absolute;
-            top: 15px;
-            right: 15px;
-            padding: 6px 15px;
-            border-radius: 20px;
-            color: white;
-            font-size: 0.8rem;
-            font-weight: 700;
-        }
+        
         .idea-card h3 {
-            font-size: 1.5rem;
-            margin-bottom: 15px;
-            color: #2d3748;
+            color: #667eea;
+            margin-bottom: 0.5rem;
+            font-size: 1.3rem;
         }
-        .card-description {
-            color: #4a5568;
-            margin-bottom: 20px;
-            font-size: 0.95rem;
-            line-height: 1.6;
+        
+        .idea-card p {
+            color: #666;
+            margin-bottom: 1rem;
+            line-height: 1.5;
         }
-        .card-stats {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 15px;
-            margin-bottom: 20px;
-            padding: 15px 0;
-            border-top: 1px solid #e2e8f0;
-            border-bottom: 1px solid #e2e8f0;
-        }
-        .stat {
-            text-align: center;
-        }
-        .stat-label {
-            display: block;
-            font-size: 0.75rem;
-            color: #a0aec0;
-            margin-bottom: 5px;
-        }
-        .stat-value {
-            display: block;
-            font-size: 1.2rem;
-            font-weight: 700;
-            color: #2d3748;
-        }
-        .card-actions {
+        
+        .badges {
             display: flex;
-            gap: 10px;
-            margin-bottom: 15px;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+            flex-wrap: wrap;
         }
-        .btn-primary, .btn-secondary {
+        
+        .badge {
+            padding: 0.3rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+        
+        .badge-gen {
+            background: #d4edda;
+            color: #155724;
+        }
+        
+        .badge-crit {
+            background: #d1ecf1;
+            color: #0c5460;
+        }
+        
+        .badge-diff {
+            background: #fff3cd;
+            color: #856404;
+        }
+        
+        .actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+        
+        .btn {
             flex: 1;
-            padding: 10px;
-            text-align: center;
+            padding: 0.7rem;
             border-radius: 8px;
             text-decoration: none;
+            text-align: center;
             font-weight: 600;
-            transition: transform 0.2s;
+            transition: 0.3s;
         }
+        
         .btn-primary {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: #667eea;
             color: white;
         }
+        
+        .btn-primary:hover {
+            background: #5568d3;
+        }
+        
         .btn-secondary {
-            background: #f7fafc;
-            color: #4a5568;
-            border: 2px solid #e2e8f0;
+            background: #f8f9fa;
+            color: #667eea;
+            border: 2px solid #667eea;
         }
-        .btn-primary:hover, .btn-secondary:hover { transform: scale(1.05); }
-        .card-footer {
-            display: flex;
-            justify-content: space-between;
-            font-size: 0.85rem;
-            color: #718096;
+        
+        .btn-secondary:hover {
+            background: #667eea;
+            color: white;
         }
-        .empty-state {
-            text-align: center;
-            padding: 80px 20px;
-            background: white;
-            border-radius: 15px;
-            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
-        }
-        .empty-state h2 {
-            font-size: 2rem;
-            margin-bottom: 15px;
-            color: #2d3748;
-        }
+        
         @media (max-width: 768px) {
-            .header h1 { font-size: 1.8rem; }
-            .ideas-grid { grid-template-columns: 1fr; }
-            .controls { flex-direction: column; }
-            .search-box { width: 100%; }
+            .header h1 {
+                font-size: 2rem;
+            }
+            
+            .charts-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .ideas-grid {
+                grid-template-columns: 1fr;
+            }
         }
     </style>
 </head>
 <body>
-    <div class="header">
-        <h1>🚀 Idea Validator Dashboard</h1>
-        <p>Sistema automático de validación de ideas SaaS con Multi-Agente IA</p>
-    </div>
-
     <div class="container">
+        <div class="header">
+            <h1>🚀 Dashboard Ideas Validadas</h1>
+            <p>Sistema Multi-Agente de Generación y Validación</p>
+            <p style="font-size: 0.9rem; margin-top: 0.5rem;">Actualizado: 13/02/2026 16:45</p>
+        </div>
+        
         <div class="stats-grid">
-            <div class="stat-box">
-                <div class="stat-number">13</div>
-                <div class="stat-label">Ideas Validadas</div>
+            <div class="stat-card">
+                <h3>Ideas Publicadas</h3>
+                <div class="value">9</div>
+                <div class="label">Aprobadas y validadas</div>
             </div>
-            <div class="stat-box">
-                <div class="stat-number">70</div>
-                <div class="stat-label">Score Promedio</div>
-            </div>
-            <div class="stat-box">
-                <div class="stat-number">0</div>
-                <div class="stat-label">Viabilidad Alta</div>
-            </div>
-            <div class="stat-box">
-                <div class="stat-number">8</div>
-                <div class="stat-label">Viabilidad Media</div>
-            </div>
-        </div>
-
-        <div class="controls">
-            <input type="text" class="search-box" id="searchBox" placeholder="🔍 Buscar ideas por nombre..." onkeyup="filterIdeas()">
-            <button class="filter-btn active" onclick="filterByViability('TODAS')">Todas</button>
-            <button class="filter-btn" onclick="filterByViability('ALTA')">Alta</button>
-            <button class="filter-btn" onclick="filterByViability('MEDIA')">Media</button>
-            <button class="filter-btn" onclick="filterByViability('BAJA')">Baja</button>
-            <button class="download-btn" onclick="downloadCSV()">📥 Descargar CSV</button>
-        </div>
-
-        <div class="ideas-grid" id="ideasGrid">
             
-        <div class="idea-card" data-viabilidad="MEDIA" data-nombre="autodoc">
-            <div class="card-badge" style="background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);">MEDIA ⭐⭐</div>
-            <h3>AutoDoc</h3>
-            <p class="card-description">Automatiza la documentación de código</p>
-            <div class="card-stats">
-                <div class="stat">
-                    <span class="stat-label">Generador</span>
-                    <span class="stat-value">85/100</span>
-                </div>
-                <div class="stat">
-                    <span class="stat-label">Crítico</span>
-                    <span class="stat-value">60/100</span>
-                </div>
-                <div class="stat">
-                    <span class="stat-label">Promedio</span>
-                    <span class="stat-value">72/100</span>
-                </div>
+            <div class="stat-card">
+                <h3>Ideas Rechazadas</h3>
+                <div class="value">1</div>
+                <div class="label">No superaron validación</div>
             </div>
-            <div class="card-actions">
-                <a href="autodoc.html" class="btn-primary">Ver Landing</a>
-                <a href="../reports/autodoc.md" class="btn-secondary">Informe</a>
+            
+            <div class="stat-card">
+                <h3>Tasa Aprobación</h3>
+                <div class="value">90.0%</div>
+                <div class="label">De 10 generadas</div>
             </div>
-            <div class="card-footer">
-                <span>🏷️ SaaS</span>
-                <span>⚡ Media</span>
+            
+            <div class="stat-card">
+                <h3>Score Promedio</h3>
+                <div class="value">70</div>
+                <div class="label">Gen: 83.3 | Crit: 58.3</div>
             </div>
         </div>
         
-        <div class="idea-card" data-viabilidad="MEDIA" data-nombre="predictastock">
-            <div class="card-badge" style="background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);">MEDIA ⭐⭐</div>
-            <h3>PredictaStock</h3>
-            <p class="card-description">Optimiza inventario</p>
-            <div class="card-stats">
-                <div class="stat">
-                    <span class="stat-label">Generador</span>
-                    <span class="stat-value">85/100</span>
-                </div>
-                <div class="stat">
-                    <span class="stat-label">Crítico</span>
-                    <span class="stat-value">60/100</span>
-                </div>
-                <div class="stat">
-                    <span class="stat-label">Promedio</span>
-                    <span class="stat-value">72/100</span>
-                </div>
+        <div class="charts-grid">
+            <div class="chart-card">
+                <h3>📊 Ideas por Día (Últimos 7 días)</h3>
+                <canvas id="ideasPerDay"></canvas>
             </div>
-            <div class="card-actions">
-                <a href="predictastock.html" class="btn-primary">Ver Landing</a>
-                <a href="../reports/predictastock.md" class="btn-secondary">Informe</a>
-            </div>
-            <div class="card-footer">
-                <span>🏷️ SaaS</span>
-                <span>⚡ Media</span>
+            
+            <div class="chart-card">
+                <h3>📈 Evolución Scores (Últimas 10 ideas)</h3>
+                <canvas id="scoresEvolution"></canvas>
             </div>
         </div>
         
-        <div class="idea-card" data-viabilidad="MEDIA" data-nombre="greenify supply">
-            <div class="card-badge" style="background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);">MEDIA ⭐⭐</div>
+        <h2 style="color: white; margin-bottom: 2rem; font-size: 2rem;">💡 Últimas Ideas Publicadas</h2>
+        
+        <div class="ideas-grid">
+            
+        <div class="idea-card">
+            <h3>EcoInventory</h3>
+            <p>Optimiza inventarios sostenibles...</p>
+            <div class="badges">
+                <span class="badge badge-gen">Gen: 85</span>
+                <span class="badge badge-crit">Crit: 60</span>
+                <span class="badge badge-diff">Media-Alta</span>
+            </div>
+            <div class="actions">
+                <a href="ecoinventory.html" class="btn btn-primary">Ver Landing</a>
+                <a href="../reports/ecoinventory.html" class="btn btn-secondary">Informe</a>
+            </div>
+        </div>
+        
+        <div class="idea-card">
             <h3>Greenify Supply</h3>
-            <p class="card-description">Optimiza cadena de suministro</p>
-            <div class="card-stats">
-                <div class="stat">
-                    <span class="stat-label">Generador</span>
-                    <span class="stat-value">85/100</span>
-                </div>
-                <div class="stat">
-                    <span class="stat-label">Crítico</span>
-                    <span class="stat-value">60/100</span>
-                </div>
-                <div class="stat">
-                    <span class="stat-label">Promedio</span>
-                    <span class="stat-value">72/100</span>
-                </div>
+            <p>Optimiza cadena de suministro...</p>
+            <div class="badges">
+                <span class="badge badge-gen">Gen: 85</span>
+                <span class="badge badge-crit">Crit: 60</span>
+                <span class="badge badge-diff">Media</span>
             </div>
-            <div class="card-actions">
-                <a href="greenify-supply.html" class="btn-primary">Ver Landing</a>
-                <a href="../reports/greenify-supply.md" class="btn-secondary">Informe</a>
-            </div>
-            <div class="card-footer">
-                <span>🏷️ SaaS</span>
-                <span>⚡ Media</span>
+            <div class="actions">
+                <a href="greenify-supply.html" class="btn btn-primary">Ver Landing</a>
+                <a href="../reports/greenify-supply.html" class="btn btn-secondary">Informe</a>
             </div>
         </div>
         
-        <div class="idea-card" data-viabilidad="MEDIA" data-nombre="ai code review">
-            <div class="card-badge" style="background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);">MEDIA ⭐⭐</div>
-            <h3>AI Code Review</h3>
-            <p class="card-description">Revisa y mejora código con inteligencia artificial.</p>
-            <div class="card-stats">
-                <div class="stat">
-                    <span class="stat-label">Generador</span>
-                    <span class="stat-value">82/100</span>
-                </div>
-                <div class="stat">
-                    <span class="stat-label">Crítico</span>
-                    <span class="stat-value">60/100</span>
-                </div>
-                <div class="stat">
-                    <span class="stat-label">Promedio</span>
-                    <span class="stat-value">71/100</span>
-                </div>
+        <div class="idea-card">
+            <h3>PredictaStock</h3>
+            <p>Optimiza inventario...</p>
+            <div class="badges">
+                <span class="badge badge-gen">Gen: 85</span>
+                <span class="badge badge-crit">Crit: 60</span>
+                <span class="badge badge-diff">Media</span>
             </div>
-            <div class="card-actions">
-                <a href="ai-code-review.html" class="btn-primary">Ver Landing</a>
-                <a href="../reports/ai-code-review.md" class="btn-secondary">Informe</a>
-            </div>
-            <div class="card-footer">
-                <span>🏷️ SaaS</span>
-                <span>⚡ Media</span>
+            <div class="actions">
+                <a href="predictastock.html" class="btn btn-primary">Ver Landing</a>
+                <a href="../reports/predictastock.html" class="btn btn-secondary">Informe</a>
             </div>
         </div>
         
-        <div class="idea-card" data-viabilidad="MEDIA" data-nombre="ai code asistente">
-            <div class="card-badge" style="background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);">MEDIA ⭐⭐</div>
-            <h3>AI Code Asistente</h3>
-            <p class="card-description">Herramienta de asistencia de código con IA</p>
-            <div class="card-stats">
-                <div class="stat">
-                    <span class="stat-label">Generador</span>
-                    <span class="stat-value">82/100</span>
-                </div>
-                <div class="stat">
-                    <span class="stat-label">Crítico</span>
-                    <span class="stat-value">60/100</span>
-                </div>
-                <div class="stat">
-                    <span class="stat-label">Promedio</span>
-                    <span class="stat-value">71/100</span>
-                </div>
-            </div>
-            <div class="card-actions">
-                <a href="ai-code-asistente.html" class="btn-primary">Ver Landing</a>
-                <a href="../reports/ai-code-asistente.md" class="btn-secondary">Informe</a>
-            </div>
-            <div class="card-footer">
-                <span>🏷️ SaaS</span>
-                <span>⚡ Media</span>
-            </div>
-        </div>
-        
-        <div class="idea-card" data-viabilidad="MEDIA" data-nombre="automatiza documentos">
-            <div class="card-badge" style="background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);">MEDIA ⭐⭐</div>
-            <h3>Automatiza Documentos</h3>
-            <p class="card-description">Automatiza la generación de documentos y contratos para solopreneurs y freelancers</p>
-            <div class="card-stats">
-                <div class="stat">
-                    <span class="stat-label">Generador</span>
-                    <span class="stat-value">82/100</span>
-                </div>
-                <div class="stat">
-                    <span class="stat-label">Crítico</span>
-                    <span class="stat-value">60/100</span>
-                </div>
-                <div class="stat">
-                    <span class="stat-label">Promedio</span>
-                    <span class="stat-value">71/100</span>
-                </div>
-            </div>
-            <div class="card-actions">
-                <a href="automatiza-documentos.html" class="btn-primary">Ver Landing</a>
-                <a href="../reports/automatiza-documentos.md" class="btn-secondary">Informe</a>
-            </div>
-            <div class="card-footer">
-                <span>🏷️ SaaS</span>
-                <span>⚡ Media</span>
-            </div>
-        </div>
-        
-        <div class="idea-card" data-viabilidad="MEDIA" data-nombre="autodocuflow">
-            <div class="card-badge" style="background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);">MEDIA ⭐⭐</div>
-            <h3>AutoDocuFlow</h3>
-            <p class="card-description">Automatiza la documentación de código con flujo de trabajo personalizable</p>
-            <div class="card-stats">
-                <div class="stat">
-                    <span class="stat-label">Generador</span>
-                    <span class="stat-value">82/100</span>
-                </div>
-                <div class="stat">
-                    <span class="stat-label">Crítico</span>
-                    <span class="stat-value">60/100</span>
-                </div>
-                <div class="stat">
-                    <span class="stat-label">Promedio</span>
-                    <span class="stat-value">71/100</span>
-                </div>
-            </div>
-            <div class="card-actions">
-                <a href="autodocuflow.html" class="btn-primary">Ver Landing</a>
-                <a href="../reports/autodocuflow.md" class="btn-secondary">Informe</a>
-            </div>
-            <div class="card-footer">
-                <span>🏷️ SaaS</span>
-                <span>⚡ Media</span>
-            </div>
-        </div>
-        
-        <div class="idea-card" data-viabilidad="MEDIA" data-nombre="ai code review">
-            <div class="card-badge" style="background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);">MEDIA ⭐⭐</div>
-            <h3>AI Code Review</h3>
-            <p class="card-description">Herramienta de revisión de código asistida por IA</p>
-            <div class="card-stats">
-                <div class="stat">
-                    <span class="stat-label">Generador</span>
-                    <span class="stat-value">82/100</span>
-                </div>
-                <div class="stat">
-                    <span class="stat-label">Crítico</span>
-                    <span class="stat-value">58/100</span>
-                </div>
-                <div class="stat">
-                    <span class="stat-label">Promedio</span>
-                    <span class="stat-value">70/100</span>
-                </div>
-            </div>
-            <div class="card-actions">
-                <a href="ai-code-review.html" class="btn-primary">Ver Landing</a>
-                <a href="../reports/ai-code-review.md" class="btn-secondary">Informe</a>
-            </div>
-            <div class="card-footer">
-                <span>🏷️ SaaS</span>
-                <span>⚡ Media</span>
-            </div>
-        </div>
-        
-        <div class="idea-card" data-viabilidad="BAJA" data-nombre="ai code review">
-            <div class="card-badge" style="background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);">BAJA ⭐</div>
-            <h3>AI Code Review</h3>
-            <p class="card-description">Revisión de código asistida por IA para desarrolladores</p>
-            <div class="card-stats">
-                <div class="stat">
-                    <span class="stat-label">Generador</span>
-                    <span class="stat-value">80/100</span>
-                </div>
-                <div class="stat">
-                    <span class="stat-label">Crítico</span>
-                    <span class="stat-value">58/100</span>
-                </div>
-                <div class="stat">
-                    <span class="stat-label">Promedio</span>
-                    <span class="stat-value">69/100</span>
-                </div>
-            </div>
-            <div class="card-actions">
-                <a href="ai-code-review.html" class="btn-primary">Ver Landing</a>
-                <a href="../reports/ai-code-review.md" class="btn-secondary">Informe</a>
-            </div>
-            <div class="card-footer">
-                <span>🏷️ SaaS</span>
-                <span>⚡ Media</span>
-            </div>
-        </div>
-        
-        <div class="idea-card" data-viabilidad="BAJA" data-nombre="ai code review">
-            <div class="card-badge" style="background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);">BAJA ⭐</div>
-            <h3>AI Code Review</h3>
-            <p class="card-description">Herramienta de revisión de código asistida por AI</p>
-            <div class="card-stats">
-                <div class="stat">
-                    <span class="stat-label">Generador</span>
-                    <span class="stat-value">82/100</span>
-                </div>
-                <div class="stat">
-                    <span class="stat-label">Crítico</span>
-                    <span class="stat-value">55/100</span>
-                </div>
-                <div class="stat">
-                    <span class="stat-label">Promedio</span>
-                    <span class="stat-value">68/100</span>
-                </div>
-            </div>
-            <div class="card-actions">
-                <a href="ai-code-review.html" class="btn-primary">Ver Landing</a>
-                <a href="../reports/ai-code-review.md" class="btn-secondary">Informe</a>
-            </div>
-            <div class="card-footer">
-                <span>🏷️ SaaS</span>
-                <span>⚡ Media</span>
-            </div>
-        </div>
-        
-        <div class="idea-card" data-viabilidad="BAJA" data-nombre="autodocuflow pro">
-            <div class="card-badge" style="background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);">BAJA ⭐</div>
-            <h3>AutoDocuFlow Pro</h3>
-            <p class="card-description">Automatiza documentación técnica con IA</p>
-            <div class="card-stats">
-                <div class="stat">
-                    <span class="stat-label">Generador</span>
-                    <span class="stat-value">82/100</span>
-                </div>
-                <div class="stat">
-                    <span class="stat-label">Crítico</span>
-                    <span class="stat-value">55/100</span>
-                </div>
-                <div class="stat">
-                    <span class="stat-label">Promedio</span>
-                    <span class="stat-value">68/100</span>
-                </div>
-            </div>
-            <div class="card-actions">
-                <a href="autodocuflow-pro.html" class="btn-primary">Ver Landing</a>
-                <a href="../reports/autodocuflow-pro.md" class="btn-secondary">Informe</a>
-            </div>
-            <div class="card-footer">
-                <span>🏷️ SaaS</span>
-                <span>⚡ Media</span>
-            </div>
-        </div>
-        
-        <div class="idea-card" data-viabilidad="BAJA" data-nombre="autodocuflow plus">
-            <div class="card-badge" style="background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);">BAJA ⭐</div>
-            <h3>AutoDocuFlow Plus</h3>
-            <p class="card-description">Automatiza la documentación de código con IA</p>
-            <div class="card-stats">
-                <div class="stat">
-                    <span class="stat-label">Generador</span>
-                    <span class="stat-value">82/100</span>
-                </div>
-                <div class="stat">
-                    <span class="stat-label">Crítico</span>
-                    <span class="stat-value">55/100</span>
-                </div>
-                <div class="stat">
-                    <span class="stat-label">Promedio</span>
-                    <span class="stat-value">68/100</span>
-                </div>
-            </div>
-            <div class="card-actions">
-                <a href="autodocuflow-plus.html" class="btn-primary">Ver Landing</a>
-                <a href="../reports/autodocuflow-plus.md" class="btn-secondary">Informe</a>
-            </div>
-            <div class="card-footer">
-                <span>🏷️ SaaS</span>
-                <span>⚡ Media</span>
-            </div>
-        </div>
-        
-        <div class="idea-card" data-viabilidad="BAJA" data-nombre="autodocu">
-            <div class="card-badge" style="background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);">BAJA ⭐</div>
+        <div class="idea-card">
             <h3>AutoDocu</h3>
-            <p class="card-description">Automatiza la documentación de proyectos con IA</p>
-            <div class="card-stats">
-                <div class="stat">
-                    <span class="stat-label">Generador</span>
-                    <span class="stat-value">82/100</span>
-                </div>
-                <div class="stat">
-                    <span class="stat-label">Crítico</span>
-                    <span class="stat-value">55/100</span>
-                </div>
-                <div class="stat">
-                    <span class="stat-label">Promedio</span>
-                    <span class="stat-value">68/100</span>
-                </div>
+            <p>Automatiza la documentación de proyectos con IA...</p>
+            <div class="badges">
+                <span class="badge badge-gen">Gen: 82</span>
+                <span class="badge badge-crit">Crit: 55</span>
+                <span class="badge badge-diff">Media</span>
             </div>
-            <div class="card-actions">
-                <a href="autodocu.html" class="btn-primary">Ver Landing</a>
-                <a href="../reports/autodocu.md" class="btn-secondary">Informe</a>
+            <div class="actions">
+                <a href="autodocu.html" class="btn btn-primary">Ver Landing</a>
+                <a href="../reports/autodocu.html" class="btn btn-secondary">Informe</a>
             </div>
-            <div class="card-footer">
-                <span>🏷️ SaaS</span>
-                <span>⚡ Media</span>
+        </div>
+        
+        <div class="idea-card">
+            <h3>AutoDocuFlow Plus</h3>
+            <p>Automatiza la documentación de código con IA...</p>
+            <div class="badges">
+                <span class="badge badge-gen">Gen: 82</span>
+                <span class="badge badge-crit">Crit: 55</span>
+                <span class="badge badge-diff">Media</span>
+            </div>
+            <div class="actions">
+                <a href="autodocuflow-plus.html" class="btn btn-primary">Ver Landing</a>
+                <a href="../reports/autodocuflow-plus.html" class="btn btn-secondary">Informe</a>
+            </div>
+        </div>
+        
+        <div class="idea-card">
+            <h3>AutoDocuFlow Pro</h3>
+            <p>Automatiza documentación técnica con IA...</p>
+            <div class="badges">
+                <span class="badge badge-gen">Gen: 82</span>
+                <span class="badge badge-crit">Crit: 55</span>
+                <span class="badge badge-diff">Media</span>
+            </div>
+            <div class="actions">
+                <a href="autodocuflow-pro.html" class="btn btn-primary">Ver Landing</a>
+                <a href="../reports/autodocuflow-pro.html" class="btn btn-secondary">Informe</a>
             </div>
         </div>
         
         </div>
     </div>
-
+    
     <script>
-        let currentFilter = 'TODAS';
-
-        function filterByViability(viability) {
-            currentFilter = viability;
-            document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'));
-            event.target.classList.add('active');
-            filterIdeas();
-        }
-
-        function filterIdeas() {
-            const searchTerm = document.getElementById('searchBox').value.toLowerCase();
-            const cards = document.querySelectorAll('.idea-card');
-            
-            cards.forEach(card => {
-                const nombre = card.getAttribute('data-nombre');
-                const viabilidad = card.getAttribute('data-viabilidad');
-                const matchesSearch = nombre.includes(searchTerm);
-                const matchesFilter = currentFilter === 'TODAS' || viabilidad === currentFilter;
-                
-                if (matchesSearch && matchesFilter) {
-                    card.style.display = 'block';
-                } else {
-                    card.style.display = 'none';
+        // Gráfica 1: Ideas por día
+        new Chart(document.getElementById('ideasPerDay'), {
+            type: 'bar',
+            data: {
+                labels: ["2026-02-13"],
+                datasets: [{
+                    label: 'Ideas Publicadas',
+                    data: [9],
+                    backgroundColor: 'rgba(102, 126, 234, 0.8)',
+                    borderColor: 'rgba(102, 126, 234, 1)',
+                    borderWidth: 2
+                }]
+            },
+            options: {
+                responsive: true,
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        ticks: {
+                            stepSize: 1
+                        }
+                    }
                 }
-            });
-        }
-
-        function downloadCSV() {
-            window.location.href = '../data/ideas-validadas.csv';
-        }
+            }
+        });
+        
+        // Gráfica 2: Evolución scores
+        new Chart(document.getElementById('scoresEvolution'), {
+            type: 'line',
+            data: {
+                labels: ["AutoDoc", "Automatiza Documentos", "AutoDocuFlow", "AutoDocuFlow Pro", "AutoDocuFlow Plus", "AutoDocu", "PredictaStock", "Greenify Supply", "EcoInventory"],
+                datasets: [
+                    {
+                        label: 'Score Generador',
+                        data: [85, 82, 82, 82, 82, 82, 85, 85, 85],
+                        borderColor: 'rgba(40, 167, 69, 1)',
+                        backgroundColor: 'rgba(40, 167, 69, 0.1)',
+                        tension: 0.4
+                    },
+                    {
+                        label: 'Score Crítico',
+                        data: [60, 60, 60, 55, 55, 55, 60, 60, 60],
+                        borderColor: 'rgba(0, 123, 255, 1)',
+                        backgroundColor: 'rgba(0, 123, 255, 0.1)',
+                        tension: 0.4
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        max: 100
+                    }
+                }
+            }
+        });
     </script>
 </body>
 </html>
