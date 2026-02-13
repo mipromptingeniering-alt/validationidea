@@ -1,130 +1,336 @@
 import os
-import json
 from datetime import datetime
 
-def generate_report(idea, critique):
-    nombre = idea.get('nombre', 'Idea sin nombre')
-    slug = nombre.lower().replace(' ', '-').replace('/', '-')[:30]
-    slug = ''.join(c for c in slug if c.isalnum() or c == '-')
-    os.makedirs('reports', exist_ok=True)
-    report_file = f'reports/{slug}.md'
-    score_gen = idea.get('score_generador', 0)
-    score_crit = critique.get('score_critico', 0)
-    score_promedio = (score_gen + score_crit) / 2
-    if score_promedio >= 80:
-        viabilidad = "ALTA ⭐⭐⭐"
-        recomendacion = "Idea sólida. Ejecutar YA."
-    elif score_promedio >= 70:
-        viabilidad = "MEDIA ⭐⭐"
-        recomendacion = "Viable. Validar antes de invertir 40h."
-    else:
-        viabilidad = "BAJA ⭐"
-        recomendacion = "Riesgos altos. Solo si tienes ventaja única."
-    monetizacion = idea.get('monetizacion', '').lower()
-    if '29' in monetizacion:
-        precio = 29
-        ing_m3, ing_m6, ing_m12 = '145', '725', '2,175'
-    elif '19' in monetizacion:
-        precio = 19
-        ing_m3, ing_m6, ing_m12 = '95', '475', '1,425'
-    elif '49' in monetizacion:
-        precio = 49
-        ing_m3, ing_m6, ing_m12 = '245', '1,225', '3,675'
-    else:
-        precio = 19
-        ing_m3, ing_m6, ing_m12 = '100', '500', '1,500'
-    tech_str = ', '.join(idea.get('tech_stack', ['Next.js']))
-    prompt = {"proyecto": idea.get('nombre', ''), "descripcion": idea.get('descripcion_corta', ''), "problema": idea.get('problema', ''), "solucion": idea.get('solucion', ''), "tech_stack": tech_str, "funcionalidades": ["Auth", "Dashboard", "Feature core", "Stripe"], "instrucciones": ["Proyecto completo", "TypeScript", "Responsive"]}
-    prompt_json = json.dumps(prompt, indent=2, ensure_ascii=False)
-    comp_str = '\n'.join([f"- {c}" for c in idea.get('competencia', [])])
-    fort_str = '\n'.join([f"- {f}" for f in critique.get('fortalezas', [])])
-    deb_str = '\n'.join([f"- {d}" for d in critique.get('debilidades', [])])
-    riesg_str = '\n'.join([f"{i}. {r}" for i, r in enumerate(critique.get('riesgos_mayores', []), 1)])
-    report_content = f"""# 📊 Informe Completo: {nombre}
+def generate_report(idea_data):
+    """
+    Genera un informe completo en Markdown para desarrolladores
+    Incluye TAM/SAM/SOM, roadmap, proyecciones y prompt para IA
+    """
+    
+    slug = idea_data.get('slug', 'idea')
+    nombre = idea_data.get('nombre', 'Idea SaaS')
+    descripcion = idea_data.get('descripcion', 'Una idea innovadora')
+    problema = idea_data.get('problema', 'Problema a resolver')
+    solucion = idea_data.get('solucion', 'Nuestra solución')
+    tam = idea_data.get('tam', 'N/A')
+    sam = idea_data.get('sam', 'N/A')
+    som = idea_data.get('som', 'N/A')
+    precio_sugerido = idea_data.get('precio_sugerido', '29€/mes')
+    score = idea_data.get('score', 0)
+    complejidad = idea_data.get('complejidad', 'MEDIA')
+    tiempo_estimado = idea_data.get('tiempo_estimado', '20h')
+    
+    roadmap = """
+## 🗓️ Roadmap 6 Semanas
 
-**Fecha:** {datetime.now().strftime('%d/%m/%Y %H:%M')}  
-**Viabilidad:** {viabilidad}  
-**Scores:** Gen {score_gen}/100 | Crit {score_crit}/100 | Promedio {score_promedio:.0f}/100
+### Semana 1-2: MVP Básico
+- [ ] Setup proyecto (Next.js + Tailwind)
+- [ ] Diseño UI/UX básico
+- [ ] Landing page principal
+- [ ] Sistema autenticación (Supabase Auth)
+- [ ] Base de datos (Supabase)
 
-## 🎯 Resumen
+### Semana 3-4: Funcionalidad Core
+- [ ] Implementar funcionalidad principal
+- [ ] Integración APIs necesarias
+- [ ] Panel de usuario básico
+- [ ] Sistema de pagos (Stripe)
 
-{idea.get('descripcion_corta', '')}
+### Semana 5: Testing y Mejoras
+- [ ] Testing funcional
+- [ ] Optimización rendimiento
+- [ ] Fixes bugs críticos
+- [ ] Mejoras UX basadas en feedback
 
-**Problema:** {idea.get('problema', '')}  
-**Solución:** {idea.get('solucion', '')}
-
-## 💡 Propuesta de Valor
-
-{idea.get('propuesta_valor', '')}
-
-**Recomendación:** {recomendacion}
-
-## 👥 Mercado: {idea.get('mercado_objetivo', '')}
-
-### TAM/SAM/SOM
-
-**TAM:** $50M-500M/año (mercado global)  
-**SAM:** $5M-50M/año (mercado servible)  
-**SOM:** $50K-200K/año (capturable en 12 meses)
-
-## 🏢 Competencia
-
-{comp_str}
-
-**Fortalezas:** {fort_str}
-
-**Debilidades:** {deb_str}
-
-## 💰 Monetización
-
-{idea.get('monetizacion', '')}
-
-**Proyecciones:** Mes 3: €{ing_m3} | Mes 6: €{ing_m6} | Mes 12: €{ing_m12}
-
-## 📅 Roadmap 6 Semanas
-
-**S1:** Validación - 10 conversaciones, wireframes, 50 emails  
-**S2:** MVP v0.1 - Setup stack, auth, feature #1, 5 beta testers  
-**S3:** Iterar - Feedback, feature #2, onboarding <5min  
-**S4:** Monetización - Stripe, pricing €{precio}/mes, lanzamiento  
-**S5:** Clientes - Onboarding, analytics, 10 pagando  
-**S6:** Growth - Content, feature #3, ads test, 25 pagando
-
-## 🚨 Riesgos
-
-{riesg_str}
-
-**Mitigación:** Validar antes de programar. Métricas claras. Si nadie paga tras 50 conversaciones → pivotar.
-
-## 🎯 Veredicto
-
-{critique.get('veredicto_honesto', 'Validar con usuarios reales')}
-
-## 🤖 Prompt IA
-
-```json
-{prompt_json}
-Instrucciones: Genera proyecto Next.js 15 + Supabase + Stripe. TypeScript estricto. Responsive. Simplicidad sobre complejidad.
-
-📈 Métricas Semana 1
-20 conversaciones usuarios
-
-10 email signups
-
-5 demo requests
-
-Willingness to pay >50%
-
-Decisión: ✅ Continuar si alcanzas | ❌ Pivotar si no
-
-Sistema Multi-Agente • Groq AI • €0/mes
+### Semana 6: Lanzamiento
+- [ ] Deploy producción (Vercel)
+- [ ] Configurar analytics
+- [ ] Lanzamiento ProductHunt
+- [ ] Campaña marketing inicial
 """
-with open(report_file, 'w', encoding='utf-8') as f:
-f.write(report_content)
-print(f"✅ Informe completo: {report_file}")
-return slug
+    
+    stack = """
+## 🛠️ Stack Tecnológico Recomendado (100% Gratis hasta $$$)
 
-if name == "main":
-test_idea = {"nombre": "Test", "descripcion_corta": "Test", "problema": "Test", "solucion": "Test", "propuesta_valor": "Test", "mercado_objetivo": "Devs", "competencia": ["C1"], "monetizacion": "$19/mes", "tech_stack": ["Next.js"], "score_generador": 75}
-test_critique = {"score_critico": 65, "fortalezas": ["F1"], "debilidades": ["D1"], "riesgos_mayores": ["R1"], "veredicto_honesto": "Test"}
-generate_report(test_idea, test_critique)
+**Frontend:**
+- Next.js 14 (App Router)
+- Tailwind CSS
+- Shadcn/ui (componentes)
+
+**Backend:**
+- Vercel (hosting + serverless functions)
+- Supabase (DB + Auth + Storage)
+
+**Pagos:**
+- Stripe (pay as you go)
+
+**Analytics:**
+- Vercel Analytics (gratis)
+- PostHog (gratis hasta 1M eventos)
+
+**Email:**
+- Resend (gratis 100 emails/día)
+
+**Deploy:**
+- Vercel (100GB/mes gratis)
+"""
+    
+    proyecciones = f"""
+## 💰 Proyecciones Financieras
+
+**Precio sugerido:** {precio_sugerido}
+
+### Escenario Conservador (Mes 3)
+- Usuarios: 20-50
+- MRR: 580€-1,450€
+- Churn: 15%
+
+### Escenario Realista (Mes 6)
+- Usuarios: 100-200
+- MRR: 2,900€-5,800€
+- Churn: 10%
+
+### Escenario Optimista (Mes 12)
+- Usuarios: 500-1,000
+- MRR: 14,500€-29,000€
+- Churn: 5%
+
+**Costos mensuales estimados:** 50-200€ (hosting, APIs, tools)
+"""
+    
+    mercado = f"""
+## 📊 Análisis de Mercado
+
+**TAM (Total Addressable Market):** {tam}
+- Mercado total teórico disponible
+
+**SAM (Serviceable Addressable Market):** {sam}
+- Porción del mercado que podemos alcanzar
+
+**SOM (Serviceable Obtainable Market):** {som}
+- Porción realista en primeros 12 meses
+"""
+    
+    prompt_ia = f"""
+## 🤖 PROMPT PARA CURSOR / V0.DEV / BOLT
+
+Copia y pega esto en tu IA de desarrollo favorita:
+
+---
+
+Quiero construir un SaaS llamado "{nombre}".
+
+**Descripción:**
+{descripcion}
+
+**Problema que resuelve:**
+{problema}
+
+**Solución:**
+{solucion}
+
+**Stack técnico:**
+- Frontend: Next.js 14 (App Router) + Tailwind CSS + Shadcn/ui
+- Backend: Vercel + Supabase
+- Pagos: Stripe
+- Auth: Supabase Auth
+
+**Funcionalidades core:**
+1. Landing page con formulario registro
+2. Sistema de autenticación (email/password y Google)
+3. Dashboard de usuario
+4. Funcionalidad principal
+5. Sistema de suscripciones con Stripe
+6. Panel admin básico
+
+**Requisitos:**
+- Responsive (mobile-first)
+- Dark mode
+- SEO optimizado
+- TypeScript
+- Lighthouse mayor a 90
+
+Por favor, genera el proyecto completo con toda la estructura de carpetas y archivos necesarios.
+
+---
+"""
+    
+    marketing = """
+## 📢 Estrategia Marketing (Primeras 2 Semanas)
+
+### Día 1: Lanzamiento
+- [ ] Post ProductHunt (prepara upvotes)
+- [ ] Tweet anuncio + hilo features
+- [ ] Post LinkedIn
+- [ ] Subreddits relevantes (3-5)
+
+### Día 2-7: Tracción Inicial
+- [ ] Responder todos los comentarios
+- [ ] Crear contenido (blog post, video demo)
+- [ ] Compartir en comunidades indie hackers
+- [ ] Cold outreach (50 emails)
+
+### Día 8-14: Optimización
+- [ ] Analizar métricas (conversión, churn)
+- [ ] A/B testing landing page
+- [ ] Recoger feedback usuarios
+- [ ] Iterar producto
+
+### Canales Recomendados:
+1. Twitter/X - Audiencia tech, build in public
+2. Reddit - Subreddits nicho
+3. ProductHunt - Lanzamiento principal
+4. LinkedIn - Audiencia B2B
+5. IndieHackers - Comunidad makers
+"""
+    
+    report_content = f"""# 📋 INFORME TÉCNICO: {nombre}
+
+**Generado:** {datetime.now().strftime('%Y-%m-%d %H:%M')}  
+**Score Validación:** {score}/100  
+**Complejidad:** {complejidad}  
+**Tiempo Estimado:** {tiempo_estimado}
+
+---
+
+## 🎯 Resumen Ejecutivo
+
+{descripcion}
+
+**Problema:**
+{problema}
+
+**Solución:**
+{solucion}
+
+---
+
+{mercado}
+
+---
+
+{proyecciones}
+
+---
+
+{roadmap}
+
+---
+
+{stack}
+
+---
+
+{marketing}
+
+---
+
+{prompt_ia}
+
+---
+
+## ✅ Checklist Pre-Lanzamiento
+
+### Técnico
+- [ ] MVP funcional deployed
+- [ ] Testing completo (funcional + user)
+- [ ] Performance optimizado (Lighthouse mayor a 90)
+- [ ] SEO configurado
+- [ ] Analytics instalado
+- [ ] Error tracking (Sentry)
+
+### Legal
+- [ ] Términos de servicio
+- [ ] Política privacidad
+- [ ] GDPR compliance (si aplica)
+- [ ] Stripe account verificado
+
+### Marketing
+- [ ] Landing page optimizada
+- [ ] Copy A/B tested
+- [ ] Material gráfico (screenshots, video)
+- [ ] Estrategia redes sociales
+- [ ] Lista comunidades para launch
+
+---
+
+## 🚀 Próximos Pasos
+
+1. Copia el PROMPT PARA IA de arriba
+2. Pégalo en Cursor/v0.dev/Bolt
+3. Genera el proyecto base
+4. Sigue el roadmap 6 semanas
+5. Lanza y distribuye según estrategia
+
+---
+
+## 📊 Métricas a Trackear
+
+**Semana 1:**
+- Visitas landing
+- Signups
+- Conversión signup a trial
+
+**Mes 1:**
+- Trial a Paid
+- Churn rate
+- MRR
+
+**Mes 3:**
+- CAC (Customer Acquisition Cost)
+- LTV (Lifetime Value)
+- Product-Market Fit Score
+
+---
+
+**Dudas?** Revisa el roadmap y ajusta según tu contexto específico.
+
+**Buena suerte construyendo!**
+"""
+    
+    output_dir = 'reports'
+    os.makedirs(output_dir, exist_ok=True)
+    
+    filename = f'{output_dir}/{slug}.md'
+    with open(filename, 'w', encoding='utf-8') as f:
+        f.write(report_content)
+    
+    print(f"✅ Informe generado: {filename}")
+    return filename
+
+
+def generate_all_reports(ideas_list):
+    """
+    Genera informes para una lista de ideas
+    """
+    generated_files = []
+    
+    for idea in ideas_list:
+        try:
+            filename = generate_report(idea)
+            generated_files.append(filename)
+        except Exception as e:
+            print(f"❌ Error generando informe para {idea.get('slug', 'unknown')}: {e}")
+    
+    return generated_files
+
+
+if __name__ == "__main__":
+    test_idea = {
+        'slug': 'test-idea',
+        'nombre': 'Test SaaS Validator',
+        'descripcion': 'Herramienta para validar ideas rápidamente',
+        'problema': 'Es difícil saber si una idea SaaS tendrá éxito sin invertir meses de desarrollo',
+        'solucion': 'Sistema automatizado que valida ideas en 48 horas con landing pages y métricas reales',
+        'tam': '50M€',
+        'sam': '5M€',
+        'som': '500K€',
+        'precio_sugerido': '49€/mes',
+        'score': 85,
+        'complejidad': 'MEDIA',
+        'tiempo_estimado': '30h'
+    }
+    
+    print("🧪 Generando informe de prueba...")
+    generate_report(test_idea)
+    print("✅ Informe de prueba generado en reports/test-idea.md")
