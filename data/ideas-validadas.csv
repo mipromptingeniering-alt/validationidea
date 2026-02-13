@@ -4,3 +4,4 @@ timestamp,nombre,descripcion_corta,score_generador,score_critico,tipo,dificultad
 2026-02-12T23:01:57.814944,AI Code Review,Revisa y mejora código con inteligencia artificial.,82,60,SaaS,Media
 2026-02-13T05:12:00.015816,AI Code Review,Revisión de código asistida por IA para desarrolladores,80,58,SaaS,Media
 2026-02-13T07:57:41.337574,AI Code Asistente,Herramienta de asistencia de código con IA,82,60,SaaS,Media
+2026-02-13T08:37:04.477729,AutoDoc,Automatiza la documentación de código,85,60,SaaS,Media,586f749cfbe2aa25929e2853f852528c
