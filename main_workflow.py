@@ -12,7 +12,6 @@ def count_ideas():
     return 0
 
 def should_research():
-    """Investigar cada 5 ideas (antes era cada 10)"""
     return count_ideas() % 5 == 0
 
 def should_optimize():
@@ -55,7 +54,6 @@ def save_idea_to_csv(idea, critique):
     print(f"✅ Guardada: {nombre} | Gen:{score_gen} Crit:{score_crit}")
 
 def generate_with_feedback(max_iterations=3):
-    """Genera con feedback loop hasta conseguir idea buena"""
     config = generator_agent.load_config()
     
     for iteration in range(max_iterations):
@@ -89,7 +87,7 @@ def generate_with_feedback(max_iterations=3):
             print(f"❌ RECHAZAR - {reason}")
             
             if iteration < max_iterations - 1:
-                print(f"🔄 Mejorando con feedback... ({max_iterations - iteration - 1} restantes)")
+                print(f"🔄 Mejorando... ({max_iterations - iteration - 1} restantes)")
             else:
                 save_rejected_idea(idea, critique, reason)
                 return idea, critique, False
@@ -98,19 +96,16 @@ def generate_with_feedback(max_iterations=3):
 
 def main():
     print("=" * 60)
-    print("🤖 SISTEMA MULTI-AGENTE VALIDACIÓN IDEAS v2.0")
-    print("🎯 MODO: INSISTENTE + APRENDIZAJE CONTINUO")
+    print("🤖 SISTEMA MULTI-AGENTE v2.0")
     print("=" * 60)
     
     try:
-        # Fase 1: Research
         if should_research():
-            print("\n📊 FASE 1: INVESTIGACIÓN MERCADO")
+            print("\n📊 INVESTIGACIÓN")
             researcher_agent.run()
         else:
-            print("\n✅ Cache válido (research cada 5 ideas)")
+            print("\n✅ Cache válido")
         
-        # Fase 2-4: Generar con feedback
         idea, critique, should_publish = generate_with_feedback(max_iterations=3)
         
         if not idea:
@@ -118,44 +113,32 @@ def main():
             sys.exit(1)
         
         if should_publish:
-            print("\n🎉 IDEA APROBADA - PUBLICANDO...")
+            print("\n🎉 PUBLICANDO...")
             
-            # Guardar en CSV
             save_idea_to_csv(idea, critique)
             
-            # Generar landing
-            print("\n🎨 LANDING...")
+            print("\n🎨 Landing...")
             landing_file = landing_generator.generate_landing(idea)
             slug = idea.get('slug', 'idea')
             landing_url = f"landing-pages/{slug}.html"
             
-            # Generar informe HTML
-            print("\n📊 INFORME...")
+            print("\n📊 Informe...")
             report_file = report_agent.generate_report(idea)
             report_url = f"reports/{slug}.html"
             
-            # Dashboard
-            print("\n🏠 DASHBOARD...")
+            print("\n🏠 Dashboard...")
             dashboard_generator.generate_dashboard()
             
-            # Telegram
-            print("\n📱 TELEGRAM...")
+            print("\n📱 Telegram...")
             telegram_notifier.send_telegram_notification(idea, critique, landing_url, report_url)
             
-            # Optimización
             if should_optimize():
-                print("\n🚀 OPTIMIZACIÓN")
+                print("\n🚀 Optimización")
                 optimizer_agent.run()
             
-            print("\n" + "=" * 60)
-            print(f"✅ ÉXITO: {idea.get('nombre')}")
-            print(f"📊 Scores: Gen={idea.get('score_generador')} Crit={critique.get('score_critico')}")
-            print(f"🔗 {landing_url}")
-            print(f"📄 {report_url}")
-            print("=" * 60)
+            print(f"\n✅ ÉXITO: {idea.get('nombre')}")
         else:
-            print("\n❌ RECHAZADA TRAS 3 ITERACIONES")
-            print("💡 Sistema aprenderá de este rechazo")
+            print("\n❌ Rechazada tras 3 intentos")
     
     except Exception as e:
         print(f"\n❌ ERROR: {e}")
