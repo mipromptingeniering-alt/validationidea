@@ -6,3 +6,4 @@ timestamp,nombre,descripcion_corta,score_generador,score_critico,tipo,dificultad
 2026-02-13T07:57:41.337574,AI Code Asistente,Herramienta de asistencia de código con IA,82,60,SaaS,Media
 2026-02-13T08:37:04.477729,AutoDoc,Automatiza la documentación de código,85,60,SaaS,Media,586f749cfbe2aa25929e2853f852528c
 2026-02-13T09:33:47.639561,Automatiza Documentos,Automatiza la generación de documentos y contratos para solopreneurs y freelancers,82,60,SaaS,Media,cd4266ace6cff68ed341fde58eb8090b
+2026-02-13T09:36:49.994187,AutoDocuFlow,Automatiza la documentación de código con flujo de trabajo personalizable,82,60,SaaS,Media,a7f98081cbf30e4a7d8f65cebdf2a275
