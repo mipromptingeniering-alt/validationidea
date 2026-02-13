@@ -23,7 +23,7 @@ def should_optimize():
     return count_ideas() > 0 and count_ideas() % 10 == 0
 
 def save_rejected_idea(idea, critique):
-    """Guardar idea rechazada"""
+    """Guardar idea rechazada CON fingerprint"""
     os.makedirs('data', exist_ok=True)
     rejected_file = 'data/rejected_ideas.json'
     
@@ -35,23 +35,24 @@ def save_rejected_idea(idea, critique):
     rejected_ideas.append({
         'timestamp': datetime.now().isoformat(),
         'idea': idea,
-        'critique': critique
+        'critique': critique,
+        'fingerprint': idea.get('_fingerprint', '')
     })
     
     with open(rejected_file, 'w', encoding='utf-8') as f:
         json.dump(rejected_ideas, f, indent=2, ensure_ascii=False)
     
-    print(f"📝 Idea rechazada guardada en {rejected_file}")
+    print(f"📝 Idea rechazada guardada: {idea.get('nombre')}")
 
 def save_idea_to_csv(idea, critique):
-    """Guardar idea en CSV"""
+    """Guardar idea en CSV CON fingerprint"""
     os.makedirs('data', exist_ok=True)
     csv_file = 'data/ideas-validadas.csv'
     
     # Crear header si no existe
     if not os.path.exists(csv_file):
         with open(csv_file, 'w', encoding='utf-8') as f:
-            f.write('timestamp,nombre,descripcion_corta,score_generador,score_critico,tipo,dificultad\n')
+            f.write('timestamp,nombre,descripcion_corta,score_generador,score_critico,tipo,dificultad,fingerprint\n')
     
     # Añadir idea
     with open(csv_file, 'a', encoding='utf-8') as f:
@@ -60,10 +61,11 @@ def save_idea_to_csv(idea, critique):
         descripcion = idea.get('descripcion_corta', '').replace(',', ';')
         score_gen = idea.get('score_generador', 0)
         score_crit = critique.get('score_critico', 0)
-        tipo = 'SaaS'  # Default
+        tipo = 'SaaS'
         dificultad = idea.get('dificultad', 'Media')
+        fingerprint = idea.get('_fingerprint', '')
         
-        f.write(f'{timestamp},{nombre},{descripcion},{score_gen},{score_crit},{tipo},{dificultad}\n')
+        f.write(f'{timestamp},{nombre},{descripcion},{score_gen},{score_crit},{tipo},{dificultad},{fingerprint}\n')
     
     print(f"✅ Idea guardada en CSV: {nombre}")
 
@@ -71,7 +73,9 @@ def create_simple_landing_page(idea, critique):
     """Crear landing page simple"""
     os.makedirs('landing-pages', exist_ok=True)
     
-    slug = idea.get('nombre', 'idea').lower().replace(' ', '-')[:30]
+    slug = idea.get('nombre', 'idea').lower().replace(' ', '-').replace('/', '-')[:30]
+    # Limpiar caracteres especiales
+    slug = ''.join(c for c in slug if c.isalnum() or c == '-')
     html_file = f'landing-pages/{slug}.html'
     
     html_content = f"""<!DOCTYPE html>
@@ -81,109 +85,43 @@ def create_simple_landing_page(idea, critique):
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{idea.get('nombre', 'Idea')}</title>
     <style>
-        body {{ font-family: Arial, sans-serif; max-width: 800px; margin: 50px auto; padding: 20px; }}
-        h1 {{ color: #6366f1; }}
-        .score {{ background: #f0f0f0; padding: 10px; border-radius: 5px; }}
+        body {{ 
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            max-width: 800px; 
+            margin: 50px auto; 
+            padding: 20px;
+            line-height: 1.6;
+        }}
+        h1 {{ color: #667eea; margin-bottom: 10px; }}
+        .meta {{ color: #999; margin-bottom: 30px; }}
+        .score {{ 
+            background: #f3f4f6; 
+            padding: 15px; 
+            border-radius: 10px; 
+            margin: 20px 0;
+        }}
+        .score-item {{
+            display: inline-block;
+            margin-right: 20px;
+            font-weight: bold;
+        }}
+        .section {{ margin: 30px 0; }}
+        .section h2 {{ color: #333; border-bottom: 2px solid #667eea; padding-bottom: 5px; }}
+        ul {{ padding-left: 20px; }}
+        li {{ margin: 8px 0; }}
     </style>
 </head>
 <body>
     <h1>{idea.get('nombre', 'Idea')}</h1>
-    <p><strong>Descripción:</strong> {idea.get('descripcion_corta', '')}</p>
-    
-    <h2>Problema</h2>
-    <p>{idea.get('problema', '')}</p>
-    
-    <h2>Solución</h2>
-    <p>{idea.get('solucion', '')}</p>
-    
-    <h2>Propuesta de Valor</h2>
-    <p>{idea.get('propuesta_valor', '')}</p>
-    
-    <h2>Mercado Objetivo</h2>
-    <p>{idea.get('mercado_objetivo', '')}</p>
-    
-    <h2>Competencia</h2>
-    <ul>
-        {''.join([f'<li>{comp}</li>' for comp in idea.get('competencia', [])])}
-    </ul>
-    
-    <h2>Diferenciación</h2>
-    <p>{idea.get('diferenciacion', '')}</p>
-    
-    <h2>Monetización</h2>
-    <p>{idea.get('monetizacion', '')}</p>
-    
-    <div class="score">
-        <p><strong>Score Generador:</strong> {idea.get('score_generador', 0)}/100</p>
-        <p><strong>Score Crítico:</strong> {critique.get('score_critico', 0)}/100</p>
+    <div class="meta">
+        📅 Generada el {datetime.now().strftime('%d/%m/%Y %H:%M')}
     </div>
     
-    <h2>Veredicto del Crítico</h2>
-    <p>{critique.get('veredicto_honesto', '')}</p>
-</body>
-</html>"""
+    <p><strong>{idea.get('descripcion_corta', '')}</strong></p>
     
-    with open(html_file, 'w', encoding='utf-8') as f:
-        f.write(html_content)
+    <div class="score">
+        <span class="score-item">🤖 Score Generador: {idea.get('score_generador', 0)}/100</span>
+        <span class="score-item">🎯 Score Crítico: {critique.get('score_critico', 0)}/100</span>
+    </div>
     
-    print(f"✅ Landing page creada: {html_file}")
-
-def main():
-    """Workflow principal"""
-    print("=" * 60)
-    print("🤖 SISTEMA MULTI-AGENTE DE VALIDACIÓN DE IDEAS")
-    print("=" * 60)
-    
-    try:
-        # 1. Investigar si toca
-        if should_research():
-            print("\n📊 FASE 1: INVESTIGACIÓN")
-            researcher_agent.run()
-        else:
-            print("\n✅ Cache de investigación válido, saltando...")
-        
-        # 2. Generar idea
-        print("\n🧠 FASE 2: GENERACIÓN DE IDEA")
-        idea = generator_agent.generate()
-        
-        # 3. Criticar idea
-        print("\n🎯 FASE 3: CRÍTICA DE IDEA")
-        critique = critic_agent.critique(idea)
-        
-        # 4. Decidir publicación
-        print("\n📋 FASE 4: DECISIÓN")
-        should_publish = critic_agent.decide_publish(idea, critique, generator_agent.load_config())
-        
-        if should_publish:
-            print("\n✅ IDEA APROBADA - PUBLICANDO...")
-            
-            # Guardar en CSV
-            save_idea_to_csv(idea, critique)
-            
-            # Crear landing page
-            create_simple_landing_page(idea, critique)
-            
-            # Optimizar si toca
-            if should_optimize():
-                print("\n🚀 FASE 5: OPTIMIZACIÓN")
-                optimizer_agent.run()
-            
-            print("\n" + "=" * 60)
-            print(f"🎉 ÉXITO: {idea.get('nombre', 'Idea')} publicada")
-            print("=" * 60)
-            
-        else:
-            print("\n❌ IDEA RECHAZADA")
-            save_rejected_idea(idea, critique)
-            print("\n" + "=" * 60)
-            print("💡 Idea rechazada, se generará otra en el próximo ciclo")
-            print("=" * 60)
-        
-    except Exception as e:
-        print(f"\n❌ ERROR EN EL SISTEMA: {e}")
-        import traceback
-        traceback.print_exc()
-        sys.exit(1)
-
-if __name__ == "__main__":
-    main()
+    <div class="secti
