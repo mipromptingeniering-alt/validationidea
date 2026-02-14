@@ -1,10 +1,17 @@
 {
-  "version": "8.0.0",
-  "major": 8,
+  "version": "9.0.0",
+  "major": 9,
   "minor": 0,
   "patch": 0,
   "date": "2026-02-14",
   "changelog": [
+    {
+      "version": "9.0.0",
+      "date": "2026-02-14",
+      "type": "major",
+      "description": "⚠️  Breaking: agents/critic_agent.py",
+      "commit": "🔧 Fix: URLs Telegram + researcher bug + UTF-8"
+    },
     {
       "version": "8.0.0",
       "date": "2026-02-14",
