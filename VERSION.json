@@ -1,10 +1,17 @@
 {
-  "version": "2.0.2",
+  "version": "2.0.3",
   "major": 2,
   "minor": 0,
-  "patch": 2,
+  "patch": 3,
   "date": "2026-02-14",
   "changelog": [
+    {
+      "version": "2.0.3",
+      "date": "2026-02-14",
+      "type": "patch",
+      "description": "🔧 Fix: tests/test_all_agents.py",
+      "commit": "Create test_all_agents.py"
+    },
     {
       "version": "2.0.2",
       "date": "2026-02-14",
