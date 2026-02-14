@@ -8,7 +8,22 @@ from groq import Groq
 from difflib import SequenceMatcher
 
 MAX_ATTEMPTS = 5
-SIMILARITY_THRESHOLD = 0.20  # MUY PERMISIVO (antes 30%)
+SIMILARITY_THRESHOLD = 0.20
+
+def load_config():
+    """Carga configuración del generador"""
+    config_file = 'config/generator_config.json'
+    if os.path.exists(config_file):
+        try:
+            with open(config_file, 'r', encoding='utf-8') as f:
+                return json.load(f)
+        except:
+            pass
+    return {
+        'min_score_generador': 70,
+        'creativity_boost': 1.2,
+        'diversification': True
+    }
 
 def load_existing_ideas():
     """Carga ideas de forma segura"""
@@ -82,7 +97,7 @@ def get_niche_idea():
             "solucion": "IA analiza 100 posts con mejor engagement, extrae patrones, genera 50 posts en tu estilo optimizados para algoritmo LinkedIn",
             "tool": "Claude Sonnet 4.5",
             "precio": "39",
-            "nombre": f"LinkedBoost AI"
+            "nombre": "LinkedBoost AI"
         },
         {
             "vertical": "YouTube Creators 10K-100K subs",
@@ -90,7 +105,7 @@ def get_niche_idea():
             "solucion": "GPT-4 analiza tus vídeos con mejor CTR, genera scripts con ganchos + títulos A/B tested + timestamps automáticos",
             "tool": "GPT-4 API",
             "precio": "49",
-            "nombre": f"ScriptGenius AI"
+            "nombre": "ScriptGenius AI"
         },
         {
             "vertical": "eCommerce Shopify stores",
@@ -98,7 +113,7 @@ def get_niche_idea():
             "solucion": "Scraping Bright Data 24/7 de 50 competidores + alertas Telegram instant cuando bajan precio + sugerencias pricing IA",
             "tool": "Bright Data",
             "precio": "79",
-            "nombre": f"PriceSpy Pro"
+            "nombre": "PriceSpy Pro"
         },
         {
             "vertical": "Freelancers técnicos",
@@ -106,7 +121,7 @@ def get_niche_idea():
             "solucion": "Notion como CRM + generación automática facturas PDF + contratos templates + time tracking con Toggl API",
             "tool": "Notion API",
             "precio": "29",
-            "nombre": f"FreelanceHub"
+            "nombre": "FreelanceHub"
         },
         {
             "vertical": "Recruiters IT",
@@ -114,7 +129,7 @@ def get_niche_idea():
             "solucion": "Bot extrae perfiles LinkedIn con skills específicas + enriquece con GitHub + email finder + exports a CRM",
             "tool": "Apify",
             "precio": "99",
-            "nombre": f"TalentScout AI"
+            "nombre": "TalentScout AI"
         },
         {
             "vertical": "Podcasters",
@@ -122,7 +137,7 @@ def get_niche_idea():
             "solucion": "Whisper API transcribe + Claude genera show notes + timestamps + quotes destacadas + posts redes",
             "tool": "Whisper API",
             "precio": "59",
-            "nombre": f"PodcastFlow AI"
+            "nombre": "PodcastFlow AI"
         },
         {
             "vertical": "Newsletter Creators",
@@ -130,7 +145,7 @@ def get_niche_idea():
             "solucion": "IA escanea 100 fuentes, resume tendencias, genera drafts personalizados con tu voz, optimiza subject lines para +40% open rate",
             "tool": "Claude API",
             "precio": "49",
-            "nombre": f"NewsletterPro AI"
+            "nombre": "NewsletterPro AI"
         },
         {
             "vertical": "Agencias Marketing",
@@ -138,7 +153,7 @@ def get_niche_idea():
             "solucion": "Conecta Google Ads + Meta + LinkedIn, auto-genera reportes white-label PDF con insights IA, envío automático",
             "tool": "Google Sheets API",
             "precio": "149",
-            "nombre": f"ReportMaster"
+            "nombre": "ReportMaster"
         },
         {
             "vertical": "SaaS Founders",
@@ -146,7 +161,7 @@ def get_niche_idea():
             "solucion": "Dashboard Notion que sync Stripe MRR + ChurnKey + Google Analytics + cohorts automáticos con predicciones IA",
             "tool": "Stripe API",
             "precio": "79",
-            "nombre": f"SaaSMetrics"
+            "nombre": "SaaSMetrics"
         },
         {
             "vertical": "Content Creators TikTok",
@@ -154,7 +169,7 @@ def get_niche_idea():
             "solucion": "IA monitorea trending sounds + hashtags + analiza tus vídeos top, genera 30 ideas virales diarias con script y hooks",
             "tool": "TikTok API",
             "precio": "39",
-            "nombre": f"TrendHunter AI"
+            "nombre": "TrendHunter AI"
         },
         {
             "vertical": "Consultores estrategia",
@@ -162,7 +177,7 @@ def get_niche_idea():
             "solucion": "IA analiza propuestas ganadoras, genera propuesta personalizada por cliente con pricing dinámico en 30min",
             "tool": "GPT-4",
             "precio": "99",
-            "nombre": f"ProposalGenius"
+            "nombre": "ProposalGenius"
         },
         {
             "vertical": "SEO Agencies",
@@ -170,7 +185,7 @@ def get_niche_idea():
             "solucion": "IA encuentra 500 long-tail keywords con Ahrefs API + analiza SERP + genera content briefs optimizados",
             "tool": "Ahrefs API",
             "precio": "89",
-            "nombre": f"KeywordMiner AI"
+            "nombre": "KeywordMiner AI"
         },
         {
             "vertical": "Real Estate Agents",
@@ -178,7 +193,7 @@ def get_niche_idea():
             "solucion": "IA genera descripciones premium + optimiza fotos con Midjourney + crea virtual staging + posts Instagram",
             "tool": "Midjourney API",
             "precio": "69",
-            "nombre": f"PropertyPro AI"
+            "nombre": "PropertyPro AI"
         },
         {
             "vertical": "Course Creators",
@@ -186,7 +201,7 @@ def get_niche_idea():
             "solucion": "IA genera outline completo con módulos + lecciones + scripts + quizzes basado en objetivo aprendizaje",
             "tool": "Claude API",
             "precio": "59",
-            "nombre": f"CourseBuilder AI"
+            "nombre": "CourseBuilder AI"
         },
         {
             "vertical": "Twitter Creators",
@@ -194,7 +209,7 @@ def get_niche_idea():
             "solucion": "IA analiza tus 50 mejores tweets, genera threads con hooks probados, scheduling óptimo para +200% engagement",
             "tool": "GPT-4",
             "precio": "29",
-            "nombre": f"ThreadGenius"
+            "nombre": "ThreadGenius"
         }
     ]
     
@@ -273,7 +288,7 @@ Responde JSON COMPLETO sin texto extra:
                     {"role": "system", "content": system_prompt},
                     {"role": "user", "content": "JSON:"}
                 ],
-                temperature=1.2,  # MÁS CREATIVIDAD
+                temperature=1.2,
                 max_tokens=1500
             )
             
