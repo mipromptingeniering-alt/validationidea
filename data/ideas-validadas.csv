@@ -30,3 +30,4 @@ timestamp,nombre,descripcion_corta,score_generador,score_critico,tipo,dificultad
 2026-02-14T15:51:00.598917,PriceSpy Pro 1729,Pierden ventas porque competencia baja precios y no se enteran - Solución IA automatizada,87.5,75,SaaS,Media,e67b1988
 2026-02-14T18:16:35.335553,TalentScout AI 9115,LinkedIn scraping manual de candidatos tarda 10h/semana,85,75,SaaS,Media,a322f7f7
 2026-02-14T18:44:11.284641,__name__,__short_description__,88,70,SaaS,Media,946a531a
+2026-02-14T18:49:40.961007,GhostwriterAI 3557,Research del cliente tarda 3h; voz genérica,85,75,SaaS,Media,860cfc34
