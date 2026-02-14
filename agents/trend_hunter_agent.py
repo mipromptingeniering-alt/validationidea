@@ -357,7 +357,7 @@ Responde SOLO con JSON (sin markdown):
 
     try:
         response = client.chat.completions.create(
-            model="llama-3.1-70b-versatile",
+            model="llama-3.3-70b-versatile",
             messages=[
                 {"role": "system", "content": "Eres experto en trend-jacking: crear productos rápidos que capitalizan tendencias virales. Solo sugieres productos REALISTAS que alguien puede crear en 48h máximo."},
                 {"role": "user", "content": prompt}
