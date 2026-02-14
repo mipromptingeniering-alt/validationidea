@@ -1,10 +1,17 @@
 {
-  "version": "2.0.6",
+  "version": "2.0.7",
   "major": 2,
   "minor": 0,
-  "patch": 6,
+  "patch": 7,
   "date": "2026-02-14",
   "changelog": [
+    {
+      "version": "2.0.7",
+      "date": "2026-02-14",
+      "type": "patch",
+      "description": "🔧 Fix: scripts/install-hooks.sh",
+      "commit": "Create install-hooks.sh"
+    },
     {
       "version": "2.0.6",
       "date": "2026-02-14",
