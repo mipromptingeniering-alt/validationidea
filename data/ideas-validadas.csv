@@ -35,3 +35,4 @@ timestamp,nombre,descripcion_corta,score_generador,score_critico,tipo,dificultad
 2026-02-14T19:03:52.063710,Hubs Remote,Encuentra empleos en empresas 100% Remote,90,75,SaaS,Media,
 2026-02-14T19:09:45.693033,SaaS UI Kit Pro 2609,Designers gastan 15 h creando components desde cero cada proyecto,0,75,SaaS,Media,1788ba7e
 2026-02-14T19:15:29.675016,Investor Pitch Template 7358,Founders crean pitch decks feos que VCs ignoran,85,75,SaaS,Media,6c7cdadb
+2026-02-14T19:47:59.712354,Validación de Ideas para Fundadores de SaaS,Satisfacer la necesidad de los fundadores de SaaS de validar su idea antes de comenzar a construir.,85,75,SaaS,Media-alta.,77c79c27
