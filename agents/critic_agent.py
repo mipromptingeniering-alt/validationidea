@@ -15,43 +15,43 @@ def critique(idea):
     
     client = Groq(api_key=os.environ.get("GROQ_API_KEY"))
     
-    # PROMPT CORTO
-    system_prompt = """Evalúa idea SaaS 2026.
+    system_prompt = """Evalua idea SaaS.
 
-Aprueba (60-100) si:
-- Problema claro
-- Stack moderno
-- Mercado >10M€
-
-Rechaza (0-59) solo si:
-- Problema vago
-- Imposible técnicamente
+Aprueba 60-100 si viable.
+Rechaza 0-59 si imposible.
 
 JSON:
 {
   "score_critico": 75,
   "puntos_fuertes": ["Punto 1", "Punto 2"],
   "puntos_debiles": ["Punto 1"],
-  "resumen": "Buena idea."
+  "resumen": "Buena idea"
 }"""
     
     try:
+        nombre = str(idea.get('nombre', 'Sin nombre'))
+        desc = str(idea.get('descripcion_corta', 'Sin descripcion'))
+        
         response = client.chat.completions.create(
-            model="llama-3.1-8b-instant",  # Mismo modelo
+            model="llama-3.1-8b-instant",
             messages=[
                 {"role": "system", "content": system_prompt},
-                {"role": "user", "content": f"Idea: {idea.get('nombre')} - {idea.get('descripcion_corta')}"}
+                {"role": "user", "content": f"Idea: {nombre} - {desc}"}
             ],
             temperature=0.3,
-            max_tokens=500  # Muy reducido
+            max_tokens=500
         )
         
-        content = response.choices[0].message.content.strip()
+        content = str(response.choices[0].message.content).strip()
         
         if '```json' in content:
-            content = content.split('```json').split('```').strip()[1]
+            parts = content.split('```json')
+            if len(parts) > 1:
+                content = parts[1].split('```').strip()
         elif '```' in content:
-            content = content.split('```').split('```')[0].strip()
+            parts = content.split('```')
+            if len(parts) > 1:
+                content = parts.split('```')[0].strip()
         
         critique = json.loads(content)
         
@@ -68,8 +68,8 @@ JSON:
         }
 
 def decide_publish(idea, critique, config):
-    score_gen = idea.get('score_generador', 0)
-    score_crit = critique.get('score_critico', 0)
+    score_gen = int(idea.get('score_generador', 0))
+    score_crit = int(critique.get('score_critico', 0))
     avg = (score_gen + score_crit) / 2
     
     if score_crit >= 50 and avg >= 60:
