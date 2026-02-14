@@ -1,4 +1,4 @@
-import os
+﻿import os
 import json
 from groq import Groq
 
@@ -10,18 +10,18 @@ def load_config():
     }
 
 def critique(idea):
-    """Crítico MUY PERMISIVO"""
-    print("\n🎯 Crítico...")
+    """CrÃ­tico MUY PERMISIVO"""
+    print("\nðŸŽ¯ CrÃ­tico...")
     
-    # Aprobar directamente si tiene campos básicos
+    # Aprobar directamente si tiene campos bÃ¡sicos
     nombre = str(idea.get('nombre', ''))
     problema = str(idea.get('problema', ''))
     
     if nombre and problema and len(problema) > 20:
-        print(f"✅ Score: 75 (auto-aprobado)")
+        print(f"âœ… Score: 75 (auto-aprobado)")
         return {
             'score_critico': 75,
-            'puntos_fuertes': ['Problema claro', 'Solución viable', 'Stack moderno'],
+            'puntos_fuertes': ['Problema claro', 'SoluciÃ³n viable', 'Stack moderno'],
             'puntos_debiles': ['Validar mercado'],
             'resumen': 'Idea aprobada con potencial'
         }
@@ -34,7 +34,7 @@ JSON: {"score_critico": 75, "puntos_fuertes": ["P1"], "puntos_debiles": ["P1"], 
     
     try:
         response = client.chat.completions.create(
-            model="llama-3.1-8b-instant",
+            model="llama-3.3-70b-versatile",
             messages=[
                 {"role": "system", "content": system_prompt},
                 {"role": "user", "content": f"{nombre}: {problema[:100]}"}
@@ -51,11 +51,11 @@ JSON: {"score_critico": 75, "puntos_fuertes": ["P1"], "puntos_debiles": ["P1"], 
             content = content.split('```').split('```')[0].strip()
         
         critique = json.loads(content)
-        print(f"✅ Score: {critique['score_critico']}")
+        print(f"âœ… Score: {critique['score_critico']}")
         return critique
     
     except:
-        print(f"✅ Score: 70 (fallback)")
+        print(f"âœ… Score: 70 (fallback)")
         return {
             'score_critico': 70,
             'puntos_fuertes': ['Idea viable'],
@@ -70,8 +70,9 @@ def decide_publish(idea, critique, config):
     
     # SIEMPRE aprobar si score > 45
     if score_crit >= 45 and avg >= 55:
-        print(f"✅ PUBLICAR - Gen:{score_gen} Crit:{score_crit}")
+        print(f"âœ… PUBLICAR - Gen:{score_gen} Crit:{score_crit}")
         return True
     
-    print(f"❌ RECHAZAR - Gen:{score_gen} Crit:{score_crit}")
+    print(f"âŒ RECHAZAR - Gen:{score_gen} Crit:{score_crit}")
     return False
+

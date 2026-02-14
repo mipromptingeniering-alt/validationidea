@@ -150,7 +150,50 @@ def main():
     
     # 4. Investigar idea
     print("\n" + "-"*80)
-    print("PASO 3: INVESTIGAR IDEA")
+
+    # -------------------------------------------------------------------------
+    # PASO 3: CRITICAR IDEA
+    # -------------------------------------------------------------------------
+    print("\n" + "-"*80)
+    print("PASO 3: CRITICAR IDEA")
+    print("-"*80)
+    
+    from agents import critic_agent
+    
+    critique_result = critic_agent.critique(idea)
+    
+    if not critique_result:
+        print("⚠️ Crítica falló - usando scores por defecto")
+        critique_result = {
+            'score_critico': idea.get('score_generador', 75),
+            'puntos_fuertes': ['Pendiente de evaluar'],
+            'puntos_debiles': ['Pendiente de evaluar'],
+            'resumen': 'Aprobada por defecto'
+        }
+    
+    score_critico = critique_result.get('score_critico', 75)
+    print(f"📊 Score Crítico: {score_critico}/100")
+    print(f"✅ Puntos fuertes: {', '.join(critique_result.get('puntos_fuertes', []))}")
+    print(f"⚠️ Puntos débiles: {', '.join(critique_result.get('puntos_debiles', []))}")
+    
+    # Añadir crítica a la idea
+    idea['score_critico'] = score_critico
+    idea['critique'] = critique_result
+    
+    # Decidir si publicar
+    config = critic_agent.load_config()
+    should_publish = critic_agent.decide_publish(idea, critique_result, config)
+    
+    if not should_publish:
+        print(f"❌ Idea RECHAZADA - Score {score_critico} muy bajo")
+        print("   No se guardará ni notificará")
+        return
+    
+    print(f"✅ Idea APROBADA para continuar")
+
+    # -------------------------------------------------------------------------
+    # PASO 4: INVESTIGAR IDEA (antes PASO 3)
+    print("PASO 4: INVESTIGAR IDEA")
     print("-"*80)
     
     research = researcher_agent.research(idea)
@@ -163,13 +206,13 @@ def main():
     
     # 5. Guardar idea
     print("\n" + "-"*80)
-    print("PASO 4: GUARDAR IDEA")
+    print("PASO 5: GUARDAR IDEA")
     print("-"*80)
     
     save_idea(idea)
     # 5. Notificar Telegram
     print("\n" + "-"*80)
-    print("PASO 5: NOTIFICAR TELEGRAM")
+    print("PASO 6: NOTIFICAR TELEGRAM")
     print("-"*80)
     
     try:
