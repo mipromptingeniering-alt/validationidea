@@ -1,10 +1,17 @@
 {
-  "version": "1.0.0",
+  "version": "1.0.1",
   "major": 1,
   "minor": 0,
-  "patch": 0,
+  "patch": 1,
   "date": "2026-02-14",
   "changelog": [
+    {
+      "version": "1.0.1",
+      "date": "2026-02-14",
+      "type": "patch",
+      "description": "🔧 Fix: .github/workflows/version-update.yml",
+      "commit": "Create version-update.yml"
+    },
     {
       "version": "1.0.0",
       "date": "2026-02-14",
