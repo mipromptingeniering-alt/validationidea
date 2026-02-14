@@ -3,9 +3,9 @@
     "purpose": "Roadmap para MEJORAR cómo la IA ayuda a desarrollar ValidationIdea",
     "focus": "Optimizar proceso desarrollo IA-Humano, no features de la app",
     "auto_update": "Cada 5 interacciones con la IA",
-    "last_updated": "2026-02-14T13:42:00",
-    "interaction_count": 0,
-    "next_update_at": 5
+    "last_updated": "2026-02-14T19:01:00",
+    "interaction_count": 8,
+    "next_update_at": 10
   },
   
   "completed": [
@@ -26,61 +26,96 @@
       "title": "Roadmap auto-regenerativo 40 tareas",
       "date": "2026-02-14",
       "impact": "Nunca se queda sin ideas de mejora"
+    },
+    {
+      "id": 4,
+      "title": "Auto-update contexto cada 5 interacciones",
+      "date": "2026-02-14",
+      "impact": "Contexto siempre actualizado automáticamente"
+    },
+    {
+      "id": 5,
+      "title": "Prompts templates reutilizables",
+      "date": "2026-02-14",
+      "impact": "Comunicación más eficiente con IA"
+    },
+    {
+      "id": 6,
+      "title": "Checkpoint system para rollback",
+      "date": "2026-02-14",
+      "impact": "Deshacer cambios sin perder progreso"
+    },
+    {
+      "id": 7,
+      "title": "Test suite completo pre-deploy",
+      "date": "2026-02-14",
+      "impact": "0 errores en producción"
     }
   ],
   
   "pending": {
     "critical": [
       {
-        "id": 4,
-        "title": "Auto-actualización contexto cada 5 interacciones",
-        "description": "Sistema que cuenta interacciones y actualiza context.json automáticamente",
-        "priority": "URGENT",
-        "estimated_time": "30min",
-        "files": ["scripts/auto-update-context.py", "memory-system/context.json"],
-        "benefit": "IA siempre tiene contexto actualizado sin esfuerzo manual"
-      },
-      {
-        "id": 5,
-        "title": "Prompt templates reutilizables",
-        "description": "Librería prompts para tareas comunes (debug, refactor, nueva feature)",
-        "priority": "HIGH",
-        "estimated_time": "1h",
-        "files": ["prompts/templates.json"],
-        "benefit": "Comunicación más eficiente con IA"
-      },
-      {
-        "id": 6,
-        "title": "Sistema diff inteligente",
-        "description": "IA muestra solo cambios necesarios, no archivo completo si no hace falta",
-        "priority": "HIGH",
+        "id": 8,
+        "title": "🔥 LIMPIEZA Y AUDITORÍA CÓDIGO",
+        "description": "Script que detecta archivos obsoletos, código muerto, imports sin usar, duplicados",
+        "priority": "CRITICAL",
         "estimated_time": "45min",
-        "files": ["scripts/smart-diff.py"],
-        "benefit": "Más rápido identificar qué cambió"
+        "files": ["scripts/code-cleanup.py", "scripts/audit-project.py"],
+        "benefit": "Código limpio, sin conflictos, más rápido",
+        "why_critical": "Desarrollo rápido genera basura, puede causar bugs y confusión"
+      },
+      {
+        "id": 9,
+        "title": "🎯 OPINIÓN PROFESIONAL EN INFORMES",
+        "description": "Añadir sección 'Opinión del Experto' con análisis profundo IA en cada informe",
+        "priority": "CRITICAL",
+        "estimated_time": "30min",
+        "files": ["agents/report_generator.py"],
+        "benefit": "Informes más valiosos, decisiones mejor informadas",
+        "why_critical": "Informes actuales son muy genéricos, faltan insights accionables"
+      },
+      {
+        "id": 10,
+        "title": "Dashboard botones funcionales",
+        "description": "Fix rutas landing/informe en dashboard",
+        "priority": "HIGH",
+        "estimated_time": "15min",
+        "files": ["agents/dashboard_generator.py"],
+        "benefit": "UX fluida, usuarios acceden fácil a landings"
+      },
+      {
+        "id": 11,
+        "title": "Expandir nichos 15→30",
+        "description": "Duplicar variedad ideas con 30 nichos ultra-específicos",
+        "priority": "HIGH",
+        "estimated_time": "30min",
+        "files": ["agents/generator_agent.py"],
+        "benefit": "Ideas más diversas, menos duplicados"
       }
     ],
     
     "high": [
       {
-        "id": 7,
-        "title": "Checkpoint system",
-        "description": "Guardar estados del proyecto cada X cambios para rollback fácil",
-        "priority": "HIGH",
-        "estimated_time": "1h",
-        "files": ["scripts/checkpoint-manager.py"],
-        "benefit": "Deshacer errores sin perder progreso"
-      },
-      {
-        "id": 8,
-        "title": "IA sugiere próxima tarea",
-        "description": "Basado en historial, IA propone qué hacer siguiente",
+        "id": 12,
+        "title": "Integrar researcher insights en generator",
+        "description": "Generator usa trends reales de researcher_agent",
         "priority": "HIGH",
         "estimated_time": "45min",
-        "files": ["scripts/suggest-next.py"],
-        "benefit": "Nunca bloqueado sin saber qué hacer"
+        "files": ["agents/generator_agent.py"],
+        "benefit": "Ideas basadas en datos reales, más viables"
       },
       {
-        "id": 9,
+        "id": 13,
+        "title": "Sistema de versionado inteligente",
+        "description": "Detecta cambios breaking, sugiere semantic versioning",
+        "priority": "HIGH",
+        "estimated_time": "1h",
+        "files": ["scripts/version-manager.py"],
+        "benefit": "Control de cambios profesional"
+      },
+      {
+        "id": 14,
         "title": "Code review automático pre-commit",
         "description": "IA revisa código antes de commit, sugiere mejoras",
         "priority": "HIGH",
@@ -89,7 +124,7 @@
         "benefit": "Código más limpio, menos bugs"
       },
       {
-        "id": 10,
+        "id": 15,
         "title": "Documentación auto-generada",
         "description": "IA genera/actualiza README y docs con cada cambio",
         "priority": "MEDIUM",
@@ -98,7 +133,7 @@
         "benefit": "Docs siempre actualizados"
       },
       {
-        "id": 11,
+        "id": 16,
         "title": "Tests automáticos generados",
         "description": "IA genera tests unitarios para cada función nueva",
         "priority": "MEDIUM",
@@ -107,7 +142,7 @@
         "benefit": "Coverage 80%+ sin esfuerzo"
       },
       {
-        "id": 12,
+        "id": 17,
         "title": "Análisis rendimiento código",
         "description": "IA detecta cuellos botella, sugiere optimizaciones",
         "priority": "MEDIUM",
@@ -116,7 +151,7 @@
         "benefit": "App más rápida automáticamente"
       },
       {
-        "id": 13,
+        "id": 18,
         "title": "Refactoring inteligente",
         "description": "IA identifica código duplicado, sugiere abstracciones",
         "priority": "MEDIUM",
@@ -128,7 +163,7 @@
     
     "medium": [
       {
-        "id": 14,
+        "id": 19,
         "title": "Multi-IA collaboration",
         "description": "Usar Claude + GPT-4 + Gemini en paralelo, comparar respuestas",
         "priority": "MEDIUM",
@@ -137,7 +172,7 @@
         "benefit": "Mejores soluciones por consenso"
       },
       {
-        "id": 15,
+        "id": 20,
         "title": "Prompt optimization loop",
         "description": "IA mejora sus propios prompts basándose en resultados",
         "priority": "MEDIUM",
@@ -146,7 +181,7 @@
         "benefit": "IA cada vez más efectiva"
       },
       {
-        "id": 16,
+        "id": 21,
         "title": "Context compression",
         "description": "Comprimir historial conversaciones sin perder info clave",
         "priority": "MEDIUM",
@@ -155,7 +190,7 @@
         "benefit": "Menos tokens, más historia"
       },
       {
-        "id": 17,
+        "id": 22,
         "title": "Error pattern learning",
         "description": "IA aprende de errores comunes, los previene",
         "priority": "MEDIUM",
@@ -164,7 +199,7 @@
         "benefit": "Menos errores repetitivos"
       },
       {
-        "id": 18,
+        "id": 23,
         "title": "Dependency analyzer",
         "description": "IA mapea dependencias código, previene breaking changes",
         "priority": "MEDIUM",
@@ -173,7 +208,7 @@
         "benefit": "Refactors más seguros"
       },
       {
-        "id": 19,
+        "id": 24,
         "title": "Natural language queries",
         "description": "Buscar en código con lenguaje natural 'función que envía emails'",
         "priority": "LOW",
@@ -182,7 +217,7 @@
         "benefit": "Navegar código más intuitivo"
       },
       {
-        "id": 20,
+        "id": 25,
         "title": "Visual code flow",
         "description": "IA genera diagramas flujo de ejecución automáticamente",
         "priority": "LOW",
@@ -191,7 +226,7 @@
         "benefit": "Entender código complejo rápido"
       },
       {
-        "id": 21,
+        "id": 26,
         "title": "Smart imports resolver",
         "description": "IA detecta imports faltantes/innecesarios, los corrige",
         "priority": "LOW",
@@ -200,7 +235,7 @@
         "benefit": "Sin errores de imports"
       },
       {
-        "id": 22,
+        "id": 27,
         "title": "Type hints auto-generator",
         "description": "Añade type hints Python automáticamente basado en uso",
         "priority": "LOW",
@@ -209,7 +244,7 @@
         "benefit": "Código más type-safe"
       },
       {
-        "id": 23,
+        "id": 28,
         "title": "Security vulnerability scan",
         "description": "IA detecta vulnerabilidades comunes (SQL injection, XSS)",
         "priority": "MEDIUM",
@@ -218,7 +253,7 @@
         "benefit": "App más segura"
       },
       {
-        "id": 24,
+        "id": 29,
         "title": "API usage optimizer",
         "description": "IA sugiere cómo reducir llamadas API para ahorrar costes",
         "priority": "MEDIUM",
@@ -227,7 +262,7 @@
         "benefit": "Menor coste APIs"
       },
       {
-        "id": 25,
+        "id": 30,
         "title": "Git commit message generator",
         "description": "IA genera commits semánticos basados en cambios",
         "priority": "LOW",
@@ -236,7 +271,7 @@
         "benefit": "Historial git más claro"
       },
       {
-        "id": 26,
+        "id": 31,
         "title": "Configuration validator",
         "description": "IA valida configs (JSON, ENV) antes de deploy",
         "priority": "MEDIUM",
@@ -245,7 +280,7 @@
         "benefit": "Menos errores producción"
       },
       {
-        "id": 27,
+        "id": 32,
         "title": "Database schema suggester",
         "description": "IA sugiere schema óptimo basado en queries",
         "priority": "MEDIUM",
@@ -254,7 +289,7 @@
         "benefit": "DB más eficiente"
       },
       {
-        "id": 28,
+        "id": 33,
         "title": "Environment setup automator",
         "description": "IA genera scripts setup completo para nuevos devs",
         "priority": "LOW",
@@ -263,7 +298,7 @@
         "benefit": "Onboarding instantáneo"
       },
       {
-        "id": 29,
+        "id": 34,
         "title": "Caching strategy suggester",
         "description": "IA identifica qué cachear y dónde",
         "priority": "MEDIUM",
@@ -272,7 +307,7 @@
         "benefit": "App más rápida"
       },
       {
-        "id": 30,
+        "id": 35,
         "title": "A/B test code generator",
         "description": "IA genera código A/B tests automáticamente",
         "priority": "LOW",
@@ -281,7 +316,7 @@
         "benefit": "Experimentación más fácil"
       },
       {
-        "id": 31,
+        "id": 36,
         "title": "Migration script generator",
         "description": "IA genera migrations DB basadas en cambios schema",
         "priority": "MEDIUM",
@@ -290,7 +325,7 @@
         "benefit": "Migrations sin errores"
       },
       {
-        "id": 32,
+        "id": 37,
         "title": "Load test scenario creator",
         "description": "IA genera escenarios load testing realistas",
         "priority": "LOW",
@@ -299,7 +334,7 @@
         "benefit": "Tests más realistas"
       },
       {
-        "id": 33,
+        "id": 38,
         "title": "Monitoring alerts optimizer",
         "description": "IA sugiere qué métricas monitorear y thresholds",
         "priority": "MEDIUM",
@@ -308,7 +343,7 @@
         "benefit": "Alertas más precisas"
       },
       {
-        "id": 34,
+        "id": 39,
         "title": "Backup strategy planner",
         "description": "IA diseña estrategia backup basada en uso",
         "priority": "LOW",
@@ -317,7 +352,7 @@
         "benefit": "Datos más seguros"
       },
       {
-        "id": 35,
+        "id": 40,
         "title": "Cost estimator",
         "description": "IA estima costes infra basado en código y tráfico",
         "priority": "MEDIUM",
@@ -326,7 +361,7 @@
         "benefit": "Sin sorpresas facturas"
       },
       {
-        "id": 36,
+        "id": 41,
         "title": "Accessibility checker",
         "description": "IA verifica accesibilidad (WCAG) en UI",
         "priority": "LOW",
@@ -335,7 +370,7 @@
         "benefit": "App más inclusiva"
       },
       {
-        "id": 37,
+        "id": 42,
         "title": "Internationalization helper",
         "description": "IA identifica strings hardcodeadas, sugiere i18n",
         "priority": "LOW",
@@ -344,7 +379,7 @@
         "benefit": "Fácil añadir idiomas"
       },
       {
-        "id": 38,
+        "id": 43,
         "title": "SEO optimizer",
         "description": "IA revisa meta tags, sugiere mejoras SEO",
         "priority": "LOW",
@@ -353,7 +388,7 @@
         "benefit": "Mejor ranking Google"
       },
       {
-        "id": 39,
+        "id": 44,
         "title": "Performance budget enforcer",
         "description": "IA alerta si bundle size o load time exceden límites",
         "priority": "MEDIUM",
@@ -362,49 +397,44 @@
         "benefit": "App siempre rápida"
       },
       {
-        "id": 40,
+        "id": 45,
         "title": "Code style enforcer",
         "description": "IA formatea código según style guide automáticamente",
         "priority": "LOW",
         "estimated_time": "30min",
         "files": ["scripts/style-enforcer.py"],
         "benefit": "Código consistente"
+      },
+      {
+        "id": 46,
+        "title": "Tech debt tracker",
+        "description": "IA identifica tech debt acumulado, prioriza por impacto",
+        "priority": "MEDIUM",
+        "estimated_time": "1h",
+        "files": ["scripts/tech-debt-tracker.py"],
+        "benefit": "Menos deuda técnica"
+      },
+      {
+        "id": 47,
+        "title": "Onboarding tutorial generator",
+        "description": "IA genera tutorial interactivo para nuevos devs",
+        "priority": "LOW",
+        "estimated_time": "2h",
+        "files": ["scripts/tutorial-gen.py"],
+        "benefit": "Onboarding más rápido"
       }
     ]
   },
   
-  "system_improvements": {
-    "prompt_engineering": {
-      "current_quality": 7,
-      "target_quality": 9,
-      "improvements_needed": [
-        "Templates para diferentes tipos de tareas",
-        "Examples/few-shot learning en prompts complejos",
-        "Chain-of-thought para debugging",
-        "Self-correction loops"
-      ]
-    },
-    
-    "context_management": {
-      "current_efficiency": 6,
-      "target_efficiency": 9,
-      "improvements_needed": [
-        "Compresión inteligente historial",
-        "Indexación conversaciones por tema",
-        "Resúmenes automáticos cada 10 interacciones",
-        "Tags semánticos para búsqueda rápida"
-      ]
-    },
-    
-    "code_quality": {
-      "current_score": 7,
-      "target_score": 9,
-      "improvements_needed": [
-        "Tests automáticos generados por IA",
-        "Type hints completos",
-        "Documentación inline",
-        "Error handling robusto"
-      ]
-    }
+  "next_session_plan": {
+    "priority_order": [
+      "#8 - Limpieza y auditoría código (CRÍTICO - previene bugs)",
+      "#9 - Opinión profesional en informes (CRÍTICO - añade valor)",
+      "#10 - Dashboard botones funcionales (UX)",
+      "#11 - Expandir nichos 15→30 (diversidad)",
+      "#12 - Integrar researcher en generator (datos reales)"
+    ],
+    "estimated_total": "2.5 horas",
+    "impact": "Código limpio + informes valiosos + UX mejorada"
   }
 }
