@@ -1,4 +1,4 @@
-import os
+﻿import os
 import json
 import requests
 import time
@@ -10,7 +10,7 @@ CACHE_HOURS = 6
 
 # ============ FUENTE 1: AnswerThePublic (Apify) ============
 def fetch_answerthepublic(keyword, apify_token):
-    """Obtiene preguntas reales de AnswerThePublic vía Apify"""
+    """Obtiene preguntas reales de AnswerThePublic vÃ­a Apify"""
     
     url = "https://api.apify.com/v2/acts/deadlyaccurate~answer-the-public/run-sync-get-dataset-items"
     
@@ -34,7 +34,7 @@ def fetch_answerthepublic(keyword, apify_token):
             if data and len(data) > 0:
                 item = data[0]
                 
-                # Extraer preguntas de todas las categorías
+                # Extraer preguntas de todas las categorÃ­as
                 questions = []
                 
                 if 'data' in item:
@@ -42,7 +42,7 @@ def fetch_answerthepublic(keyword, apify_token):
                         if isinstance(content, dict) and 'results' in content:
                             results = content['results']
                             if isinstance(results, dict) and 'data' in results:
-                                for q in results['data'][:10]:  # Top 10 por categoría
+                                for q in results['data'][:10]:  # Top 10 por categorÃ­a
                                     if isinstance(q, dict) and 'text' in q:
                                         questions.append(q['text'])
                 
@@ -54,26 +54,26 @@ def fetch_answerthepublic(keyword, apify_token):
                     "source": "answerthepublic"
                 }
         
-        print(f"⚠️ AnswerThePublic error: {response.status_code}")
+        print(f"âš ï¸ AnswerThePublic error: {response.status_code}")
         return None
         
     except Exception as e:
-        print(f"⚠️ Error AnswerThePublic: {e}")
+        print(f"âš ï¸ Error AnswerThePublic: {e}")
         return None
 
 # ============ FUENTE 2: Google Trends (Scraping) ============
 def fetch_google_trends_realtime():
-    """Simula búsquedas explosivas de Google Trends"""
+    """Simula bÃºsquedas explosivas de Google Trends"""
     
-    # En producción: usar pytrends o scraping con proxies rotatorios
+    # En producciÃ³n: usar pytrends o scraping con proxies rotatorios
     trending_now = [
         {
-            "keyword": "IA agentes autónomos",
-            "category": "Tecnología",
+            "keyword": "IA agentes autÃ³nomos",
+            "category": "TecnologÃ­a",
             "volume": "450K",
             "growth": "+420%",
             "hours_ago": 8,
-            "related": ["agentes IA", "automatización no-code", "workflow automation"]
+            "related": ["agentes IA", "automatizaciÃ³n no-code", "workflow automation"]
         },
         {
             "keyword": "ingresos pasivos 2026",
@@ -101,28 +101,28 @@ def fetch_google_trends_realtime():
 
 # ============ FUENTE 3: Reddit Viral Posts ============
 def fetch_reddit_viral(subreddits=['SaaS', 'Entrepreneur', 'passive_income']):
-    """Obtiene posts virales de Reddit últimas 24h"""
+    """Obtiene posts virales de Reddit Ãºltimas 24h"""
     
-    # En producción: usar SociaVault API o PRAW
+    # En producciÃ³n: usar SociaVault API o PRAW
     viral_posts = [
         {
             "subreddit": "r/SaaS",
-            "title": "Hice €8K en 2 semanas con extensión Chrome",
+            "title": "Hice â‚¬8K en 2 semanas con extensiÃ³n Chrome",
             "upvotes": 2800,
             "comments": 420,
             "hours_ago": 9,
             "url": "reddit.com/r/SaaS/...",
-            "pain_point": "Gente busca ganancias rápidas con bajo esfuerzo",
+            "pain_point": "Gente busca ganancias rÃ¡pidas con bajo esfuerzo",
             "extracted_keyword": "chrome extension"
         },
         {
             "subreddit": "r/Entrepreneur",
-            "title": "€12K primer mes vendiendo plantillas Notion",
+            "title": "â‚¬12K primer mes vendiendo plantillas Notion",
             "upvotes": 3100,
             "comments": 580,
             "hours_ago": 14,
             "url": "reddit.com/r/Entrepreneur/...",
-            "pain_point": "Creadores necesitan organización sin herramientas complejas",
+            "pain_point": "Creadores necesitan organizaciÃ³n sin herramientas complejas",
             "extracted_keyword": "notion templates"
         }
     ]
@@ -135,17 +135,17 @@ def fetch_reddit_viral(subreddits=['SaaS', 'Entrepreneur', 'passive_income']):
 
 # ============ FUENTE 4: ProductHunt Today ============
 def fetch_producthunt_today():
-    """Productos lanzados HOY en ProductHunt con tracción"""
+    """Productos lanzados HOY en ProductHunt con tracciÃ³n"""
     
-    # En producción: scraping de hunted.space o API no oficial
+    # En producciÃ³n: scraping de hunted.space o API no oficial
     launched_today = [
         {
             "name": "QuickPrompts AI Pro",
-            "tagline": "2000+ prompts ChatGPT organizados por categoría",
+            "tagline": "2000+ prompts ChatGPT organizados por categorÃ­a",
             "upvotes": 520,
             "comments": 95,
             "category": "IA",
-            "pricing": "€29 pago único",
+            "pricing": "â‚¬29 pago Ãºnico",
             "hours_ago": 5,
             "insight": "Colecciones curadas de prompts se venden muy bien"
         },
@@ -155,7 +155,7 @@ def fetch_producthunt_today():
             "upvotes": 440,
             "comments": 78,
             "category": "Productividad",
-            "pricing": "€49 pago único",
+            "pricing": "â‚¬49 pago Ãºnico",
             "hours_ago": 7,
             "insight": "Workspaces todo-en-uno son muy populares"
         }
@@ -168,10 +168,10 @@ def fetch_producthunt_today():
     return launched_today
 
 # ============ FUENTE 5: Twitter/X Trends ============
-def fetch_twitter_trends(woeid=23424950):  # España
+def fetch_twitter_trends(woeid=23424950):  # EspaÃ±a
     """Obtiene trending topics de Twitter/X"""
     
-    # En producción: usar Twitter API v1.1 con autenticación
+    # En producciÃ³n: usar Twitter API v1.1 con autenticaciÃ³n
     # GET https://api.x.com/1.1/trends/place.json?id=23424950
     
     trends = [
@@ -180,7 +180,7 @@ def fetch_twitter_trends(woeid=23424950):  # España
             "tweet_volume": 45800,
             "rank": 3,
             "hours_ago": 2,
-            "category": "Tecnología"
+            "category": "TecnologÃ­a"
         },
         {
             "name": "#ProductividadDigital",
@@ -244,19 +244,19 @@ def calculate_viral_score(trend_data):
     
     # Determinar urgencia y ventana
     if total_score >= 85:
-        urgency = "🔴 CRÍTICA"
+        urgency = "ðŸ”´ CRÃTICA"
         window = "24-48h"
         action = "ACTUAR YA"
     elif total_score >= 70:
-        urgency = "🟠 ALTA"
-        window = "2-4 días"
+        urgency = "ðŸŸ  ALTA"
+        window = "2-4 dÃ­as"
         action = "Actuar esta semana"
     elif total_score >= 55:
-        urgency = "🟡 MEDIA"
+        urgency = "ðŸŸ¡ MEDIA"
         window = "1-2 semanas"
         action = "Planificar"
     else:
-        urgency = "🟢 BAJA"
+        urgency = "ðŸŸ¢ BAJA"
         window = "2-4 semanas"
         action = "Evaluar"
     
@@ -274,26 +274,26 @@ def calculate_viral_score(trend_data):
 
 # ============ IDEA GENERATOR ============
 def generate_quick_win_ideas(trend, client):
-    """Genera productos rápidos (24-48h) para capitalizar tendencia"""
+    """Genera productos rÃ¡pidos (24-48h) para capitalizar tendencia"""
     
-    print(f"\n🔥 Generando ideas para: {trend.get('keyword', trend.get('name', trend.get('title', 'trend')))}")
+    print(f"\nðŸ”¥ Generando ideas para: {trend.get('keyword', trend.get('name', trend.get('title', 'trend')))}")
     
     viral_metrics = calculate_viral_score(trend)
     
     source = trend.get('source', 'unknown')
     
-    # Construir contexto según fuente
+    # Construir contexto segÃºn fuente
     if source == 'answerthepublic':
         context = f"""TENDENCIA DETECTADA EN ANSWERTHEPUBLIC:
 Keyword: {trend['keyword']}
-Volumen búsquedas: {trend.get('search_volume', 'N/A')}
+Volumen bÃºsquedas: {trend.get('search_volume', 'N/A')}
 Preguntas top que hace la gente:
-{chr(10).join(['• ' + q for q in trend.get('questions', [])[:5]])}"""
+{chr(10).join(['â€¢ ' + q for q in trend.get('questions', [])[:5]])}"""
     
     elif source == 'reddit':
         context = f"""POST VIRAL EN REDDIT:
 Subreddit: {trend['subreddit']}
-Título: {trend['title']}
+TÃ­tulo: {trend['title']}
 Engagement: {trend['upvotes']} upvotes, {trend['comments']} comentarios
 Pain Point: {trend['pain_point']}"""
     
@@ -301,14 +301,14 @@ Pain Point: {trend['pain_point']}"""
         context = f"""PRODUCTO EXITOSO EN PRODUCTHUNT HOY:
 Nombre: {trend['name']}
 Tagline: {trend['tagline']}
-Tracción: {trend['upvotes']} upvotes en {trend['hours_ago']}h
+TracciÃ³n: {trend['upvotes']} upvotes en {trend['hours_ago']}h
 Insight: {trend['insight']}"""
     
     elif source == 'google_trends':
-        context = f"""BÚSQUEDA EXPLOSIVA EN GOOGLE TRENDS:
+        context = f"""BÃšSQUEDA EXPLOSIVA EN GOOGLE TRENDS:
 Keyword: {trend['keyword']}
 Volumen: {trend['volume']}
-Crecimiento: {trend['growth']} en últimas {trend['hours_ago']}h
+Crecimiento: {trend['growth']} en Ãºltimas {trend['hours_ago']}h
 Related: {', '.join(trend.get('related', []))}"""
     
     elif source == 'twitter':
@@ -323,43 +323,43 @@ Horas trending: {trend['hours_ago']}h"""
     
     prompt = f"""{context}
 
-MÉTRICAS VIRALES:
-• Score: {viral_metrics['viral_score']}/100
-• Urgencia: {viral_metrics['urgency']}
-• Ventana de oportunidad: {viral_metrics['window']}
-• Acción: {viral_metrics['action']}
+MÃ‰TRICAS VIRALES:
+â€¢ Score: {viral_metrics['viral_score']}/100
+â€¢ Urgencia: {viral_metrics['urgency']}
+â€¢ Ventana de oportunidad: {viral_metrics['window']}
+â€¢ AcciÃ³n: {viral_metrics['action']}
 
-Genera 3 productos digitales que se pueden crear y lanzar en MÁXIMO 48 HORAS:
+Genera 3 productos digitales que se pueden crear y lanzar en MÃXIMO 48 HORAS:
 
 CRITERIOS OBLIGATORIOS:
-✓ Tiempo de creación: <48h realista
-✓ No requiere programación compleja
-✓ Monetizable de inmediato (Gumroad, Chrome Web Store, etc.)
-✓ Aprovecha el timing perfecto (tendencia está creciendo AHORA)
-✓ Precio entre €9-€49
+âœ“ Tiempo de creaciÃ³n: <48h realista
+âœ“ No requiere programaciÃ³n compleja
+âœ“ Monetizable de inmediato (Gumroad, Chrome Web Store, etc.)
+âœ“ Aprovecha el timing perfecto (tendencia estÃ¡ creciendo AHORA)
+âœ“ Precio entre â‚¬9-â‚¬49
 
 Responde SOLO con JSON (sin markdown):
 [
   {{
-    "nombre": "Nombre específico y atractivo",
-    "tipo": "Template/Guía/Extension/Tool/Service",
-    "descripcion_corta": "1 frase - qué es",
+    "nombre": "Nombre especÃ­fico y atractivo",
+    "tipo": "Template/GuÃ­a/Extension/Tool/Service",
+    "descripcion_corta": "1 frase - quÃ© es",
     "problema": "Pain point exacto que resuelve",
-    "solucion": "Cómo lo resuelve",
+    "solucion": "CÃ³mo lo resuelve",
     "tiempo_creacion": "X horas",
-    "precio_sugerido": "€X",
+    "precio_sugerido": "â‚¬X",
     "plataforma": "Gumroad/ChromeStore/Figma/Notion/etc",
-    "revenue_estimado_2_semanas": "€X conservador",
+    "revenue_estimado_2_semanas": "â‚¬X conservador",
     "pasos_rapidos": ["Paso 1", "Paso 2", "Paso 3"],
-    "porque_funciona_ahora": "Por qué este timing es perfecto (2 frases)"
+    "porque_funciona_ahora": "Por quÃ© este timing es perfecto (2 frases)"
   }}
 ]"""
 
     try:
         response = client.chat.completions.create(
-            model="llama-3.3-70b-versatile",
+            model="llama-3.1-8b-instant",
             messages=[
-                {"role": "system", "content": "Eres experto en trend-jacking: crear productos rápidos que capitalizan tendencias virales. Solo sugieres productos REALISTAS que alguien puede crear en 48h máximo."},
+                {"role": "system", "content": "Eres experto en trend-jacking: crear productos rÃ¡pidos que capitalizan tendencias virales. Solo sugieres productos REALISTAS que alguien puede crear en 48h mÃ¡ximo."},
                 {"role": "user", "content": prompt}
             ],
             temperature=0.8,
@@ -388,7 +388,7 @@ Responde SOLO con JSON (sin markdown):
         return ideas
     
     except Exception as e:
-        print(f"⚠️ Error generando ideas: {e}")
+        print(f"âš ï¸ Error generando ideas: {e}")
         return []
 
 # ============ MAIN HUNTER ============
@@ -396,14 +396,14 @@ def hunt_viral_opportunities():
     """CAZA COMPLETA de oportunidades virales multi-fuente"""
     
     print("\n" + "="*80)
-    print("🔥 TREND HUNTER AGENT - Cazando Tendencias Virales en Tiempo Real")
+    print("ðŸ”¥ TREND HUNTER AGENT - Cazando Tendencias Virales en Tiempo Real")
     print("="*80)
     
     client = Groq(api_key=os.environ.get("GROQ_API_KEY"))
     all_opportunities = []
     
     # 1. AnswerThePublic
-    print("\n🔍 [1/5] AnswerThePublic - Preguntas reales...")
+    print("\nðŸ” [1/5] AnswerThePublic - Preguntas reales...")
     apify_token = os.environ.get("APIFY_TOKEN")
     
     if apify_token:
@@ -418,10 +418,10 @@ def hunt_viral_opportunities():
                 all_opportunities.extend(ideas)
                 time.sleep(2)
     else:
-        print("   ⚠️ APIFY_TOKEN no configurado - saltando")
+        print("   âš ï¸ APIFY_TOKEN no configurado - saltando")
     
     # 2. Google Trends
-    print("\n📊 [2/5] Google Trends - Búsquedas explosivas...")
+    print("\nðŸ“Š [2/5] Google Trends - BÃºsquedas explosivas...")
     google_trends = fetch_google_trends_realtime()
     
     for trend in google_trends[:2]:
@@ -431,7 +431,7 @@ def hunt_viral_opportunities():
         time.sleep(2)
     
     # 3. Reddit Viral
-    print("\n🔥 [3/5] Reddit - Posts virales 24h...")
+    print("\nðŸ”¥ [3/5] Reddit - Posts virales 24h...")
     reddit_posts = fetch_reddit_viral()
     
     for post in reddit_posts[:2]:
@@ -441,7 +441,7 @@ def hunt_viral_opportunities():
         time.sleep(2)
     
     # 4. ProductHunt
-    print("\n🚀 [4/5] ProductHunt - Lanzados hoy...")
+    print("\nðŸš€ [4/5] ProductHunt - Lanzados hoy...")
     ph_today = fetch_producthunt_today()
     
     for product in ph_today:
@@ -451,7 +451,7 @@ def hunt_viral_opportunities():
         time.sleep(2)
     
     # 5. Twitter Trends
-    print("\n🐦 [5/5] Twitter/X - Trending topics...")
+    print("\nðŸ¦ [5/5] Twitter/X - Trending topics...")
     twitter_trends = fetch_twitter_trends()
     
     for trend in twitter_trends[:1]:
@@ -483,26 +483,26 @@ def hunt_viral_opportunities():
     with open(TRENDS_FILE, 'w', encoding='utf-8') as f:
         json.dump(trends_output, f, indent=2, ensure_ascii=False)
     
-    print(f"\n✅ {len(all_opportunities)} oportunidades detectadas")
-    print(f"📁 Guardado en: {TRENDS_FILE}")
+    print(f"\nâœ… {len(all_opportunities)} oportunidades detectadas")
+    print(f"ðŸ“ Guardado en: {TRENDS_FILE}")
     
     # Mostrar Top 3
     print("\n" + "="*80)
-    print("🏆 TOP 3 OPORTUNIDADES MÁS URGENTES:")
+    print("ðŸ† TOP 3 OPORTUNIDADES MÃS URGENTES:")
     print("="*80)
     
     for idx, opp in enumerate(all_opportunities[:3], 1):
         print(f"\n#{idx} {opp['nombre']}")
-        print(f"   📊 Score: {opp['viral_score']}/100")
+        print(f"   ðŸ“Š Score: {opp['viral_score']}/100")
         print(f"   {opp['urgency']} - Ventana: {opp['window']}")
-        print(f"   ⏱️ Crear en: {opp['tiempo_creacion']}")
-        print(f"   💰 Revenue estimado: {opp['revenue_estimado_2_semanas']}")
-        print(f"   🎯 {opp['porque_funciona_ahora'][:80]}...")
+        print(f"   â±ï¸ Crear en: {opp['tiempo_creacion']}")
+        print(f"   ðŸ’° Revenue estimado: {opp['revenue_estimado_2_semanas']}")
+        print(f"   ðŸŽ¯ {opp['porque_funciona_ahora'][:80]}...")
     
     return trends_output
 
 def is_cache_valid():
-    """Verifica si cache es válido (<6h)"""
+    """Verifica si cache es vÃ¡lido (<6h)"""
     
     if not os.path.exists(TRENDS_FILE):
         return False
@@ -516,10 +516,10 @@ def is_cache_valid():
         return False
 
 def get_best_viral_opportunity():
-    """Obtiene la MEJOR oportunidad viral (score más alto)"""
+    """Obtiene la MEJOR oportunidad viral (score mÃ¡s alto)"""
     
     if not is_cache_valid():
-        print("⚠️ Cache expirado - ejecutando hunt...")
+        print("âš ï¸ Cache expirado - ejecutando hunt...")
         hunt_viral_opportunities()
     
     try:
@@ -532,3 +532,4 @@ def get_best_viral_opportunity():
 
 if __name__ == "__main__":
     hunt_viral_opportunities()
+
