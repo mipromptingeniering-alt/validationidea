@@ -208,13 +208,13 @@
         <div class="header">
             <h1>🚀 Dashboard Ideas Validadas</h1>
             <p>Sistema Multi-Agente de Generación y Validación</p>
-            <p style="font-size: 0.9rem; margin-top: 0.5rem;">Actualizado: 14/02/2026 09:04</p>
+            <p style="font-size: 0.9rem; margin-top: 0.5rem;">Actualizado: 14/02/2026 09:58</p>
         </div>
         
         <div class="stats-grid">
             <div class="stat-card">
                 <h3>Ideas Publicadas</h3>
-                <div class="value">17</div>
+                <div class="value">18</div>
                 <div class="label">Aprobadas y validadas</div>
             </div>
             
@@ -226,14 +226,14 @@
             
             <div class="stat-card">
                 <h3>Tasa Aprobación</h3>
-                <div class="value">94.4%</div>
-                <div class="label">De 18 generadas</div>
+                <div class="value">94.7%</div>
+                <div class="label">De 19 generadas</div>
             </div>
             
             <div class="stat-card">
                 <h3>Score Promedio</h3>
                 <div class="value">71</div>
-                <div class="label">Gen: 84.4 | Crit: 59.1</div>
+                <div class="label">Gen: 84.4 | Crit: 59.2</div>
             </div>
         </div>
         
@@ -253,6 +253,20 @@
         
         <div class="ideas-grid">
             
+        <div class="idea-card">
+            <h3>EcoPyme</h3>
+            <p>Ahorrando energía...</p>
+            <div class="badges">
+                <span class="badge badge-gen">Gen: 85</span>
+                <span class="badge badge-crit">Crit: 60</span>
+                <span class="badge badge-diff">Media-Alta</span>
+            </div>
+            <div class="actions">
+                <a href="ecopyme.html" class="btn btn-primary">Ver Landing</a>
+                <a href="../reports/ecopyme.html" class="btn btn-secondary">Informe</a>
+            </div>
+        </div>
+        
         <div class="idea-card">
             <h3>Farmacias Inteligentes</h3>
             <p>Optimiza gestión farmacéutica...</p>
@@ -323,20 +337,6 @@
             </div>
         </div>
         
-        <div class="idea-card">
-            <h3>EcoLogística</h3>
-            <p>Optimización logística sostenible...</p>
-            <div class="badges">
-                <span class="badge badge-gen">Gen: 85</span>
-                <span class="badge badge-crit">Crit: 60</span>
-                <span class="badge badge-diff">Media</span>
-            </div>
-            <div class="actions">
-                <a href="ecologística.html" class="btn btn-primary">Ver Landing</a>
-                <a href="../reports/ecologística.html" class="btn btn-secondary">Informe</a>
-            </div>
-        </div>
-        
         </div>
     </div>
     
@@ -348,7 +348,7 @@
                 labels: ["2026-02-13", "2026-02-14"],
                 datasets: [{
                     label: 'Ideas Publicadas',
-                    data: [13, 4],
+                    data: [13, 5],
                     backgroundColor: 'rgba(102, 126, 234, 0.8)',
                     borderColor: 'rgba(102, 126, 234, 1)',
                     borderWidth: 2
@@ -371,11 +371,11 @@
         new Chart(document.getElementById('scoresEvolution'), {
             type: 'line',
             data: {
-                labels: ["Greenify Supply", "EcoInventory", "EcoSuppliers", "EcoSupply", "EcoLog\u00edstica", "Farmalab", "EcoProveedores", "Ecodata Pro", "OptiStock", "Farmacias Inteligentes"],
+                labels: ["EcoInventory", "EcoSuppliers", "EcoSupply", "EcoLog\u00edstica", "Farmalab", "EcoProveedores", "Ecodata Pro", "OptiStock", "Farmacias Inteligentes", "EcoPyme"],
                 datasets: [
                     {
                         label: 'Score Generador',
-                        data: [85, 85, 85, 85, 85, 85, 90, 85, 85, 85],
+                        data: [85, 85, 85, 85, 85, 90, 85, 85, 85, 85],
                         borderColor: 'rgba(40, 167, 69, 1)',
                         backgroundColor: 'rgba(40, 167, 69, 0.1)',
                         tension: 0.4
