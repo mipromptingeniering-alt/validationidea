@@ -1,10 +1,17 @@
 {
-  "version": "6.0.1",
+  "version": "6.0.2",
   "major": 6,
   "minor": 0,
-  "patch": 1,
+  "patch": 2,
   "date": "2026-02-14",
   "changelog": [
+    {
+      "version": "6.0.2",
+      "date": "2026-02-14",
+      "type": "patch",
+      "description": "🔧 Fix: VERSION.json",
+      "commit": "Merge branch 'main' of https://github.com/mipromptingeniering-alt/validationidea"
+    },
     {
       "version": "6.0.1",
       "date": "2026-02-14",
