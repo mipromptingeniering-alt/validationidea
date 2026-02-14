@@ -1,0 +1,77 @@
+{
+  "meta": {
+    "description": "Templates de prompts para comunicación eficiente con IA",
+    "usage": "Copiar/pegar según tipo de tarea",
+    "last_updated": "2026-02-14T13:46:00"
+  },
+  
+  "templates": {
+    "debug": {
+      "title": "Debug código con error",
+      "prompt": "Tengo este error:\n```\n[PEGAR ERROR AQUÍ]\n```\n\nEn este código:\n```python\n[PEGAR CÓDIGO]\n```\n\nContexto: [EXPLICAR QUÉ INTENTAS HACER]\n\nNecesito:\n1. Explicación del error\n2. Código corregido COMPLETO\n3. Por qué ocurrió\n\nRespuesta en formato:\n## Problema\n[explicación]\n\n## Solución\n```python\n[código completo corregido]\n```\n\n## Por qué\n[explicación técnica]"
+    },
+    
+    "new_feature": {
+      "title": "Añadir nueva feature",
+      "prompt": "Necesito implementar: [DESCRIPCIÓN FEATURE]\n\nArchivos existentes relevantes:\n- [archivo1.py]: [descripción breve]\n- [archivo2.py]: [descripción breve]\n\nRequisitos:\n1. [Requisito 1]\n2. [Requisito 2]\n3. [Requisito 3]\n\nConstraints:\n- Stack: [tecnologías]\n- Budget: [limitaciones]\n\nNecesito:\n1. Plan de implementación paso a paso\n2. Código COMPLETO de archivos nuevos/modificados\n3. Testing strategy\n\nRespuesta en formato:\n## Plan\n[pasos 1-5]\n\n## Código\n### Archivo: [nombre]\n```python\n[código completo]\n```\n\n## Tests\n[cómo testear]"
+    },
+    
+    "refactor": {
+      "title": "Refactorizar código",
+      "prompt": "Este código funciona pero necesita refactor:\n```python\n[CÓDIGO ACTUAL]\n```\n\nProblemas detectados:\n- [Problema 1: ej. código duplicado]\n- [Problema 2: ej. muy anidado]\n- [Problema 3: ej. sin type hints]\n\nObjetivos refactor:\n1. Más legible\n2. Más mantenible\n3. Seguir best practices Python\n\nNecesito:\n1. Código refactorizado COMPLETO\n2. Qué cambió y por qué\n3. Tests afectados\n\nRespuesta en formato:\n## Código Refactorizado\n```python\n[código completo]\n```\n\n## Cambios\n- [Cambio 1]: [justificación]\n- [Cambio 2]: [justificación]\n\n## Tests\n[tests actualizados]"
+    },
+    
+    "optimize": {
+      "title": "Optimizar rendimiento",
+      "prompt": "Este código es lento:\n```python\n[CÓDIGO]\n```\n\nMétricas actuales:\n- Tiempo ejecución: [X segundos]\n- Memoria: [Y MB]\n- Cuellos botella: [identificados]\n\nObjetivo: [ej. reducir tiempo 50%]\n\nNecesito:\n1. Análisis de rendimiento\n2. Código optimizado COMPLETO\n3. Benchmarks before/after\n\nRespuesta en formato:\n## Análisis\n[cuellos botella identificados]\n\n## Código Optimizado\n```python\n[código completo]\n```\n\n## Mejoras\n- Antes: [métricas]\n- Después: [métricas]\n- Ganancia: [X%]"
+    },
+    
+    "fix_architecture": {
+      "title": "Mejorar arquitectura",
+      "prompt": "Arquitectura actual del proyecto:\n```\n[ESTRUCTURA ARCHIVOS]\n```\n\nProblemas:\n- [Problema 1: ej. acoplamiento alto]\n- [Problema 2: ej. sin separación concerns]\n\nObjetivo: [ej. aplicar Clean Architecture]\n\nNecesito:\n1. Nueva estructura propuesta\n2. Plan migración paso a paso\n3. Código de archivos que cambian\n\nRespuesta en formato:\n## Nueva Estructura\n```\n[árbol directorios]\n```\n\n## Plan Migración\n1. [Paso 1]\n2. [Paso 2]\n...\n\n## Código\n[archivos modificados completos]"
+    },
+    
+    "write_tests": {
+      "title": "Generar tests",
+      "prompt": "Necesito tests para este código:\n```python\n[CÓDIGO A TESTEAR]\n```\n\nFunciones críticas:\n- [función1]: [qué hace]\n- [función2]: [qué hace]\n\nCasos edge:\n- [Edge case 1]\n- [Edge case 2]\n\nNecesito:\n1. Tests unitarios completos\n2. Coverage >80%\n3. Usar pytest\n\nRespuesta en formato:\n## Tests\n```python\n# test_[modulo].py\n[código completo tests]\n```\n\n## Coverage\n[funciones cubiertas]\n\n## Ejecutar\n```bash\npytest test_[modulo].py -v\n```"
+    },
+    
+    "add_documentation": {
+      "title": "Documentar código",
+      "prompt": "Código sin documentar:\n```python\n[CÓDIGO]\n```\n\nAudiencia: [ej. developers junior]\n\nNecesito:\n1. Docstrings completos (Google style)\n2. Type hints\n3. Comentarios inline complejos\n4. README.md con ejemplos uso\n\nRespuesta en formato:\n## Código Documentado\n```python\n[código con docstrings completos]\n```\n\n## README.md\n```markdown\n[documentación uso]\n```"
+    },
+    
+    "integrate_api": {
+      "title": "Integrar API externa",
+      "prompt": "Necesito integrar API: [NOMBRE API]\n\nDocumentación: [URL]\n\nEndpoints necesarios:\n- [Endpoint 1]: [para qué]\n- [Endpoint 2]: [para qué]\n\nAuth: [tipo auth]\n\nNecesito:\n1. Cliente API completo\n2. Error handling robusto\n3. Rate limiting\n4. Tests\n\nRespuesta en formato:\n## Cliente API\n```python\n# api_client.py\n[código completo]\n```\n\n## Uso\n```python\n[ejemplos]\n```\n\n## Tests\n```python\n[tests]\n```"
+    },
+    
+    "security_review": {
+      "title": "Review seguridad",
+      "prompt": "Código a revisar seguridad:\n```python\n[CÓDIGO]\n```\n\nÁreas críticas:\n- Auth: [sí/no]\n- User input: [sí/no]\n- DB queries: [sí/no]\n- API calls: [sí/no]\n\nNecesito:\n1. Vulnerabilidades detectadas\n2. Código corregido COMPLETO\n3. Best practices aplicadas\n\nRespuesta en formato:\n## Vulnerabilidades\n- [Vuln 1]: [severidad] [explicación]\n- [Vuln 2]: [severidad] [explicación]\n\n## Código Seguro\n```python\n[código completo corregido]\n```\n\n## Recomendaciones\n[best practices]"
+    },
+    
+    "migrate_technology": {
+      "title": "Migrar tecnología",
+      "prompt": "Migrar de [TECH ACTUAL] a [TECH NUEVA]\n\nCódigo actual:\n```python\n[CÓDIGO]\n```\n\nMotivo migración: [razón]\n\nNecesito:\n1. Plan migración paso a paso\n2. Código adaptado COMPLETO\n3. Breaking changes\n4. Checklist testing\n\nRespuesta en formato:\n## Plan Migración\n1. [Paso 1]\n2. [Paso 2]\n...\n\n## Código Migrado\n```python\n[código completo]\n```\n\n## Breaking Changes\n- [Change 1]\n- [Change 2]\n\n## Testing\n[checklist]"
+    }
+  },
+  
+  "quick_commands": {
+    "explain_code": "Explica este código línea por línea:\n```python\n[CÓDIGO]\n```",
+    "find_bug": "Encuentra bugs en este código:\n```python\n[CÓDIGO]\n```",
+    "suggest_improvements": "Sugiere 5 mejoras para este código:\n```python\n[CÓDIGO]\n```",
+    "generate_example": "Genera ejemplo de uso para:\n```python\n[CÓDIGO]\n```",
+    "convert_format": "Convierte este código de [FORMATO1] a [FORMATO2]:\n```\n[CÓDIGO]\n```"
+  },
+  
+  "response_formats": {
+    "standard": "## Título\n[contenido]\n\n## Código\n```python\n[código completo]\n```\n\n## Explicación\n[detalles]",
+    
+    "with_tests": "## Implementación\n```python\n[código]\n```\n\n## Tests\n```python\n[tests]\n```\n\n## Uso\n```python\n[ejemplos]\n```",
+    
+    "step_by_step": "## Paso 1: [Título]\n```python\n[código]\n```\n[explicación]\n\n## Paso 2: [Título]\n```python\n[código]\n```\n[explicación]\n\n...",
+    
+    "comparison": "## Antes\n```python\n[código original]\n```\n\n## Después\n```python\n[código mejorado]\n```\n\n## Diferencias\n- [Diff 1]\n- [Diff 2]"
+  }
+}
