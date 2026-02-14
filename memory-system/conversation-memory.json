@@ -1,0 +1,117 @@
+{
+  "project": "ValidationIdea",
+  "started": "2026-02-14",
+  "last_updated": "2026-02-14T13:21:00",
+  "version": "2.0",
+  
+  "context": {
+    "goal": "Sistema multi-agente que genera, valida y publica ideas SaaS automáticamente cada 15 minutos",
+    "stack": ["Python", "Groq API", "GitHub Actions", "Vercel", "Next.js"],
+    "constraints": {
+      "groq_tokens": "100K/día",
+      "frequency": "4 ideas/hora (cada 15min)",
+      "budget": "€0 (gratis)"
+    }
+  },
+  
+  "architecture": {
+    "agents": {
+      "generator": "Genera ideas SaaS usando 15 nichos pre-programados + IA",
+      "critic": "Evalúa viabilidad con score mínimo 45",
+      "optimizer": "Mejora idea si score bajo",
+      "researcher": "Busca trends y problemas reales (Google Trends, Reddit, ProductHunt)",
+      "report": "Genera informe markdown profesional",
+      "landing": "Crea landing page HTML con formulario",
+      "dashboard": "Dashboard visual con todas las ideas",
+      "telegram": "Notifica ideas aprobadas a Telegram"
+    },
+    
+    "workflow": "Generator → Critic → (si score<72: Optimizer) → Researcher insights → Report + Landing → Publish → Telegram"
+  },
+  
+  "current_state": {
+    "ideas_generated": 23,
+    "approval_rate": "60%",
+    "main_issues_fixed": [
+      "Rate limit Groq (cambio a modelo ligero)",
+      "Ideas duplicadas (threshold 20%)",
+      "Scores muy bajos (mínimo 45)",
+      "JSON parsing errors (fallback robusto)",
+      "Dashboard botones rotos (fix rutas)"
+    ]
+  },
+  
+  "pending_tasks": [
+    {
+      "id": 6,
+      "title": "Dashboard botones funcionales",
+      "priority": "URGENT",
+      "status": "IN_PROGRESS",
+      "file": "agents/dashboard_generator.py"
+    },
+    {
+      "id": 7,
+      "title": "Botón descarga CSV visual",
+      "priority": "URGENT",
+      "status": "DONE",
+      "file": "agents/dashboard_generator.py"
+    },
+    {
+      "id": 8,
+      "title": "Formulario email funcional",
+      "priority": "URGENT",
+      "status": "PENDING",
+      "files": ["api/submit-email.js", "agents/landing_generator.py"]
+    },
+    {
+      "id": 10,
+      "title": "Agente Investigador",
+      "priority": "HIGH",
+      "status": "DONE",
+      "file": "agents/researcher_agent.py"
+    }
+  ],
+  
+  "conversations": [
+    {
+      "date": "2026-02-14",
+      "topic": "Sistema generación ideas",
+      "decisions": [
+        "Usar 15 nichos ultra-específicos pre-programados",
+        "Threshold similitud 20% (muy permisivo)",
+        "Score mínimo crítico 45 (antes 65)",
+        "Modelo llama-3.1-8b-instant (ahorra 80% tokens)",
+        "Fallback genera idea directamente si JSON falla"
+      ],
+      "files_modified": [
+        "agents/generator_agent.py",
+        "agents/critic_agent.py",
+        "agents/dashboard_generator.py",
+        "agents/researcher_agent.py"
+      ]
+    }
+  ],
+  
+  "tech_decisions": {
+    "why_groq": "Gratis 100K tokens/día, muy rápido",
+    "why_llama_8b": "5x menos tokens que 70b, suficiente calidad",
+    "why_github_actions": "CI/CD gratis, ejecuta Python cada 15min",
+    "why_vercel": "Deploy gratis, serverless functions para APIs",
+    "why_json_memory": "Simple, portable, versionable con git"
+  },
+  
+  "next_steps": [
+    "Implementar formulario email con Vercel API",
+    "Expandir nichos de 15 a 50",
+    "Integrar Google Trends API real",
+    "Añadir agente validador de mercado",
+    "Sistema A/B testing landings"
+  ],
+  
+  "important_notes": [
+    "Siempre dar código COMPLETO para copiar/pegar",
+    "No usar fragmentos, usuario quiere archivos completos",
+    "Memoria persistente se actualiza cada interacción",
+    "Si se pierde contexto, cargar este JSON"
+  ]
+}
