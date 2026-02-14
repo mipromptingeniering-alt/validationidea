@@ -208,13 +208,13 @@
         <div class="header">
             <h1>🚀 Dashboard Ideas Validadas</h1>
             <p>Sistema Multi-Agente de Generación y Validación</p>
-            <p style="font-size: 0.9rem; margin-top: 0.5rem;">Actualizado: 13/02/2026 23:46</p>
+            <p style="font-size: 0.9rem; margin-top: 0.5rem;">Actualizado: 14/02/2026 04:59</p>
         </div>
         
         <div class="stats-grid">
             <div class="stat-card">
                 <h3>Ideas Publicadas</h3>
-                <div class="value">13</div>
+                <div class="value">14</div>
                 <div class="label">Aprobadas y validadas</div>
             </div>
             
@@ -226,14 +226,14 @@
             
             <div class="stat-card">
                 <h3>Tasa Aprobación</h3>
-                <div class="value">92.9%</div>
-                <div class="label">De 14 generadas</div>
+                <div class="value">93.3%</div>
+                <div class="label">De 15 generadas</div>
             </div>
             
             <div class="stat-card">
                 <h3>Score Promedio</h3>
                 <div class="value">71</div>
-                <div class="label">Gen: 83.8 | Crit: 58.8</div>
+                <div class="label">Gen: 84.3 | Crit: 58.9</div>
             </div>
         </div>
         
@@ -253,6 +253,20 @@
         
         <div class="ideas-grid">
             
+        <div class="idea-card">
+            <h3>EcoProveedores</h3>
+            <p> Marketplace sostenible...</p>
+            <div class="badges">
+                <span class="badge badge-gen">Gen: 90</span>
+                <span class="badge badge-crit">Crit: 60</span>
+                <span class="badge badge-diff">Media-Alta</span>
+            </div>
+            <div class="actions">
+                <a href="ecoproveedores.html" class="btn btn-primary">Ver Landing</a>
+                <a href="../reports/ecoproveedores.html" class="btn btn-secondary">Informe</a>
+            </div>
+        </div>
+        
         <div class="idea-card">
             <h3>Farmalab</h3>
             <p>Predictión de enfermedades en ganado...</p>
@@ -323,20 +337,6 @@
             </div>
         </div>
         
-        <div class="idea-card">
-            <h3>Greenify Supply</h3>
-            <p>Optimiza cadena de suministro...</p>
-            <div class="badges">
-                <span class="badge badge-gen">Gen: 85</span>
-                <span class="badge badge-crit">Crit: 60</span>
-                <span class="badge badge-diff">Media</span>
-            </div>
-            <div class="actions">
-                <a href="greenify-supply.html" class="btn btn-primary">Ver Landing</a>
-                <a href="../reports/greenify-supply.html" class="btn btn-secondary">Informe</a>
-            </div>
-        </div>
-        
         </div>
     </div>
     
@@ -345,10 +345,10 @@
         new Chart(document.getElementById('ideasPerDay'), {
             type: 'bar',
             data: {
-                labels: ["2026-02-13"],
+                labels: ["2026-02-13", "2026-02-14"],
                 datasets: [{
                     label: 'Ideas Publicadas',
-                    data: [13],
+                    data: [13, 1],
                     backgroundColor: 'rgba(102, 126, 234, 0.8)',
                     borderColor: 'rgba(102, 126, 234, 1)',
                     borderWidth: 2
@@ -371,18 +371,18 @@
         new Chart(document.getElementById('scoresEvolution'), {
             type: 'line',
             data: {
-                labels: ["AutoDocuFlow Pro", "AutoDocuFlow Plus", "AutoDocu", "PredictaStock", "Greenify Supply", "EcoInventory", "EcoSuppliers", "EcoSupply", "EcoLog\u00edstica", "Farmalab"],
+                labels: ["AutoDocuFlow Plus", "AutoDocu", "PredictaStock", "Greenify Supply", "EcoInventory", "EcoSuppliers", "EcoSupply", "EcoLog\u00edstica", "Farmalab", "EcoProveedores"],
                 datasets: [
                     {
                         label: 'Score Generador',
-                        data: [82, 82, 82, 85, 85, 85, 85, 85, 85, 85],
+                        data: [82, 82, 85, 85, 85, 85, 85, 85, 85, 90],
                         borderColor: 'rgba(40, 167, 69, 1)',
                         backgroundColor: 'rgba(40, 167, 69, 0.1)',
                         tension: 0.4
                     },
                     {
                         label: 'Score Crítico',
-                        data: [55, 55, 55, 60, 60, 60, 60, 60, 60, 60],
+                        data: [55, 55, 60, 60, 60, 60, 60, 60, 60, 60],
                         borderColor: 'rgba(0, 123, 255, 1)',
                         backgroundColor: 'rgba(0, 123, 255, 0.1)',
                         tension: 0.4
