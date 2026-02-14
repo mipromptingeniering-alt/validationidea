@@ -1,0 +1,437 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Informe Técnico: OptiStock</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: #f5f5f5;
+            padding: 0;
+        }
+        
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            box-shadow: 0 0 20px rgba(0,0,0,0.1);
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 2rem;
+            text-align: center;
+        }
+        
+        .header h1 {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .header .meta {
+            font-size: 0.9rem;
+            opacity: 0.9;
+        }
+        
+        .score-badge {
+            display: inline-block;
+            background: rgba(255,255,255,0.2);
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            margin: 0.5rem;
+            font-weight: bold;
+        }
+        
+        .content {
+            padding: 2rem;
+        }
+        
+        h2 {
+            color: #667eea;
+            margin: 2rem 0 1rem 0;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid #667eea;
+            font-size: 1.5rem;
+        }
+        
+        h3 {
+            color: #764ba2;
+            margin: 1.5rem 0 0.5rem 0;
+            font-size: 1.2rem;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1rem 0;
+            font-size: 0.95rem;
+        }
+        
+        th, td {
+            padding: 0.75rem;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+        
+        th {
+            background: #f8f9fa;
+            font-weight: 600;
+            color: #667eea;
+        }
+        
+        tr:hover {
+            background: #f8f9fa;
+        }
+        
+        ul, ol {
+            margin: 1rem 0 1rem 2rem;
+        }
+        
+        li {
+            margin: 0.5rem 0;
+        }
+        
+        .alert {
+            padding: 1rem;
+            border-radius: 8px;
+            margin: 1rem 0;
+        }
+        
+        .alert-success {
+            background: #d4edda;
+            border-left: 4px solid #28a745;
+        }
+        
+        .alert-warning {
+            background: #fff3cd;
+            border-left: 4px solid #ffc107;
+        }
+        
+        .alert-danger {
+            background: #f8d7da;
+            border-left: 4px solid #dc3545;
+        }
+        
+        .alert-info {
+            background: #d1ecf1;
+            border-left: 4px solid #17a2b8;
+        }
+        
+        .json-container {
+            background: #1e1e1e;
+            color: #d4d4d4;
+            padding: 1.5rem;
+            border-radius: 8px;
+            overflow-x: auto;
+            margin: 1rem 0;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        
+        .json-container pre {
+            margin: 0;
+            font-family: 'Courier New', monospace;
+            font-size: 0.85rem;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+        }
+        
+        .collapsible {
+            background: #667eea;
+            color: white;
+            cursor: pointer;
+            padding: 1rem;
+            width: 100%;
+            border: none;
+            text-align: left;
+            outline: none;
+            font-size: 1rem;
+            font-weight: bold;
+            border-radius: 8px;
+            margin: 1rem 0;
+            transition: 0.3s;
+        }
+        
+        .collapsible:hover {
+            background: #5568d3;
+        }
+        
+        .collapsible:after {
+            content: '▼';
+            float: right;
+            transition: 0.3s;
+        }
+        
+        .collapsible.active:after {
+            content: '▲';
+        }
+        
+        .collapsible-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease-out;
+        }
+        
+        /* RESPONSIVE */
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 1.5rem;
+            }
+            
+            .content {
+                padding: 1rem;
+            }
+            
+            h2 {
+                font-size: 1.3rem;
+            }
+            
+            h3 {
+                font-size: 1.1rem;
+            }
+            
+            table {
+                font-size: 0.85rem;
+                display: block;
+                overflow-x: auto;
+                white-space: nowrap;
+            }
+            
+            th, td {
+                padding: 0.5rem;
+            }
+            
+            .json-container {
+                padding: 1rem;
+                font-size: 0.75rem;
+            }
+            
+            .score-badge {
+                display: block;
+                margin: 0.5rem 0;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            body {
+                font-size: 0.9rem;
+            }
+            
+            .header {
+                padding: 1.5rem 1rem;
+            }
+            
+            .header h1 {
+                font-size: 1.3rem;
+            }
+            
+            table {
+                font-size: 0.75rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>📋 OptiStock</h1>
+            <p class="meta">Informe Técnico Completo - 14/02/2026</p>
+            <div class="score-badge">Score: 85/100</div>
+            <div class="score-badge">Dificultad: Media-Alta</div>
+            <div class="score-badge">Tiempo: 6-8 semanas</div>
+        </div>
+        
+        <div class="content">
+            <h2>🎯 Resumen Ejecutivo</h2>
+            <p><strong>Descripción:</strong> OptiStock es una plataforma SaaS que utiliza inteligencia artificial y aprendizaje automático para predecir la demanda y optimizar los niveles de stock para tiendas de conveniencia y supermercados. Utiliza algoritmos de serie de tiempo y análisis de datos para identificar patrones y tendencias en las ventas, y proporciona recomendaciones personalizadas para la gestión de inventario. Además, integra con sistemas de gestión de inventario y punto de venta para una implementación fácil y sin sobrecostos.</p>
+            <p><strong>Público objetivo:</strong> Tiendas de conveniencia y supermercados con 5-50 locales en España y Portugal, con un volumen de ventas anual de 1-10 millones de euros</p>
+            
+            <div class="alert alert-danger">
+                <strong>❌ Problema:</strong><br>
+                Las tiendas de conveniencia y supermercados pierden un promedio de 12.000€ al mes debido a la sobreestock y la falta de stock, lo que puede llevar a una pérdida anual de 144.000€
+            </div>
+            
+            <div class="alert alert-success">
+                <strong>✅ Solución:</strong><br>
+                OptiStock utiliza algoritmos de aprendizaje automático y técnicas de análisis de datos para predecir la demanda y optimizar los niveles de stock. La plataforma también proporciona alertas y notificaciones para que los gerentes puedan tomar decisiones informadas y ajustar sus estrategias de inventario en tiempo real.
+            </div>
+            
+            <div class="alert alert-info">
+                <strong>💎 Diferenciación:</strong><br>
+                La capacidad de predecir la demanda y optimizar los niveles de stock utilizando inteligencia artificial y aprendizaje automático, lo que reduce la pérdida de ventas y el desperdicio de productos
+            </div>
+            
+            <h2>📊 Validación de Mercado</h2>
+            <table>
+                <tr>
+                    <th>Métrica</th>
+                    <th>Valor</th>
+                    <th>Descripción</th>
+                </tr>
+                <tr>
+                    <td><strong>TAM</strong></td>
+                    <td>30M€</td>
+                    <td>Mercado total disponible</td>
+                </tr>
+                <tr>
+                    <td><strong>SAM</strong></td>
+                    <td>3M€</td>
+                    <td>Mercado alcanzable</td>
+                </tr>
+                <tr>
+                    <td><strong>SOM</strong></td>
+                    <td>1,5M€</td>
+                    <td>Objetivo año 1</td>
+                </tr>
+            </table>
+            
+            <h3>Competencia Principal</h3>
+            <ul>
+                <li>TradeGecko</li><li>Zoho Inventory</li><li>Skubana</li>
+            </ul>
+            <p><strong>Tu ventaja:</strong> La capacidad de predecir la demanda y optimizar los niveles de stock utilizando inteligencia artificial y aprendizaje automático, lo que reduce la pérdida de ventas y el desperdicio de productos</p>
+            
+            <h2>💰 Modelo de Negocio</h2>
+            <p><strong>Precio sugerido:</strong> 49€/mes</p>
+            
+            <h3>Proyecciones Financieras</h3>
+            <table>
+                <tr>
+                    <th>Período</th>
+                    <th>Usuarios</th>
+                    <th>MRR</th>
+                    <th>ARR</th>
+                    <th>Churn</th>
+                </tr>
+                <tr>
+                    <td>Mes 3</td>
+                    <td>20-50</td>
+                    <td>580-1,450€</td>
+                    <td>7K-17K€</td>
+                    <td>15%</td>
+                </tr>
+                <tr>
+                    <td>Mes 6</td>
+                    <td>100-200</td>
+                    <td>2,900-5,800€</td>
+                    <td>35K-70K€</td>
+                    <td>10%</td>
+                </tr>
+                <tr>
+                    <td>Año 1</td>
+                    <td>500-1,000</td>
+                    <td>14,500-29,000€</td>
+                    <td>174K-348K€</td>
+                    <td>5%</td>
+                </tr>
+            </table>
+            
+            <h2>🛠️ Stack Tecnológico</h2>
+            <ul>
+                <li>Next.js</li><li>Supabase</li><li>Stripe</li><li>TensorFlow</li>
+            </ul>
+            <p><strong>Justificación:</strong> Stack gratuito hasta primeros ingresos, escalable hasta 10K usuarios.</p>
+            
+            <h2>🚀 Funcionalidades Core</h2>
+            <ul>
+                <li>Predicción de demanda</li><li>Optimización de inventario</li><li>Integración con sistemas de gestión de inventario y punto de venta</li>
+            </ul>
+            
+            <h2>📢 Estrategia de Marketing</h2>
+            <h3>Canales de Adquisición</h3>
+            <ul>
+                <li>Publicidad en Google Ads</li><li>Marketing de contenidos en redes sociales</li><li>Participación en ferias y eventos del sector</li>
+            </ul>
+            
+            <h2>🤖 Prompt para Cursor/Bolt/v0</h2>
+            <button class="collapsible">📋 Ver JSON Completo (Click para expandir)</button>
+            <div class="collapsible-content">
+                <div class="json-container">
+                    <pre>{
+  "project_name": "OptiStock",
+  "description": "OptiStock es una plataforma SaaS que utiliza inteligencia artificial y aprendizaje automático para predecir la demanda y optimizar los niveles de stock para tiendas de conveniencia y supermercados. Utiliza algoritmos de serie de tiempo y análisis de datos para identificar patrones y tendencias en las ventas, y proporciona recomendaciones personalizadas para la gestión de inventario. Además, integra con sistemas de gestión de inventario y punto de venta para una implementación fácil y sin sobrecostos.",
+  "target_audience": "Tiendas de conveniencia y supermercados con 5-50 locales en España y Portugal, con un volumen de ventas anual de 1-10 millones de euros",
+  "problem": "Las tiendas de conveniencia y supermercados pierden un promedio de 12.000€ al mes debido a la sobreestock y la falta de stock, lo que puede llevar a una pérdida anual de 144.000€",
+  "solution": "OptiStock utiliza algoritmos de aprendizaje automático y técnicas de análisis de datos para predecir la demanda y optimizar los niveles de stock. La plataforma también proporciona alertas y notificaciones para que los gerentes puedan tomar decisiones informadas y ajustar sus estrategias de inventario en tiempo real.",
+  "tech_stack": {
+    "frontend": "Next.js 14 (App Router)",
+    "styling": "Tailwind CSS + Shadcn/ui",
+    "backend": "Vercel Serverless Functions",
+    "database": "Supabase (PostgreSQL)",
+    "auth": "Supabase Auth",
+    "payments": "Stripe",
+    "email": "Resend",
+    "analytics": "Vercel Analytics + PostHog"
+  },
+  "core_features": [
+    "Predicción de demanda",
+    "Optimización de inventario",
+    "Integración con sistemas de gestión de inventario y punto de venta"
+  ],
+  "pricing": "49€/mes"
+}</pre>
+                </div>
+            </div>
+            
+            <h2>⚠️ Riesgos y Mitigación</h2>
+            <table>
+                <tr>
+                    <th>Riesgo</th>
+                    <th>Probabilidad</th>
+                    <th>Impacto</th>
+                    <th>Mitigación</th>
+                </tr>
+                <tr>
+                    <td>No encontrar product-market fit</td>
+                    <td>Alta</td>
+                    <td>Alto</td>
+                    <td>Validar con 20+ entrevistas pre-build</td>
+                </tr>
+                <tr>
+                    <td>Competencia fuerte</td>
+                    <td>Media</td>
+                    <td>Medio</td>
+                    <td>Diferenciación clara + nicho específico</td>
+                </tr>
+                <tr>
+                    <td>Costos inesperados</td>
+                    <td>Baja</td>
+                    <td>Bajo</td>
+                    <td>Usar tier gratis, monitorizar uso</td>
+                </tr>
+            </table>
+            
+            <div class="alert alert-info" style="margin-top: 3rem; text-align: center;">
+                <p><strong>¿Listo para construir? 🚀</strong></p>
+                <p>Copia el JSON, pégalo en Cursor/Bolt/v0 y empieza HOY.</p>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // Collapsible JSON
+        const coll = document.getElementsByClassName("collapsible");
+        for (let i = 0; i < coll.length; i++) {
+            coll[i].addEventListener("click", function() {
+                this.classList.toggle("active");
+                const content = this.nextElementSibling;
+                if (content.style.maxHeight) {
+                    content.style.maxHeight = null;
+                } else {
+                    content.style.maxHeight = content.scrollHeight + "px";
+                }
+            });
+        }
+    </script>
+</body>
+</html>

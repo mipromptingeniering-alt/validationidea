@@ -19,3 +19,4 @@ timestamp,nombre,descripcion_corta,score_generador,score_critico,tipo,dificultad
 2026-02-13T23:46:23.499090,Farmalab,Predictión de enfermedades en ganado,85,60,SaaS,Media-Alta,dae9aea3
 2026-02-14T04:59:09.583812,EcoProveedores, Marketplace sostenible,90,60,SaaS,Media-Alta,944806d0
 2026-02-14T07:22:38.663285,Ecodata Pro,Análisis de huella carbónica,85,60,SaaS,Media-Alta,e14ef6a6
+2026-02-14T08:00:18.858343,OptiStock,Optimiza stock con IA,85,60,SaaS,Media-Alta,b4829c68
