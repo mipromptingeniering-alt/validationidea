@@ -1,5 +1,25 @@
-groq
-requests
-python-dotenv
-pytz
-pytest
+# ============================================
+# CHET THIS - DEPENDENCIAS PYTHON
+# ============================================
+
+# === CORE ===
+groq==0.11.0
+requests==2.31.0
+
+# === TREND HUNTER ===
+# Reddit scraping (opcional - comentar si no se usa)
+# praw==7.7.1
+
+# Google Trends (opcional - comentar si no se usa)
+# pytrends==4.9.2
+
+# Scraping avanzado (opcional - comentar si no se usa)
+# beautifulsoup4==4.12.3
+# selenium==4.16.0
+
+# === UTILIDADES ===
+python-dotenv==1.0.0
+
+# === TESTING (opcional) ===
+# pytest==8.0.0
+# pytest-cov==4.1.0
