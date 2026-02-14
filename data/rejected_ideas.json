@@ -66,5 +66,74 @@
       "recomendacion": "Rechazar la inversión hasta que se aborden las debilidades y se presente un plan de negocio más sólido"
     },
     "fingerprint": "7605db1a"
+  },
+  {
+    "timestamp": "2026-02-14T10:39:10.978243",
+    "idea": {
+      "nombre": "EcoCycle",
+      "slug": "ecocycle",
+      "descripcion_corta": "Optimiza residuos",
+      "descripcion": "EcoCycle es una plataforma SaaS que utiliza algoritmos de aprendizaje automático y análisis de datos para ayudar a los gestores de residuos en grandes eventos y festivales a optimizar la gestión de residuos y reducir el impacto ambiental. La plataforma integra con sistemas de seguimiento de residuos y proporciona recomendaciones personalizadas para mejorar la eficiencia en la recolección y el reciclaje. Además, ofrece herramientas de visualización de datos para monitorear el progreso y medir el impacto ambiental",
+      "problema": "Los grandes eventos generan un promedio de 3.5 toneladas de residuos por día, con un costo estimado de 1.2M€ en disposición y tratamiento de residuos por evento",
+      "solucion": "EcoCycle utiliza algoritmos de aprendizaje automático para analizar patrones de generación de residuos y proporcionar recomendaciones de optimización para la gestión de residuos, incluyendo la selección de proveedores de servicios de residuos y la implementación de programas de reciclaje efectivos",
+      "publico_objetivo": "Gestores de residuos en grandes eventos y festivales en Europa, con un mercado estimado de 25.000 eventos al año",
+      "tam": "45M€",
+      "sam": "4.5M€",
+      "som": "2.25M€",
+      "competencia": [
+        "Sistema de seguimiento de residuos",
+        "Consultoría ambiental",
+        "Empresas de gestión de residuos"
+      ],
+      "diferenciacion": "Utilización de algoritmos de aprendizaje automático para la optimización de la gestión de residuos y la reducción del impacto ambiental",
+      "precio_sugerido": "50€/mes",
+      "canales_adquisicion": [
+        "Publicidad en redes sociales",
+        "Colaboraciones con eventos y festivales",
+        "Recomendaciones de proveedores de servicios de residuos"
+      ],
+      "score_generador": 90,
+      "dificultad": "Media-Alta",
+      "tiempo_estimado": "6-8 semanas",
+      "stack_sugerido": [
+        "Next.js",
+        "Supabase",
+        "Stripe",
+        "Leaflet"
+      ],
+      "features_core": [
+        "Análisis de patrones de generación de residuos",
+        "Recomendaciones de optimización para la gestión de residuos",
+        "Visualización de datos para monitorear el progreso y el impacto ambiental"
+      ],
+      "_fingerprint": "a87745bd",
+      "_timestamp": "2026-02-14T10:39:05.632605"
+    },
+    "critique": {
+      "score_critico": 45,
+      "puntos_fuertes": [
+        "Utilización de algoritmos de aprendizaje automático para la optimización de la gestión de residuos",
+        "Enfoque en la reducción del impacto ambiental"
+      ],
+      "puntos_debiles": [
+        "Tamaño del mercado podría ser limitado",
+        "La competencia con sistemas de seguimiento de residuos y consultorías ambientales podría ser intensa",
+        "El precio de 50€/mes podría ser demasiado alto para algunos clientes potenciales",
+        "Categoría saturada: 'gestor'"
+      ],
+      "recomendaciones": [
+        "Investigar más a fondo el tamaño y el crecimiento del mercado",
+        "Desarrollar una estrategia para diferenciarse de la competencia",
+        "Considerar una estructura de precios más escalable"
+      ],
+      "score_mercado": 12,
+      "score_problema": 14,
+      "score_solucion": 10,
+      "score_diferenciacion": 8,
+      "score_viabilidad": 16,
+      "veredicto": "EcoCycle tiene un enfoque interesante en la reducción del impacto ambiental, pero enfrenta desafíos en el tamaño del mercado y la competencia. Para tener éxito, debe desarrollar una estrategia sólida para diferenciarse y atraer a clientes. Con ajustes en la estrategia de marketing y precios, EcoCycle podría tener un impacto positivo en la gestión de residuos en grandes eventos."
+    },
+    "reason": "Gen:90 Crit:45 | Tamaño del mercado podría ser limitado, La competencia con sistemas de seguimiento de residuos y consultorías ambientales podría ser intensa",
+    "fingerprint": "a87745bd"
   }
 ]
