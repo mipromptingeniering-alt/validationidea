@@ -1,10 +1,17 @@
 {
-  "version": "5.0.5",
+  "version": "5.0.6",
   "major": 5,
   "minor": 0,
-  "patch": 5,
+  "patch": 6,
   "date": "2026-02-14",
   "changelog": [
+    {
+      "version": "5.0.6",
+      "date": "2026-02-14",
+      "type": "patch",
+      "description": "🔧 Fix: .github/workflows/generate-ideas.yml",
+      "commit": "Update generate-ideas.yml"
+    },
     {
       "version": "5.0.5",
       "date": "2026-02-14",
