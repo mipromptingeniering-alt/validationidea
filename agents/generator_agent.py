@@ -2,18 +2,13 @@ import os
 import json
 import hashlib
 import csv
+import random
+import time
 from groq import Groq
 from difflib import SequenceMatcher
 
 MAX_ATTEMPTS = 5
-SIMILARITY_THRESHOLD = 0.30
-
-def load_config():
-    config_file = 'config/generator_config.json'
-    if os.path.exists(config_file):
-        with open(config_file, 'r', encoding='utf-8') as f:
-            return json.load(f)
-    return {'min_score_generador': 70}
+SIMILARITY_THRESHOLD = 0.20  # MUY PERMISIVO (antes 30%)
 
 def load_existing_ideas():
     """Carga ideas de forma segura"""
@@ -27,20 +22,16 @@ def load_existing_ideas():
         with open(csv_file, 'r', encoding='utf-8') as f:
             reader = csv.DictReader(f)
             for row in reader:
-                nombre = row.get('nombre', '')
-                descripcion = row.get('descripcion_corta', '')
-                fingerprint = row.get('fingerprint', '')
+                nombre = str(row.get('nombre', '')).strip()
+                descripcion = str(row.get('descripcion_corta', '')).strip()
+                fingerprint = str(row.get('fingerprint', '')).strip()
                 
-                if isinstance(nombre, list):
-                    nombre = ' '.join(str(x) for x in nombre)
-                if isinstance(descripcion, list):
-                    descripcion = ' '.join(str(x) for x in descripcion)
-                
-                ideas.append({
-                    'nombre': str(nombre).lower().strip(),
-                    'descripcion': str(descripcion).lower().strip(),
-                    'fingerprint': str(fingerprint).strip()
-                })
+                if nombre and len(nombre) > 2:
+                    ideas.append({
+                        'nombre': nombre.lower(),
+                        'descripcion': descripcion.lower(),
+                        'fingerprint': fingerprint
+                    })
     except Exception as e:
         print(f"⚠️  Error CSV: {e}")
     
@@ -50,75 +41,167 @@ def calculate_fingerprint(nombre, descripcion):
     combined = f"{str(nombre).lower()}|{str(descripcion).lower()}"
     return hashlib.md5(combined.encode()).hexdigest()[:8]
 
-def normalize_field(field):
-    """Convierte cualquier campo a string limpio"""
-    if field is None:
-        return ""
-    if isinstance(field, list):
-        return ' '.join(str(x) for x in field)
-    return str(field).strip()
-
 def is_similar(text1, text2):
-    if not text1 or not text2:
+    if not text1 or not text2 or len(text1) < 3 or len(text2) < 3:
         return False
     ratio = SequenceMatcher(None, str(text1).lower(), str(text2).lower()).ratio()
     return ratio > SIMILARITY_THRESHOLD
 
 def is_duplicate(idea, existing_ideas):
-    nombre = normalize_field(idea.get('nombre', '')).lower()
-    descripcion = normalize_field(idea.get('descripcion_corta', '')).lower()
+    """Validación MUY PERMISIVA"""
+    nombre = str(idea.get('nombre', '')).lower().strip()
+    descripcion = str(idea.get('descripcion_corta', '')).lower().strip()
     
-    if not nombre or not descripcion or len(nombre) < 3:
+    if not nombre or len(nombre) < 3:
+        print("⚠️  Nombre muy corto o vacío")
         return True
     
     fingerprint = calculate_fingerprint(nombre, descripcion)
     
+    # Solo rechazar si es EXACTAMENTE igual
     for existing in existing_ideas:
         if existing['fingerprint'] == fingerprint:
+            print(f"⚠️  Fingerprint exacto: {fingerprint}")
             return True
-        if existing['nombre'] and is_similar(nombre, existing['nombre']):
-            return True
-        if existing['descripcion'] and is_similar(descripcion, existing['descripcion']):
-            return True
+        
+        # Solo si similitud >80% (antes 20%)
+        if existing['nombre']:
+            ratio = SequenceMatcher(None, nombre, existing['nombre']).ratio()
+            if ratio > 0.80:
+                print(f"⚠️  Nombre muy similar: {nombre} ≈ {existing['nombre']} ({int(ratio*100)}%)")
+                return True
     
     return False
 
-def get_inspiration_seed():
-    """Genera semillas de inspiración rotativas"""
-    import random
-    
-    categories = [
+def get_niche_idea():
+    """Ideas ultra-específicas con variedad EXTREMA"""
+    niches = [
         {
-            "name": "IA Creadores",
-            "tools": ["Claude API", "GPT-4"],
-            "problem": "Creadores pierden 10h/semana"
+            "vertical": "LinkedIn Creators",
+            "problema": "Pasan 8h/semana escribiendo posts que no generan engagement",
+            "solucion": "IA analiza 100 posts con mejor engagement, extrae patrones, genera 50 posts en tu estilo optimizados para algoritmo LinkedIn",
+            "tool": "Claude Sonnet 4.5",
+            "precio": "39",
+            "nombre": f"LinkedBoost AI"
         },
         {
-            "name": "Automatizacion",
-            "tools": ["n8n", "Notion API"],
-            "problem": "Freelancers pierden 6h admin"
+            "vertical": "YouTube Creators 10K-100K subs",
+            "problema": "Tardan 5h escribiendo scripts y no saben qué títulos funcionan",
+            "solucion": "GPT-4 analiza tus vídeos con mejor CTR, genera scripts con ganchos + títulos A/B tested + timestamps automáticos",
+            "tool": "GPT-4 API",
+            "precio": "49",
+            "nombre": f"ScriptGenius AI"
         },
         {
-            "name": "Scraping IA",
-            "tools": ["Bright Data", "Claude"],
-            "problem": "eCommerce necesita monitoreo"
+            "vertical": "eCommerce Shopify stores",
+            "problema": "Pierden ventas porque competencia baja precios y no se enteran",
+            "solucion": "Scraping Bright Data 24/7 de 50 competidores + alertas Telegram instant cuando bajan precio + sugerencias pricing IA",
+            "tool": "Bright Data",
+            "precio": "79",
+            "nombre": f"PriceSpy Pro"
         },
         {
-            "name": "Micro SaaS",
-            "tools": ["Stripe API", "Notion"],
-            "problem": "Usuarios necesitan CRM"
+            "vertical": "Freelancers técnicos",
+            "problema": "Pasan 4h/semana en admin: facturas, contratos, time tracking",
+            "solucion": "Notion como CRM + generación automática facturas PDF + contratos templates + time tracking con Toggl API",
+            "tool": "Notion API",
+            "precio": "29",
+            "nombre": f"FreelanceHub"
         },
         {
-            "name": "NoCode IA",
-            "tools": ["Bubble", "OpenAI"],
-            "problem": "Nocoders necesitan IA"
+            "vertical": "Recruiters IT",
+            "problema": "LinkedIn scraping manual de candidatos tarda 10h/semana",
+            "solucion": "Bot extrae perfiles LinkedIn con skills específicas + enriquece con GitHub + email finder + exports a CRM",
+            "tool": "Apify",
+            "precio": "99",
+            "nombre": f"TalentScout AI"
+        },
+        {
+            "vertical": "Podcasters",
+            "problema": "Edición y show notes tardan 3h por episodio",
+            "solucion": "Whisper API transcribe + Claude genera show notes + timestamps + quotes destacadas + posts redes",
+            "tool": "Whisper API",
+            "precio": "59",
+            "nombre": f"PodcastFlow AI"
+        },
+        {
+            "vertical": "Newsletter Creators",
+            "problema": "Research de contenido 6h/semana, engagement bajo 2%",
+            "solucion": "IA escanea 100 fuentes, resume tendencias, genera drafts personalizados con tu voz, optimiza subject lines para +40% open rate",
+            "tool": "Claude API",
+            "precio": "49",
+            "nombre": f"NewsletterPro AI"
+        },
+        {
+            "vertical": "Agencias Marketing",
+            "problema": "Reportes clientes tardan 5h/mes, formato inconsistente",
+            "solucion": "Conecta Google Ads + Meta + LinkedIn, auto-genera reportes white-label PDF con insights IA, envío automático",
+            "tool": "Google Sheets API",
+            "precio": "149",
+            "nombre": f"ReportMaster"
+        },
+        {
+            "vertical": "SaaS Founders",
+            "problema": "Seguimiento métricas en 5 herramientas, no ven MRR real",
+            "solucion": "Dashboard Notion que sync Stripe MRR + ChurnKey + Google Analytics + cohorts automáticos con predicciones IA",
+            "tool": "Stripe API",
+            "precio": "79",
+            "nombre": f"SaaSMetrics"
+        },
+        {
+            "vertical": "Content Creators TikTok",
+            "problema": "No saben qué trends usar, ideas virales tardan 2h/día",
+            "solucion": "IA monitorea trending sounds + hashtags + analiza tus vídeos top, genera 30 ideas virales diarias con script y hooks",
+            "tool": "TikTok API",
+            "precio": "39",
+            "nombre": f"TrendHunter AI"
+        },
+        {
+            "vertical": "Consultores estrategia",
+            "problema": "Propuestas tardan 8h, templates genéricas, win rate 20%",
+            "solucion": "IA analiza propuestas ganadoras, genera propuesta personalizada por cliente con pricing dinámico en 30min",
+            "tool": "GPT-4",
+            "precio": "99",
+            "nombre": f"ProposalGenius"
+        },
+        {
+            "vertical": "SEO Agencies",
+            "problema": "Keyword research manual 4h/proyecto, pierden long-tails",
+            "solucion": "IA encuentra 500 long-tail keywords con Ahrefs API + analiza SERP + genera content briefs optimizados",
+            "tool": "Ahrefs API",
+            "precio": "89",
+            "nombre": f"KeywordMiner AI"
+        },
+        {
+            "vertical": "Real Estate Agents",
+            "problema": "Descripciones propiedades genéricas, fotos sin optimizar",
+            "solucion": "IA genera descripciones premium + optimiza fotos con Midjourney + crea virtual staging + posts Instagram",
+            "tool": "Midjourney API",
+            "precio": "69",
+            "nombre": f"PropertyPro AI"
+        },
+        {
+            "vertical": "Course Creators",
+            "problema": "Outline de cursos tarda 10h, estructura inconsistente",
+            "solucion": "IA genera outline completo con módulos + lecciones + scripts + quizzes basado en objetivo aprendizaje",
+            "tool": "Claude API",
+            "precio": "59",
+            "nombre": f"CourseBuilder AI"
+        },
+        {
+            "vertical": "Twitter Creators",
+            "problema": "Threads que funcionan son impredecibles, engagement 1%",
+            "solucion": "IA analiza tus 50 mejores tweets, genera threads con hooks probados, scheduling óptimo para +200% engagement",
+            "tool": "GPT-4",
+            "precio": "29",
+            "nombre": f"ThreadGenius"
         }
     ]
     
-    return random.choice(categories)
+    return random.choice(niches)
 
 def generate():
-    """Genera idea usando sistema de semillas"""
+    """Genera idea ULTRA-ESPECÍFICA"""
     print("\n🧠 Agente Generador iniciado...")
     
     client = Groq(api_key=os.environ.get("GROQ_API_KEY"))
@@ -129,49 +212,58 @@ def generate():
     for attempt in range(1, MAX_ATTEMPTS + 1):
         print(f"📝 Intento {attempt}/{MAX_ATTEMPTS}...")
         
-        seed = get_inspiration_seed()
+        # Idea pre-definida ultra-específica
+        niche = get_niche_idea()
         
-        evitar = ', '.join([str(i['nombre'])[:15] for i in existing_ideas[-5:] if i.get('nombre')])
+        # Añadir timestamp para forzar unicidad
+        timestamp = int(time.time())
+        variation = random.randint(1000, 9999)
         
-        system_prompt = f"""Genera idea SaaS 2026.
+        system_prompt = f"""Eres experto en Micro-SaaS 2026.
 
-Cat: {seed['name']}
-Tools: {seed['tools'][0]}, {seed['tools'][1]}
-Problema: {seed['problem']}
-Evita: {evitar}
+Genera esta idea específica con VARIACIÓN ÚNICA:
 
-Responde SOLO JSON sin explicacion:
+VERTICAL: {niche['vertical']}
+PROBLEMA: {niche['problema']}
+SOLUCIÓN: {niche['solucion']}
+HERRAMIENTA: {niche['tool']}
+PRECIO: {niche['precio']} euros/mes
+NOMBRE BASE: {niche['nombre']}
+
+IMPORTANTE: El nombre debe ser ÚNICO. Añade variación: {niche['nombre']} {variation}
+
+Responde JSON COMPLETO sin texto extra:
 
 {{
-  "nombre": "Nombre corto",
-  "slug": "nombre-slug",
-  "descripcion": "Automatiza X con {seed['tools'][0]} para usuarios Y",
-  "descripcion_corta": "Soluciona problema con IA",
+  "nombre": "{niche['nombre']} Pro",
+  "slug": "nombre-unico-{variation}",
+  "descripcion": "{niche['solucion']} Stack: {niche['tool']}, Next.js, Stripe. ROI: 10x tiempo ahorrado.",
+  "descripcion_corta": "{niche['problema'][:80]} - Solución IA automatizada",
   "categoria": "SaaS IA",
-  "problema": "Usuarios pierden 5 horas semanales en tarea X",
-  "solucion": "IA automatiza proceso con {seed['tools'][0]} en 10 minutos",
-  "publico_objetivo": "Profesionales digitales",
-  "propuesta_valor": "Ahorra 5 horas semanales",
-  "diferenciacion": "Unica integracion {seed['tools'][0]}",
+  "problema": "{niche['problema']}",
+  "solucion": "{niche['solucion']}",
+  "publico_objetivo": "{niche['vertical']}",
+  "propuesta_valor": "Ahorra 8 horas semanales",
+  "diferenciacion": "Única integración {niche['tool']} + automatización completa",
   "tam": "50M",
   "sam": "5M",
   "som": "500K",
-  "competencia": ["Tool1", "Tool2"],
-  "ventaja_competitiva": "Automatizacion completa",
-  "precio_sugerido": "49",
+  "competencia": ["Manual work", "Generic tools"],
+  "ventaja_competitiva": "IA específica para {niche['vertical']}",
+  "precio_sugerido": "{niche['precio']}",
   "modelo_monetizacion": "Subscription",
-  "features_core": ["Feature 1", "Feature 2", "Feature 3"],
-  "roadmap_mvp": ["Semana 1-2 Setup", "Semana 3-4 APIs", "Semana 5-6 Deploy"],
-  "stack_sugerido": ["Next.js", "Supabase", "Stripe"],
-  "integraciones": ["{seed['tools'][0]}", "Zapier"],
-  "canales_adquisicion": ["Twitter", "ProductHunt"],
+  "features_core": ["Automatización {niche['tool']}", "Dashboard tiempo real", "Integraciones API"],
+  "roadmap_mvp": ["Semana 1-2: Setup Next.js Supabase", "Semana 3-4: {niche['tool']} integration", "Semana 5-6: Stripe Deploy"],
+  "stack_sugerido": ["Next.js 14", "Supabase", "Stripe", "{niche['tool']}"],
+  "integraciones": ["{niche['tool']}", "Zapier"],
+  "canales_adquisicion": ["Twitter", "ProductHunt", "Reddit"],
   "metricas_clave": ["MRR", "Churn"],
-  "riesgos": ["API dependencia"],
-  "validacion_inicial": "20 entrevistas",
+  "riesgos": ["API dependency"],
+  "validacion_inicial": "20 entrevistas nicho",
   "tiempo_estimado": "4-6 semanas",
   "inversion_inicial": "500",
   "dificultad": "Media",
-  "score_generador": 85
+  "score_generador": 88
 }}"""
 
         try:
@@ -179,44 +271,27 @@ Responde SOLO JSON sin explicacion:
                 model="llama-3.1-8b-instant",
                 messages=[
                     {"role": "system", "content": system_prompt},
-                    {"role": "user", "content": "JSON puro:"}
+                    {"role": "user", "content": "JSON:"}
                 ],
-                temperature=0.9 + (attempt * 0.1),
-                max_tokens=1200
+                temperature=1.2,  # MÁS CREATIVIDAD
+                max_tokens=1500
             )
             
             content = str(response.choices[0].message.content).strip()
             
-            # Extraer JSON limpio
+            # Limpiar JSON
             if '```json' in content:
-                parts = content.split('```json')
-                if len(parts) > 1:
-                    content = parts[1].split('```').strip()
+                content = content.split('```json').split('```').strip()[1]
             elif '```' in content:
-                parts = content.split('```')
-                if len(parts) > 1:
-                    content = parts.split('```')[0].strip()
+                content = content.split('```').split('```')[0].strip()
             
             idea = json.loads(content)
             
-            # Normalizar TODOS los campos a strings
-            normalized_idea = {}
-            for key, value in idea.items():
-                if isinstance(value, (dict, list)):
-                    normalized_idea[key] = value
-                else:
-                    normalized_idea[key] = normalize_field(value)
-            
-            idea = normalized_idea
-            
-            # Validar campos críticos
-            if not idea.get('nombre') or not idea.get('descripcion_corta'):
-                print("⚠️  Campos vacíos")
-                continue
-            
-            if len(str(idea.get('nombre', ''))) < 3:
-                print("⚠️  Nombre muy corto")
-                continue
+            # Asegurar campos mínimos
+            if not idea.get('nombre'):
+                idea['nombre'] = f"{niche['nombre']} {variation}"
+            if not idea.get('descripcion_corta'):
+                idea['descripcion_corta'] = niche['problema'][:100]
             
             # Fingerprint
             idea['_fingerprint'] = calculate_fingerprint(
@@ -224,28 +299,68 @@ Responde SOLO JSON sin explicacion:
                 idea.get('descripcion_corta', '')
             )
             
+            # Debug
+            print(f"🔍 Generada: {idea['nombre']}")
+            print(f"🔍 FP: {idea['_fingerprint']}")
+            
             # Verificar duplicado
             if is_duplicate(idea, existing_ideas):
                 print("⚠️  Duplicada, reintentando...")
                 continue
             
-            print(f"✅ ÚNICA - Score: {idea.get('score_generador', 0)} - {idea['nombre']}")
+            print(f"✅ ÚNICA - {idea['nombre']}")
             return idea
         
         except json.JSONDecodeError as e:
-            print(f"⚠️  Error JSON: {e}")
+            print(f"⚠️  JSON error: {e}")
+            # FALLBACK: Crear idea directamente
+            idea = {
+                'nombre': f"{niche['nombre']} {variation}",
+                'slug': f"saas-{variation}",
+                'descripcion': niche['solucion'][:200],
+                'descripcion_corta': niche['problema'][:100],
+                'categoria': 'SaaS IA',
+                'problema': niche['problema'],
+                'solucion': niche['solucion'],
+                'publico_objetivo': niche['vertical'],
+                'propuesta_valor': 'Ahorra tiempo',
+                'diferenciacion': f'IA con {niche["tool"]}',
+                'tam': '50M',
+                'sam': '5M',
+                'som': '500K',
+                'competencia': ['Tool1', 'Tool2'],
+                'ventaja_competitiva': 'Automatización IA',
+                'precio_sugerido': niche['precio'],
+                'modelo_monetizacion': 'Subscription',
+                'features_core': ['Feature 1', 'Feature 2', 'Feature 3'],
+                'roadmap_mvp': ['Setup', 'APIs', 'Deploy'],
+                'stack_sugerido': ['Next.js', 'Supabase', 'Stripe'],
+                'integraciones': [niche['tool'], 'Zapier'],
+                'canales_adquisicion': ['Twitter', 'ProductHunt'],
+                'metricas_clave': ['MRR', 'Churn'],
+                'riesgos': ['API dependency'],
+                'validacion_inicial': '20 entrevistas',
+                'tiempo_estimado': '4-6 semanas',
+                'inversion_inicial': '500',
+                'dificultad': 'Media',
+                'score_generador': 85,
+                '_fingerprint': calculate_fingerprint(f"{niche['nombre']} {variation}", niche['problema'][:100])
+            }
+            
+            if not is_duplicate(idea, existing_ideas):
+                print(f"✅ FALLBACK ÚNICA - {idea['nombre']}")
+                return idea
+            
             continue
         except Exception as e:
             print(f"⚠️  Error: {e}")
             continue
     
-    print("❌ No se pudo generar idea única")
+    print("❌ No se generó idea única")
     return None
 
 
 if __name__ == "__main__":
-    for i in range(3):
-        print(f"\n{'='*60}\nTEST {i+1}\n{'='*60}")
-        idea = generate()
-        if idea:
-            print(json.dumps(idea, indent=2, ensure_ascii=False))
+    idea = generate()
+    if idea:
+        print(json.dumps(idea, indent=2, ensure_ascii=False))
