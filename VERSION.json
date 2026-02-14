@@ -1,10 +1,17 @@
 {
-  "version": "6.0.2",
-  "major": 6,
+  "version": "7.0.0",
+  "major": 7,
   "minor": 0,
-  "patch": 2,
+  "patch": 0,
   "date": "2026-02-14",
   "changelog": [
+    {
+      "version": "7.0.0",
+      "date": "2026-02-14",
+      "type": "major",
+      "description": "⚠️  Breaking: main_workflow.py",
+      "commit": "🔧 Fix: corregir llamada a send_telegram_notification (desde terminal)"
+    },
     {
       "version": "6.0.2",
       "date": "2026-02-14",
