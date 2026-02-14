@@ -12,7 +12,7 @@
         }
         
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             min-height: 100vh;
             padding: 2rem;
@@ -27,142 +27,195 @@
             text-align: center;
             color: white;
             margin-bottom: 3rem;
+            animation: fadeIn 0.6s ease-in;
         }
         
         .header h1 {
-            font-size: 3rem;
+            font-size: 3.5rem;
             margin-bottom: 0.5rem;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+        }
+        
+        .header p {
+            font-size: 1.2rem;
+            opacity: 0.9;
         }
         
         .stats {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
             gap: 1.5rem;
             margin-bottom: 2rem;
         }
         
         .stat-card {
             background: white;
-            padding: 1.5rem;
-            border-radius: 12px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            padding: 2rem;
+            border-radius: 16px;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.15);
+            transition: transform 0.3s, box-shadow 0.3s;
+            animation: slideUp 0.6s ease-out;
+        }
+        
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 32px rgba(0,0,0,0.2);
         }
         
         .stat-card h3 {
-            font-size: 0.9rem;
+            font-size: 0.95rem;
             color: #666;
-            margin-bottom: 0.5rem;
+            margin-bottom: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
         }
         
         .stat-card .number {
-            font-size: 2.5rem;
+            font-size: 3rem;
             font-weight: bold;
-            color: #667eea;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .download-section {
+            text-align: center;
+            margin-bottom: 2rem;
         }
         
         .download-btn {
-            display: inline-block;
-            background: #28a745;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.75rem;
+            background: linear-gradient(135deg, #28a745, #20c997);
             color: white;
-            padding: 1rem 2rem;
-            border-radius: 8px;
+            padding: 1.25rem 2.5rem;
+            border-radius: 12px;
             text-decoration: none;
-            font-weight: bold;
+            font-weight: 600;
             font-size: 1.1rem;
-            margin-bottom: 2rem;
             transition: all 0.3s;
-            box-shadow: 0 4px 12px rgba(40, 167, 69, 0.3);
+            box-shadow: 0 4px 16px rgba(40, 167, 69, 0.3);
         }
         
         .download-btn:hover {
-            background: #218838;
-            transform: translateY(-2px);
-            box-shadow: 0 6px 16px rgba(40, 167, 69, 0.4);
+            transform: translateY(-3px);
+            box-shadow: 0 8px 24px rgba(40, 167, 69, 0.4);
         }
         
         .ideas-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            grid-template-columns: repeat(auto-fill, minmax(380px, 1fr));
             gap: 2rem;
+            animation: fadeIn 0.8s ease-in;
         }
         
         .idea-card {
             background: white;
-            border-radius: 12px;
-            padding: 1.5rem;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-            transition: transform 0.3s;
+            border-radius: 16px;
+            padding: 2rem;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.12);
+            transition: all 0.3s;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .idea-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #667eea, #764ba2);
         }
         
         .idea-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+            transform: translateY(-8px);
+            box-shadow: 0 16px 40px rgba(0,0,0,0.2);
         }
         
         .idea-header {
-            margin-bottom: 1rem;
+            margin-bottom: 1.25rem;
         }
         
         .idea-name {
-            font-size: 1.5rem;
+            font-size: 1.65rem;
             color: #667eea;
-            margin-bottom: 0.5rem;
+            margin-bottom: 0.75rem;
+            font-weight: 700;
+            line-height: 1.3;
         }
         
         .idea-category {
             display: inline-block;
-            background: #e3f2fd;
+            background: linear-gradient(135deg, #e3f2fd, #bbdefb);
             color: #1976d2;
-            padding: 0.25rem 0.75rem;
+            padding: 0.4rem 1rem;
             border-radius: 20px;
             font-size: 0.85rem;
             font-weight: 600;
         }
         
         .idea-description {
-            color: #666;
-            margin-bottom: 1rem;
-            line-height: 1.5;
+            color: #555;
+            margin: 1.25rem 0;
+            line-height: 1.7;
+            font-size: 0.95rem;
         }
         
         .idea-meta {
             display: flex;
             justify-content: space-between;
-            margin-bottom: 1rem;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            padding: 0.75rem;
+            background: #f8f9fa;
+            border-radius: 8px;
             font-size: 0.9rem;
-            color: #999;
         }
         
         .score {
             font-weight: bold;
+            font-size: 1.1rem;
             color: #28a745;
         }
         
+        .date {
+            color: #888;
+        }
+        
         .actions {
-            display: flex;
-            gap: 0.5rem;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0.75rem;
         }
         
         .btn {
-            flex: 1;
-            padding: 0.75rem;
+            padding: 0.9rem 1.25rem;
             border: none;
-            border-radius: 8px;
+            border-radius: 10px;
             font-weight: 600;
             cursor: pointer;
             transition: all 0.3s;
             text-decoration: none;
-            display: inline-block;
-            text-align: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            font-size: 0.95rem;
         }
         
         .btn-primary {
-            background: #667eea;
+            background: linear-gradient(135deg, #667eea, #764ba2);
             color: white;
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
         }
         
         .btn-primary:hover {
-            background: #5568d3;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(102, 126, 234, 0.4);
         }
         
         .btn-secondary {
@@ -172,6 +225,34 @@
         
         .btn-secondary:hover {
             background: #e0e0e0;
+            transform: translateY(-2px);
+        }
+        
+        .empty-state {
+            text-align: center;
+            color: white;
+            padding: 4rem 2rem;
+        }
+        
+        .empty-state h2 {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
         
         @media (max-width: 768px) {
@@ -180,7 +261,11 @@
             }
             
             .header h1 {
-                font-size: 2rem;
+                font-size: 2.5rem;
+            }
+            
+            .actions {
+                grid-template-columns: 1fr;
             }
         }
     </style>
@@ -189,27 +274,29 @@
     <div class="container">
         <div class="header">
             <h1>🚀 ValidationIdea</h1>
-            <p>Dashboard de Ideas SaaS Validadas con IA</p>
+            <p>Sistema Multi-Agente IA para Validación de Ideas SaaS</p>
         </div>
         
         <div class="stats">
             <div class="stat-card">
-                <h3>Total Ideas</h3>
-                <div class="number">29</div>
+                <h3>💡 Total Ideas</h3>
+                <div class="number">30</div>
             </div>
             <div class="stat-card">
-                <h3>Esta Semana</h3>
-                <div class="number">29</div>
+                <h3>📅 Esta Semana</h3>
+                <div class="number">12</div>
             </div>
             <div class="stat-card">
-                <h3>Score Promedio</h3>
-                <div class="number">70</div>
+                <h3>⭐ Score Promedio</h3>
+                <div class="number">0</div>
             </div>
         </div>
         
-        <a href="data/ideas-validadas.csv" download="ideas-validadas.csv" class="download-btn">
-            📥 Descargar CSV Completo
-        </a>
+        <div class="download-section">
+            <a href="../data/ideas-validadas.csv" download="ideas-validadas.csv" class="download-btn">
+                📥 Descargar CSV Completo
+            </a>
+        </div>
         
         <div class="ideas-grid">
 
@@ -223,14 +310,14 @@
                 
                 <div class="idea-meta">
                     <span>Score: <span class="score">70</span></span>
-                    <span>2026-02-12T20:54:15.330700</span>
+                    <span class="date">2026-02-12T20:54:15.330700</span>
                 </div>
                 
                 <div class="actions">
-                    <a href="landing-pages/idea/index.html" class="btn btn-primary" target="_blank">
+                    <a href="../landing-pages/idea/index.html" class="btn btn-primary" target="_blank">
                         🌐 Ver Landing
                     </a>
-                    <a href="informes/idea/informe-idea.md" class="btn btn-secondary" target="_blank">
+                    <a href="../informes/idea/informe-idea.md" class="btn btn-secondary" target="_blank">
                         📊 Ver Informe
                     </a>
                 </div>
@@ -246,14 +333,14 @@
                 
                 <div class="idea-meta">
                     <span>Score: <span class="score">70</span></span>
-                    <span>2026-02-12T21:59:41.393438</span>
+                    <span class="date">2026-02-12T21:59:41.393438</span>
                 </div>
                 
                 <div class="actions">
-                    <a href="landing-pages/idea/index.html" class="btn btn-primary" target="_blank">
+                    <a href="../landing-pages/idea/index.html" class="btn btn-primary" target="_blank">
                         🌐 Ver Landing
                     </a>
-                    <a href="informes/idea/informe-idea.md" class="btn btn-secondary" target="_blank">
+                    <a href="../informes/idea/informe-idea.md" class="btn btn-secondary" target="_blank">
                         📊 Ver Informe
                     </a>
                 </div>
@@ -269,14 +356,14 @@
                 
                 <div class="idea-meta">
                     <span>Score: <span class="score">70</span></span>
-                    <span>2026-02-12T23:01:57.814944</span>
+                    <span class="date">2026-02-12T23:01:57.814944</span>
                 </div>
                 
                 <div class="actions">
-                    <a href="landing-pages/idea/index.html" class="btn btn-primary" target="_blank">
+                    <a href="../landing-pages/idea/index.html" class="btn btn-primary" target="_blank">
                         🌐 Ver Landing
                     </a>
-                    <a href="informes/idea/informe-idea.md" class="btn btn-secondary" target="_blank">
+                    <a href="../informes/idea/informe-idea.md" class="btn btn-secondary" target="_blank">
                         📊 Ver Informe
                     </a>
                 </div>
@@ -292,14 +379,14 @@
                 
                 <div class="idea-meta">
                     <span>Score: <span class="score">70</span></span>
-                    <span>2026-02-13T05:12:00.015816</span>
+                    <span class="date">2026-02-13T05:12:00.015816</span>
                 </div>
                 
                 <div class="actions">
-                    <a href="landing-pages/idea/index.html" class="btn btn-primary" target="_blank">
+                    <a href="../landing-pages/idea/index.html" class="btn btn-primary" target="_blank">
                         🌐 Ver Landing
                     </a>
-                    <a href="informes/idea/informe-idea.md" class="btn btn-secondary" target="_blank">
+                    <a href="../informes/idea/informe-idea.md" class="btn btn-secondary" target="_blank">
                         📊 Ver Informe
                     </a>
                 </div>
@@ -315,14 +402,14 @@
                 
                 <div class="idea-meta">
                     <span>Score: <span class="score">70</span></span>
-                    <span>2026-02-13T07:57:41.337574</span>
+                    <span class="date">2026-02-13T07:57:41.337574</span>
                 </div>
                 
                 <div class="actions">
-                    <a href="landing-pages/idea/index.html" class="btn btn-primary" target="_blank">
+                    <a href="../landing-pages/idea/index.html" class="btn btn-primary" target="_blank">
                         🌐 Ver Landing
                     </a>
-                    <a href="informes/idea/informe-idea.md" class="btn btn-secondary" target="_blank">
+                    <a href="../informes/idea/informe-idea.md" class="btn btn-secondary" target="_blank">
                         📊 Ver Informe
                     </a>
                 </div>
@@ -338,14 +425,14 @@
                 
                 <div class="idea-meta">
                     <span>Score: <span class="score">70</span></span>
-                    <span>2026-02-13T08:37:04.477729</span>
+                    <span class="date">2026-02-13T08:37:04.477729</span>
                 </div>
                 
                 <div class="actions">
-                    <a href="landing-pages/idea/index.html" class="btn btn-primary" target="_blank">
+                    <a href="../landing-pages/idea/index.html" class="btn btn-primary" target="_blank">
                         🌐 Ver Landing
                     </a>
-                    <a href="informes/idea/informe-idea.md" class="btn btn-secondary" target="_blank">
+                    <a href="../informes/idea/informe-idea.md" class="btn btn-secondary" target="_blank">
                         📊 Ver Informe
                     </a>
                 </div>
@@ -361,14 +448,14 @@
                 
                 <div class="idea-meta">
                     <span>Score: <span class="score">70</span></span>
-                    <span>2026-02-13T09:33:47.639561</span>
+                    <span class="date">2026-02-13T09:33:47.639561</span>
                 </div>
                 
                 <div class="actions">
-                    <a href="landing-pages/idea/index.html" class="btn btn-primary" target="_blank">
+                    <a href="../landing-pages/idea/index.html" class="btn btn-primary" target="_blank">
                         🌐 Ver Landing
                     </a>
-                    <a href="informes/idea/informe-idea.md" class="btn btn-secondary" target="_blank">
+                    <a href="../informes/idea/informe-idea.md" class="btn btn-secondary" target="_blank">
                         📊 Ver Informe
                     </a>
                 </div>
@@ -384,14 +471,14 @@
                 
                 <div class="idea-meta">
                     <span>Score: <span class="score">70</span></span>
-                    <span>2026-02-13T09:36:49.994187</span>
+                    <span class="date">2026-02-13T09:36:49.994187</span>
                 </div>
                 
                 <div class="actions">
-                    <a href="landing-pages/idea/index.html" class="btn btn-primary" target="_blank">
+                    <a href="../landing-pages/idea/index.html" class="btn btn-primary" target="_blank">
                         🌐 Ver Landing
                     </a>
-                    <a href="informes/idea/informe-idea.md" class="btn btn-secondary" target="_blank">
+                    <a href="../informes/idea/informe-idea.md" class="btn btn-secondary" target="_blank">
                         📊 Ver Informe
                     </a>
                 </div>
@@ -407,14 +494,14 @@
                 
                 <div class="idea-meta">
                     <span>Score: <span class="score">70</span></span>
-                    <span>2026-02-13T09:42:59.903335</span>
+                    <span class="date">2026-02-13T09:42:59.903335</span>
                 </div>
                 
                 <div class="actions">
-                    <a href="landing-pages/idea/index.html" class="btn btn-primary" target="_blank">
+                    <a href="../landing-pages/idea/index.html" class="btn btn-primary" target="_blank">
                         🌐 Ver Landing
                     </a>
-                    <a href="informes/idea/informe-idea.md" class="btn btn-secondary" target="_blank">
+                    <a href="../informes/idea/informe-idea.md" class="btn btn-secondary" target="_blank">
                         📊 Ver Informe
                     </a>
                 </div>
@@ -430,14 +517,14 @@
                 
                 <div class="idea-meta">
                     <span>Score: <span class="score">70</span></span>
-                    <span>2026-02-13T10:28:14.283977</span>
+                    <span class="date">2026-02-13T10:28:14.283977</span>
                 </div>
                 
                 <div class="actions">
-                    <a href="landing-pages/idea/index.html" class="btn btn-primary" target="_blank">
+                    <a href="../landing-pages/idea/index.html" class="btn btn-primary" target="_blank">
                         🌐 Ver Landing
                     </a>
-                    <a href="informes/idea/informe-idea.md" class="btn btn-secondary" target="_blank">
+                    <a href="../informes/idea/informe-idea.md" class="btn btn-secondary" target="_blank">
                         📊 Ver Informe
                     </a>
                 </div>
@@ -453,14 +540,14 @@
                 
                 <div class="idea-meta">
                     <span>Score: <span class="score">70</span></span>
-                    <span>2026-02-13T14:28:57.541304</span>
+                    <span class="date">2026-02-13T14:28:57.541304</span>
                 </div>
                 
                 <div class="actions">
-                    <a href="landing-pages/idea/index.html" class="btn btn-primary" target="_blank">
+                    <a href="../landing-pages/idea/index.html" class="btn btn-primary" target="_blank">
                         🌐 Ver Landing
                     </a>
-                    <a href="informes/idea/informe-idea.md" class="btn btn-secondary" target="_blank">
+                    <a href="../informes/idea/informe-idea.md" class="btn btn-secondary" target="_blank">
                         📊 Ver Informe
                     </a>
                 </div>
@@ -476,14 +563,14 @@
                 
                 <div class="idea-meta">
                     <span>Score: <span class="score">70</span></span>
-                    <span>2026-02-13T15:52:44.052258</span>
+                    <span class="date">2026-02-13T15:52:44.052258</span>
                 </div>
                 
                 <div class="actions">
-                    <a href="landing-pages/idea/index.html" class="btn btn-primary" target="_blank">
+                    <a href="../landing-pages/idea/index.html" class="btn btn-primary" target="_blank">
                         🌐 Ver Landing
                     </a>
-                    <a href="informes/idea/informe-idea.md" class="btn btn-secondary" target="_blank">
+                    <a href="../informes/idea/informe-idea.md" class="btn btn-secondary" target="_blank">
                         📊 Ver Informe
                     </a>
                 </div>
@@ -499,14 +586,14 @@
                 
                 <div class="idea-meta">
                     <span>Score: <span class="score">70</span></span>
-                    <span>2026-02-13T16:37:35.672574</span>
+                    <span class="date">2026-02-13T16:37:35.672574</span>
                 </div>
                 
                 <div class="actions">
-                    <a href="landing-pages/idea/index.html" class="btn btn-primary" target="_blank">
+                    <a href="../landing-pages/idea/index.html" class="btn btn-primary" target="_blank">
                         🌐 Ver Landing
                     </a>
-                    <a href="informes/idea/informe-idea.md" class="btn btn-secondary" target="_blank">
+                    <a href="../informes/idea/informe-idea.md" class="btn btn-secondary" target="_blank">
                         📊 Ver Informe
                     </a>
                 </div>
@@ -522,14 +609,14 @@
                 
                 <div class="idea-meta">
                     <span>Score: <span class="score">70</span></span>
-                    <span>2026-02-13T16:45:16.134175</span>
+                    <span class="date">2026-02-13T16:45:16.134175</span>
                 </div>
                 
                 <div class="actions">
-                    <a href="landing-pages/idea/index.html" class="btn btn-primary" target="_blank">
+                    <a href="../landing-pages/idea/index.html" class="btn btn-primary" target="_blank">
                         🌐 Ver Landing
                     </a>
-                    <a href="informes/idea/informe-idea.md" class="btn btn-secondary" target="_blank">
+                    <a href="../informes/idea/informe-idea.md" class="btn btn-secondary" target="_blank">
                         📊 Ver Informe
                     </a>
                 </div>
@@ -545,14 +632,14 @@
                 
                 <div class="idea-meta">
                     <span>Score: <span class="score">70</span></span>
-                    <span>2026-02-13T19:30:03.065114</span>
+                    <span class="date">2026-02-13T19:30:03.065114</span>
                 </div>
                 
                 <div class="actions">
-                    <a href="landing-pages/idea/index.html" class="btn btn-primary" target="_blank">
+                    <a href="../landing-pages/idea/index.html" class="btn btn-primary" target="_blank">
                         🌐 Ver Landing
                     </a>
-                    <a href="informes/idea/informe-idea.md" class="btn btn-secondary" target="_blank">
+                    <a href="../informes/idea/informe-idea.md" class="btn btn-secondary" target="_blank">
                         📊 Ver Informe
                     </a>
                 </div>
@@ -568,14 +655,14 @@
                 
                 <div class="idea-meta">
                     <span>Score: <span class="score">70</span></span>
-                    <span>2026-02-13T21:07:33.407632</span>
+                    <span class="date">2026-02-13T21:07:33.407632</span>
                 </div>
                 
                 <div class="actions">
-                    <a href="landing-pages/idea/index.html" class="btn btn-primary" target="_blank">
+                    <a href="../landing-pages/idea/index.html" class="btn btn-primary" target="_blank">
                         🌐 Ver Landing
                     </a>
-                    <a href="informes/idea/informe-idea.md" class="btn btn-secondary" target="_blank">
+                    <a href="../informes/idea/informe-idea.md" class="btn btn-secondary" target="_blank">
                         📊 Ver Informe
                     </a>
                 </div>
@@ -591,14 +678,14 @@
                 
                 <div class="idea-meta">
                     <span>Score: <span class="score">70</span></span>
-                    <span>2026-02-13T22:05:00.456914</span>
+                    <span class="date">2026-02-13T22:05:00.456914</span>
                 </div>
                 
                 <div class="actions">
-                    <a href="landing-pages/idea/index.html" class="btn btn-primary" target="_blank">
+                    <a href="../landing-pages/idea/index.html" class="btn btn-primary" target="_blank">
                         🌐 Ver Landing
                     </a>
-                    <a href="informes/idea/informe-idea.md" class="btn btn-secondary" target="_blank">
+                    <a href="../informes/idea/informe-idea.md" class="btn btn-secondary" target="_blank">
                         📊 Ver Informe
                     </a>
                 </div>
@@ -614,14 +701,14 @@
                 
                 <div class="idea-meta">
                     <span>Score: <span class="score">70</span></span>
-                    <span>2026-02-13T23:46:23.499090</span>
+                    <span class="date">2026-02-13T23:46:23.499090</span>
                 </div>
                 
                 <div class="actions">
-                    <a href="landing-pages/idea/index.html" class="btn btn-primary" target="_blank">
+                    <a href="../landing-pages/idea/index.html" class="btn btn-primary" target="_blank">
                         🌐 Ver Landing
                     </a>
-                    <a href="informes/idea/informe-idea.md" class="btn btn-secondary" target="_blank">
+                    <a href="../informes/idea/informe-idea.md" class="btn btn-secondary" target="_blank">
                         📊 Ver Informe
                     </a>
                 </div>
@@ -637,14 +724,14 @@
                 
                 <div class="idea-meta">
                     <span>Score: <span class="score">70</span></span>
-                    <span>2026-02-14T04:59:09.583812</span>
+                    <span class="date">2026-02-14T04:59:09.583812</span>
                 </div>
                 
                 <div class="actions">
-                    <a href="landing-pages/idea/index.html" class="btn btn-primary" target="_blank">
+                    <a href="../landing-pages/idea/index.html" class="btn btn-primary" target="_blank">
                         🌐 Ver Landing
                     </a>
-                    <a href="informes/idea/informe-idea.md" class="btn btn-secondary" target="_blank">
+                    <a href="../informes/idea/informe-idea.md" class="btn btn-secondary" target="_blank">
                         📊 Ver Informe
                     </a>
                 </div>
@@ -660,14 +747,14 @@
                 
                 <div class="idea-meta">
                     <span>Score: <span class="score">70</span></span>
-                    <span>2026-02-14T07:22:38.663285</span>
+                    <span class="date">2026-02-14T07:22:38.663285</span>
                 </div>
                 
                 <div class="actions">
-                    <a href="landing-pages/idea/index.html" class="btn btn-primary" target="_blank">
+                    <a href="../landing-pages/idea/index.html" class="btn btn-primary" target="_blank">
                         🌐 Ver Landing
                     </a>
-                    <a href="informes/idea/informe-idea.md" class="btn btn-secondary" target="_blank">
+                    <a href="../informes/idea/informe-idea.md" class="btn btn-secondary" target="_blank">
                         📊 Ver Informe
                     </a>
                 </div>
@@ -683,14 +770,14 @@
                 
                 <div class="idea-meta">
                     <span>Score: <span class="score">70</span></span>
-                    <span>2026-02-14T08:00:18.858343</span>
+                    <span class="date">2026-02-14T08:00:18.858343</span>
                 </div>
                 
                 <div class="actions">
-                    <a href="landing-pages/idea/index.html" class="btn btn-primary" target="_blank">
+                    <a href="../landing-pages/idea/index.html" class="btn btn-primary" target="_blank">
                         🌐 Ver Landing
                     </a>
-                    <a href="informes/idea/informe-idea.md" class="btn btn-secondary" target="_blank">
+                    <a href="../informes/idea/informe-idea.md" class="btn btn-secondary" target="_blank">
                         📊 Ver Informe
                     </a>
                 </div>
@@ -706,14 +793,14 @@
                 
                 <div class="idea-meta">
                     <span>Score: <span class="score">70</span></span>
-                    <span>2026-02-14T09:04:51.797408</span>
+                    <span class="date">2026-02-14T09:04:51.797408</span>
                 </div>
                 
                 <div class="actions">
-                    <a href="landing-pages/idea/index.html" class="btn btn-primary" target="_blank">
+                    <a href="../landing-pages/idea/index.html" class="btn btn-primary" target="_blank">
                         🌐 Ver Landing
                     </a>
-                    <a href="informes/idea/informe-idea.md" class="btn btn-secondary" target="_blank">
+                    <a href="../informes/idea/informe-idea.md" class="btn btn-secondary" target="_blank">
                         📊 Ver Informe
                     </a>
                 </div>
@@ -729,14 +816,14 @@
                 
                 <div class="idea-meta">
                     <span>Score: <span class="score">70</span></span>
-                    <span>2026-02-14T09:58:35.491956</span>
+                    <span class="date">2026-02-14T09:58:35.491956</span>
                 </div>
                 
                 <div class="actions">
-                    <a href="landing-pages/idea/index.html" class="btn btn-primary" target="_blank">
+                    <a href="../landing-pages/idea/index.html" class="btn btn-primary" target="_blank">
                         🌐 Ver Landing
                     </a>
-                    <a href="informes/idea/informe-idea.md" class="btn btn-secondary" target="_blank">
+                    <a href="../informes/idea/informe-idea.md" class="btn btn-secondary" target="_blank">
                         📊 Ver Informe
                     </a>
                 </div>
@@ -752,14 +839,14 @@
                 
                 <div class="idea-meta">
                     <span>Score: <span class="score">70</span></span>
-                    <span>2026-02-14T12:04:44.267442</span>
+                    <span class="date">2026-02-14T12:04:44.267442</span>
                 </div>
                 
                 <div class="actions">
-                    <a href="landing-pages/idea/index.html" class="btn btn-primary" target="_blank">
+                    <a href="../landing-pages/idea/index.html" class="btn btn-primary" target="_blank">
                         🌐 Ver Landing
                     </a>
-                    <a href="informes/idea/informe-idea.md" class="btn btn-secondary" target="_blank">
+                    <a href="../informes/idea/informe-idea.md" class="btn btn-secondary" target="_blank">
                         📊 Ver Informe
                     </a>
                 </div>
@@ -775,14 +862,14 @@
                 
                 <div class="idea-meta">
                     <span>Score: <span class="score">70</span></span>
-                    <span>2026-02-14T12:31:53.275504</span>
+                    <span class="date">2026-02-14T12:31:53.275504</span>
                 </div>
                 
                 <div class="actions">
-                    <a href="landing-pages/idea/index.html" class="btn btn-primary" target="_blank">
+                    <a href="../landing-pages/idea/index.html" class="btn btn-primary" target="_blank">
                         🌐 Ver Landing
                     </a>
-                    <a href="informes/idea/informe-idea.md" class="btn btn-secondary" target="_blank">
+                    <a href="../informes/idea/informe-idea.md" class="btn btn-secondary" target="_blank">
                         📊 Ver Informe
                     </a>
                 </div>
@@ -798,14 +885,14 @@
                 
                 <div class="idea-meta">
                     <span>Score: <span class="score">70</span></span>
-                    <span>2026-02-14T12:59:53.209426</span>
+                    <span class="date">2026-02-14T12:59:53.209426</span>
                 </div>
                 
                 <div class="actions">
-                    <a href="landing-pages/idea/index.html" class="btn btn-primary" target="_blank">
+                    <a href="../landing-pages/idea/index.html" class="btn btn-primary" target="_blank">
                         🌐 Ver Landing
                     </a>
-                    <a href="informes/idea/informe-idea.md" class="btn btn-secondary" target="_blank">
+                    <a href="../informes/idea/informe-idea.md" class="btn btn-secondary" target="_blank">
                         📊 Ver Informe
                     </a>
                 </div>
@@ -821,14 +908,14 @@
                 
                 <div class="idea-meta">
                     <span>Score: <span class="score">70</span></span>
-                    <span>2026-02-14T13:56:44.308331</span>
+                    <span class="date">2026-02-14T13:56:44.308331</span>
                 </div>
                 
                 <div class="actions">
-                    <a href="landing-pages/idea/index.html" class="btn btn-primary" target="_blank">
+                    <a href="../landing-pages/idea/index.html" class="btn btn-primary" target="_blank">
                         🌐 Ver Landing
                     </a>
-                    <a href="informes/idea/informe-idea.md" class="btn btn-secondary" target="_blank">
+                    <a href="../informes/idea/informe-idea.md" class="btn btn-secondary" target="_blank">
                         📊 Ver Informe
                     </a>
                 </div>
@@ -844,14 +931,14 @@
                 
                 <div class="idea-meta">
                     <span>Score: <span class="score">70</span></span>
-                    <span>2026-02-14T14:57:11.654679</span>
+                    <span class="date">2026-02-14T14:57:11.654679</span>
                 </div>
                 
                 <div class="actions">
-                    <a href="landing-pages/idea/index.html" class="btn btn-primary" target="_blank">
+                    <a href="../landing-pages/idea/index.html" class="btn btn-primary" target="_blank">
                         🌐 Ver Landing
                     </a>
-                    <a href="informes/idea/informe-idea.md" class="btn btn-secondary" target="_blank">
+                    <a href="../informes/idea/informe-idea.md" class="btn btn-secondary" target="_blank">
                         📊 Ver Informe
                     </a>
                 </div>
@@ -867,14 +954,37 @@
                 
                 <div class="idea-meta">
                     <span>Score: <span class="score">70</span></span>
-                    <span>2026-02-14T15:51:00.598917</span>
+                    <span class="date">2026-02-14T15:51:00.598917</span>
                 </div>
                 
                 <div class="actions">
-                    <a href="landing-pages/idea/index.html" class="btn btn-primary" target="_blank">
+                    <a href="../landing-pages/idea/index.html" class="btn btn-primary" target="_blank">
                         🌐 Ver Landing
                     </a>
-                    <a href="informes/idea/informe-idea.md" class="btn btn-secondary" target="_blank">
+                    <a href="../informes/idea/informe-idea.md" class="btn btn-secondary" target="_blank">
+                        📊 Ver Informe
+                    </a>
+                </div>
+            </div>
+
+            <div class="idea-card">
+                <div class="idea-header">
+                    <h2 class="idea-name">TalentScout AI 9115</h2>
+                    <span class="idea-category">SaaS</span>
+                </div>
+                
+                <p class="idea-description">LinkedIn scraping manual de candidatos tarda 10h/semana...</p>
+                
+                <div class="idea-meta">
+                    <span>Score: <span class="score">70</span></span>
+                    <span class="date">2026-02-14T18:16:35.335553</span>
+                </div>
+                
+                <div class="actions">
+                    <a href="../landing-pages/idea/index.html" class="btn btn-primary" target="_blank">
+                        🌐 Ver Landing
+                    </a>
+                    <a href="../informes/idea/informe-idea.md" class="btn btn-secondary" target="_blank">
                         📊 Ver Informe
                     </a>
                 </div>
