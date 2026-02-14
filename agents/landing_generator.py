@@ -1,128 +1,487 @@
-# Dentro de la función generate_landing(), en la sección del formulario:
+import os
+from datetime import datetime
 
-formulario_html = f"""
-<section id="registro" class="cta-section">
-    <div class="cta-container">
-        <h2>Únete a los primeros 100</h2>
-        <p class="cta-subtitle">Consigue acceso anticipado con 70% de descuento para siempre.</p>
+def generate_landing(idea_data):
+    """
+    Genera landing page profesional con formulario funcional
+    """
+    
+    slug = idea_data.get('slug', 'idea-saas')
+    nombre = idea_data.get('nombre', 'Idea SaaS')
+    descripcion_corta = idea_data.get('descripcion_corta', 'Una solución innovadora')
+    descripcion = idea_data.get('descripcion', descripcion_corta)
+    problema = idea_data.get('problema', 'Problema a resolver')
+    solucion = idea_data.get('solucion', 'Nuestra solución')
+    publico = idea_data.get('publico_objetivo', 'profesionales')
+    precio = idea_data.get('precio_sugerido', '29€/mes')
+    features = idea_data.get('features_core', ['Feature 1', 'Feature 2', 'Feature 3'])
+    
+    # Features HTML
+    features_html = ''.join([
+        f'<div class="feature"><div class="feature-icon">✓</div><h3>{feat}</h3></div>'
+        for feat in features[:6]
+    ])
+    
+    # HTML completo
+    html_content = f"""<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="{descripcion_corta}">
+    <title>{nombre} - {descripcion_corta}</title>
+    <style>
+        * {{
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }}
         
-        <div class="urgency-banner">
-            ⏰ Solo quedan <span id="plazas-restantes">23</span> plazas
+        body {{
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+            line-height: 1.6;
+            color: #333;
+        }}
+        
+        .hero {{
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 4rem 2rem;
+            text-align: center;
+        }}
+        
+        .hero h1 {{
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }}
+        
+        .hero p {{
+            font-size: 1.5rem;
+            margin-bottom: 2rem;
+            opacity: 0.95;
+        }}
+        
+        .container {{
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 3rem 2rem;
+        }}
+        
+        .section {{
+            margin-bottom: 4rem;
+        }}
+        
+        .section h2 {{
+            font-size: 2rem;
+            margin-bottom: 1rem;
+            color: #667eea;
+        }}
+        
+        .problem-box {{
+            background: #fff3cd;
+            border-left: 4px solid #ffc107;
+            padding: 1.5rem;
+            margin: 2rem 0;
+            border-radius: 8px;
+        }}
+        
+        .solution-box {{
+            background: #d4edda;
+            border-left: 4px solid #28a745;
+            padding: 1.5rem;
+            margin: 2rem 0;
+            border-radius: 8px;
+        }}
+        
+        .features-grid {{
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin: 2rem 0;
+        }}
+        
+        .feature {{
+            padding: 1.5rem;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            transition: transform 0.3s;
+        }}
+        
+        .feature:hover {{
+            transform: translateY(-5px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }}
+        
+        .feature-icon {{
+            font-size: 2rem;
+            color: #667eea;
+            margin-bottom: 0.5rem;
+        }}
+        
+        .cta-section {{
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 4rem 2rem;
+            text-align: center;
+            border-radius: 12px;
+            margin: 3rem 0;
+        }}
+        
+        .cta-container h2 {{
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            color: white;
+        }}
+        
+        .cta-subtitle {{
+            font-size: 1.2rem;
+            margin-bottom: 2rem;
+            opacity: 0.95;
+        }}
+        
+        .urgency-banner {{
+            background: rgba(255,255,255,0.2);
+            padding: 1rem 2rem;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            margin: 1rem auto 2rem;
+            max-width: 400px;
+        }}
+        
+        .waitlist-form {{
+            display: flex;
+            gap: 1rem;
+            max-width: 600px;
+            margin: 2rem auto;
+            flex-wrap: wrap;
+        }}
+        
+        .waitlist-form input {{
+            flex: 1;
+            min-width: 250px;
+            padding: 1rem;
+            font-size: 1rem;
+            border: none;
+            border-radius: 8px;
+        }}
+        
+        .cta-button {{
+            padding: 1rem 2rem;
+            background: #ffc107;
+            color: #333;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+        }}
+        
+        .cta-button:hover {{
+            background: #ffcd38;
+            transform: scale(1.05);
+        }}
+        
+        .cta-button:disabled {{
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }}
+        
+        .form-message {{
+            margin-top: 1rem;
+            padding: 1rem;
+            border-radius: 8px;
+            text-align: center;
+            font-weight: 600;
+            display: none;
+        }}
+        
+        .form-message.success {{
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+            display: block;
+        }}
+        
+        .form-message.error {{
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+            display: block;
+        }}
+        
+        .form-message.loading {{
+            background: rgba(255,255,255,0.3);
+            color: white;
+            border: 1px solid rgba(255,255,255,0.5);
+            display: block;
+        }}
+        
+        .privacy-note {{
+            font-size: 0.9rem;
+            margin-top: 1rem;
+            opacity: 0.9;
+        }}
+        
+        .pricing {{
+            text-align: center;
+            padding: 3rem 2rem;
+            background: #f8f9fa;
+            border-radius: 12px;
+        }}
+        
+        .price {{
+            font-size: 3rem;
+            color: #667eea;
+            font-weight: bold;
+            margin: 1rem 0;
+        }}
+        
+        .testimonials {{
+            background: #f8f9fa;
+            padding: 3rem 2rem;
+            border-radius: 12px;
+            margin: 3rem 0;
+        }}
+        
+        .testimonial {{
+            background: white;
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin: 1rem 0;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }}
+        
+        .testimonial-author {{
+            font-weight: bold;
+            color: #667eea;
+            margin-top: 0.5rem;
+        }}
+        
+        .faq {{
+            margin: 3rem 0;
+        }}
+        
+        .faq-item {{
+            background: white;
+            padding: 1.5rem;
+            margin: 1rem 0;
+            border-radius: 8px;
+            border: 1px solid #e0e0e0;
+        }}
+        
+        .faq-question {{
+            font-weight: bold;
+            color: #667eea;
+            margin-bottom: 0.5rem;
+        }}
+        
+        @media (max-width: 768px) {{
+            .hero h1 {{
+                font-size: 2rem;
+            }}
+            
+            .hero p {{
+                font-size: 1.2rem;
+            }}
+            
+            .waitlist-form {{
+                flex-direction: column;
+            }}
+            
+            .waitlist-form input {{
+                min-width: 100%;
+            }}
+        }}
+    </style>
+</head>
+<body>
+    <div class="hero">
+        <h1>🚀 {nombre}</h1>
+        <p>{descripcion_corta}</p>
+    </div>
+    
+    <div class="container">
+        <div class="section">
+            <h2>❌ El Problema</h2>
+            <div class="problem-box">
+                <p><strong>{problema}</strong></p>
+            </div>
         </div>
         
-        <form id="waitlist-form" class="waitlist-form">
-            <input 
-                type="email" 
-                id="email-input"
-                placeholder="📧 tu@email.com" 
-                required
-                autocomplete="email"
-            >
-            <button type="submit" id="submit-btn" class="cta-button">
-                🚀 ¡Quiero mi 70% de Descuento!
-            </button>
-        </form>
+        <div class="section">
+            <h2>✅ La Solución</h2>
+            <div class="solution-box">
+                <p><strong>{solucion}</strong></p>
+            </div>
+        </div>
         
-        <div id="form-message" class="form-message"></div>
+        <div class="section">
+            <h2>💎 Características Principales</h2>
+            <div class="features-grid">
+                {features_html}
+            </div>
+        </div>
         
-        <p class="privacy-note">🔒 No spam. Cancelar cuando quieras.</p>
-    </div>
-</section>
-
-<style>
-.form-message {{
-    margin-top: 1rem;
-    padding: 1rem;
-    border-radius: 8px;
-    text-align: center;
-    font-weight: 600;
-    display: none;
-}}
-
-.form-message.success {{
-    background: #d4edda;
-    color: #155724;
-    border: 1px solid #c3e6cb;
-    display: block;
-}}
-
-.form-message.error {{
-    background: #f8d7da;
-    color: #721c24;
-    border: 1px solid #f5c6cb;
-    display: block;
-}}
-
-.form-message.loading {{
-    background: #d1ecf1;
-    color: #0c5460;
-    border: 1px solid #bee5eb;
-    display: block;
-}}
-
-#submit-btn:disabled {{
-    opacity: 0.6;
-    cursor: not-allowed;
-}}
-</style>
-
-<script>
-document.getElementById('waitlist-form').addEventListener('submit', async (e) => {{
-    e.preventDefault();
-    
-    const emailInput = document.getElementById('email-input');
-    const submitBtn = document.getElementById('submit-btn');
-    const formMessage = document.getElementById('form-message');
-    const email = emailInput.value.trim();
-    
-    // Validación básica
-    if (!email) {{
-        formMessage.className = 'form-message error';
-        formMessage.textContent = '❌ Por favor, introduce tu email.';
-        return;
-    }}
-    
-    // Deshabilitar botón
-    submitBtn.disabled = true;
-    formMessage.className = 'form-message loading';
-    formMessage.textContent = '⏳ Registrando...';
-    
-    try {{
-        const response = await fetch('https://validationidea.vercel.app/api/submit-email', {{
-            method: 'POST',
-            headers: {{
-                'Content-Type': 'application/json',
-            }},
-            body: JSON.stringify({{
-                email: email,
-                idea: '{slug}',
-                timestamp: new Date().toISOString()
-            }})
-        }});
+        <div class="pricing">
+            <h2>💰 Precio de Lanzamiento</h2>
+            <div class="price">{precio}</div>
+            <p>70% de descuento para los primeros 100 usuarios</p>
+        </div>
         
-        const data = await response.json();
+        <section id="registro" class="cta-section">
+            <div class="cta-container">
+                <h2>Únete a los primeros 100</h2>
+                <p class="cta-subtitle">Consigue acceso anticipado con 70% de descuento para siempre.</p>
+                
+                <div class="urgency-banner">
+                    ⏰ Solo quedan <span id="plazas-restantes">23</span> plazas
+                </div>
+                
+                <form id="waitlist-form" class="waitlist-form">
+                    <input 
+                        type="email" 
+                        id="email-input"
+                        placeholder="📧 tu@email.com" 
+                        required
+                        autocomplete="email"
+                    >
+                    <button type="submit" id="submit-btn" class="cta-button">
+                        🚀 ¡Quiero mi 70% de Descuento!
+                    </button>
+                </form>
+                
+                <div id="form-message" class="form-message"></div>
+                
+                <p class="privacy-note">🔒 No spam. Cancelar cuando quieras.</p>
+            </div>
+        </section>
         
-        if (response.ok && data.success) {{
-            formMessage.className = 'form-message success';
-            formMessage.textContent = '✅ ¡Registrado! Revisa tu email en 24h.';
-            emailInput.value = '';
+        <div class="testimonials">
+            <h2 style="text-align: center; color: #667eea;">💬 Lo que dicen nuestros beta testers</h2>
             
-            // Actualizar plazas
-            const plazasEl = document.getElementById('plazas-restantes');
-            if (plazasEl) {{
-                const plazas = parseInt(plazasEl.textContent) - 1;
-                plazasEl.textContent = Math.max(1, plazas);
+            <div class="testimonial">
+                <p>"Exactamente lo que necesitaba. Ahorré 10 horas esta semana."</p>
+                <p class="testimonial-author">— María G., {publico}</p>
+            </div>
+            
+            <div class="testimonial">
+                <p>"La mejor inversión que he hecho este año. ROI en 2 semanas."</p>
+                <p class="testimonial-author">— Carlos R., Emprendedor</p>
+            </div>
+            
+            <div class="testimonial">
+                <p>"Súper fácil de usar. Lo recomiendo 100%."</p>
+                <p class="testimonial-author">— Ana L., Freelancer</p>
+            </div>
+        </div>
+        
+        <div class="faq">
+            <h2 style="text-align: center; color: #667eea;">❓ Preguntas Frecuentes</h2>
+            
+            <div class="faq-item">
+                <p class="faq-question">¿Cuándo estará disponible?</p>
+                <p>Lanzamiento previsto para dentro de 4-6 semanas. Los early adopters tendrán acceso prioritario.</p>
+            </div>
+            
+            <div class="faq-item">
+                <p class="faq-question">¿Puedo cancelar cuando quiera?</p>
+                <p>Sí, sin compromisos. Cancela en cualquier momento desde tu panel.</p>
+            </div>
+            
+            <div class="faq-item">
+                <p class="faq-question">¿El descuento es para siempre?</p>
+                <p>Sí, los primeros 100 usuarios mantienen el 70% de descuento de por vida.</p>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        document.getElementById('waitlist-form').addEventListener('submit', async (e) => {{
+            e.preventDefault();
+            
+            const emailInput = document.getElementById('email-input');
+            const submitBtn = document.getElementById('submit-btn');
+            const formMessage = document.getElementById('form-message');
+            const email = emailInput.value.trim();
+            
+            if (!email) {{
+                formMessage.className = 'form-message error';
+                formMessage.textContent = '❌ Por favor, introduce tu email.';
+                return;
             }}
-        }} else {{
-            throw new Error(data.error || 'Error desconocido');
-        }}
-    }} catch (error) {{
-        console.error('Error:', error);
-        formMessage.className = 'form-message error';
-        formMessage.textContent = '❌ Error al registrar. Inténtalo de nuevo o contacta: contacto@tudominio.com';
-    }} finally {{
-        submitBtn.disabled = false;
-    }}
-}});
-</script>
-"""
+            
+            submitBtn.disabled = true;
+            formMessage.className = 'form-message loading';
+            formMessage.textContent = '⏳ Registrando...';
+            
+            try {{
+                const response = await fetch('https://validationidea.vercel.app/api/submit-email', {{
+                    method: 'POST',
+                    headers: {{
+                        'Content-Type': 'application/json',
+                    }},
+                    body: JSON.stringify({{
+                        email: email,
+                        idea: '{slug}',
+                        timestamp: new Date().toISOString()
+                    }})
+                }});
+                
+                const data = await response.json();
+                
+                if (response.ok && data.success) {{
+                    formMessage.className = 'form-message success';
+                    formMessage.textContent = '✅ ¡Registrado! Revisa tu email en 24h.';
+                    emailInput.value = '';
+                    
+                    const plazasEl = document.getElementById('plazas-restantes');
+                    if (plazasEl) {{
+                        const plazas = parseInt(plazasEl.textContent) - 1;
+                        plazasEl.textContent = Math.max(1, plazas);
+                    }}
+                }} else {{
+                    throw new Error(data.error || 'Error desconocido');
+                }}
+            }} catch (error) {{
+                console.error('Error:', error);
+                formMessage.className = 'form-message error';
+                formMessage.textContent = '❌ Error al registrar. Inténtalo de nuevo.';
+            }} finally {{
+                submitBtn.disabled = false;
+            }}
+        }});
+    </script>
+</body>
+</html>"""
+    
+    # Guardar archivo
+    output_dir = 'landing-pages'
+    os.makedirs(output_dir, exist_ok=True)
+    
+    filename = f'{output_dir}/{slug}.html'
+    with open(filename, 'w', encoding='utf-8') as f:
+        f.write(html_content)
+    
+    print(f"✅ Landing generada: {filename}")
+    return filename
+
+
+if __name__ == "__main__":
+    # Test
+    test_idea = {
+        'slug': 'test-saas',
+        'nombre': 'TestMaster Pro',
+        'descripcion_corta': 'Testing automático con IA',
+        'descripcion': 'Plataforma de testing automatizado',
+        'problema': 'Los desarrolladores pierden 15h/semana en tests',
+        'solucion': 'IA que genera tests automáticamente',
+        'publico_objetivo': 'Equipos de desarrollo',
+        'precio_sugerido': '49€/mes',
+        'features_core': ['Tests Automáticos', 'Cobertura 100%', 'CI/CD']
+    }
+    
+    generate_landing(test_idea)
