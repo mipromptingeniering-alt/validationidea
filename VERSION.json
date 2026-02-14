@@ -1,10 +1,17 @@
 {
-  "version": "2.0.8",
+  "version": "2.0.9",
   "major": 2,
   "minor": 0,
-  "patch": 8,
+  "patch": 9,
   "date": "2026-02-14",
   "changelog": [
+    {
+      "version": "2.0.9",
+      "date": "2026-02-14",
+      "type": "patch",
+      "description": "🔧 Fix: tests/__init__.py",
+      "commit": "Create __init__.py"
+    },
     {
       "version": "2.0.8",
       "date": "2026-02-14",
