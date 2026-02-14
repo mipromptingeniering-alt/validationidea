@@ -1,10 +1,17 @@
 {
-  "version": "5.0.9",
-  "major": 5,
+  "version": "6.0.0",
+  "major": 6,
   "minor": 0,
-  "patch": 9,
+  "patch": 0,
   "date": "2026-02-14",
   "changelog": [
+    {
+      "version": "6.0.0",
+      "date": "2026-02-14",
+      "type": "major",
+      "description": "⚠️  Breaking: agents/generator_agent.py",
+      "commit": "🔧 Fix: actualizar a llama-3.3-70b-versatile (modelo 3.1 descontinuado)"
+    },
     {
       "version": "5.0.9",
       "date": "2026-02-14",
