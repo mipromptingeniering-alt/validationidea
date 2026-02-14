@@ -167,6 +167,41 @@ def main():
     print("-"*80)
     
     save_idea(idea)
+    # 5. Notificar Telegram
+    print("\n" + "-"*80)
+    print("PASO 5: NOTIFICAR TELEGRAM")
+    print("-"*80)
+    
+    try:
+        from agents import telegram_notifier
+        
+        mensaje = f"""?? NUEVA IDEA GENERADA
+
+?? **{idea['nombre']}**
+
+?? Precio: €{idea['precio_sugerido']}
+?? Tiempo: {idea['tiempo_estimado']}
+?? Revenue 6m: {idea['revenue_6_meses']}
+"""
+        
+        if idea.get('viral_score'):
+            mensaje += f"""
+?? **OPORTUNIDAD VIRAL**
+Score: {idea['viral_score']}/100
+Urgencia: {idea['urgency']}
+Ventana: {idea['window']}
+Fuente: {idea.get('source_type', 'N/A')}
+"""
+        
+        mensaje += f"""
+?? GitHub: https://github.com/mipromptingeniering-alt/validationidea/blob/main/data/ideas.json
+"""
+        
+        telegram_notifier.send_message(mensaje)
+        print("? Notificación enviada a Telegram")
+    
+    except Exception as e:
+        print(f"?? Error Telegram: {e}")
     
     # 6. Actualizar cache
     update_cache()
