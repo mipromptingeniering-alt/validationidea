@@ -1,10 +1,17 @@
 {
-  "version": "2.0.4",
+  "version": "2.0.5",
   "major": 2,
   "minor": 0,
-  "patch": 4,
+  "patch": 5,
   "date": "2026-02-14",
   "changelog": [
+    {
+      "version": "2.0.5",
+      "date": "2026-02-14",
+      "type": "patch",
+      "description": "🔧 Fix: .github/workflows/test.yml",
+      "commit": "Create test.yml"
+    },
     {
       "version": "2.0.4",
       "date": "2026-02-14",
