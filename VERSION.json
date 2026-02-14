@@ -1,10 +1,17 @@
 {
-  "version": "5.0.1",
+  "version": "5.0.2",
   "major": 5,
   "minor": 0,
-  "patch": 1,
+  "patch": 2,
   "date": "2026-02-14",
   "changelog": [
+    {
+      "version": "5.0.2",
+      "date": "2026-02-14",
+      "type": "patch",
+      "description": "🔧 Fix: .env",
+      "commit": "Create .env"
+    },
     {
       "version": "5.0.1",
       "date": "2026-02-14",
