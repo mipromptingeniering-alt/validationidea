@@ -4,7 +4,7 @@ from groq import Groq
 
 def load_config():
     return {
-        'min_score_critico': 50,  # Muy permisivo
+        'min_score_critico': 50,
         'min_score_promedio': 60,
         'max_gap': 35
     }
@@ -15,39 +15,35 @@ def critique(idea):
     
     client = Groq(api_key=os.environ.get("GROQ_API_KEY"))
     
-    system_prompt = """Evalúa esta idea SaaS con criterios REALISTAS para 2026.
+    # PROMPT CORTO
+    system_prompt = """Evalúa idea SaaS 2026.
 
-✅ APRUEBA (score 60-100) si:
-- Problema específico y medible
-- Solución técnicamente viable
-- Stack moderno (Next.js, APIs, IA)
-- Mercado > 10M€
-- MVP en 4-8 semanas
+Aprueba (60-100) si:
+- Problema claro
+- Stack moderno
+- Mercado >10M€
 
-❌ RECHAZA (score 0-59) solo si:
-- Problema muy vago
-- Técnicamente imposible
-- Mercado < 5M€
-- Ya existe solución exacta gratis
+Rechaza (0-59) solo si:
+- Problema vago
+- Imposible técnicamente
 
-Responde en JSON:
+JSON:
 {
   "score_critico": 75,
-  "puntos_fuertes": ["Punto 1", "Punto 2", "Punto 3"],
-  "puntos_debiles": ["Punto 1", "Punto 2"],
-  "recomendaciones": ["Rec 1", "Rec 2"],
-  "resumen": "Buena idea porque [razón]."
+  "puntos_fuertes": ["Punto 1", "Punto 2"],
+  "puntos_debiles": ["Punto 1"],
+  "resumen": "Buena idea."
 }"""
     
     try:
         response = client.chat.completions.create(
-            model="llama-3.3-70b-versatile",
+            model="llama-3.1-8b-instant",  # Mismo modelo
             messages=[
                 {"role": "system", "content": system_prompt},
-                {"role": "user", "content": json.dumps(idea, ensure_ascii=False)}
+                {"role": "user", "content": f"Idea: {idea.get('nombre')} - {idea.get('descripcion_corta')}"}
             ],
             temperature=0.3,
-            max_tokens=1000
+            max_tokens=500  # Muy reducido
         )
         
         content = response.choices[0].message.content.strip()
@@ -68,7 +64,7 @@ Responde en JSON:
             'score_critico': 65,
             'puntos_fuertes': ['Idea viable'],
             'puntos_debiles': [],
-            'resumen': 'Idea con potencial'
+            'resumen': 'Potencial'
         }
 
 def decide_publish(idea, critique, config):
@@ -77,7 +73,7 @@ def decide_publish(idea, critique, config):
     avg = (score_gen + score_crit) / 2
     
     if score_crit >= 50 and avg >= 60:
-        print(f"✅ PUBLICAR - Gen:{score_gen} Crit:{score_crit} Avg:{int(avg)}")
+        print(f"✅ PUBLICAR - Gen:{score_gen} Crit:{score_crit}")
         return True
     
     print(f"❌ RECHAZAR - Gen:{score_gen} Crit:{score_crit}")
