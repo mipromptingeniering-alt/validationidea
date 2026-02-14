@@ -319,7 +319,7 @@ JSON sin markdown:
 
         try:
             response = client.chat.completions.create(
-                model="llama-3.1-70b-versatile",
+                model="llama-3.3-70b-versatile",
                 messages=[
                     {"role": "system", "content": "Eres experto en productos digitales monetizables. Generas variaciones únicas y específicas."},
                     {"role": "user", "content": prompt}
