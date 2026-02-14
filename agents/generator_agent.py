@@ -1,12 +1,12 @@
 import os
 import json
 import hashlib
+import csv
 from groq import Groq
 from difflib import SequenceMatcher
 
-# Configuración
 MAX_ATTEMPTS = 5
-SIMILARITY_THRESHOLD = 0.40  # Bajado de 0.60 a 0.40 (más permisivo)
+SIMILARITY_THRESHOLD = 0.35  # Más permisivo (antes 0.40)
 
 def load_config():
     config_file = 'config/generator_config.json'
@@ -20,19 +20,34 @@ def load_config():
     }
 
 def load_existing_ideas():
+    """Carga ideas usando CSV reader (maneja comas correctamente)"""
     csv_file = 'data/ideas-validadas.csv'
     ideas = []
+    
     if os.path.exists(csv_file):
-        with open(csv_file, 'r', encoding='utf-8') as f:
-            lines = f.readlines()[1:]
-            for line in lines:
-                parts = line.strip().split(',')
-                if len(parts) >= 8:
+        try:
+            with open(csv_file, 'r', encoding='utf-8') as f:
+                reader = csv.DictReader(f)
+                for row in reader:
                     ideas.append({
-                        'nombre': parts[1].lower(),
-                        'descripcion': parts[2].lower(),
-                        'fingerprint': parts[7]
+                        'nombre': str(row.get('nombre', '')).lower().strip(),
+                        'descripcion': str(row.get('descripcion_corta', '')).lower().strip(),
+                        'fingerprint': str(row.get('fingerprint', '')).strip()
                     })
+        except Exception as e:
+            print(f"⚠️  Error leyendo CSV: {e}")
+            # Fallback a parsing manual simple
+            with open(csv_file, 'r', encoding='utf-8') as f:
+                lines = f.readlines()[1:]
+                for line in lines:
+                    parts = line.strip().split(',')
+                    if len(parts) >= 2:
+                        ideas.append({
+                            'nombre': parts[1].lower().strip(),
+                            'descripcion': parts[2].lower().strip() if len(parts) > 2 else '',
+                            'fingerprint': parts[7].strip() if len(parts) > 7 else ''
+                        })
+    
     return ideas
 
 def calculate_fingerprint(nombre, descripcion):
@@ -40,24 +55,35 @@ def calculate_fingerprint(nombre, descripcion):
     return hashlib.md5(combined.encode()).hexdigest()[:8]
 
 def is_similar(text1, text2):
+    """Compara similitud entre textos"""
+    if not text1 or not text2:
+        return False
     ratio = SequenceMatcher(None, text1.lower(), text2.lower()).ratio()
     return ratio > SIMILARITY_THRESHOLD
 
 def is_duplicate(idea, existing_ideas):
-    nombre = idea['nombre'].lower()
-    descripcion = idea['descripcion_corta'].lower()
+    """Verifica si la idea es duplicada o muy similar"""
+    nombre = str(idea.get('nombre', '')).lower().strip()
+    descripcion = str(idea.get('descripcion_corta', '')).lower().strip()
+    
+    if not nombre or not descripcion:
+        return True
+    
     fingerprint = calculate_fingerprint(nombre, descripcion)
     
     for existing in existing_ideas:
+        # Verificar fingerprint
         if existing['fingerprint'] == fingerprint:
             print(f"❌ Fingerprint duplicado: {fingerprint}")
             return True
         
-        if is_similar(nombre, existing['nombre']):
+        # Verificar nombre similar
+        if existing['nombre'] and is_similar(nombre, existing['nombre']):
             print(f"⚠️  Nombre similar: '{nombre}' ≈ '{existing['nombre']}'")
             return True
         
-        if is_similar(descripcion, existing['descripcion']):
+        # Verificar descripción similar
+        if existing['descripcion'] and is_similar(descripcion, existing['descripcion']):
             similarity = SequenceMatcher(None, descripcion, existing['descripcion']).ratio()
             print(f"⚠️  Descripción similar ({int(similarity*100)}%)")
             return True
@@ -65,9 +91,7 @@ def is_duplicate(idea, existing_ideas):
     return False
 
 def generate():
-    """
-    Genera idea SaaS INNOVADORA usando tendencias 2026 + IA
-    """
+    """Genera idea SaaS INNOVADORA"""
     print("\n🧠 Agente Generador iniciado...")
     
     client = Groq(api_key=os.environ.get("GROQ_API_KEY"))
@@ -76,114 +100,89 @@ def generate():
     
     print(f"📋 Ideas existentes: {len(existing_ideas)}")
     
-    # PROMPT MEJORADO con tendencias 2026
-    system_prompt = """Eres un experto generador de ideas SaaS INNOVADORAS para 2026.
+    system_prompt = """Eres un experto en ideas SaaS INNOVADORAS para 2026.
 
-🔥 TENDENCIAS OBLIGATORIAS 2026:
-- IA Generativa (Claude 3.5, GPT-4, Gemini, Midjourney)
+🔥 TENDENCIAS 2026:
+- IA Generativa (Claude, GPT-4, Gemini, Midjourney)
 - Agentes IA autónomos
-- Automatización con n8n, Make, Zapier
+- Automatización (n8n, Make, Zapier)
 - APIs modernas (Stripe, Notion, Airtable, Supabase)
-- No-code/Low-code tools
-- Micro-SaaS (nichos específicos)
-- Web scraping + IA
-- Análisis de datos con IA
-- Asistentes personalizados
-- Workflows inteligentes
+- No-code tools
+- Micro-SaaS nichos específicos
 
 🎯 NICHOS RENTABLES:
-- Creadores de contenido (YouTube, TikTok, LinkedIn)
-- Freelancers y solopreneurs
-- Equipos de marketing
-- Desarrolladores indie
+- Creadores contenido (YouTube, TikTok, LinkedIn)
+- Freelancers
+- Marketing teams
+- Developers
 - Emprendedores
 - Consultores
-- Coaches
 - eCommerce
-- Real Estate
-- Fitness/Health
 
-💡 CARACTERÍSTICAS CLAVE:
-1. **Problema ESPECÍFICO** (no genérico)
-2. **Combina 2-3 herramientas** (Ej: Notion API + Claude + Stripe)
-3. **Automatización clara** (ahorra X horas/semana)
-4. **Monetización simple** (precio 19-99€/mes)
-5. **MVP en 4-6 semanas**
-6. **Stack moderno** (Next.js, Supabase, Vercel, Stripe)
+💡 CARACTERÍSTICAS:
+1. Problema ESPECÍFICO
+2. Combina 2-3 herramientas
+3. Automatización clara
+4. Precio 19-99€/mes
+5. MVP 4-6 semanas
+6. Stack: Next.js, Supabase, Stripe
 
 🚫 EVITAR:
-- Ideas genéricas ("CRM para pymes")
+- Ideas genéricas
 - Sin automatización
-- Mercados saturados sin diferenciación
 - Problemas vagos
 
-📊 FORMATO JSON:
-Genera UNA idea siguiendo EXACTAMENTE este formato. Solo el JSON, sin texto adicional.
+📊 Genera JSON con esta estructura EXACTA:
 
 {
-  "nombre": "Nombre corto y pegadizo",
-  "slug": "nombre-en-minusculas-con-guiones",
-  "descripcion": "Descripción completa (2-3 frases). Debe mencionar ESPECÍFICAMENTE qué herramientas usa y qué automatiza.",
-  "descripcion_corta": "Descripción de 1 frase ultra-específica",
+  "nombre": "Nombre pegadizo",
+  "slug": "nombre-en-minusculas",
+  "descripcion": "2-3 frases. Menciona herramientas específicas y qué automatiza.",
+  "descripcion_corta": "1 frase ultra-específica",
   "categoria": "categoria",
-  "problema": "Problema específico y medible. Ej: 'Los creadores de LinkedIn pierden 8h/semana escribiendo posts manualmente'",
-  "solucion": "Solución técnica específica. Menciona APIs y herramientas. Ej: 'IA (Claude API) analiza tus mejores posts y genera 30 nuevos en tu estilo en 5 minutos'",
-  "publico_objetivo": "Nicho ultra-específico",
-  "propuesta_valor": "Ahorra X horas/semana o genera Y€ extra",
-  "diferenciacion": "Qué hace único vs competencia. Menciona integración específica.",
-  "tam": "Tamaño mercado en €",
-  "sam": "Mercado alcanzable",
-  "som": "Objetivo año 1",
-  "competencia": ["Competidor 1", "Competidor 2", "Competidor 3"],
+  "problema": "Problema específico medible con números",
+  "solucion": "Solución técnica. Menciona APIs concretas.",
+  "publico_objetivo": "Nicho específico",
+  "propuesta_valor": "Ahorra X horas o genera Y euros",
+  "diferenciacion": "Qué hace único. Integración específica.",
+  "tam": "50M€",
+  "sam": "5M€",
+  "som": "500K€",
+  "competencia": ["Comp1", "Comp2", "Comp3"],
   "ventaja_competitiva": "Por qué ganamos",
   "precio_sugerido": "49€/mes",
-  "modelo_monetizacion": "Freemium / Subscription / One-time",
+  "modelo_monetizacion": "Subscription",
   "features_core": [
-    "Feature 1: Descripción técnica (API usada)",
-    "Feature 2: Descripción técnica",
-    "Feature 3: Descripción técnica"
+    "Feature 1 con API específica",
+    "Feature 2 con tecnología",
+    "Feature 3 con integración"
   ],
   "roadmap_mvp": [
-    "Semana 1-2: Setup Next.js + Supabase + Auth",
-    "Semana 3-4: Integración APIs (especificar cuáles)",
-    "Semana 5-6: UI + Stripe + Deploy"
+    "Semana 1-2: Setup",
+    "Semana 3-4: APIs",
+    "Semana 5-6: Deploy"
   ],
-  "stack_sugerido": ["Next.js 14", "Supabase", "Stripe", "Vercel", "API específica"],
-  "integraciones": ["API 1", "API 2", "API 3"],
-  "canales_adquisicion": ["Twitter", "ProductHunt", "Reddit /r/nicho"],
-  "metricas_clave": ["MRR", "Churn", "CAC"],
-  "riesgos": ["Riesgo 1", "Riesgo 2"],
-  "validacion_inicial": "Cómo validar antes de construir",
+  "stack_sugerido": ["Next.js", "Supabase", "Stripe", "Vercel"],
+  "integraciones": ["API1", "API2"],
+  "canales_adquisicion": ["Twitter", "ProductHunt", "Reddit"],
+  "metricas_clave": ["MRR", "Churn"],
+  "riesgos": ["Riesgo1", "Riesgo2"],
+  "validacion_inicial": "Cómo validar",
   "tiempo_estimado": "4-6 semanas",
   "inversion_inicial": "0-500€",
-  "dificultad": "Baja/Media/Alta",
+  "dificultad": "Media",
   "score_generador": 85
 }
 
-🎲 EJEMPLOS DE IDEAS BUENAS:
+EJEMPLOS BUENOS:
 
-1. **LinkedInBoost AI**
-- Problema: Creadores LinkedIn escriben 8h/semana posts
-- Solución: Claude API analiza tus 20 mejores posts, aprende tu estilo, genera 30 nuevos posts + carruseles en 5 minutos
-- Stack: Next.js + Claude API + LinkedIn API + Supabase
-- Precio: 39€/mes
-- Diferenciación: Analiza engagement real vía LinkedIn API para aprender qué funciona
+**SocialBoost AI** - Claude API analiza 50 posts LinkedIn, aprende tu estilo, genera 30 posts optimizados en 5min. Diferenciación: Análisis engagement real vía LinkedIn API.
 
-2. **NotionCRM Sync**
-- Problema: Freelancers pierden clientes porque Notion no tiene CRM integrado
-- Solución: Sincronización bidireccional automática entre Notion y Pipedrive/HubSpot vía APIs. Actualización en tiempo real.
-- Stack: Next.js + Notion API + Pipedrive API + Webhooks
-- Precio: 29€/mes
-- Diferenciación: Única solución con sincronización bidireccional en tiempo real
+**ScraperFlow** - Scraping automatizado con Bright Data + IA que limpia datos + exporta a Google Sheets. Para agencias marketing. 59€/mes.
 
-3. **VideoScripter AI**
-- Problema: YouTubers tardan 3h escribiendo scripts de vídeos
-- Solución: GPT-4 analiza tus vídeos con mejor rendimiento, extrae patrón, genera scripts optimizados para CTR + timestamps + B-roll suggestions
-- Stack: Next.js + OpenAI API + YouTube API + Supabase
-- Precio: 49€/mes
-- Diferenciación: Análisis de métricas YouTube reales (CTR, retention) para optimizar scripts
+**VideoScripts AI** - GPT-4 analiza tus mejores vídeos YouTube, genera scripts con timestamps y B-roll suggestions. Para YouTubers. 39€/mes.
 
-Genera UNA idea COMPLETAMENTE NUEVA siguiendo estos principios."""
+Genera UNA idea COMPLETAMENTE NUEVA."""
 
     for attempt in range(1, MAX_ATTEMPTS + 1):
         print(f"📝 Intento {attempt}/{MAX_ATTEMPTS}...")
@@ -193,9 +192,9 @@ Genera UNA idea COMPLETAMENTE NUEVA siguiendo estos principios."""
                 model="llama-3.3-70b-versatile",
                 messages=[
                     {"role": "system", "content": system_prompt},
-                    {"role": "user", "content": f"Genera una idea SaaS INNOVADORA para 2026. Debe usar APIs modernas y resolver un problema específico. Ideas existentes a EVITAR: {[i['nombre'] for i in existing_ideas[-10:]]}"}
+                    {"role": "user", "content": f"Genera una idea SaaS innovadora. Evita estas ya existentes: {', '.join([i['nombre'] for i in existing_ideas[-10:] if i['nombre']])}"}
                 ],
-                temperature=1.1 + (attempt * 0.1),  # Más creatividad en cada intento
+                temperature=1.0 + (attempt * 0.15),
                 max_tokens=2000
             )
             
@@ -209,8 +208,16 @@ Genera UNA idea COMPLETAMENTE NUEVA siguiendo estos principios."""
             
             idea = json.loads(content)
             
+            # Validar campos requeridos
+            if not idea.get('nombre') or not idea.get('descripcion_corta'):
+                print("⚠️  Faltan campos requeridos")
+                continue
+            
             # Añadir fingerprint
-            idea['_fingerprint'] = calculate_fingerprint(idea['nombre'], idea['descripcion_corta'])
+            idea['_fingerprint'] = calculate_fingerprint(
+                str(idea.get('nombre', '')), 
+                str(idea.get('descripcion_corta', ''))
+            )
             
             # Validar unicidad
             if is_duplicate(idea, existing_ideas):
@@ -221,6 +228,9 @@ Genera UNA idea COMPLETAMENTE NUEVA siguiendo estos principios."""
             print(f"✅ {idea['nombre']}")
             return idea
         
+        except json.JSONDecodeError as e:
+            print(f"⚠️  Error JSON en intento {attempt}: {e}")
+            continue
         except Exception as e:
             print(f"⚠️  Error en intento {attempt}: {e}")
             continue
