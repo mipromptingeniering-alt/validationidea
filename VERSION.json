@@ -1,10 +1,17 @@
 {
-  "version": "2.0.5",
+  "version": "2.0.6",
   "major": 2,
   "minor": 0,
-  "patch": 5,
+  "patch": 6,
   "date": "2026-02-14",
   "changelog": [
+    {
+      "version": "2.0.6",
+      "date": "2026-02-14",
+      "type": "patch",
+      "description": "🔧 Fix: scripts/pre-commit-tests.sh",
+      "commit": "Create pre-commit-tests.sh"
+    },
     {
       "version": "2.0.5",
       "date": "2026-02-14",
