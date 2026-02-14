@@ -1,10 +1,17 @@
 {
-  "version": "2.0.10",
+  "version": "2.0.11",
   "major": 2,
   "minor": 0,
-  "patch": 10,
+  "patch": 11,
   "date": "2026-02-14",
   "changelog": [
+    {
+      "version": "2.0.11",
+      "date": "2026-02-14",
+      "type": "patch",
+      "description": "🔧 Fix: agents/trend_hunter_agent.py",
+      "commit": "Create trend_hunter_agent.py"
+    },
     {
       "version": "2.0.10",
       "date": "2026-02-14",
