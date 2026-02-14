@@ -1,4 +1,4 @@
-﻿import os
+import os
 import json
 import time
 from datetime import datetime, timedelta
@@ -224,8 +224,8 @@ def main():
         }
         
         # URLs
-        landing_url = "data/ideas.json"
-        report_url = "https://github.com/mipromptingeniering-alt/validationidea/actions"
+        landing_url = "https://github.com/mipromptingeniering-alt/validationidea/blob/main/data/ideas.json"
+        report_url = "https://github.com/mipromptingeniering-alt/validationidea/blob/main/data/viral-trends.json"
         
         # Llamar función correcta
         success = telegram_notifier.send_telegram_notification(
