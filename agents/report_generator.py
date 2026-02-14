@@ -4,7 +4,7 @@ from datetime import datetime
 from groq import Groq
 
 def generate(idea, critique):
-    """Genera informe markdown completo con opinión profesional"""
+    """Genera informe markdown en carpeta informes/slug/"""
     
     print("\n📊 Generando informe...")
     
@@ -26,9 +26,7 @@ def generate(idea, critique):
 
 ## 🎯 RESUMEN EJECUTIVO
 
-**{idea.get('descripcion_corta', 'Descripción no disponible')}**
-
-{idea.get('descripcion', 'Descripción completa no disponible')}
+{idea.get('descripcion_corta', 'Sin descripción')}
 
 ---
 
@@ -56,101 +54,37 @@ def generate(idea, critique):
 
 ---
 
-## 💰 PROPUESTA DE VALOR
-
-{idea.get('propuesta_valor', 'No especificada')}
-
----
-
-## 🚀 DIFERENCIACIÓN
-
-{idea.get('diferenciacion', 'No especificada')}
-
----
-
-## 📊 TAMAÑO DE MERCADO
-
-- **TAM (Total Addressable Market):** {idea.get('tam', 'N/A')}
-- **SAM (Serviceable Addressable Market):** {idea.get('sam', 'N/A')}
-- **SOM (Serviceable Obtainable Market):** {idea.get('som', 'N/A')}
-
----
-
-## 🏆 COMPETENCIA
-
-**Principales Competidores:**
-
-{format_list(idea.get('competencia', []))}
-
-**Ventaja Competitiva:**
-
-{idea.get('ventaja_competitiva', 'No especificada')}
-
----
-
-## 💵 MONETIZACIÓN
-
-**Precio Sugerido:** {idea.get('precio_sugerido', 'N/A')}€/mes
+## 💰 MONETIZACIÓN
 
 **Modelo:** {idea.get('modelo_monetizacion', 'No especificado')}
 
----
+**Precio:** {idea.get('precio_sugerido', 'N/A')}€
 
-## ⚙️ FEATURES CORE
-
-{format_list(idea.get('features_core', []))}
+**Proyección 6 meses:** {idea.get('revenue_6_meses', 'N/A')}
 
 ---
 
-## 🗺️ ROADMAP MVP
+## 🚀 CÓMO MONETIZAR
 
-{format_list(idea.get('roadmap_mvp', []))}
-
-**Tiempo Estimado:** {idea.get('tiempo_estimado', 'N/A')}
+{idea.get('como_monetizar', 'Vender online en marketplaces y redes sociales')}
 
 ---
 
-## 🛠️ STACK TECNOLÓGICO
+## 📈 CANALES DE VENTA
 
-{format_list(idea.get('stack_sugerido', []))}
-
----
-
-## 🔗 INTEGRACIONES
-
-{format_list(idea.get('integraciones', []))}
+{idea.get('canales_venta', 'Gumroad, Twitter, ProductHunt')}
 
 ---
 
-## 📈 CANALES ADQUISICIÓN
+## ⚙️ ESFUERZO INICIAL
 
-{format_list(idea.get('canales_adquisicion', []))}
-
----
-
-## 📊 MÉTRICAS CLAVE
-
-{format_list(idea.get('metricas_clave', []))}
-
----
-
-## ⚠️ RIESGOS
-
-{format_list(idea.get('riesgos', []))}
+{idea.get('esfuerzo_inicial', '30 horas')}
 
 ---
 
 ## ✅ VALIDACIÓN INICIAL
 
-{idea.get('validacion_inicial', 'No especificada')}
-
----
-
-## 💰 INVERSIÓN INICIAL
-
-**Estimada:** {idea.get('inversion_inicial', 'N/A')}€
-
-**Dificultad:** {idea.get('dificultad', 'Media')}
+{idea.get('validacion_inicial', '10 ventas en primeras 2 semanas')}
 
 ---
 
@@ -158,21 +92,21 @@ def generate(idea, critique):
 
 ### Puntos Fuertes
 
-{format_list(critique.get('puntos_fuertes', []))}
+{format_list(critique.get('puntos_fuertes', ['Monetización clara']))}
 
 ### Puntos Débiles
 
-{format_list(critique.get('puntos_debiles', []))}
+{format_list(critique.get('puntos_debiles', ['Requiere validación de mercado']))}
 
 ### Recomendaciones
 
-{format_list(critique.get('recomendaciones', []))}
+{format_list(critique.get('recomendaciones', ['Empezar con MVP simple']))}
 
 ---
 
 ## 📝 CONCLUSIÓN
 
-{critique.get('resumen', 'Sin resumen disponible')}
+{critique.get('resumen', 'Idea con potencial monetizable. Requiere validación con usuarios reales.')}
 
 ---
 
@@ -180,7 +114,7 @@ def generate(idea, critique):
 **Sistema Multi-Agente IA v2.0**
 """
     
-    # Guardar informe
+    # GUARDAR EN informes/slug/informe-slug.md (CORRECTO)
     output_dir = f'informes/{slug}'
     os.makedirs(output_dir, exist_ok=True)
     
@@ -194,58 +128,52 @@ def generate(idea, critique):
     return output_file
 
 def generate_professional_opinion(idea, critique):
-    """Genera opinión profesional profunda con IA"""
+    """Genera opinión profesional con IA"""
     
     print("🧠 Generando opinión profesional...")
     
-    client = Groq(api_key=os.environ.get("GROQ_API_KEY"))
-    
-    prompt = f"""Eres un experto inversor y consultor SaaS con 15 años de experiencia. Has visto lanzar cientos de startups.
+    try:
+        client = Groq(api_key=os.environ.get("GROQ_API_KEY"))
+        
+        prompt = f"""Eres un experto en monetización de productos digitales con 10 años de experiencia.
 
-Analiza esta idea SaaS y da tu opinión profesional honesta:
+Analiza este producto y da tu opinión profesional:
 
-**Idea:** {idea.get('nombre')}
+**Producto:** {idea.get('nombre')}
+**Tipo:** {idea.get('tipo_producto', 'Digital')}
 **Problema:** {idea.get('problema')}
 **Solución:** {idea.get('solucion')}
-**Mercado:** TAM {idea.get('tam')}, SAM {idea.get('sam')}
-**Precio:** {idea.get('precio_sugerido')}€/mes
-**Stack:** {', '.join(idea.get('stack_sugerido', [])[:3])}
+**Monetización:** {idea.get('modelo_monetizacion')}
 **Score:** {critique.get('score_critico')}/100
 
-Estructura tu opinión así:
+Da tu opinión en este formato:
 
 ### 🎯 Viabilidad (X/10)
-[1-2 frases sobre si es viable técnica y comercialmente]
+[1-2 frases sobre si es viable monetizarlo]
 
 ### 💰 Potencial Ingresos (X/10)
-[1-2 frases sobre potencial de generar revenue significativo]
+[1-2 frases sobre potencial revenue]
 
 ### ⚡ Velocidad Ejecución (X/10)
-[1-2 frases sobre cuán rápido se puede lanzar MVP]
-
-### 🏆 Diferenciación (X/10)
-[1-2 frases sobre cuán único es vs competencia]
+[1-2 frases sobre cuán rápido se puede crear]
 
 ### 🚨 Riesgos Principales
-- [Riesgo 1 específico]
-- [Riesgo 2 específico]
-- [Riesgo 3 específico]
+- [Riesgo 1]
+- [Riesgo 2]
 
-### 💡 Oportunidades Clave
-- [Oportunidad 1 específica]
-- [Oportunidad 2 específica]
-- [Oportunidad 3 específica]
+### 💡 Oportunidades
+- [Oportunidad 1]
+- [Oportunidad 2]
 
 ### 📊 Veredicto Final
-[3-4 frases: ¿Recomendarías invertir tiempo/dinero en esta idea? ¿Por qué sí o no? Sé directo y honesto.]
+[2-3 frases: ¿Lo harías tú? ¿Por qué?]
 
-Usa lenguaje profesional pero directo. Sin fluff, solo insights accionables."""
+Sé directo y honesto."""
 
-    try:
         response = client.chat.completions.create(
             model="llama-3.1-8b-instant",
             messages=[
-                {"role": "system", "content": "Eres un experto inversor SaaS. Das opiniones honestas y directas basadas en datos."},
+                {"role": "system", "content": "Eres un experto en monetización de productos digitales. Das opiniones honestas."},
                 {"role": "user", "content": prompt}
             ],
             temperature=0.7,
@@ -253,41 +181,32 @@ Usa lenguaje profesional pero directo. Sin fluff, solo insights accionables."""
         )
         
         opinion = response.choices[0].message.content.strip()
-        print("✅ Opinión profesional generada")
-        
         return opinion
     
     except Exception as e:
         print(f"⚠️  Error generando opinión: {e}")
-        
-        # Fallback opinion
         return f"""### 🎯 Viabilidad (7/10)
-Idea técnicamente viable con stack moderno. El problema está bien definido y la solución es implementable.
+Producto monetizable con mercado existente.
 
 ### 💰 Potencial Ingresos (6/10)
-Nicho específico con mercado mediano. Precio {idea.get('precio_sugerido')}€/mes es razonable para el valor ofrecido.
+Ingresos moderados posibles en 6 meses.
 
 ### ⚡ Velocidad Ejecución (8/10)
-MVP factible en 4-6 semanas con stack {', '.join(idea.get('stack_sugerido', [])[:2])}. Sin dependencias complejas.
+Puede crearse relativamente rápido.
 
-### 🏆 Diferenciación (6/10)
-Diferenciación moderada. Necesita enfocarse en un nicho ultra-específico para destacar.
+### 🚨 Riesgos
+- Competencia existente
+- Necesita marketing activo
 
-### 🚨 Riesgos Principales
-- Mercado potencialmente saturado
-- Dependencia de APIs de terceros
-- Competencia puede copiar features rápidamente
+### 💡 Oportunidades
+- Nicho específico con demanda
+- Escalable digitalmente
 
-### 💡 Oportunidades Clave
-- Nicho con dolor real y disposición a pagar
-- Automatización puede generar gran valor
-- Posibilidad de expansión a nichos adyacentes
-
-### 📊 Veredicto Final
-Idea sólida con potencial medio-alto. Recomendado validar con 20 entrevistas antes de invertir en desarrollo. El éxito dependerá de ejecución rápida y diferenciación clara. Con MVP funcional y primeros clientes, tiene potencial de llegar a €10K MRR en 6-12 meses."""
+### 📊 Veredicto
+Idea viable si se ejecuta rápido y se enfoca en nicho específico."""
 
 def format_list(items):
-    """Formatea lista como bullets markdown"""
+    """Formatea lista como bullets"""
     if not items:
         return "- No especificado"
     
@@ -298,16 +217,13 @@ def format_list(items):
 
 
 if __name__ == "__main__":
-    # Test
     test_idea = {
-        "nombre": "Test SaaS",
-        "slug": "test-saas",
+        "nombre": "Test Product",
+        "slug": "test-product",
+        "tipo_producto": "Template",
         "problema": "Test problema",
         "solucion": "Test solución",
-        "tam": "50M",
-        "sam": "5M",
-        "precio_sugerido": "49",
-        "stack_sugerido": ["Next.js", "Supabase"],
+        "modelo_monetizacion": "€29 one-time",
         "score_generador": 85
     }
     
