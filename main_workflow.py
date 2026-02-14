@@ -1,163 +1,195 @@
 import os
-import sys
 import json
-from datetime import datetime
-from agents import researcher_agent, generator_agent, critic_agent, optimizer_agent, report_agent, landing_generator, dashboard_generator, telegram_notifier
-def show_current_version():
-    """Muestra versión actual en logs"""
-    version_file = 'VERSION.json'
-    if os.path.exists(version_file):
-        try:
-            with open(version_file, 'r') as f:
-                version_data = json.load(f)
-                print(f"📦 ValidationIdea v{version_data['version']}")
-                return
-        except:
-            pass
-    print("📦 ValidationIdea v1.0.0")
+import time
+from datetime import datetime, timedelta
+from agents import generator_agent, researcher_agent
 
-def count_ideas():
-    csv_file = 'data/ideas-validadas.csv'
-    if os.path.exists(csv_file):
-        with open(csv_file, 'r', encoding='utf-8') as f:
-            return len(f.readlines()) - 1
-    return 0
+# ============ TREND HUNTER INTEGRATION ============
+try:
+    from agents import trend_hunter_agent
+    TRENDS_ENABLED = True
+except ImportError:
+    TRENDS_ENABLED = False
 
-def should_research():
-    return count_ideas() % 5 == 0
+# ============ CONFIGURACIÓN ============
+IDEAS_FILE = 'data/ideas.json'
+CACHE_FILE = 'data/cache.json'
+CACHE_HOURS = 24
 
-def should_optimize():
-    return count_ideas() > 0 and count_ideas() % 10 == 0
-
-def save_rejected_idea(idea, critique, reason=""):
-    os.makedirs('data', exist_ok=True)
-    rejected_file = 'data/rejected_ideas.json'
-    rejected_ideas = []
-    if os.path.exists(rejected_file):
-        with open(rejected_file, 'r', encoding='utf-8') as f:
-            rejected_ideas = json.load(f)
-    rejected_ideas.append({
-        'timestamp': datetime.now().isoformat(),
-        'idea': idea,
-        'critique': critique,
-        'reason': reason,
-        'fingerprint': idea.get('_fingerprint', '')
-    })
-    with open(rejected_file, 'w', encoding='utf-8') as f:
-        json.dump(rejected_ideas, f, indent=2, ensure_ascii=False)
-    print(f"📝 Rechazada: {idea.get('nombre')} | {reason}")
-
-def save_idea_to_csv(idea, critique):
-    os.makedirs('data', exist_ok=True)
-    csv_file = 'data/ideas-validadas.csv'
-    if not os.path.exists(csv_file):
-        with open(csv_file, 'w', encoding='utf-8') as f:
-            f.write('timestamp,nombre,descripcion_corta,score_generador,score_critico,tipo,dificultad,fingerprint\n')
-    with open(csv_file, 'a', encoding='utf-8') as f:
-        timestamp = datetime.now().isoformat()
-        nombre = idea.get('nombre', '').replace(',', ';')
-        descripcion = idea.get('descripcion_corta', '').replace(',', ';')
-        score_gen = idea.get('score_generador', 0)
-        score_crit = critique.get('score_critico', 0)
-        tipo = 'SaaS'
-        dificultad = idea.get('dificultad', 'Media')
-        fingerprint = idea.get('_fingerprint', '')
-        f.write(f'{timestamp},{nombre},{descripcion},{score_gen},{score_crit},{tipo},{dificultad},{fingerprint}\n')
-    print(f"✅ Guardada: {nombre} | Gen:{score_gen} Crit:{score_crit}")
-
-def generate_with_feedback(max_iterations=3):
-    config = generator_agent.load_config()
-    
-    for iteration in range(max_iterations):
-        print(f"\n{'='*60}")
-        print(f"🔄 ITERACIÓN {iteration + 1}/{max_iterations}")
-        print(f"{'='*60}")
-        
-        print("\n🧠 GENERACIÓN")
-        idea = generator_agent.generate()
-        
-        if not idea:
-            print("❌ Error, reintentando...")
-            continue
-        
-        print("\n🎯 CRÍTICA")
-        critique = critic_agent.critique(idea)
-        
-        print("\n📋 DECISIÓN")
-        should_publish = critic_agent.decide_publish(idea, critique, config)
-        
-        if should_publish:
-            return idea, critique, True
-        else:
-            score_gen = idea.get('score_generador', 0)
-            score_crit = critique.get('score_critico', 0)
-            puntos_debiles = critique.get('puntos_debiles', [])
-            reason = f"Gen:{score_gen} Crit:{score_crit}"
-            if puntos_debiles:
-                reason += f" | {', '.join(puntos_debiles[:2])}"
-            
-            print(f"❌ RECHAZAR - {reason}")
-            
-            if iteration < max_iterations - 1:
-                print(f"🔄 Mejorando... ({max_iterations - iteration - 1} restantes)")
-            else:
-                save_rejected_idea(idea, critique, reason)
-                return idea, critique, False
-    
-    return None, None, False
-
-def main():
-    print("=" * 60)
-    print("🤖 SISTEMA MULTI-AGENTE v2.0")
-    show_current_version()
-    print("=" * 60)
+# ============ CACHE MANAGEMENT ============
+def is_cache_valid():
+    """Verifica si el cache es válido (<24h)"""
+    if not os.path.exists(CACHE_FILE):
+        return False
     
     try:
-        if should_research():
-            print("\n📊 INVESTIGACIÓN")
-            researcher_agent.run()
+        with open(CACHE_FILE, 'r', encoding='utf-8') as f:
+            cache = json.load(f)
+            last_run = datetime.fromisoformat(cache['last_run'])
+            
+            if datetime.now() - last_run < timedelta(hours=CACHE_HOURS):
+                print(f"✅ Cache válido (última ejecución: {last_run.strftime('%Y-%m-%d %H:%M')})")
+                return True
+    except:
+        pass
+    
+    return False
+
+def update_cache():
+    """Actualiza timestamp del cache"""
+    os.makedirs('data', exist_ok=True)
+    
+    cache = {
+        'last_run': datetime.now().isoformat(),
+        'next_run': (datetime.now() + timedelta(hours=CACHE_HOURS)).isoformat()
+    }
+    
+    with open(CACHE_FILE, 'w', encoding='utf-8') as f:
+        json.dump(cache, f, indent=2)
+
+# ============ TRENDS UPDATE ============
+def update_viral_trends():
+    """Actualiza trends virales si cache expiró (>6h)"""
+    
+    if not TRENDS_ENABLED:
+        print("ℹ️  Trend Hunter no disponible")
+        return
+    
+    try:
+        if not trend_hunter_agent.is_cache_valid():
+            print("\n🔍 Cache de trends expirado - actualizando...")
+            print("⚠️  Esto puede tomar 2-3 minutos...")
+            
+            trend_hunter_agent.hunt_viral_opportunities()
+            
+            print("✅ Trends actualizados correctamente")
         else:
-            print("\n✅ Cache válido")
-        
-        idea, critique, should_publish = generate_with_feedback(max_iterations=3)
-        
-        if not idea:
-            print("\n❌ No se pudo generar idea válida")
-            sys.exit(1)
-        
-        if should_publish:
-            print("\n🎉 PUBLICANDO...")
-            
-            save_idea_to_csv(idea, critique)
-            
-            print("\n🎨 Landing...")
-            landing_file = landing_generator.generate_landing(idea)
-            slug = idea.get('slug', 'idea')
-            landing_url = f"landing-pages/{slug}.html"
-            
-            print("\n📊 Informe...")
-            report_file = report_agent.generate_report(idea)
-            report_url = f"reports/{slug}.html"
-            
-            print("\n🏠 Dashboard...")
-            dashboard_generator.generate_dashboard()
-            
-            print("\n📱 Telegram...")
-            telegram_notifier.send_telegram_notification(idea, critique, landing_url, report_url)
-            
-            if should_optimize():
-                print("\n🚀 Optimización")
-                optimizer_agent.run()
-            
-            print(f"\n✅ ÉXITO: {idea.get('nombre')}")
-        else:
-            print("\n❌ Rechazada tras 3 intentos")
+            print("✅ Trends actualizados recientemente (cache válido)")
     
     except Exception as e:
-        print(f"\n❌ ERROR: {e}")
-        import traceback
-        traceback.print_exc()
-        sys.exit(1)
+        print(f"⚠️  Error actualizando trends: {e}")
+        print("   Continuando con generación normal...")
+
+# ============ IDEAS MANAGEMENT ============
+def load_ideas():
+    """Carga ideas desde JSON"""
+    if os.path.exists(IDEAS_FILE):
+        try:
+            with open(IDEAS_FILE, 'r', encoding='utf-8') as f:
+                return json.load(f)
+        except:
+            return {'ideas': [], 'last_update': datetime.now().isoformat()}
+    
+    return {'ideas': [], 'last_update': datetime.now().isoformat()}
+
+def save_idea(idea):
+    """Guarda nueva idea en JSON"""
+    data = load_ideas()
+    
+    # Añadir metadata
+    idea['created_at'] = datetime.now().isoformat()
+    idea['status'] = 'pendiente'
+    
+    data['ideas'].append(idea)
+    data['last_update'] = datetime.now().isoformat()
+    data['total_ideas'] = len(data['ideas'])
+    
+    os.makedirs('data', exist_ok=True)
+    
+    with open(IDEAS_FILE, 'w', encoding='utf-8') as f:
+        json.dump(data, f, indent=2, ensure_ascii=False)
+    
+    print(f"💾 Idea guardada en {IDEAS_FILE}")
+
+# ============ WORKFLOW PRINCIPAL ============
+def print_header():
+    """Imprime header del workflow"""
+    print("\n" + "="*80)
+    print("🚀 CHET THIS - WORKFLOW DE GENERACIÓN DE IDEAS")
+    print("="*80)
+    print(f"📅 Fecha: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
+    print("="*80)
+
+def main():
+    """Workflow principal"""
+    
+    print_header()
+    
+    # 1. Verificar cache
+    if is_cache_valid():
+        print("\n⏭️  Ejecución reciente detectada - workflow cancelado")
+        print("   (Para forzar ejecución, elimina data/cache.json)")
+        return
+    
+    print("\n▶️  Iniciando workflow completo...")
+    
+    # 2. 🔥 Actualizar trends virales (si está habilitado)
+    print("\n" + "-"*80)
+    print("PASO 1: ACTUALIZAR TENDENCIAS VIRALES")
+    print("-"*80)
+    
+    update_viral_trends()
+    
+    # 3. Generar idea
+    print("\n" + "-"*80)
+    print("PASO 2: GENERAR IDEA DE PRODUCTO")
+    print("-"*80)
+    
+    idea = generator_agent.generate()
+    
+    if not idea:
+        print("\n❌ No se pudo generar idea - abortando workflow")
+        return
+    
+    print(f"\n✅ Idea generada: {idea['nombre']}")
+    
+    # Mostrar si es viral
+    if idea.get('viral_score'):
+        print(f"   🔥 VIRAL - Score: {idea['viral_score']}/100")
+        print(f"   {idea.get('urgency', 'N/A')} - Ventana: {idea.get('window', 'N/A')}")
+    
+    # 4. Investigar idea
+    print("\n" + "-"*80)
+    print("PASO 3: INVESTIGAR IDEA")
+    print("-"*80)
+    
+    research = researcher_agent.research(idea)
+    
+    if not research:
+        print("\n⚠️  Investigación falló - guardando idea sin research")
+    else:
+        print(f"\n✅ Investigación completada")
+        idea['research'] = research
+    
+    # 5. Guardar idea
+    print("\n" + "-"*80)
+    print("PASO 4: GUARDAR IDEA")
+    print("-"*80)
+    
+    save_idea(idea)
+    
+    # 6. Actualizar cache
+    update_cache()
+    
+    # 7. Resumen final
+    print("\n" + "="*80)
+    print("✅ WORKFLOW COMPLETADO CON ÉXITO")
+    print("="*80)
+    print(f"\n📦 Producto: {idea['nombre']}")
+    print(f"💰 Precio: €{idea['precio_sugerido']}")
+    print(f"⏱️  Tiempo: {idea['tiempo_estimado']}")
+    print(f"💵 Revenue 6m: {idea['revenue_6_meses']}")
+    
+    if idea.get('viral_score'):
+        print(f"\n🔥 OPORTUNIDAD VIRAL:")
+        print(f"   Score: {idea['viral_score']}/100")
+        print(f"   Urgencia: {idea['urgency']}")
+        print(f"   Ventana: {idea['window']}")
+        print(f"   Fuente: {idea.get('source_type', 'N/A')}")
+    
+    print(f"\n📁 Guardado en: {IDEAS_FILE}")
+    print(f"📊 Total ideas en sistema: {len(load_ideas()['ideas'])}")
+    print("\n" + "="*80)
 
 if __name__ == "__main__":
     main()
