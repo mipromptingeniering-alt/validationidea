@@ -1,25 +1,10 @@
-# ============================================
-# CHET THIS - DEPENDENCIAS PYTHON
-# ============================================
-
 # === CORE ===
 groq==0.11.0
 requests==2.31.0
 
-# === TELEGRAM (para notificaciones) ===
+# === TELEGRAM ===
 python-telegram-bot==20.8
 pytz==2024.1
 
-# === TREND HUNTER ===
-# Reddit scraping (opcional)
-# praw==7.7.1
-
-# Google Trends (opcional)
-# pytrends==4.9.2
-
 # === UTILIDADES ===
 python-dotenv==1.0.0
-
-# === TESTING (opcional) ===
-# pytest==8.0.0
-# pytest-cov==4.1.0
