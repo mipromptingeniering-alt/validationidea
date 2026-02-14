@@ -3,6 +3,18 @@ import sys
 import json
 from datetime import datetime
 from agents import researcher_agent, generator_agent, critic_agent, optimizer_agent, report_agent, landing_generator, dashboard_generator, telegram_notifier
+def show_current_version():
+    """Muestra versión actual en logs"""
+    version_file = 'VERSION.json'
+    if os.path.exists(version_file):
+        try:
+            with open(version_file, 'r') as f:
+                version_data = json.load(f)
+                print(f"📦 ValidationIdea v{version_data['version']}")
+                return
+        except:
+            pass
+    print("📦 ValidationIdea v1.0.0")
 
 def count_ideas():
     csv_file = 'data/ideas-validadas.csv'
@@ -97,6 +109,7 @@ def generate_with_feedback(max_iterations=3):
 def main():
     print("=" * 60)
     print("🤖 SISTEMA MULTI-AGENTE v2.0")
+    show_current_version()
     print("=" * 60)
     
     try:
