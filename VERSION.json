@@ -1,0 +1,16 @@
+{
+  "version": "1.0.0",
+  "major": 1,
+  "minor": 0,
+  "patch": 0,
+  "date": "2026-02-14",
+  "changelog": [
+    {
+      "version": "1.0.0",
+      "date": "2026-02-14",
+      "type": "major",
+      "description": "🚀 Sistema ValidationIdea v1.0 funcional",
+      "commit": "Sistema completo: 8 agentes IA + 50 productos monetizables + dashboard público"
+    }
+  ]
+}
