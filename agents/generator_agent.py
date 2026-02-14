@@ -6,6 +6,12 @@ import random
 import time
 from groq import Groq
 from difflib import SequenceMatcher
+try:
+    from agents import trend_hunter_agent
+    TRENDS_ENABLED = True
+except ImportError:
+    TRENDS_ENABLED = False
+    print("⚠️ Trend Hunter no disponible")
 
 MAX_ATTEMPTS = 5
 SIMILARITY_THRESHOLD = 0.20
