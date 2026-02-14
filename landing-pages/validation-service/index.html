@@ -1,0 +1,516 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Validación de Ideas en 24h - €99</title>
+    <meta name="description" content="Sistema IA + análisis experto valida tu idea de negocio en 24 horas. Informe completo con go/no-go decision.">
+    
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            line-height: 1.6;
+            color: #333;
+        }
+        
+        .hero {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 6rem 2rem;
+            text-align: center;
+        }
+        
+        .hero h1 {
+            font-size: 3.5rem;
+            margin-bottom: 1rem;
+            font-weight: 800;
+        }
+        
+        .hero .subtitle {
+            font-size: 1.5rem;
+            margin-bottom: 2rem;
+            opacity: 0.95;
+        }
+        
+        .hero .problem {
+            font-size: 1.2rem;
+            max-width: 700px;
+            margin: 0 auto 3rem;
+            background: rgba(255,255,255,0.1);
+            padding: 1.5rem;
+            border-radius: 12px;
+        }
+        
+        .cta-primary {
+            background: white;
+            color: #667eea;
+            padding: 1.5rem 4rem;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 700;
+            font-size: 1.4rem;
+            display: inline-block;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.3);
+            transition: all 0.3s;
+        }
+        
+        .cta-primary:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 32px rgba(0,0,0,0.4);
+        }
+        
+        .trust {
+            margin-top: 2rem;
+            font-size: 0.95rem;
+            opacity: 0.9;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 4rem 2rem;
+        }
+        
+        .section {
+            margin-bottom: 5rem;
+        }
+        
+        .section h2 {
+            font-size: 2.5rem;
+            text-align: center;
+            margin-bottom: 3rem;
+            color: #667eea;
+        }
+        
+        .benefits {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+        
+        .benefit-card {
+            background: white;
+            padding: 2rem;
+            border-radius: 16px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+            text-align: center;
+        }
+        
+        .benefit-card .icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+        
+        .benefit-card h3 {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            color: #333;
+        }
+        
+        .process {
+            background: #f8f9fa;
+            padding: 4rem 2rem;
+            border-radius: 20px;
+        }
+        
+        .process-steps {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+        
+        .step {
+            background: white;
+            padding: 2rem;
+            border-radius: 12px;
+            position: relative;
+        }
+        
+        .step-number {
+            position: absolute;
+            top: -20px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 1.5rem;
+        }
+        
+        .step h4 {
+            margin-top: 1rem;
+            margin-bottom: 0.5rem;
+            font-size: 1.2rem;
+        }
+        
+        .what-you-get {
+            background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+            padding: 4rem 2rem;
+            border-radius: 20px;
+        }
+        
+        .deliverables {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+            margin-top: 3rem;
+        }
+        
+        .deliverable {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 12px;
+            display: flex;
+            align-items: start;
+            gap: 1rem;
+        }
+        
+        .deliverable .check {
+            font-size: 1.5rem;
+            color: #28a745;
+            flex-shrink: 0;
+        }
+        
+        .pricing {
+            text-align: center;
+            background: white;
+            padding: 4rem 2rem;
+            border-radius: 20px;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.1);
+        }
+        
+        .price-tag {
+            font-size: 5rem;
+            font-weight: bold;
+            color: #667eea;
+            margin: 2rem 0;
+        }
+        
+        .price-detail {
+            font-size: 1.2rem;
+            color: #666;
+            margin-bottom: 2rem;
+        }
+        
+        .guarantee {
+            background: #fff3cd;
+            padding: 2rem;
+            border-radius: 12px;
+            margin: 2rem 0;
+            border-left: 4px solid #ffc107;
+        }
+        
+        .faq {
+            margin-top: 4rem;
+        }
+        
+        .faq-item {
+            background: white;
+            padding: 2rem;
+            border-radius: 12px;
+            margin-bottom: 1rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+        
+        .faq-item h4 {
+            font-size: 1.2rem;
+            margin-bottom: 0.5rem;
+            color: #667eea;
+        }
+        
+        .social-proof {
+            background: white;
+            padding: 3rem 2rem;
+            border-radius: 16px;
+            text-align: center;
+            margin: 3rem 0;
+        }
+        
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+        
+        .stat-number {
+            font-size: 3rem;
+            font-weight: bold;
+            color: #667eea;
+        }
+        
+        .stat-label {
+            color: #666;
+            margin-top: 0.5rem;
+        }
+        
+        footer {
+            background: #2c3e50;
+            color: white;
+            text-align: center;
+            padding: 3rem 2rem;
+        }
+        
+        @media (max-width: 768px) {
+            .hero h1 { font-size: 2rem; }
+            .price-tag { font-size: 3rem; }
+        }
+    </style>
+</head>
+<body>
+    <div class="hero">
+        <h1>💡 Validación de Ideas en 24 Horas</h1>
+        <div class="subtitle">Sistema IA + Análisis Experto</div>
+        
+        <div class="problem">
+            <strong>¿Vas a invertir 6 meses en un producto que nadie quiere?</strong><br>
+            El 70% de startups fallan por construir algo sin validar primero.
+        </div>
+        
+        <a href="#comprar" class="cta-primary">
+            🚀 Validar Mi Idea Ahora - €99
+        </a>
+        
+        <div class="trust">
+            ✅ Entrega garantizada en 24 horas<br>
+            ✅ Informe completo 15+ páginas<br>
+            ✅ Go/No-Go decision basada en datos
+        </div>
+    </div>
+    
+    <div class="container">
+        <div class="section">
+            <h2>¿Por Qué Validar Antes de Construir?</h2>
+            <div class="benefits">
+                <div class="benefit-card">
+                    <div class="icon">💸</div>
+                    <h3>Ahorra €10,000+</h3>
+                    <p>Evita gastar meses construyendo un producto que nadie comprará</p>
+                </div>
+                
+                <div class="benefit-card">
+                    <div class="icon">⏱️</div>
+                    <h3>Ahorra 6 Meses</h3>
+                    <p>Descubre en 24h lo que tardarías medio año en validar solo</p>
+                </div>
+                
+                <div class="benefit-card">
+                    <div class="icon">🎯</div>
+                    <h3>Decisión Clara</h3>
+                    <p>Go/No-Go basado en análisis real, no intuición</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="process">
+            <h2>Cómo Funciona</h2>
+            <div class="process-steps">
+                <div class="step">
+                    <div class="step-number">1</div>
+                    <h4>Envías Tu Idea</h4>
+                    <p>Formulario simple: problema, solución, target. 5 minutos completar.</p>
+                </div>
+                
+                <div class="step">
+                    <div class="step-number">2</div>
+                    <h4>Análisis IA</h4>
+                    <p>8 agentes IA analizan: mercado, competencia, viabilidad, pricing, go-to-market.</p>
+                </div>
+                
+                <div class="step">
+                    <div class="step-number">3</div>
+                    <h4>Review Experto</h4>
+                    <p>Yo reviso output IA, añado insights basados en experiencia real.</p>
+                </div>
+                
+                <div class="step">
+                    <div class="step-number">4</div>
+                    <h4>Recibes Informe</h4>
+                    <p>PDF completo en 24h con recomendación clara: GO o NO-GO.</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="section">
+            <div class="what-you-get">
+                <h2>Qué Recibes Exactamente</h2>
+                <div class="deliverables">
+                    <div class="deliverable">
+                        <span class="check">✅</span>
+                        <div>
+                            <strong>Análisis de Mercado</strong>
+                            <p>TAM/SAM/SOM, tendencias, oportunidades</p>
+                        </div>
+                    </div>
+                    
+                    <div class="deliverable">
+                        <span class="check">✅</span>
+                        <div>
+                            <strong>Competencia</strong>
+                            <p>Quién hace algo similar, qué hacen mal, tu ventaja</p>
+                        </div>
+                    </div>
+                    
+                    <div class="deliverable">
+                        <span class="check">✅</span>
+                        <div>
+                            <strong>Validación Problema</strong>
+                            <p>¿Es un problema real? ¿La gente pagaría por solucionarlo?</p>
+                        </div>
+                    </div>
+                    
+                    <div class="deliverable">
+                        <span class="check">✅</span>
+                        <div>
+                            <strong>Pricing Strategy</strong>
+                            <p>Qué precio cobrar, modelo monetización óptimo</p>
+                        </div>
+                    </div>
+                    
+                    <div class="deliverable">
+                        <span class="check">✅</span>
+                        <div>
+                            <strong>Roadmap MVP</strong>
+                            <p>Qué features mínimas necesitas, priorización</p>
+                        </div>
+                    </div>
+                    
+                    <div class="deliverable">
+                        <span class="check">✅</span>
+                        <div>
+                            <strong>Go-to-Market</strong>
+                            <p>Canales adquisición, primeros 100 clientes</p>
+                        </div>
+                    </div>
+                    
+                    <div class="deliverable">
+                        <span class="check">✅</span>
+                        <div>
+                            <strong>Riesgos Identificados</strong>
+                            <p>Qué puede salir mal y cómo mitigarlo</p>
+                        </div>
+                    </div>
+                    
+                    <div class="deliverable">
+                        <span class="check">✅</span>
+                        <div>
+                            <strong>Decisión Final</strong>
+                            <p>GO (házlo) o NO-GO (evítalo) con justificación</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="social-proof">
+            <h2>Sistema Probado</h2>
+            <div class="stats">
+                <div>
+                    <div class="stat-number">2,880</div>
+                    <div class="stat-label">Ideas analizadas/mes</div>
+                </div>
+                <div>
+                    <div class="stat-number">8</div>
+                    <div class="stat-label">Agentes IA especializados</div>
+                </div>
+                <div>
+                    <div class="stat-number">24h</div>
+                    <div class="stat-label">Entrega garantizada</div>
+                </div>
+                <div>
+                    <div class="stat-number">15+</div>
+                    <div class="stat-label">Páginas de análisis</div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="section">
+            <div class="pricing" id="comprar">
+                <h2>Inversión</h2>
+                <div class="price-tag">€99</div>
+                <div class="price-detail">One-time • Sin subscripción • Entrega 24h</div>
+                
+                <a href="https://buy.stripe.com/test_LINK_AQUI" class="cta-primary" style="margin: 2rem 0;">
+                    💳 Comprar Validación Ahora
+                </a>
+                
+                <div class="guarantee">
+                    <strong>🛡️ Garantía 100% Satisfacción</strong><br>
+                    Si el informe no te ayuda a tomar una decisión clara, te devuelvo el dinero. Sin preguntas.
+                </div>
+                
+                <p style="color: #666; margin-top: 2rem;">
+                    <small>Pago seguro vía Stripe. Recibirás email confirmación inmediatamente.</small>
+                </p>
+            </div>
+        </div>
+        
+        <div class="faq">
+            <h2>Preguntas Frecuentes</h2>
+            
+            <div class="faq-item">
+                <h4>¿Realmente es en 24 horas?</h4>
+                <p>Sí. Si compras antes de las 20:00 CET, recibes informe al día siguiente. Si compras después, recibes en 48h máximo.</p>
+            </div>
+            
+            <div class="faq-item">
+                <h4>¿Qué pasa si mi idea no es SaaS?</h4>
+                <p>Funciona con cualquier producto digital monetizable: templates, cursos, ebooks, servicios, apps, plugins, etc.</p>
+            </div>
+            
+            <div class="faq-item">
+                <h4>¿Puedo pedir revisiones?</h4>
+                <p>Sí. Si algo no está claro, tienes 1 ronda de Q&A incluida (respondo en <24h).</p>
+            </div>
+            
+            <div class="faq-item">
+                <h4>¿Cómo sé que el análisis es bueno?</h4>
+                <p>Sistema ha analizado 2,880+ ideas. Combina IA (patrones de 1000s productos) + mi review manual (10 años experiencia).</p>
+            </div>
+            
+            <div class="faq-item">
+                <h4>¿Qué necesito enviar?</h4>
+                <p>Formulario simple: (1) Qué problema soluciona, (2) Tu solución, (3) Para quién. 5 minutos completar.</p>
+            </div>
+            
+            <div class="faq-item">
+                <h4>¿Funciona para ideas B2B?</h4>
+                <p>Absolutamente. Sistema especializado en B2B SaaS, servicios productizados, tools para developers/creators.</p>
+            </div>
+        </div>
+    </div>
+    
+    <footer>
+        <h3 style="margin-bottom: 1rem;">¿Listo para validar tu idea?</h3>
+        <a href="#comprar" class="cta-primary" style="background: white; color: #667eea;">
+            🚀 Validar Ahora - €99
+        </a>
+        
+        <p style="margin-top: 3rem; opacity: 0.8;">
+            ValidationIdea © 2026 • Powered by AI Multi-Agent System<br>
+            <a href="mailto:contact@validationidea.com" style="color: white;">contact@validationidea.com</a>
+        </p>
+    </footer>
+    
+    <script>
+        // Smooth scroll
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                document.querySelector(this.getAttribute('href')).scrollIntoView({
+                    behavior: 'smooth'
+                });
+            });
+        });
+    </script>
+</body>
+</html>
