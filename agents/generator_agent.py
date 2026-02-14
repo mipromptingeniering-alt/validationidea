@@ -31,7 +31,6 @@ def load_existing_ideas():
                 descripcion = row.get('descripcion_corta', '')
                 fingerprint = row.get('fingerprint', '')
                 
-                # Convertir a string si son listas
                 if isinstance(nombre, list):
                     nombre = ' '.join(nombre)
                 if isinstance(descripcion, list):
@@ -88,54 +87,29 @@ def get_inspiration_seed():
     
     categories = [
         {
-            "name": "IA + Creadores de Contenido",
-            "tools": ["Claude API", "GPT-4", "Midjourney API", "ElevenLabs"],
-            "problems": [
-                "Creadores LinkedIn pierden 10h/semana escribiendo posts",
-                "YouTubers tardan 4h escribiendo scripts de vídeos",
-                "Podcasters necesitan show notes automáticos",
-                "TikTokers necesitan ideas virales basadas en tendencias"
-            ]
+            "name": "IA + Creadores",
+            "tools": ["Claude API", "GPT-4"],
+            "problem": "Creadores pierden 10h/semana escribiendo contenido"
         },
         {
-            "name": "Automatización + Freelancers",
-            "tools": ["n8n", "Make", "Zapier", "Airtable API", "Notion API"],
-            "problems": [
-                "Freelancers pierden 6h/semana en admin",
-                "Consultores necesitan CRM + facturación integrado",
-                "Diseñadores necesitan contratos automatizados",
-                "Developers necesitan time tracking automático"
-            ]
+            "name": "Automatización",
+            "tools": ["n8n", "Notion API"],
+            "problem": "Freelancers pierden 6h/semana en admin"
         },
         {
-            "name": "Scraping + IA + Análisis",
-            "tools": ["Bright Data", "Apify", "Claude API", "Supabase"],
-            "problems": [
-                "eCommerce necesita monitoreo precios competencia 24/7",
-                "Marketers necesitan análisis tendencias Twitter en tiempo real",
-                "Recruiters necesitan perfiles LinkedIn actualizados",
-                "Investors necesitan análisis startups fundraising"
-            ]
+            "name": "Scraping + IA",
+            "tools": ["Bright Data", "Claude API"],
+            "problem": "eCommerce necesita monitoreo precios 24/7"
         },
         {
-            "name": "Micro-SaaS + APIs Públicas",
-            "tools": ["Stripe API", "Notion API", "Google Sheets API", "Telegram API"],
-            "problems": [
-                "Usuarios Notion necesitan CRM dentro de Notion",
-                "Equipos necesitan notificaciones Stripe en Telegram",
-                "Freelancers necesitan invoicing desde Google Sheets",
-                "Startups necesitan métricas en Notion dashboard"
-            ]
+            "name": "Micro-SaaS",
+            "tools": ["Stripe API", "Notion API"],
+            "problem": "Usuarios Notion necesitan CRM integrado"
         },
         {
-            "name": "No-Code + IA",
-            "tools": ["Bubble", "Webflow", "Airtable", "OpenAI API"],
-            "problems": [
-                "No-coders necesitan IA integrada en sus apps Bubble",
-                "Webflow users necesitan chatbots personalizados",
-                "Airtable users necesitan auto-categorización con IA",
-                "Notion users necesitan búsqueda semántica inteligente"
-            ]
+            "name": "No-Code",
+            "tools": ["Bubble", "OpenAI API"],
+            "problem": "No-coders necesitan IA en sus apps"
         }
     ]
     
@@ -153,90 +127,65 @@ def generate():
     for attempt in range(1, MAX_ATTEMPTS + 1):
         print(f"📝 Intento {attempt}/{MAX_ATTEMPTS}...")
         
-        # Obtener semilla de inspiración
         seed = get_inspiration_seed()
         
-        system_prompt = f"""Eres un experto en Micro-SaaS innovadores para 2026.
+        # PROMPT CORTO (ahorra tokens)
+        system_prompt = f"""Genera idea SaaS 2026.
 
-🎯 CATEGORÍA FOCUS: {seed['name']}
-🛠️ HERRAMIENTAS SUGERIDAS: {', '.join(seed['tools'])}
-❌ PROBLEMAS EJEMPLO: {seed['problems'][0]}
+Cat: {seed['name']}
+Tools: {seed['tools'][0]}, {seed['tools'][1]}
+Problema: {seed['problem']}
+Evita: {', '.join([i['nombre'][:15] for i in existing_ideas[-5:] if i['nombre']])}
 
-INSTRUCCIONES:
-1. Genera UNA idea SaaS específica para esta categoría
-2. DEBE usar al menos 2 de las herramientas sugeridas
-3. DEBE resolver un problema ultra-específico (con números)
-4. Precio: 19-79€/mes
-5. MVP: 4-6 semanas
-
-⚠️ EVITA estas ideas ya creadas: {', '.join([i['nombre'] for i in existing_ideas[-10:] if i['nombre']])}
-
-📊 FORMATO JSON (solo JSON, sin texto extra):
-
+JSON solo:
 {{
-  "nombre": "Nombre pegadizo (2-3 palabras)",
-  "slug": "nombre-en-minusculas",
-  "descripcion": "3 frases. Línea 1: Qué hace. Línea 2: Cómo (menciona herramientas específicas). Línea 3: Resultado medible.",
-  "descripcion_corta": "Resuelve [problema específico] con [tecnología] para [nicho]",
+  "nombre": "Nombre (2-3 palabras)",
+  "slug": "nombre-slug",
+  "descripcion": "Qué hace. Cómo funciona con {seed['tools'][0]}. Resultado.",
+  "descripcion_corta": "{seed['problem'][:40]} con IA",
   "categoria": "{seed['name']}",
-  "problema": "Problema ESPECÍFICO con números. Ej: 'Creadores LinkedIn pierden 12h/semana escribiendo posts manualmente'",
-  "solucion": "IA [herramienta específica] analiza X, aprende Y, genera Z en N minutos. Integración con [API].",
-  "publico_objetivo": "Nicho ultra-específico (Ej: 'YouTubers con 10K-100K suscriptores')",
-  "propuesta_valor": "Ahorra [número] horas/semana o genera [número] euros extra al mes",
-  "diferenciacion": "Única solución que [integración específica]. Competencia no tiene [feature único].",
+  "problema": "{seed['problem']}",
+  "solucion": "{seed['tools'][0]} automatiza X para Y en Z minutos",
+  "publico_objetivo": "Nicho específico",
+  "propuesta_valor": "Ahorra 10h/semana",
+  "diferenciacion": "Único con {seed['tools'][0]} + {seed['tools'][1]}",
   "tam": "50M€",
   "sam": "5M€",
   "som": "500K€",
-  "competencia": ["Herramienta1", "Herramienta2", "Herramienta3"],
-  "ventaja_competitiva": "Integración [API específica] + [característica única]",
+  "competencia": ["Tool1", "Tool2", "Tool3"],
+  "ventaja_competitiva": "Integración exclusiva",
   "precio_sugerido": "49€/mes",
   "modelo_monetizacion": "Freemium",
-  "features_core": [
-    "Integración [API específica] para [función]",
-    "Dashboard personalizable con [métricas]",
-    "Exportación automática a [herramienta]"
-  ],
-  "roadmap_mvp": [
-    "Semana 1-2: Setup Next.js + Supabase + Auth",
-    "Semana 3-4: Integración APIs {seed['tools'][0]}",
-    "Semana 5-6: Dashboard + Stripe + Deploy Vercel"
-  ],
-  "stack_sugerido": ["Next.js 14", "Supabase", "Stripe", "Vercel", "{seed['tools'][0]}"],
-  "integraciones": ["{seed['tools'][0]}", "{seed['tools'][1] if len(seed['tools']) > 1 else 'Zapier'}"],
-  "canales_adquisicion": ["Twitter", "ProductHunt", "Reddit r/nicho"],
-  "metricas_clave": ["MRR", "Churn %", "CAC"],
-  "riesgos": ["Dependencia API externa", "Competencia copie feature"],
-  "validacion_inicial": "Entrevistar 20 usuarios del nicho + landing con emails",
+  "features_core": ["Feature 1", "Feature 2", "Feature 3"],
+  "roadmap_mvp": ["Sem 1-2: Setup", "Sem 3-4: APIs", "Sem 5-6: Deploy"],
+  "stack_sugerido": ["Next.js", "Supabase", "Stripe", "{seed['tools'][0]}"],
+  "integraciones": ["{seed['tools'][0]}", "{seed['tools'][1]}"],
+  "canales_adquisicion": ["Twitter", "ProductHunt"],
+  "metricas_clave": ["MRR", "Churn"],
+  "riesgos": ["Dependencia API", "Competencia"],
+  "validacion_inicial": "20 entrevistas + landing",
   "tiempo_estimado": "4-6 semanas",
   "inversion_inicial": "0-500€",
   "dificultad": "Media",
   "score_generador": 85
 }}
 
-EJEMPLOS EXITOSOS:
-
-**PostGen AI** (LinkedIn creators): Claude API analiza 30 posts con mejor engagement, aprende patrones, genera 50 posts personalizados. Integración LinkedIn API para métricas. 39€/mes.
-
-**ShopSpy** (eCommerce): Bright Data scraping + Claude análisis competencia 24/7. Alertas Telegram precio drops. Dashboard Notion. 59€/mes.
-
-**ScriptFlow** (YouTubers): GPT-4 analiza tus vídeos top, genera scripts optimizados + timestamps + B-roll. YouTube Analytics API. 49€/mes.
-
-Genera UNA idea NUEVA para la categoría {seed['name']}."""
+Ejemplo: PostGen AI - Claude analiza 30 posts LinkedIn, genera 50 nuevos. 39€/mes."""
 
         try:
             response = client.chat.completions.create(
-                model="llama-3.1-8b-instant",
+                model="llama-3.1-8b-instant",  # Modelo ligero
                 messages=[
                     {"role": "system", "content": system_prompt},
-                    {"role": "user", "content": "Genera la idea en JSON puro, sin texto adicional."}
+                    {"role": "user", "content": "JSON:"}
                 ],
                 temperature=0.9 + (attempt * 0.1),
-                max_tokens=2000
+                max_tokens=1200  # Reducido
             )
             
             content = response.choices[0].message.content.strip()
             
-            # Limpiar JSON
+            # CORREGIDO: Limpiar JSON correctamente
             if '```json' in content:
                 content = content.split('```json').split('```').strip()[1]
             elif '```' in content:
@@ -244,12 +193,12 @@ Genera UNA idea NUEVA para la categoría {seed['name']}."""
             
             idea = json.loads(content)
             
-            # NORMALIZAR todos los campos
+            # NORMALIZAR campos
             for key in idea.keys():
                 if not isinstance(idea[key], (dict, list)):
                     idea[key] = normalize_field(idea[key])
             
-            # Validar campos críticos
+            # Validar
             if not idea.get('nombre') or not idea.get('descripcion_corta'):
                 print("⚠️  Campos vacíos")
                 continue
@@ -264,7 +213,7 @@ Genera UNA idea NUEVA para la categoría {seed['name']}."""
                 normalize_field(idea.get('descripcion_corta', ''))
             )
             
-            # Verificar duplicado
+            # Duplicado
             if is_duplicate(idea, existing_ideas):
                 print("⚠️  Duplicada, reintentando...")
                 continue
