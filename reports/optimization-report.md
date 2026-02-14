@@ -1,23 +1,23 @@
 # 🚀 Informe de Optimización del Sistema
 
-**Generado:** 13/02/2026 10:28
+**Generado:** 14/02/2026 07:22
 
 ---
 
 ## 📊 Estadísticas Generales
 
-- **Total de ideas evaluadas:** 10
-- **Ideas publicadas:** 10
-- **Ideas rechazadas:** 0
-- **Tasa de aprobación:** 100.0%
+- **Total de ideas evaluadas:** 21
+- **Ideas publicadas:** 20
+- **Ideas rechazadas:** 1
+- **Tasa de aprobación:** 95.2%
 
 ---
 
 ## 🎯 Calidad Promedio (Ideas Publicadas)
 
-- **Score Generador:** 82.1/100
-- **Score Crítico:** 58.1/100
-- **Score Promedio:** 70.1/100
+- **Score Generador:** 83.7/100
+- **Score Crítico:** 58.8/100
+- **Score Promedio:** 71.2/100
 
 ---
 
