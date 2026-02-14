@@ -1,10 +1,17 @@
 {
-  "version": "2.0.7",
+  "version": "2.0.8",
   "major": 2,
   "minor": 0,
-  "patch": 7,
+  "patch": 8,
   "date": "2026-02-14",
   "changelog": [
+    {
+      "version": "2.0.8",
+      "date": "2026-02-14",
+      "type": "patch",
+      "description": "🔧 Fix: requirements.txt",
+      "commit": "Update requirements.txt"
+    },
     {
       "version": "2.0.7",
       "date": "2026-02-14",
