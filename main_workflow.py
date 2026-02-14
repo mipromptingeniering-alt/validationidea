@@ -1,4 +1,4 @@
-import os
+﻿import os
 import json
 import time
 from datetime import datetime, timedelta
@@ -11,14 +11,14 @@ try:
 except ImportError:
     TRENDS_ENABLED = False
 
-# ============ CONFIGURACIÓN ============
+# ============ CONFIGURACIÃ“N ============
 IDEAS_FILE = 'data/ideas.json'
 CACHE_FILE = 'data/cache.json'
 CACHE_HOURS = 24
 
 # ============ CACHE MANAGEMENT ============
 def is_cache_valid():
-    """Verifica si el cache es válido (<24h)"""
+    """Verifica si el cache es vÃ¡lido (<24h)"""
     if not os.path.exists(CACHE_FILE):
         return False
     
@@ -28,7 +28,7 @@ def is_cache_valid():
             last_run = datetime.fromisoformat(cache['last_run'])
             
             if datetime.now() - last_run < timedelta(hours=CACHE_HOURS):
-                print(f"✅ Cache válido (última ejecución: {last_run.strftime('%Y-%m-%d %H:%M')})")
+                print(f"âœ… Cache vÃ¡lido (Ãºltima ejecuciÃ³n: {last_run.strftime('%Y-%m-%d %H:%M')})")
                 return True
     except:
         pass
@@ -49,26 +49,26 @@ def update_cache():
 
 # ============ TRENDS UPDATE ============
 def update_viral_trends():
-    """Actualiza trends virales si cache expiró (>6h)"""
+    """Actualiza trends virales si cache expirÃ³ (>6h)"""
     
     if not TRENDS_ENABLED:
-        print("ℹ️  Trend Hunter no disponible")
+        print("â„¹ï¸  Trend Hunter no disponible")
         return
     
     try:
         if not trend_hunter_agent.is_cache_valid():
-            print("\n🔍 Cache de trends expirado - actualizando...")
-            print("⚠️  Esto puede tomar 2-3 minutos...")
+            print("\nðŸ” Cache de trends expirado - actualizando...")
+            print("âš ï¸  Esto puede tomar 2-3 minutos...")
             
             trend_hunter_agent.hunt_viral_opportunities()
             
-            print("✅ Trends actualizados correctamente")
+            print("âœ… Trends actualizados correctamente")
         else:
-            print("✅ Trends actualizados recientemente (cache válido)")
+            print("âœ… Trends actualizados recientemente (cache vÃ¡lido)")
     
     except Exception as e:
-        print(f"⚠️  Error actualizando trends: {e}")
-        print("   Continuando con generación normal...")
+        print(f"âš ï¸  Error actualizando trends: {e}")
+        print("   Continuando con generaciÃ³n normal...")
 
 # ============ IDEAS MANAGEMENT ============
 def load_ideas():
@@ -86,7 +86,7 @@ def save_idea(idea):
     """Guarda nueva idea en JSON"""
     data = load_ideas()
     
-    # Añadir metadata
+    # AÃ±adir metadata
     idea['created_at'] = datetime.now().isoformat()
     idea['status'] = 'pendiente'
     
@@ -99,15 +99,15 @@ def save_idea(idea):
     with open(IDEAS_FILE, 'w', encoding='utf-8') as f:
         json.dump(data, f, indent=2, ensure_ascii=False)
     
-    print(f"💾 Idea guardada en {IDEAS_FILE}")
+    print(f"ðŸ’¾ Idea guardada en {IDEAS_FILE}")
 
 # ============ WORKFLOW PRINCIPAL ============
 def print_header():
     """Imprime header del workflow"""
     print("\n" + "="*80)
-    print("🚀 CHET THIS - WORKFLOW DE GENERACIÓN DE IDEAS")
+    print("ðŸš€ CHET THIS - WORKFLOW DE GENERACIÃ“N DE IDEAS")
     print("="*80)
-    print(f"📅 Fecha: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
+    print(f"ðŸ“… Fecha: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
     print("="*80)
 
 def main():
@@ -117,13 +117,13 @@ def main():
     
     # 1. Verificar cache
     if is_cache_valid():
-        print("\n⏭️  Ejecución reciente detectada - workflow cancelado")
-        print("   (Para forzar ejecución, elimina data/cache.json)")
+        print("\nâ­ï¸  EjecuciÃ³n reciente detectada - workflow cancelado")
+        print("   (Para forzar ejecuciÃ³n, elimina data/cache.json)")
         return
     
-    print("\n▶️  Iniciando workflow completo...")
+    print("\nâ–¶ï¸  Iniciando workflow completo...")
     
-    # 2. 🔥 Actualizar trends virales (si está habilitado)
+    # 2. ðŸ”¥ Actualizar trends virales (si estÃ¡ habilitado)
     print("\n" + "-"*80)
     print("PASO 1: ACTUALIZAR TENDENCIAS VIRALES")
     print("-"*80)
@@ -138,14 +138,14 @@ def main():
     idea = generator_agent.generate()
     
     if not idea:
-        print("\n❌ No se pudo generar idea - abortando workflow")
+        print("\nâŒ No se pudo generar idea - abortando workflow")
         return
     
-    print(f"\n✅ Idea generada: {idea['nombre']}")
+    print(f"\nâœ… Idea generada: {idea['nombre']}")
     
     # Mostrar si es viral
     if idea.get('viral_score'):
-        print(f"   🔥 VIRAL - Score: {idea['viral_score']}/100")
+        print(f"   ðŸ”¥ VIRAL - Score: {idea['viral_score']}/100")
         print(f"   {idea.get('urgency', 'N/A')} - Ventana: {idea.get('window', 'N/A')}")
     
     # 4. Investigar idea
@@ -156,9 +156,9 @@ def main():
     research = researcher_agent.research(idea)
     
     if not research:
-        print("\n⚠️  Investigación falló - guardando idea sin research")
+        print("\nâš ï¸  InvestigaciÃ³n fallÃ³ - guardando idea sin research")
     else:
-        print(f"\n✅ Investigación completada")
+        print(f"\nâœ… InvestigaciÃ³n completada")
         idea['research'] = research
     
     # 5. Guardar idea
@@ -175,55 +175,52 @@ def main():
     try:
         from agents import telegram_notifier
         
-        mensaje = f"""?? NUEVA IDEA GENERADA
-
-?? **{idea['nombre']}**
-
-?? Precio: �{idea['precio_sugerido']}
-?? Tiempo: {idea['tiempo_estimado']}
-?? Revenue 6m: {idea['revenue_6_meses']}
-"""
+        # Preparar critique
+        critique = {
+            'score_critico': idea.get('viral_score', idea.get('score_generador', 85))
+        }
         
-        if idea.get('viral_score'):
-            mensaje += f"""
-?? **OPORTUNIDAD VIRAL**
-Score: {idea['viral_score']}/100
-Urgencia: {idea['urgency']}
-Ventana: {idea['window']}
-Fuente: {idea.get('source_type', 'N/A')}
-"""
+        # URLs
+        landing_url = "data/ideas.json"
+        report_url = "https://github.com/mipromptingeniering-alt/validationidea/actions"
         
-        mensaje += f"""
-?? GitHub: https://github.com/mipromptingeniering-alt/validationidea/blob/main/data/ideas.json
-"""
+        # Llamar función correcta
+        success = telegram_notifier.send_telegram_notification(
+            idea=idea,
+            critique=critique,
+            landing_url=landing_url,
+            report_url=report_url
+        )
         
-        telegram_notifier.send_message(mensaje)
-        print("? Notificaci�n enviada a Telegram")
+        if success:
+            print("✅ Notificación enviada a Telegram")
+        else:
+            print("⚠️ No se pudo enviar notificación")
     
     except Exception as e:
-        print(f"?? Error Telegram: {e}")
+        print(f"⚠️ Error Telegram: {e}")
     
     # 6. Actualizar cache
     update_cache()
     
     # 7. Resumen final
     print("\n" + "="*80)
-    print("✅ WORKFLOW COMPLETADO CON ÉXITO")
+    print("âœ… WORKFLOW COMPLETADO CON Ã‰XITO")
     print("="*80)
-    print(f"\n📦 Producto: {idea['nombre']}")
-    print(f"💰 Precio: €{idea['precio_sugerido']}")
-    print(f"⏱️  Tiempo: {idea['tiempo_estimado']}")
-    print(f"💵 Revenue 6m: {idea['revenue_6_meses']}")
+    print(f"\nðŸ“¦ Producto: {idea['nombre']}")
+    print(f"ðŸ’° Precio: â‚¬{idea['precio_sugerido']}")
+    print(f"â±ï¸  Tiempo: {idea['tiempo_estimado']}")
+    print(f"ðŸ’µ Revenue 6m: {idea['revenue_6_meses']}")
     
     if idea.get('viral_score'):
-        print(f"\n🔥 OPORTUNIDAD VIRAL:")
+        print(f"\nðŸ”¥ OPORTUNIDAD VIRAL:")
         print(f"   Score: {idea['viral_score']}/100")
         print(f"   Urgencia: {idea['urgency']}")
         print(f"   Ventana: {idea['window']}")
         print(f"   Fuente: {idea.get('source_type', 'N/A')}")
     
-    print(f"\n📁 Guardado en: {IDEAS_FILE}")
-    print(f"📊 Total ideas en sistema: {len(load_ideas()['ideas'])}")
+    print(f"\nðŸ“ Guardado en: {IDEAS_FILE}")
+    print(f"ðŸ“Š Total ideas en sistema: {len(load_ideas()['ideas'])}")
     print("\n" + "="*80)
 
 if __name__ == "__main__":
