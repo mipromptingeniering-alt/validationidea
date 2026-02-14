@@ -34,7 +34,7 @@ JSON: {"score_critico": 75, "puntos_fuertes": ["P1"], "puntos_debiles": ["P1"], 
     
     try:
         response = client.chat.completions.create(
-            model="llama-3.3-70b-versatile",
+            model="llama-3.1-8b-instant",
             messages=[
                 {"role": "system", "content": system_prompt},
                 {"role": "user", "content": f"{nombre}: {problema[:100]}"}
@@ -75,4 +75,5 @@ def decide_publish(idea, critique, config):
     
     print(f"âŒ RECHAZAR - Gen:{score_gen} Crit:{score_crit}")
     return False
+
 
