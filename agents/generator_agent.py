@@ -225,7 +225,7 @@ Genera UNA idea NUEVA para la categoría {seed['name']}."""
 
         try:
             response = client.chat.completions.create(
-                model="llama-3.3-70b-versatile",
+                model="llama-3.1-8b-instant",
                 messages=[
                     {"role": "system", "content": system_prompt},
                     {"role": "user", "content": "Genera la idea en JSON puro, sin texto adicional."}
