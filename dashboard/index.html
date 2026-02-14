@@ -19,64 +19,57 @@
         }
         
         .container {
-            max-width: 1400px;
+            max-width: 1200px;
             margin: 0 auto;
         }
         
         .header {
             text-align: center;
             color: white;
-            margin-bottom: 3rem;
+            margin-bottom: 2rem;
             animation: fadeIn 0.6s ease-in;
         }
         
         .header h1 {
-            font-size: 3.5rem;
+            font-size: 3rem;
             margin-bottom: 0.5rem;
             text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
         }
         
         .header p {
-            font-size: 1.2rem;
+            font-size: 1.1rem;
             opacity: 0.9;
         }
         
         .stats {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 1.5rem;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
             margin-bottom: 2rem;
         }
         
         .stat-card {
             background: white;
-            padding: 2rem;
-            border-radius: 16px;
-            box-shadow: 0 8px 24px rgba(0,0,0,0.15);
-            transition: transform 0.3s, box-shadow 0.3s;
-            animation: slideUp 0.6s ease-out;
-        }
-        
-        .stat-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 12px 32px rgba(0,0,0,0.2);
+            padding: 1.5rem;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            text-align: center;
         }
         
         .stat-card h3 {
-            font-size: 0.95rem;
+            font-size: 0.85rem;
             color: #666;
-            margin-bottom: 0.75rem;
+            margin-bottom: 0.5rem;
             text-transform: uppercase;
             letter-spacing: 1px;
         }
         
         .stat-card .number {
-            font-size: 3rem;
+            font-size: 2.5rem;
             font-weight: bold;
             background: linear-gradient(135deg, #667eea, #764ba2);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
-            background-clip: text;
         }
         
         .download-section {
@@ -87,135 +80,172 @@
         .download-btn {
             display: inline-flex;
             align-items: center;
-            gap: 0.75rem;
+            gap: 0.5rem;
             background: linear-gradient(135deg, #28a745, #20c997);
             color: white;
-            padding: 1.25rem 2.5rem;
-            border-radius: 12px;
+            padding: 1rem 2rem;
+            border-radius: 10px;
             text-decoration: none;
             font-weight: 600;
-            font-size: 1.1rem;
             transition: all 0.3s;
-            box-shadow: 0 4px 16px rgba(40, 167, 69, 0.3);
+            box-shadow: 0 4px 12px rgba(40, 167, 69, 0.3);
         }
         
         .download-btn:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 8px 24px rgba(40, 167, 69, 0.4);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(40, 167, 69, 0.4);
         }
         
-        .ideas-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(380px, 1fr));
-            gap: 2rem;
-            animation: fadeIn 0.8s ease-in;
-        }
-        
-        .idea-card {
+        .ideas-container {
             background: white;
             border-radius: 16px;
             padding: 2rem;
-            box-shadow: 0 8px 24px rgba(0,0,0,0.12);
-            transition: all 0.3s;
-            position: relative;
-            overflow: hidden;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.15);
         }
         
-        .idea-card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 4px;
-            background: linear-gradient(90deg, #667eea, #764ba2);
-        }
-        
-        .idea-card:hover {
-            transform: translateY(-8px);
-            box-shadow: 0 16px 40px rgba(0,0,0,0.2);
-        }
-        
-        .idea-header {
-            margin-bottom: 1.25rem;
-        }
-        
-        .idea-name {
-            font-size: 1.65rem;
-            color: #667eea;
-            margin-bottom: 0.75rem;
-            font-weight: 700;
-            line-height: 1.3;
-        }
-        
-        .idea-category {
-            display: inline-block;
-            background: linear-gradient(135deg, #e3f2fd, #bbdefb);
-            color: #1976d2;
-            padding: 0.4rem 1rem;
-            border-radius: 20px;
-            font-size: 0.85rem;
-            font-weight: 600;
-        }
-        
-        .idea-description {
-            color: #555;
-            margin: 1.25rem 0;
-            line-height: 1.7;
-            font-size: 0.95rem;
-        }
-        
-        .idea-meta {
+        .ideas-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
             margin-bottom: 1.5rem;
-            padding: 0.75rem;
+            padding-bottom: 1rem;
+            border-bottom: 2px solid #f0f0f0;
+        }
+        
+        .ideas-header h2 {
+            color: #667eea;
+            font-size: 1.5rem;
+        }
+        
+        .ideas-count {
+            color: #888;
+            font-size: 0.95rem;
+        }
+        
+        .idea-item {
+            display: flex;
+            align-items: center;
+            padding: 1.5rem;
+            margin-bottom: 1rem;
             background: #f8f9fa;
-            border-radius: 8px;
+            border-radius: 12px;
+            border-left: 4px solid #667eea;
+            transition: all 0.3s;
+            position: relative;
+        }
+        
+        .idea-item:hover {
+            transform: translateX(5px);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.2);
+            background: #fff;
+        }
+        
+        .idea-number {
+            flex-shrink: 0;
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 1.1rem;
+            margin-right: 1.5rem;
+        }
+        
+        .idea-content {
+            flex: 1;
+            min-width: 0;
+        }
+        
+        .idea-title {
+            font-size: 1.3rem;
+            color: #333;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+        }
+        
+        .idea-meta {
+            display: flex;
+            gap: 1.5rem;
+            margin-bottom: 0.75rem;
+            flex-wrap: wrap;
+        }
+        
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 0.3rem;
             font-size: 0.9rem;
+            color: #666;
         }
         
         .score {
             font-weight: bold;
-            font-size: 1.1rem;
             color: #28a745;
+            font-size: 1rem;
         }
         
-        .date {
-            color: #888;
+        .category {
+            background: linear-gradient(135deg, #e3f2fd, #bbdefb);
+            color: #1976d2;
+            padding: 0.3rem 0.8rem;
+            border-radius: 15px;
+            font-size: 0.85rem;
+            font-weight: 600;
         }
         
-        .actions {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
+        .timestamp {
+            color: #999;
+            font-size: 0.85rem;
+        }
+        
+        .new-badge {
+            background: #ff6b6b;
+            color: white;
+            padding: 0.2rem 0.6rem;
+            border-radius: 10px;
+            font-size: 0.75rem;
+            font-weight: bold;
+            text-transform: uppercase;
+            animation: pulse 2s infinite;
+        }
+        
+        .idea-description {
+            color: #666;
+            line-height: 1.6;
+            margin-bottom: 1rem;
+            font-size: 0.95rem;
+        }
+        
+        .idea-actions {
+            display: flex;
             gap: 0.75rem;
         }
         
         .btn {
-            padding: 0.9rem 1.25rem;
-            border: none;
-            border-radius: 10px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s;
+            padding: 0.6rem 1.2rem;
+            border-radius: 8px;
             text-decoration: none;
-            display: flex;
+            font-weight: 600;
+            font-size: 0.9rem;
+            transition: all 0.3s;
+            display: inline-flex;
             align-items: center;
-            justify-content: center;
-            gap: 0.5rem;
-            font-size: 0.95rem;
+            gap: 0.4rem;
         }
         
         .btn-primary {
             background: linear-gradient(135deg, #667eea, #764ba2);
             color: white;
-            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+            box-shadow: 0 2px 8px rgba(102, 126, 234, 0.3);
         }
         
         .btn-primary:hover {
             transform: translateY(-2px);
-            box-shadow: 0 6px 16px rgba(102, 126, 234, 0.4);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
         }
         
         .btn-secondary {
@@ -225,18 +255,18 @@
         
         .btn-secondary:hover {
             background: #e0e0e0;
-            transform: translateY(-2px);
         }
         
         .empty-state {
             text-align: center;
-            color: white;
             padding: 4rem 2rem;
+            color: #999;
         }
         
-        .empty-state h2 {
-            font-size: 2rem;
-            margin-bottom: 1rem;
+        .empty-state h3 {
+            font-size: 1.5rem;
+            margin-bottom: 0.5rem;
+            color: #666;
         }
         
         @keyframes fadeIn {
@@ -244,28 +274,33 @@
             to { opacity: 1; }
         }
         
-        @keyframes slideUp {
-            from {
-                opacity: 0;
-                transform: translateY(20px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.6; }
         }
         
         @media (max-width: 768px) {
-            .ideas-grid {
-                grid-template-columns: 1fr;
-            }
-            
             .header h1 {
-                font-size: 2.5rem;
+                font-size: 2rem;
             }
             
-            .actions {
-                grid-template-columns: 1fr;
+            .idea-item {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            
+            .idea-number {
+                margin-bottom: 1rem;
+            }
+            
+            .idea-actions {
+                width: 100%;
+                flex-direction: column;
+            }
+            
+            .btn {
+                width: 100%;
+                justify-content: center;
             }
         }
     </style>
@@ -274,719 +309,808 @@
     <div class="container">
         <div class="header">
             <h1>🚀 ValidationIdea</h1>
-            <p>Sistema Multi-Agente IA para Validación de Ideas SaaS</p>
+            <p>Sistema Multi-Agente IA - Generación Automática de Ideas SaaS</p>
         </div>
         
         <div class="stats">
             <div class="stat-card">
                 <h3>💡 Total Ideas</h3>
-                <div class="number">30</div>
+                <div class="number">31</div>
             </div>
             <div class="stat-card">
-                <h3>📅 Esta Semana</h3>
-                <div class="number">12</div>
+                <h3>📅 Hoy</h3>
+                <div class="number">13</div>
             </div>
             <div class="stat-card">
-                <h3>⭐ Score Promedio</h3>
+                <h3>⭐ Score Medio</h3>
                 <div class="number">0</div>
             </div>
         </div>
         
         <div class="download-section">
-            <a href="../data/ideas-validadas.csv" download="ideas-validadas.csv" class="download-btn">
+            <a href="../data/ideas-validadas.csv" download class="download-btn">
                 📥 Descargar CSV Completo
             </a>
         </div>
         
-        <div class="ideas-grid">
+        <div class="ideas-container">
+            <div class="ideas-header">
+                <h2>📋 Ideas Validadas</h2>
+                <span class="ideas-count">31 ideas • Ordenadas por fecha</span>
+            </div>
 
-            <div class="idea-card">
-                <div class="idea-header">
-                    <h2 class="idea-name">AI Code Review</h2>
-                    <span class="idea-category">SaaS</span>
-                </div>
+            <div class="idea-item">
+                <div class="idea-number">1</div>
                 
-                <p class="idea-description">Herramienta de revisión de código asistida por IA...</p>
-                
-                <div class="idea-meta">
-                    <span>Score: <span class="score">70</span></span>
-                    <span class="date">2026-02-12T20:54:15.330700</span>
-                </div>
-                
-                <div class="actions">
-                    <a href="../landing-pages/idea/index.html" class="btn btn-primary" target="_blank">
-                        🌐 Ver Landing
-                    </a>
-                    <a href="../informes/idea/informe-idea.md" class="btn btn-secondary" target="_blank">
-                        📊 Ver Informe
-                    </a>
+                <div class="idea-content">
+                    <div class="idea-title">__name__ <span class="new-badge">Nuevo</span></div>
+                    
+                    <div class="idea-meta">
+                        <span class="meta-item">📊 Score: <span class="score">70</span></span>
+                        <span class="category">SaaS</span>
+                        <span class="meta-item timestamp">🕐 14/02/2026 18:44</span>
+                    </div>
+                    
+                    <p class="idea-description">__short_description__...</p>
+                    
+                    <div class="idea-actions">
+                        <a href="../landing-pages/idea/index.html" class="btn btn-primary" target="_blank">
+                            🌐 Ver Landing
+                        </a>
+                        <a href="../informes/idea/informe-idea.md" class="btn btn-secondary" target="_blank">
+                            📊 Ver Informe
+                        </a>
+                    </div>
                 </div>
             </div>
 
-            <div class="idea-card">
-                <div class="idea-header">
-                    <h2 class="idea-name">AI Code Review</h2>
-                    <span class="idea-category">SaaS</span>
-                </div>
+            <div class="idea-item">
+                <div class="idea-number">2</div>
                 
-                <p class="idea-description">Herramienta de revisión de código asistida por AI...</p>
-                
-                <div class="idea-meta">
-                    <span>Score: <span class="score">70</span></span>
-                    <span class="date">2026-02-12T21:59:41.393438</span>
-                </div>
-                
-                <div class="actions">
-                    <a href="../landing-pages/idea/index.html" class="btn btn-primary" target="_blank">
-                        🌐 Ver Landing
-                    </a>
-                    <a href="../informes/idea/informe-idea.md" class="btn btn-secondary" target="_blank">
-                        📊 Ver Informe
-                    </a>
-                </div>
-            </div>
-
-            <div class="idea-card">
-                <div class="idea-header">
-                    <h2 class="idea-name">AI Code Review</h2>
-                    <span class="idea-category">SaaS</span>
-                </div>
-                
-                <p class="idea-description">Revisa y mejora código con inteligencia artificial....</p>
-                
-                <div class="idea-meta">
-                    <span>Score: <span class="score">70</span></span>
-                    <span class="date">2026-02-12T23:01:57.814944</span>
-                </div>
-                
-                <div class="actions">
-                    <a href="../landing-pages/idea/index.html" class="btn btn-primary" target="_blank">
-                        🌐 Ver Landing
-                    </a>
-                    <a href="../informes/idea/informe-idea.md" class="btn btn-secondary" target="_blank">
-                        📊 Ver Informe
-                    </a>
+                <div class="idea-content">
+                    <div class="idea-title">TalentScout AI 9115 <span class="new-badge">Nuevo</span></div>
+                    
+                    <div class="idea-meta">
+                        <span class="meta-item">📊 Score: <span class="score">70</span></span>
+                        <span class="category">SaaS</span>
+                        <span class="meta-item timestamp">🕐 14/02/2026 18:16</span>
+                    </div>
+                    
+                    <p class="idea-description">LinkedIn scraping manual de candidatos tarda 10h/semana...</p>
+                    
+                    <div class="idea-actions">
+                        <a href="../landing-pages/idea/index.html" class="btn btn-primary" target="_blank">
+                            🌐 Ver Landing
+                        </a>
+                        <a href="../informes/idea/informe-idea.md" class="btn btn-secondary" target="_blank">
+                            📊 Ver Informe
+                        </a>
+                    </div>
                 </div>
             </div>
 
-            <div class="idea-card">
-                <div class="idea-header">
-                    <h2 class="idea-name">AI Code Review</h2>
-                    <span class="idea-category">SaaS</span>
-                </div>
+            <div class="idea-item">
+                <div class="idea-number">3</div>
                 
-                <p class="idea-description">Revisión de código asistida por IA para desarrolladores...</p>
-                
-                <div class="idea-meta">
-                    <span>Score: <span class="score">70</span></span>
-                    <span class="date">2026-02-13T05:12:00.015816</span>
-                </div>
-                
-                <div class="actions">
-                    <a href="../landing-pages/idea/index.html" class="btn btn-primary" target="_blank">
-                        🌐 Ver Landing
-                    </a>
-                    <a href="../informes/idea/informe-idea.md" class="btn btn-secondary" target="_blank">
-                        📊 Ver Informe
-                    </a>
-                </div>
-            </div>
-
-            <div class="idea-card">
-                <div class="idea-header">
-                    <h2 class="idea-name">AI Code Asistente</h2>
-                    <span class="idea-category">SaaS</span>
-                </div>
-                
-                <p class="idea-description">Herramienta de asistencia de código con IA...</p>
-                
-                <div class="idea-meta">
-                    <span>Score: <span class="score">70</span></span>
-                    <span class="date">2026-02-13T07:57:41.337574</span>
-                </div>
-                
-                <div class="actions">
-                    <a href="../landing-pages/idea/index.html" class="btn btn-primary" target="_blank">
-                        🌐 Ver Landing
-                    </a>
-                    <a href="../informes/idea/informe-idea.md" class="btn btn-secondary" target="_blank">
-                        📊 Ver Informe
-                    </a>
+                <div class="idea-content">
+                    <div class="idea-title">PriceSpy Pro 1729 <span class="new-badge">Nuevo</span></div>
+                    
+                    <div class="idea-meta">
+                        <span class="meta-item">📊 Score: <span class="score">70</span></span>
+                        <span class="category">SaaS</span>
+                        <span class="meta-item timestamp">🕐 14/02/2026 15:51</span>
+                    </div>
+                    
+                    <p class="idea-description">Pierden ventas porque competencia baja precios y no se enteran - Solución IA automatizada...</p>
+                    
+                    <div class="idea-actions">
+                        <a href="../landing-pages/idea/index.html" class="btn btn-primary" target="_blank">
+                            🌐 Ver Landing
+                        </a>
+                        <a href="../informes/idea/informe-idea.md" class="btn btn-secondary" target="_blank">
+                            📊 Ver Informe
+                        </a>
+                    </div>
                 </div>
             </div>
 
-            <div class="idea-card">
-                <div class="idea-header">
-                    <h2 class="idea-name">AutoDoc</h2>
-                    <span class="idea-category">SaaS</span>
-                </div>
+            <div class="idea-item">
+                <div class="idea-number">4</div>
                 
-                <p class="idea-description">Automatiza la documentación de código...</p>
-                
-                <div class="idea-meta">
-                    <span>Score: <span class="score">70</span></span>
-                    <span class="date">2026-02-13T08:37:04.477729</span>
-                </div>
-                
-                <div class="actions">
-                    <a href="../landing-pages/idea/index.html" class="btn btn-primary" target="_blank">
-                        🌐 Ver Landing
-                    </a>
-                    <a href="../informes/idea/informe-idea.md" class="btn btn-secondary" target="_blank">
-                        📊 Ver Informe
-                    </a>
-                </div>
-            </div>
-
-            <div class="idea-card">
-                <div class="idea-header">
-                    <h2 class="idea-name">Automatiza Documentos</h2>
-                    <span class="idea-category">SaaS</span>
-                </div>
-                
-                <p class="idea-description">Automatiza la generación de documentos y contratos para solopreneurs y freelancers...</p>
-                
-                <div class="idea-meta">
-                    <span>Score: <span class="score">70</span></span>
-                    <span class="date">2026-02-13T09:33:47.639561</span>
-                </div>
-                
-                <div class="actions">
-                    <a href="../landing-pages/idea/index.html" class="btn btn-primary" target="_blank">
-                        🌐 Ver Landing
-                    </a>
-                    <a href="../informes/idea/informe-idea.md" class="btn btn-secondary" target="_blank">
-                        📊 Ver Informe
-                    </a>
+                <div class="idea-content">
+                    <div class="idea-title">PropertyPro AI 7868 Pro <span class="new-badge">Nuevo</span></div>
+                    
+                    <div class="idea-meta">
+                        <span class="meta-item">📊 Score: <span class="score">70</span></span>
+                        <span class="category">SaaS</span>
+                        <span class="meta-item timestamp">🕐 14/02/2026 14:57</span>
+                    </div>
+                    
+                    <p class="idea-description">Descripciones propiedades genéricas; fotos sin optimizar - Solución AI automatizada...</p>
+                    
+                    <div class="idea-actions">
+                        <a href="../landing-pages/idea/index.html" class="btn btn-primary" target="_blank">
+                            🌐 Ver Landing
+                        </a>
+                        <a href="../informes/idea/informe-idea.md" class="btn btn-secondary" target="_blank">
+                            📊 Ver Informe
+                        </a>
+                    </div>
                 </div>
             </div>
 
-            <div class="idea-card">
-                <div class="idea-header">
-                    <h2 class="idea-name">AutoDocuFlow</h2>
-                    <span class="idea-category">SaaS</span>
-                </div>
+            <div class="idea-item">
+                <div class="idea-number">5</div>
                 
-                <p class="idea-description">Automatiza la documentación de código con flujo de trabajo personalizable...</p>
-                
-                <div class="idea-meta">
-                    <span>Score: <span class="score">70</span></span>
-                    <span class="date">2026-02-13T09:36:49.994187</span>
-                </div>
-                
-                <div class="actions">
-                    <a href="../landing-pages/idea/index.html" class="btn btn-primary" target="_blank">
-                        🌐 Ver Landing
-                    </a>
-                    <a href="../informes/idea/informe-idea.md" class="btn btn-secondary" target="_blank">
-                        📊 Ver Informe
-                    </a>
-                </div>
-            </div>
-
-            <div class="idea-card">
-                <div class="idea-header">
-                    <h2 class="idea-name">AutoDocuFlow Pro</h2>
-                    <span class="idea-category">SaaS</span>
-                </div>
-                
-                <p class="idea-description">Automatiza documentación técnica con IA...</p>
-                
-                <div class="idea-meta">
-                    <span>Score: <span class="score">70</span></span>
-                    <span class="date">2026-02-13T09:42:59.903335</span>
-                </div>
-                
-                <div class="actions">
-                    <a href="../landing-pages/idea/index.html" class="btn btn-primary" target="_blank">
-                        🌐 Ver Landing
-                    </a>
-                    <a href="../informes/idea/informe-idea.md" class="btn btn-secondary" target="_blank">
-                        📊 Ver Informe
-                    </a>
+                <div class="idea-content">
+                    <div class="idea-title">KeywordMiner AI Pro <span class="new-badge">Nuevo</span></div>
+                    
+                    <div class="idea-meta">
+                        <span class="meta-item">📊 Score: <span class="score">70</span></span>
+                        <span class="category">SaaS</span>
+                        <span class="meta-item timestamp">🕐 14/02/2026 13:56</span>
+                    </div>
+                    
+                    <p class="idea-description">Keyword research manual 4h/proyecto; pierden long-tails - Solución IA automatizada...</p>
+                    
+                    <div class="idea-actions">
+                        <a href="../landing-pages/idea/index.html" class="btn btn-primary" target="_blank">
+                            🌐 Ver Landing
+                        </a>
+                        <a href="../informes/idea/informe-idea.md" class="btn btn-secondary" target="_blank">
+                            📊 Ver Informe
+                        </a>
+                    </div>
                 </div>
             </div>
 
-            <div class="idea-card">
-                <div class="idea-header">
-                    <h2 class="idea-name">AutoDocuFlow Plus</h2>
-                    <span class="idea-category">SaaS</span>
-                </div>
+            <div class="idea-item">
+                <div class="idea-number">6</div>
                 
-                <p class="idea-description">Automatiza la documentación de código con IA...</p>
-                
-                <div class="idea-meta">
-                    <span>Score: <span class="score">70</span></span>
-                    <span class="date">2026-02-13T10:28:14.283977</span>
-                </div>
-                
-                <div class="actions">
-                    <a href="../landing-pages/idea/index.html" class="btn btn-primary" target="_blank">
-                        🌐 Ver Landing
-                    </a>
-                    <a href="../informes/idea/informe-idea.md" class="btn btn-secondary" target="_blank">
-                        📊 Ver Informe
-                    </a>
-                </div>
-            </div>
-
-            <div class="idea-card">
-                <div class="idea-header">
-                    <h2 class="idea-name">AutoDocu</h2>
-                    <span class="idea-category">SaaS</span>
-                </div>
-                
-                <p class="idea-description">Automatiza la documentación de proyectos con IA...</p>
-                
-                <div class="idea-meta">
-                    <span>Score: <span class="score">70</span></span>
-                    <span class="date">2026-02-13T14:28:57.541304</span>
-                </div>
-                
-                <div class="actions">
-                    <a href="../landing-pages/idea/index.html" class="btn btn-primary" target="_blank">
-                        🌐 Ver Landing
-                    </a>
-                    <a href="../informes/idea/informe-idea.md" class="btn btn-secondary" target="_blank">
-                        📊 Ver Informe
-                    </a>
+                <div class="idea-content">
+                    <div class="idea-title">SaaSMetrics Pro 1034 <span class="new-badge">Nuevo</span></div>
+                    
+                    <div class="idea-meta">
+                        <span class="meta-item">📊 Score: <span class="score">70</span></span>
+                        <span class="category">SaaS</span>
+                        <span class="meta-item timestamp">🕐 14/02/2026 12:59</span>
+                    </div>
+                    
+                    <p class="idea-description">Seguimiento métricas en 5 herramientas; no ven MRR real - Solución IA automatizada...</p>
+                    
+                    <div class="idea-actions">
+                        <a href="../landing-pages/idea/index.html" class="btn btn-primary" target="_blank">
+                            🌐 Ver Landing
+                        </a>
+                        <a href="../informes/idea/informe-idea.md" class="btn btn-secondary" target="_blank">
+                            📊 Ver Informe
+                        </a>
+                    </div>
                 </div>
             </div>
 
-            <div class="idea-card">
-                <div class="idea-header">
-                    <h2 class="idea-name">PredictaStock</h2>
-                    <span class="idea-category">SaaS</span>
-                </div>
+            <div class="idea-item">
+                <div class="idea-number">7</div>
                 
-                <p class="idea-description">Optimiza inventario...</p>
-                
-                <div class="idea-meta">
-                    <span>Score: <span class="score">70</span></span>
-                    <span class="date">2026-02-13T15:52:44.052258</span>
-                </div>
-                
-                <div class="actions">
-                    <a href="../landing-pages/idea/index.html" class="btn btn-primary" target="_blank">
-                        🌐 Ver Landing
-                    </a>
-                    <a href="../informes/idea/informe-idea.md" class="btn btn-secondary" target="_blank">
-                        📊 Ver Informe
-                    </a>
-                </div>
-            </div>
-
-            <div class="idea-card">
-                <div class="idea-header">
-                    <h2 class="idea-name">Greenify Supply</h2>
-                    <span class="idea-category">SaaS</span>
-                </div>
-                
-                <p class="idea-description">Optimiza cadena de suministro...</p>
-                
-                <div class="idea-meta">
-                    <span>Score: <span class="score">70</span></span>
-                    <span class="date">2026-02-13T16:37:35.672574</span>
-                </div>
-                
-                <div class="actions">
-                    <a href="../landing-pages/idea/index.html" class="btn btn-primary" target="_blank">
-                        🌐 Ver Landing
-                    </a>
-                    <a href="../informes/idea/informe-idea.md" class="btn btn-secondary" target="_blank">
-                        📊 Ver Informe
-                    </a>
+                <div class="idea-content">
+                    <div class="idea-title">TalentScout AI Pro 2100 <span class="new-badge">Nuevo</span></div>
+                    
+                    <div class="idea-meta">
+                        <span class="meta-item">📊 Score: <span class="score">70</span></span>
+                        <span class="category">SaaS</span>
+                        <span class="meta-item timestamp">🕐 14/02/2026 12:31</span>
+                    </div>
+                    
+                    <p class="idea-description">LinkedIn scraping manual de candidatos tarda 10h/semana - Solución IA automatizada...</p>
+                    
+                    <div class="idea-actions">
+                        <a href="../landing-pages/idea/index.html" class="btn btn-primary" target="_blank">
+                            🌐 Ver Landing
+                        </a>
+                        <a href="../informes/idea/informe-idea.md" class="btn btn-secondary" target="_blank">
+                            📊 Ver Informe
+                        </a>
+                    </div>
                 </div>
             </div>
 
-            <div class="idea-card">
-                <div class="idea-header">
-                    <h2 class="idea-name">EcoInventory</h2>
-                    <span class="idea-category">SaaS</span>
-                </div>
+            <div class="idea-item">
+                <div class="idea-number">8</div>
                 
-                <p class="idea-description">Optimiza inventarios sostenibles...</p>
-                
-                <div class="idea-meta">
-                    <span>Score: <span class="score">70</span></span>
-                    <span class="date">2026-02-13T16:45:16.134175</span>
-                </div>
-                
-                <div class="actions">
-                    <a href="../landing-pages/idea/index.html" class="btn btn-primary" target="_blank">
-                        🌐 Ver Landing
-                    </a>
-                    <a href="../informes/idea/informe-idea.md" class="btn btn-secondary" target="_blank">
-                        📊 Ver Informe
-                    </a>
-                </div>
-            </div>
-
-            <div class="idea-card">
-                <div class="idea-header">
-                    <h2 class="idea-name">EcoSuppliers</h2>
-                    <span class="idea-category">SaaS</span>
-                </div>
-                
-                <p class="idea-description">Red de proveedores sostenibles...</p>
-                
-                <div class="idea-meta">
-                    <span>Score: <span class="score">70</span></span>
-                    <span class="date">2026-02-13T19:30:03.065114</span>
-                </div>
-                
-                <div class="actions">
-                    <a href="../landing-pages/idea/index.html" class="btn btn-primary" target="_blank">
-                        🌐 Ver Landing
-                    </a>
-                    <a href="../informes/idea/informe-idea.md" class="btn btn-secondary" target="_blank">
-                        📊 Ver Informe
-                    </a>
+                <div class="idea-content">
+                    <div class="idea-title">FreelanceHub Pro <span class="new-badge">Nuevo</span></div>
+                    
+                    <div class="idea-meta">
+                        <span class="meta-item">📊 Score: <span class="score">70</span></span>
+                        <span class="category">SaaS</span>
+                        <span class="meta-item timestamp">🕐 14/02/2026 12:04</span>
+                    </div>
+                    
+                    <p class="idea-description">Pasan 4h/semana en admin: facturas; contratos; time tracking - Solución IA automatizada...</p>
+                    
+                    <div class="idea-actions">
+                        <a href="../landing-pages/idea/index.html" class="btn btn-primary" target="_blank">
+                            🌐 Ver Landing
+                        </a>
+                        <a href="../informes/idea/informe-idea.md" class="btn btn-secondary" target="_blank">
+                            📊 Ver Informe
+                        </a>
+                    </div>
                 </div>
             </div>
 
-            <div class="idea-card">
-                <div class="idea-header">
-                    <h2 class="idea-name">EcoSupply</h2>
-                    <span class="idea-category">SaaS</span>
-                </div>
+            <div class="idea-item">
+                <div class="idea-number">9</div>
                 
-                <p class="idea-description">Optimiza tus cadenas de suministro sostenibles...</p>
-                
-                <div class="idea-meta">
-                    <span>Score: <span class="score">70</span></span>
-                    <span class="date">2026-02-13T21:07:33.407632</span>
-                </div>
-                
-                <div class="actions">
-                    <a href="../landing-pages/idea/index.html" class="btn btn-primary" target="_blank">
-                        🌐 Ver Landing
-                    </a>
-                    <a href="../informes/idea/informe-idea.md" class="btn btn-secondary" target="_blank">
-                        📊 Ver Informe
-                    </a>
-                </div>
-            </div>
-
-            <div class="idea-card">
-                <div class="idea-header">
-                    <h2 class="idea-name">EcoLogística</h2>
-                    <span class="idea-category">SaaS</span>
-                </div>
-                
-                <p class="idea-description">Optimización logística sostenible...</p>
-                
-                <div class="idea-meta">
-                    <span>Score: <span class="score">70</span></span>
-                    <span class="date">2026-02-13T22:05:00.456914</span>
-                </div>
-                
-                <div class="actions">
-                    <a href="../landing-pages/idea/index.html" class="btn btn-primary" target="_blank">
-                        🌐 Ver Landing
-                    </a>
-                    <a href="../informes/idea/informe-idea.md" class="btn btn-secondary" target="_blank">
-                        📊 Ver Informe
-                    </a>
+                <div class="idea-content">
+                    <div class="idea-title">EcoPyme <span class="new-badge">Nuevo</span></div>
+                    
+                    <div class="idea-meta">
+                        <span class="meta-item">📊 Score: <span class="score">70</span></span>
+                        <span class="category">SaaS</span>
+                        <span class="meta-item timestamp">🕐 14/02/2026 09:58</span>
+                    </div>
+                    
+                    <p class="idea-description">Ahorrando energía...</p>
+                    
+                    <div class="idea-actions">
+                        <a href="../landing-pages/idea/index.html" class="btn btn-primary" target="_blank">
+                            🌐 Ver Landing
+                        </a>
+                        <a href="../informes/idea/informe-idea.md" class="btn btn-secondary" target="_blank">
+                            📊 Ver Informe
+                        </a>
+                    </div>
                 </div>
             </div>
 
-            <div class="idea-card">
-                <div class="idea-header">
-                    <h2 class="idea-name">Farmalab</h2>
-                    <span class="idea-category">SaaS</span>
-                </div>
+            <div class="idea-item">
+                <div class="idea-number">10</div>
                 
-                <p class="idea-description">Predictión de enfermedades en ganado...</p>
-                
-                <div class="idea-meta">
-                    <span>Score: <span class="score">70</span></span>
-                    <span class="date">2026-02-13T23:46:23.499090</span>
-                </div>
-                
-                <div class="actions">
-                    <a href="../landing-pages/idea/index.html" class="btn btn-primary" target="_blank">
-                        🌐 Ver Landing
-                    </a>
-                    <a href="../informes/idea/informe-idea.md" class="btn btn-secondary" target="_blank">
-                        📊 Ver Informe
-                    </a>
-                </div>
-            </div>
-
-            <div class="idea-card">
-                <div class="idea-header">
-                    <h2 class="idea-name">EcoProveedores</h2>
-                    <span class="idea-category">SaaS</span>
-                </div>
-                
-                <p class="idea-description"> Marketplace sostenible...</p>
-                
-                <div class="idea-meta">
-                    <span>Score: <span class="score">70</span></span>
-                    <span class="date">2026-02-14T04:59:09.583812</span>
-                </div>
-                
-                <div class="actions">
-                    <a href="../landing-pages/idea/index.html" class="btn btn-primary" target="_blank">
-                        🌐 Ver Landing
-                    </a>
-                    <a href="../informes/idea/informe-idea.md" class="btn btn-secondary" target="_blank">
-                        📊 Ver Informe
-                    </a>
+                <div class="idea-content">
+                    <div class="idea-title">Farmacias Inteligentes <span class="new-badge">Nuevo</span></div>
+                    
+                    <div class="idea-meta">
+                        <span class="meta-item">📊 Score: <span class="score">70</span></span>
+                        <span class="category">SaaS</span>
+                        <span class="meta-item timestamp">🕐 14/02/2026 09:04</span>
+                    </div>
+                    
+                    <p class="idea-description">Optimiza gestión farmacéutica...</p>
+                    
+                    <div class="idea-actions">
+                        <a href="../landing-pages/idea/index.html" class="btn btn-primary" target="_blank">
+                            🌐 Ver Landing
+                        </a>
+                        <a href="../informes/idea/informe-idea.md" class="btn btn-secondary" target="_blank">
+                            📊 Ver Informe
+                        </a>
+                    </div>
                 </div>
             </div>
 
-            <div class="idea-card">
-                <div class="idea-header">
-                    <h2 class="idea-name">Ecodata Pro</h2>
-                    <span class="idea-category">SaaS</span>
-                </div>
+            <div class="idea-item">
+                <div class="idea-number">11</div>
                 
-                <p class="idea-description">Análisis de huella carbónica...</p>
-                
-                <div class="idea-meta">
-                    <span>Score: <span class="score">70</span></span>
-                    <span class="date">2026-02-14T07:22:38.663285</span>
-                </div>
-                
-                <div class="actions">
-                    <a href="../landing-pages/idea/index.html" class="btn btn-primary" target="_blank">
-                        🌐 Ver Landing
-                    </a>
-                    <a href="../informes/idea/informe-idea.md" class="btn btn-secondary" target="_blank">
-                        📊 Ver Informe
-                    </a>
-                </div>
-            </div>
-
-            <div class="idea-card">
-                <div class="idea-header">
-                    <h2 class="idea-name">OptiStock</h2>
-                    <span class="idea-category">SaaS</span>
-                </div>
-                
-                <p class="idea-description">Optimiza stock con IA...</p>
-                
-                <div class="idea-meta">
-                    <span>Score: <span class="score">70</span></span>
-                    <span class="date">2026-02-14T08:00:18.858343</span>
-                </div>
-                
-                <div class="actions">
-                    <a href="../landing-pages/idea/index.html" class="btn btn-primary" target="_blank">
-                        🌐 Ver Landing
-                    </a>
-                    <a href="../informes/idea/informe-idea.md" class="btn btn-secondary" target="_blank">
-                        📊 Ver Informe
-                    </a>
+                <div class="idea-content">
+                    <div class="idea-title">OptiStock <span class="new-badge">Nuevo</span></div>
+                    
+                    <div class="idea-meta">
+                        <span class="meta-item">📊 Score: <span class="score">70</span></span>
+                        <span class="category">SaaS</span>
+                        <span class="meta-item timestamp">🕐 14/02/2026 08:00</span>
+                    </div>
+                    
+                    <p class="idea-description">Optimiza stock con IA...</p>
+                    
+                    <div class="idea-actions">
+                        <a href="../landing-pages/idea/index.html" class="btn btn-primary" target="_blank">
+                            🌐 Ver Landing
+                        </a>
+                        <a href="../informes/idea/informe-idea.md" class="btn btn-secondary" target="_blank">
+                            📊 Ver Informe
+                        </a>
+                    </div>
                 </div>
             </div>
 
-            <div class="idea-card">
-                <div class="idea-header">
-                    <h2 class="idea-name">Farmacias Inteligentes</h2>
-                    <span class="idea-category">SaaS</span>
-                </div>
+            <div class="idea-item">
+                <div class="idea-number">12</div>
                 
-                <p class="idea-description">Optimiza gestión farmacéutica...</p>
-                
-                <div class="idea-meta">
-                    <span>Score: <span class="score">70</span></span>
-                    <span class="date">2026-02-14T09:04:51.797408</span>
-                </div>
-                
-                <div class="actions">
-                    <a href="../landing-pages/idea/index.html" class="btn btn-primary" target="_blank">
-                        🌐 Ver Landing
-                    </a>
-                    <a href="../informes/idea/informe-idea.md" class="btn btn-secondary" target="_blank">
-                        📊 Ver Informe
-                    </a>
-                </div>
-            </div>
-
-            <div class="idea-card">
-                <div class="idea-header">
-                    <h2 class="idea-name">EcoPyme</h2>
-                    <span class="idea-category">SaaS</span>
-                </div>
-                
-                <p class="idea-description">Ahorrando energía...</p>
-                
-                <div class="idea-meta">
-                    <span>Score: <span class="score">70</span></span>
-                    <span class="date">2026-02-14T09:58:35.491956</span>
-                </div>
-                
-                <div class="actions">
-                    <a href="../landing-pages/idea/index.html" class="btn btn-primary" target="_blank">
-                        🌐 Ver Landing
-                    </a>
-                    <a href="../informes/idea/informe-idea.md" class="btn btn-secondary" target="_blank">
-                        📊 Ver Informe
-                    </a>
+                <div class="idea-content">
+                    <div class="idea-title">Ecodata Pro <span class="new-badge">Nuevo</span></div>
+                    
+                    <div class="idea-meta">
+                        <span class="meta-item">📊 Score: <span class="score">70</span></span>
+                        <span class="category">SaaS</span>
+                        <span class="meta-item timestamp">🕐 14/02/2026 07:22</span>
+                    </div>
+                    
+                    <p class="idea-description">Análisis de huella carbónica...</p>
+                    
+                    <div class="idea-actions">
+                        <a href="../landing-pages/idea/index.html" class="btn btn-primary" target="_blank">
+                            🌐 Ver Landing
+                        </a>
+                        <a href="../informes/idea/informe-idea.md" class="btn btn-secondary" target="_blank">
+                            📊 Ver Informe
+                        </a>
+                    </div>
                 </div>
             </div>
 
-            <div class="idea-card">
-                <div class="idea-header">
-                    <h2 class="idea-name">FreelanceHub Pro</h2>
-                    <span class="idea-category">SaaS</span>
-                </div>
+            <div class="idea-item">
+                <div class="idea-number">13</div>
                 
-                <p class="idea-description">Pasan 4h/semana en admin: facturas; contratos; time tracking - Solución IA automatizada...</p>
-                
-                <div class="idea-meta">
-                    <span>Score: <span class="score">70</span></span>
-                    <span class="date">2026-02-14T12:04:44.267442</span>
-                </div>
-                
-                <div class="actions">
-                    <a href="../landing-pages/idea/index.html" class="btn btn-primary" target="_blank">
-                        🌐 Ver Landing
-                    </a>
-                    <a href="../informes/idea/informe-idea.md" class="btn btn-secondary" target="_blank">
-                        📊 Ver Informe
-                    </a>
-                </div>
-            </div>
-
-            <div class="idea-card">
-                <div class="idea-header">
-                    <h2 class="idea-name">TalentScout AI Pro 2100</h2>
-                    <span class="idea-category">SaaS</span>
-                </div>
-                
-                <p class="idea-description">LinkedIn scraping manual de candidatos tarda 10h/semana - Solución IA automatizada...</p>
-                
-                <div class="idea-meta">
-                    <span>Score: <span class="score">70</span></span>
-                    <span class="date">2026-02-14T12:31:53.275504</span>
-                </div>
-                
-                <div class="actions">
-                    <a href="../landing-pages/idea/index.html" class="btn btn-primary" target="_blank">
-                        🌐 Ver Landing
-                    </a>
-                    <a href="../informes/idea/informe-idea.md" class="btn btn-secondary" target="_blank">
-                        📊 Ver Informe
-                    </a>
+                <div class="idea-content">
+                    <div class="idea-title">EcoProveedores <span class="new-badge">Nuevo</span></div>
+                    
+                    <div class="idea-meta">
+                        <span class="meta-item">📊 Score: <span class="score">70</span></span>
+                        <span class="category">SaaS</span>
+                        <span class="meta-item timestamp">🕐 14/02/2026 04:59</span>
+                    </div>
+                    
+                    <p class="idea-description"> Marketplace sostenible...</p>
+                    
+                    <div class="idea-actions">
+                        <a href="../landing-pages/idea/index.html" class="btn btn-primary" target="_blank">
+                            🌐 Ver Landing
+                        </a>
+                        <a href="../informes/idea/informe-idea.md" class="btn btn-secondary" target="_blank">
+                            📊 Ver Informe
+                        </a>
+                    </div>
                 </div>
             </div>
 
-            <div class="idea-card">
-                <div class="idea-header">
-                    <h2 class="idea-name">SaaSMetrics Pro 1034</h2>
-                    <span class="idea-category">SaaS</span>
-                </div>
+            <div class="idea-item">
+                <div class="idea-number">14</div>
                 
-                <p class="idea-description">Seguimiento métricas en 5 herramientas; no ven MRR real - Solución IA automatizada...</p>
-                
-                <div class="idea-meta">
-                    <span>Score: <span class="score">70</span></span>
-                    <span class="date">2026-02-14T12:59:53.209426</span>
-                </div>
-                
-                <div class="actions">
-                    <a href="../landing-pages/idea/index.html" class="btn btn-primary" target="_blank">
-                        🌐 Ver Landing
-                    </a>
-                    <a href="../informes/idea/informe-idea.md" class="btn btn-secondary" target="_blank">
-                        📊 Ver Informe
-                    </a>
-                </div>
-            </div>
-
-            <div class="idea-card">
-                <div class="idea-header">
-                    <h2 class="idea-name">KeywordMiner AI Pro</h2>
-                    <span class="idea-category">SaaS</span>
-                </div>
-                
-                <p class="idea-description">Keyword research manual 4h/proyecto; pierden long-tails - Solución IA automatizada...</p>
-                
-                <div class="idea-meta">
-                    <span>Score: <span class="score">70</span></span>
-                    <span class="date">2026-02-14T13:56:44.308331</span>
-                </div>
-                
-                <div class="actions">
-                    <a href="../landing-pages/idea/index.html" class="btn btn-primary" target="_blank">
-                        🌐 Ver Landing
-                    </a>
-                    <a href="../informes/idea/informe-idea.md" class="btn btn-secondary" target="_blank">
-                        📊 Ver Informe
-                    </a>
+                <div class="idea-content">
+                    <div class="idea-title">Farmalab </div>
+                    
+                    <div class="idea-meta">
+                        <span class="meta-item">📊 Score: <span class="score">70</span></span>
+                        <span class="category">SaaS</span>
+                        <span class="meta-item timestamp">🕐 13/02/2026 23:46</span>
+                    </div>
+                    
+                    <p class="idea-description">Predictión de enfermedades en ganado...</p>
+                    
+                    <div class="idea-actions">
+                        <a href="../landing-pages/idea/index.html" class="btn btn-primary" target="_blank">
+                            🌐 Ver Landing
+                        </a>
+                        <a href="../informes/idea/informe-idea.md" class="btn btn-secondary" target="_blank">
+                            📊 Ver Informe
+                        </a>
+                    </div>
                 </div>
             </div>
 
-            <div class="idea-card">
-                <div class="idea-header">
-                    <h2 class="idea-name">PropertyPro AI 7868 Pro</h2>
-                    <span class="idea-category">SaaS</span>
-                </div>
+            <div class="idea-item">
+                <div class="idea-number">15</div>
                 
-                <p class="idea-description">Descripciones propiedades genéricas; fotos sin optimizar - Solución AI automatizada...</p>
-                
-                <div class="idea-meta">
-                    <span>Score: <span class="score">70</span></span>
-                    <span class="date">2026-02-14T14:57:11.654679</span>
-                </div>
-                
-                <div class="actions">
-                    <a href="../landing-pages/idea/index.html" class="btn btn-primary" target="_blank">
-                        🌐 Ver Landing
-                    </a>
-                    <a href="../informes/idea/informe-idea.md" class="btn btn-secondary" target="_blank">
-                        📊 Ver Informe
-                    </a>
-                </div>
-            </div>
-
-            <div class="idea-card">
-                <div class="idea-header">
-                    <h2 class="idea-name">PriceSpy Pro 1729</h2>
-                    <span class="idea-category">SaaS</span>
-                </div>
-                
-                <p class="idea-description">Pierden ventas porque competencia baja precios y no se enteran - Solución IA automatizada...</p>
-                
-                <div class="idea-meta">
-                    <span>Score: <span class="score">70</span></span>
-                    <span class="date">2026-02-14T15:51:00.598917</span>
-                </div>
-                
-                <div class="actions">
-                    <a href="../landing-pages/idea/index.html" class="btn btn-primary" target="_blank">
-                        🌐 Ver Landing
-                    </a>
-                    <a href="../informes/idea/informe-idea.md" class="btn btn-secondary" target="_blank">
-                        📊 Ver Informe
-                    </a>
+                <div class="idea-content">
+                    <div class="idea-title">EcoLogística </div>
+                    
+                    <div class="idea-meta">
+                        <span class="meta-item">📊 Score: <span class="score">70</span></span>
+                        <span class="category">SaaS</span>
+                        <span class="meta-item timestamp">🕐 13/02/2026 22:05</span>
+                    </div>
+                    
+                    <p class="idea-description">Optimización logística sostenible...</p>
+                    
+                    <div class="idea-actions">
+                        <a href="../landing-pages/idea/index.html" class="btn btn-primary" target="_blank">
+                            🌐 Ver Landing
+                        </a>
+                        <a href="../informes/idea/informe-idea.md" class="btn btn-secondary" target="_blank">
+                            📊 Ver Informe
+                        </a>
+                    </div>
                 </div>
             </div>
 
-            <div class="idea-card">
-                <div class="idea-header">
-                    <h2 class="idea-name">TalentScout AI 9115</h2>
-                    <span class="idea-category">SaaS</span>
+            <div class="idea-item">
+                <div class="idea-number">16</div>
+                
+                <div class="idea-content">
+                    <div class="idea-title">EcoSupply </div>
+                    
+                    <div class="idea-meta">
+                        <span class="meta-item">📊 Score: <span class="score">70</span></span>
+                        <span class="category">SaaS</span>
+                        <span class="meta-item timestamp">🕐 13/02/2026 21:07</span>
+                    </div>
+                    
+                    <p class="idea-description">Optimiza tus cadenas de suministro sostenibles...</p>
+                    
+                    <div class="idea-actions">
+                        <a href="../landing-pages/idea/index.html" class="btn btn-primary" target="_blank">
+                            🌐 Ver Landing
+                        </a>
+                        <a href="../informes/idea/informe-idea.md" class="btn btn-secondary" target="_blank">
+                            📊 Ver Informe
+                        </a>
+                    </div>
                 </div>
+            </div>
+
+            <div class="idea-item">
+                <div class="idea-number">17</div>
                 
-                <p class="idea-description">LinkedIn scraping manual de candidatos tarda 10h/semana...</p>
-                
-                <div class="idea-meta">
-                    <span>Score: <span class="score">70</span></span>
-                    <span class="date">2026-02-14T18:16:35.335553</span>
+                <div class="idea-content">
+                    <div class="idea-title">EcoSuppliers </div>
+                    
+                    <div class="idea-meta">
+                        <span class="meta-item">📊 Score: <span class="score">70</span></span>
+                        <span class="category">SaaS</span>
+                        <span class="meta-item timestamp">🕐 13/02/2026 19:30</span>
+                    </div>
+                    
+                    <p class="idea-description">Red de proveedores sostenibles...</p>
+                    
+                    <div class="idea-actions">
+                        <a href="../landing-pages/idea/index.html" class="btn btn-primary" target="_blank">
+                            🌐 Ver Landing
+                        </a>
+                        <a href="../informes/idea/informe-idea.md" class="btn btn-secondary" target="_blank">
+                            📊 Ver Informe
+                        </a>
+                    </div>
                 </div>
+            </div>
+
+            <div class="idea-item">
+                <div class="idea-number">18</div>
                 
-                <div class="actions">
-                    <a href="../landing-pages/idea/index.html" class="btn btn-primary" target="_blank">
-                        🌐 Ver Landing
-                    </a>
-                    <a href="../informes/idea/informe-idea.md" class="btn btn-secondary" target="_blank">
-                        📊 Ver Informe
-                    </a>
+                <div class="idea-content">
+                    <div class="idea-title">EcoInventory </div>
+                    
+                    <div class="idea-meta">
+                        <span class="meta-item">📊 Score: <span class="score">70</span></span>
+                        <span class="category">SaaS</span>
+                        <span class="meta-item timestamp">🕐 13/02/2026 16:45</span>
+                    </div>
+                    
+                    <p class="idea-description">Optimiza inventarios sostenibles...</p>
+                    
+                    <div class="idea-actions">
+                        <a href="../landing-pages/idea/index.html" class="btn btn-primary" target="_blank">
+                            🌐 Ver Landing
+                        </a>
+                        <a href="../informes/idea/informe-idea.md" class="btn btn-secondary" target="_blank">
+                            📊 Ver Informe
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="idea-item">
+                <div class="idea-number">19</div>
+                
+                <div class="idea-content">
+                    <div class="idea-title">Greenify Supply </div>
+                    
+                    <div class="idea-meta">
+                        <span class="meta-item">📊 Score: <span class="score">70</span></span>
+                        <span class="category">SaaS</span>
+                        <span class="meta-item timestamp">🕐 13/02/2026 16:37</span>
+                    </div>
+                    
+                    <p class="idea-description">Optimiza cadena de suministro...</p>
+                    
+                    <div class="idea-actions">
+                        <a href="../landing-pages/idea/index.html" class="btn btn-primary" target="_blank">
+                            🌐 Ver Landing
+                        </a>
+                        <a href="../informes/idea/informe-idea.md" class="btn btn-secondary" target="_blank">
+                            📊 Ver Informe
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="idea-item">
+                <div class="idea-number">20</div>
+                
+                <div class="idea-content">
+                    <div class="idea-title">PredictaStock </div>
+                    
+                    <div class="idea-meta">
+                        <span class="meta-item">📊 Score: <span class="score">70</span></span>
+                        <span class="category">SaaS</span>
+                        <span class="meta-item timestamp">🕐 13/02/2026 15:52</span>
+                    </div>
+                    
+                    <p class="idea-description">Optimiza inventario...</p>
+                    
+                    <div class="idea-actions">
+                        <a href="../landing-pages/idea/index.html" class="btn btn-primary" target="_blank">
+                            🌐 Ver Landing
+                        </a>
+                        <a href="../informes/idea/informe-idea.md" class="btn btn-secondary" target="_blank">
+                            📊 Ver Informe
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="idea-item">
+                <div class="idea-number">21</div>
+                
+                <div class="idea-content">
+                    <div class="idea-title">AutoDocu </div>
+                    
+                    <div class="idea-meta">
+                        <span class="meta-item">📊 Score: <span class="score">70</span></span>
+                        <span class="category">SaaS</span>
+                        <span class="meta-item timestamp">🕐 13/02/2026 14:28</span>
+                    </div>
+                    
+                    <p class="idea-description">Automatiza la documentación de proyectos con IA...</p>
+                    
+                    <div class="idea-actions">
+                        <a href="../landing-pages/idea/index.html" class="btn btn-primary" target="_blank">
+                            🌐 Ver Landing
+                        </a>
+                        <a href="../informes/idea/informe-idea.md" class="btn btn-secondary" target="_blank">
+                            📊 Ver Informe
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="idea-item">
+                <div class="idea-number">22</div>
+                
+                <div class="idea-content">
+                    <div class="idea-title">AutoDocuFlow Plus </div>
+                    
+                    <div class="idea-meta">
+                        <span class="meta-item">📊 Score: <span class="score">70</span></span>
+                        <span class="category">SaaS</span>
+                        <span class="meta-item timestamp">🕐 13/02/2026 10:28</span>
+                    </div>
+                    
+                    <p class="idea-description">Automatiza la documentación de código con IA...</p>
+                    
+                    <div class="idea-actions">
+                        <a href="../landing-pages/idea/index.html" class="btn btn-primary" target="_blank">
+                            🌐 Ver Landing
+                        </a>
+                        <a href="../informes/idea/informe-idea.md" class="btn btn-secondary" target="_blank">
+                            📊 Ver Informe
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="idea-item">
+                <div class="idea-number">23</div>
+                
+                <div class="idea-content">
+                    <div class="idea-title">AutoDocuFlow Pro </div>
+                    
+                    <div class="idea-meta">
+                        <span class="meta-item">📊 Score: <span class="score">70</span></span>
+                        <span class="category">SaaS</span>
+                        <span class="meta-item timestamp">🕐 13/02/2026 09:42</span>
+                    </div>
+                    
+                    <p class="idea-description">Automatiza documentación técnica con IA...</p>
+                    
+                    <div class="idea-actions">
+                        <a href="../landing-pages/idea/index.html" class="btn btn-primary" target="_blank">
+                            🌐 Ver Landing
+                        </a>
+                        <a href="../informes/idea/informe-idea.md" class="btn btn-secondary" target="_blank">
+                            📊 Ver Informe
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="idea-item">
+                <div class="idea-number">24</div>
+                
+                <div class="idea-content">
+                    <div class="idea-title">AutoDocuFlow </div>
+                    
+                    <div class="idea-meta">
+                        <span class="meta-item">📊 Score: <span class="score">70</span></span>
+                        <span class="category">SaaS</span>
+                        <span class="meta-item timestamp">🕐 13/02/2026 09:36</span>
+                    </div>
+                    
+                    <p class="idea-description">Automatiza la documentación de código con flujo de trabajo personalizable...</p>
+                    
+                    <div class="idea-actions">
+                        <a href="../landing-pages/idea/index.html" class="btn btn-primary" target="_blank">
+                            🌐 Ver Landing
+                        </a>
+                        <a href="../informes/idea/informe-idea.md" class="btn btn-secondary" target="_blank">
+                            📊 Ver Informe
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="idea-item">
+                <div class="idea-number">25</div>
+                
+                <div class="idea-content">
+                    <div class="idea-title">Automatiza Documentos </div>
+                    
+                    <div class="idea-meta">
+                        <span class="meta-item">📊 Score: <span class="score">70</span></span>
+                        <span class="category">SaaS</span>
+                        <span class="meta-item timestamp">🕐 13/02/2026 09:33</span>
+                    </div>
+                    
+                    <p class="idea-description">Automatiza la generación de documentos y contratos para solopreneurs y freelancers...</p>
+                    
+                    <div class="idea-actions">
+                        <a href="../landing-pages/idea/index.html" class="btn btn-primary" target="_blank">
+                            🌐 Ver Landing
+                        </a>
+                        <a href="../informes/idea/informe-idea.md" class="btn btn-secondary" target="_blank">
+                            📊 Ver Informe
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="idea-item">
+                <div class="idea-number">26</div>
+                
+                <div class="idea-content">
+                    <div class="idea-title">AutoDoc </div>
+                    
+                    <div class="idea-meta">
+                        <span class="meta-item">📊 Score: <span class="score">70</span></span>
+                        <span class="category">SaaS</span>
+                        <span class="meta-item timestamp">🕐 13/02/2026 08:37</span>
+                    </div>
+                    
+                    <p class="idea-description">Automatiza la documentación de código...</p>
+                    
+                    <div class="idea-actions">
+                        <a href="../landing-pages/idea/index.html" class="btn btn-primary" target="_blank">
+                            🌐 Ver Landing
+                        </a>
+                        <a href="../informes/idea/informe-idea.md" class="btn btn-secondary" target="_blank">
+                            📊 Ver Informe
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="idea-item">
+                <div class="idea-number">27</div>
+                
+                <div class="idea-content">
+                    <div class="idea-title">AI Code Asistente </div>
+                    
+                    <div class="idea-meta">
+                        <span class="meta-item">📊 Score: <span class="score">70</span></span>
+                        <span class="category">SaaS</span>
+                        <span class="meta-item timestamp">🕐 13/02/2026 07:57</span>
+                    </div>
+                    
+                    <p class="idea-description">Herramienta de asistencia de código con IA...</p>
+                    
+                    <div class="idea-actions">
+                        <a href="../landing-pages/idea/index.html" class="btn btn-primary" target="_blank">
+                            🌐 Ver Landing
+                        </a>
+                        <a href="../informes/idea/informe-idea.md" class="btn btn-secondary" target="_blank">
+                            📊 Ver Informe
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="idea-item">
+                <div class="idea-number">28</div>
+                
+                <div class="idea-content">
+                    <div class="idea-title">AI Code Review </div>
+                    
+                    <div class="idea-meta">
+                        <span class="meta-item">📊 Score: <span class="score">70</span></span>
+                        <span class="category">SaaS</span>
+                        <span class="meta-item timestamp">🕐 13/02/2026 05:12</span>
+                    </div>
+                    
+                    <p class="idea-description">Revisión de código asistida por IA para desarrolladores...</p>
+                    
+                    <div class="idea-actions">
+                        <a href="../landing-pages/idea/index.html" class="btn btn-primary" target="_blank">
+                            🌐 Ver Landing
+                        </a>
+                        <a href="../informes/idea/informe-idea.md" class="btn btn-secondary" target="_blank">
+                            📊 Ver Informe
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="idea-item">
+                <div class="idea-number">29</div>
+                
+                <div class="idea-content">
+                    <div class="idea-title">AI Code Review </div>
+                    
+                    <div class="idea-meta">
+                        <span class="meta-item">📊 Score: <span class="score">70</span></span>
+                        <span class="category">SaaS</span>
+                        <span class="meta-item timestamp">🕐 12/02/2026 23:01</span>
+                    </div>
+                    
+                    <p class="idea-description">Revisa y mejora código con inteligencia artificial....</p>
+                    
+                    <div class="idea-actions">
+                        <a href="../landing-pages/idea/index.html" class="btn btn-primary" target="_blank">
+                            🌐 Ver Landing
+                        </a>
+                        <a href="../informes/idea/informe-idea.md" class="btn btn-secondary" target="_blank">
+                            📊 Ver Informe
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="idea-item">
+                <div class="idea-number">30</div>
+                
+                <div class="idea-content">
+                    <div class="idea-title">AI Code Review </div>
+                    
+                    <div class="idea-meta">
+                        <span class="meta-item">📊 Score: <span class="score">70</span></span>
+                        <span class="category">SaaS</span>
+                        <span class="meta-item timestamp">🕐 12/02/2026 21:59</span>
+                    </div>
+                    
+                    <p class="idea-description">Herramienta de revisión de código asistida por AI...</p>
+                    
+                    <div class="idea-actions">
+                        <a href="../landing-pages/idea/index.html" class="btn btn-primary" target="_blank">
+                            🌐 Ver Landing
+                        </a>
+                        <a href="../informes/idea/informe-idea.md" class="btn btn-secondary" target="_blank">
+                            📊 Ver Informe
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="idea-item">
+                <div class="idea-number">31</div>
+                
+                <div class="idea-content">
+                    <div class="idea-title">AI Code Review </div>
+                    
+                    <div class="idea-meta">
+                        <span class="meta-item">📊 Score: <span class="score">70</span></span>
+                        <span class="category">SaaS</span>
+                        <span class="meta-item timestamp">🕐 12/02/2026 20:54</span>
+                    </div>
+                    
+                    <p class="idea-description">Herramienta de revisión de código asistida por IA...</p>
+                    
+                    <div class="idea-actions">
+                        <a href="../landing-pages/idea/index.html" class="btn btn-primary" target="_blank">
+                            🌐 Ver Landing
+                        </a>
+                        <a href="../informes/idea/informe-idea.md" class="btn btn-secondary" target="_blank">
+                            📊 Ver Informe
+                        </a>
+                    </div>
                 </div>
             </div>
 
