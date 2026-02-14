@@ -1,10 +1,17 @@
 {
-  "version": "5.0.8",
+  "version": "5.0.9",
   "major": 5,
   "minor": 0,
-  "patch": 8,
+  "patch": 9,
   "date": "2026-02-14",
   "changelog": [
+    {
+      "version": "5.0.9",
+      "date": "2026-02-14",
+      "type": "patch",
+      "description": "🔧 Fix: .github/workflows/generate.yml",
+      "commit": "Create generate.yml"
+    },
     {
       "version": "5.0.8",
       "date": "2026-02-14",
