@@ -1,5 +1,4 @@
-import fetch from 'node-fetch';
-
+// Vercel Serverless Function
 export default async function handler(req, res) {
   // CORS
   res.setHeader('Access-Control-Allow-Origin', '*');
@@ -11,20 +10,26 @@ export default async function handler(req, res) {
   }
   
   if (req.method !== 'POST') {
-    return res.status(405).json({ error: 'Method not allowed' });
+    return res.status(405).json({ error: 'Método no permitido' });
   }
   
   try {
-    const { email, idea, timestamp } = req.body;
+    const { email, idea } = req.body;
     
     // Validación
     if (!email || !idea) {
-      return res.status(400).json({ error: 'Email e idea requeridos' });
+      return res.status(400).json({ 
+        success: false,
+        error: 'Email e idea son requeridos' 
+      });
     }
     
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(email)) {
-      return res.status(400).json({ error: 'Email inválido' });
+      return res.status(400).json({ 
+        success: false,
+        error: 'Email inválido' 
+      });
     }
     
     // 1. Enviar a Telegram
@@ -36,12 +41,13 @@ export default async function handler(req, res) {
 
 📧 Email: ${email}
 💡 Idea: ${idea}
-📅 Fecha: ${new Date(timestamp).toLocaleString('es-ES', { timeZone: 'Europe/Madrid' })}
+📅 ${new Date().toLocaleString('es-ES', { timeZone: 'Europe/Madrid' })}
 
----
-¡Alguien está interesado en tu idea!`;
+¡Alguien quiere acceso anticipado!`;
       
-      await fetch(`https://api.telegram.org/bot${telegramToken}/sendMessage`, {
+      const telegramUrl = `https://api.telegram.org/bot${telegramToken}/sendMessage`;
+      
+      await fetch(telegramUrl, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -52,16 +58,19 @@ export default async function handler(req, res) {
       });
     }
     
-    // 2. Disparar GitHub Action para actualizar CSV
+    // 2. Guardar en archivo JSON (Vercel tiene filesystem efímero, pero para debug)
+    console.log(`✅ Registro: ${email} → ${idea}`);
+    
+    // 3. Disparar GitHub Action para actualizar CSV
     const githubToken = process.env.GITHUB_TOKEN;
-    const repoOwner = 'mipromptingeniering-alt';
-    const repoName = 'validationidea';
     
     if (githubToken) {
-      await fetch(`https://api.github.com/repos/${repoOwner}/${repoName}/dispatches`, {
+      const githubUrl = 'https://api.github.com/repos/mipromptingeniering-alt/validationidea/dispatches';
+      
+      await fetch(githubUrl, {
         method: 'POST',
         headers: {
-          'Authorization': `token ${githubToken}`,
+          'Authorization': `Bearer ${githubToken}`,
           'Accept': 'application/vnd.github.v3+json',
           'Content-Type': 'application/json'
         },
@@ -70,27 +79,22 @@ export default async function handler(req, res) {
           client_payload: {
             email: email,
             idea: idea,
-            timestamp: timestamp
+            timestamp: new Date().toISOString()
           }
         })
       });
     }
     
-    // 3. Guardar en base de datos simple (opcional - KV store de Vercel)
-    // Por ahora, solo responder OK
-    
-    console.log(`✅ Registro exitoso: ${email} → ${idea}`);
-    
     return res.status(200).json({ 
-      success: true, 
-      message: 'Registro exitoso' 
+      success: true,
+      message: '¡Registro exitoso! Te contactaremos pronto.' 
     });
     
   } catch (error) {
     console.error('Error:', error);
     return res.status(500).json({ 
-      error: 'Error del servidor',
-      details: error.message 
+      success: false,
+      error: 'Error del servidor. Inténtalo de nuevo.' 
     });
   }
 }
