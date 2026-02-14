@@ -1,145 +1,248 @@
 import os
-import json
+import csv
 from datetime import datetime
+import json
 
 def load_published_ideas():
-    csv_file = 'data/ideas-validadas.csv'
-    if not os.path.exists(csv_file):
-        return []
+    """Carga ideas publicadas desde CSV de forma segura"""
     ideas = []
-    with open(csv_file, 'r', encoding='utf-8') as f:
-        lines = f.readlines()[1:]
-        for line in lines:
-            parts = line.strip().split(',')
-            if len(parts) >= 5:
-                ideas.append({
-                    'nombre': parts[1],
-                    'score_gen': int(parts[3]),
-                    'score_crit': int(parts[4])
-                })
+    csv_file = 'data/ideas-validadas.csv'
+    
+    if not os.path.exists(csv_file):
+        return ideas
+    
+    try:
+        with open(csv_file, 'r', encoding='utf-8') as f:
+            reader = csv.DictReader(f)
+            for row in reader:
+                try:
+                    # Convertir scores a float primero, luego a int
+                    score_gen = row.get('score_generador', '0')
+                    score_crit = row.get('score_critico', '0')
+                    score_prom = row.get('score_promedio', '0')
+                    
+                    # Limpiar y convertir de forma segura
+                    score_gen = int(float(str(score_gen).strip())) if score_gen else 0
+                    score_crit = int(float(str(score_crit).strip())) if score_crit else 0
+                    score_prom = int(float(str(score_prom).strip())) if score_prom else 0
+                    
+                    ideas.append({
+                        'nombre': str(row.get('nombre', '')).strip(),
+                        'score_gen': score_gen,
+                        'score_crit': score_crit,
+                        'score_promedio': score_prom,
+                        'timestamp': str(row.get('timestamp', '')).strip()
+                    })
+                except (ValueError, TypeError) as e:
+                    print(f"⚠️  Error parseando fila: {e}")
+                    continue
+    
+    except Exception as e:
+        print(f"⚠️  Error leyendo CSV: {e}")
+    
     return ideas
 
-def load_rejected_ideas():
-    rejected_file = 'data/rejected_ideas.json'
-    if not os.path.exists(rejected_file):
-        return []
-    with open(rejected_file, 'r', encoding='utf-8') as f:
-        return json.load(f)
-
 def analyze_performance():
+    """Analiza rendimiento del sistema"""
     published = load_published_ideas()
-    rejected = load_rejected_ideas()
-    total = len(published) + len(rejected)
-    if total == 0:
-        return None
-    approval_rate = (len(published) / total) * 100
-    avg_score_gen = sum([i['score_gen'] for i in published]) / len(published) if published else 0
-    avg_score_crit = sum([i['score_crit'] for i in published]) / len(published) if published else 0
-    return {
-        'total_ideas': total,
-        'published': len(published),
-        'rejected': len(rejected),
-        'approval_rate': approval_rate,
-        'avg_score_gen': avg_score_gen,
-        'avg_score_crit': avg_score_crit
+    
+    if not published:
+        return {
+            'total': 0,
+            'avg_score': 0,
+            'approval_rate': 0,
+            'top_performers': []
+        }
+    
+    total = len(published)
+    
+    # Calcular score promedio de forma segura
+    scores = [idea['score_promedio'] for idea in published if idea['score_promedio'] > 0]
+    avg_score = int(sum(scores) / len(scores)) if scores else 0
+    
+    # Tasa aprobación (score > 60)
+    approved = sum(1 for idea in published if idea['score_promedio'] > 60)
+    approval_rate = (approved / total * 100) if total > 0 else 0
+    
+    # Top performers
+    top_performers = sorted(
+        published,
+        key=lambda x: x['score_promedio'],
+        reverse=True
+    )[:5]
+    
+    stats = {
+        'total': total,
+        'avg_score': avg_score,
+        'approval_rate': round(approval_rate, 1),
+        'top_performers': [
+            {
+                'nombre': idea['nombre'],
+                'score': idea['score_promedio']
+            }
+            for idea in top_performers
+        ]
     }
+    
+    return stats
 
-def get_optimization_insights(stats):
-    insights = []
-    if stats['approval_rate'] < 30:
-        insights.append("⚠️ Tasa de aprobación baja (<30%). Considera ajustar umbrales o mejorar prompts del generador.")
-    elif stats['approval_rate'] > 70:
-        insights.append("✅ Tasa de aprobación alta (>70%). El sistema funciona bien.")
-    if stats['avg_score_gen'] < 70:
-        insights.append("🔧 Score promedio del generador bajo. Revisa prompt de generator_agent.")
-    if stats['avg_score_crit'] < 70:
-        insights.append("🔧 Score promedio del crítico bajo. Ideas publicadas tienen baja calidad según crítico.")
-    if abs(stats['avg_score_gen'] - stats['avg_score_crit']) > 15:
-        insights.append("⚖️ Gran diferencia entre scores. Generador y crítico no están alineados.")
-    if not insights:
-        insights.append("🎯 Sistema optimizado. Todo funcionando correctamente.")
-    return insights
+def suggest_improvements(stats):
+    """Sugiere mejoras basadas en estadísticas"""
+    suggestions = []
+    
+    avg_score = stats.get('avg_score', 0)
+    approval_rate = stats.get('approval_rate', 0)
+    
+    # Análisis score promedio
+    if avg_score < 60:
+        suggestions.append({
+            'tipo': 'CRITICAL',
+            'area': 'Generador',
+            'sugerencia': 'Score promedio muy bajo (<60). Necesita ajustar temperatura o prompts.',
+            'accion': 'Revisar config/generator_config.json - aumentar creativity_boost'
+        })
+    elif avg_score < 70:
+        suggestions.append({
+            'tipo': 'WARNING',
+            'area': 'Generador',
+            'sugerencia': 'Score promedio bajo (60-70). Ideas funcionan pero pueden mejorar.',
+            'accion': 'Añadir más nichos específicos o refinar prompts'
+        })
+    else:
+        suggestions.append({
+            'tipo': 'SUCCESS',
+            'area': 'Generador',
+            'sugerencia': f'Score promedio excelente ({avg_score}). Sistema funciona bien.',
+            'accion': 'Mantener estrategia actual'
+        })
+    
+    # Análisis tasa aprobación
+    if approval_rate < 50:
+        suggestions.append({
+            'tipo': 'CRITICAL',
+            'area': 'Crítico',
+            'sugerencia': f'Tasa aprobación baja ({approval_rate}%). Rechaza demasiado.',
+            'accion': 'Reducir score_minimo en config/critic_config.json'
+        })
+    elif approval_rate < 70:
+        suggestions.append({
+            'tipo': 'WARNING',
+            'area': 'Crítico',
+            'sugerencia': f'Tasa aprobación media ({approval_rate}%).',
+            'accion': 'Revisar criterios de evaluación'
+        })
+    else:
+        suggestions.append({
+            'tipo': 'SUCCESS',
+            'area': 'Crítico',
+            'sugerencia': f'Tasa aprobación óptima ({approval_rate}%).',
+            'accion': 'Criterios bien calibrados'
+        })
+    
+    # Análisis total ideas
+    total = stats.get('total', 0)
+    if total < 10:
+        suggestions.append({
+            'tipo': 'INFO',
+            'area': 'Sistema',
+            'sugerencia': f'Solo {total} ideas generadas. Necesita más datos para análisis.',
+            'accion': 'Dejar ejecutar más iteraciones (objetivo: 50+ ideas)'
+        })
+    
+    return suggestions
 
-def generate_optimization_report(stats):
+def generate_optimization_report(stats, suggestions):
+    """Genera reporte de optimización"""
+    
+    report = f"""# 🚀 REPORTE DE OPTIMIZACIÓN
+
+**Generado:** {datetime.now().strftime('%Y-%m-%d %H:%M')}
+
+---
+
+## 📊 MÉTRICAS ACTUALES
+
+- **Total Ideas:** {stats['total']}
+- **Score Promedio:** {stats['avg_score']}/100
+- **Tasa Aprobación:** {stats['approval_rate']}%
+
+---
+
+## 🏆 TOP 5 IDEAS
+
+"""
+    
+    for i, idea in enumerate(stats['top_performers'], 1):
+        report += f"{i}. **{idea['nombre']}** - Score: {idea['score']}\n"
+    
+    report += "\n---\n\n## 💡 SUGERENCIAS DE MEJORA\n\n"
+    
+    for sugg in suggestions:
+        emoji = {
+            'CRITICAL': '🔴',
+            'WARNING': '⚠️',
+            'SUCCESS': '✅',
+            'INFO': 'ℹ️'
+        }.get(sugg['tipo'], '•')
+        
+        report += f"""### {emoji} {sugg['tipo']} - {sugg['area']}
+
+**{sugg['sugerencia']}**
+
+**Acción:** {sugg['accion']}
+
+---
+
+"""
+    
+    # Guardar reporte
     os.makedirs('reports', exist_ok=True)
-    report_file = 'reports/optimization-report.md'
-    insights = get_optimization_insights(stats)
-    content = f"""# 🚀 Informe de Optimización del Sistema
-
-**Generado:** {datetime.now().strftime('%d/%m/%Y %H:%M')}
-
----
-
-## 📊 Estadísticas Generales
-
-- **Total de ideas evaluadas:** {stats['total_ideas']}
-- **Ideas publicadas:** {stats['published']}
-- **Ideas rechazadas:** {stats['rejected']}
-- **Tasa de aprobación:** {stats['approval_rate']:.1f}%
-
----
-
-## 🎯 Calidad Promedio (Ideas Publicadas)
-
-- **Score Generador:** {stats['avg_score_gen']:.1f}/100
-- **Score Crítico:** {stats['avg_score_crit']:.1f}/100
-- **Score Promedio:** {(stats['avg_score_gen'] + stats['avg_score_crit']) / 2:.1f}/100
-
----
-
-## 💡 Insights y Recomendaciones
-
-"""
-    for insight in insights:
-        content += f"- {insight}\n"
-    content += f"""
----
-
-## 🔧 Acciones Sugeridas
-
-1. **Si tasa de aprobación <30%:**
-   - Bajar threshold en `critic_agent.py` (línea ~50)
-   - Mejorar creatividad en prompt de `generator_agent.py`
-
-2. **Si scores bajos (<70):**
-   - Revisar prompt del generador
-   - Añadir más contexto de investigación
-
-3. **Si diferencia de scores >15 puntos:**
-   - Alinear criterios entre generador y crítico
-   - Revisar lógica de scoring
-
-4. **Optimización continua:**
-   - Analizar `rejected_ideas.json` para patrones
-   - Ajustar research topics en `researcher_agent.py`
-
----
-
-**Sistema:** Multi-Agente de Validación de Ideas  
-**Modelo:** Groq Llama 3.3 70B (Gratis)  
-**Costo:** $0/mes
-"""
+    report_file = f"reports/optimization-{datetime.now().strftime('%Y%m%d-%H%M')}.md"
+    
     with open(report_file, 'w', encoding='utf-8') as f:
-        f.write(content)
-    print(f"✅ Informe de optimización generado: {report_file}")
+        f.write(report)
+    
+    print(f"✅ Reporte guardado: {report_file}")
+    
+    return report_file
 
 def run():
+    """Función principal del optimizador"""
     print("\n🚀 Ejecutando análisis de optimización...")
-    stats = analyze_performance()
-    if not stats:
-        print("⚠️ No hay suficientes datos para optimizar (mínimo 1 idea)")
-        return
-    print(f"\n📊 Estadísticas:")
-    print(f"   - Total evaluadas: {stats['total_ideas']}")
-    print(f"   - Publicadas: {stats['published']}")
-    print(f"   - Rechazadas: {stats['rejected']}")
-    print(f"   - Tasa aprobación: {stats['approval_rate']:.1f}%")
-    print(f"   - Score promedio: {(stats['avg_score_gen'] + stats['avg_score_crit']) / 2:.1f}/100")
-    generate_optimization_report(stats)
-    insights = get_optimization_insights(stats)
-    print("\n💡 Insights:")
-    for insight in insights:
-        print(f"   {insight}")
+    
+    try:
+        # Analizar rendimiento
+        stats = analyze_performance()
+        
+        print(f"\n📊 Estadísticas:")
+        print(f"   Total ideas: {stats['total']}")
+        print(f"   Score promedio: {stats['avg_score']}")
+        print(f"   Tasa aprobación: {stats['approval_rate']}%")
+        
+        # Generar sugerencias
+        suggestions = suggest_improvements(stats)
+        
+        print(f"\n💡 Sugerencias generadas: {len(suggestions)}")
+        
+        # Generar reporte
+        report_file = generate_optimization_report(stats, suggestions)
+        
+        print(f"✅ Optimización completada\n")
+        
+        return {
+            'stats': stats,
+            'suggestions': suggestions,
+            'report': report_file
+        }
+    
+    except Exception as e:
+        print(f"❌ ERROR: {e}")
+        import traceback
+        traceback.print_exc()
+        return None
+
 
 if __name__ == "__main__":
-    run()
+    result = run()
+    if result:
+        print(json.dumps(result['stats'], indent=2))
