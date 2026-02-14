@@ -1,12 +1,20 @@
 import os
 import json
-import requests
-from datetime import datetime, timedelta
+import random
+from datetime import datetime
+
+def run():
+    """Función principal que llama main_workflow.py"""
+    print("\n🔍 Agente Investigador iniciado...")
+    
+    insights = research_trends()
+    
+    print(f"✅ Research completado")
+    
+    return insights
 
 def research_trends():
     """Agente Investigador: Busca trends y aporta ideas al Generador"""
-    
-    print("\n🔍 Agente Investigador iniciado...")
     
     insights = {
         "timestamp": datetime.now().isoformat(),
@@ -18,7 +26,7 @@ def research_trends():
         "recommendations": []
     }
     
-    # 1. Simular Google Trends (en producción usar pytrends)
+    # 1. Google Trends (simulado)
     print("📊 Analizando Google Trends...")
     trends_keywords = [
         {"keyword": "AI automation tools", "growth": "+250%", "volume": "50K"},
@@ -31,7 +39,7 @@ def research_trends():
     insights["trends"] = trends_keywords
     insights["sources"].append("Google Trends")
     
-    # 2. Problemas detectados en Reddit (simular scraping)
+    # 2. Reddit problems (simulado)
     print("🔍 Escaneando Reddit /r/SaaS...")
     reddit_problems = [
         "Freelancers spend 6h/week on invoicing",
@@ -44,14 +52,13 @@ def research_trends():
     insights["problems"] = reddit_problems
     insights["sources"].append("Reddit /r/SaaS")
     
-    # 3. Herramientas trending (ProductHunt)
+    # 3. Trending tools (simulado)
     print("🚀 Analizando ProductHunt...")
     trending_tools = [
         {"name": "Claude 3.5 Sonnet", "use_case": "Long-form content", "api": "Yes"},
         {"name": "Midjourney v6", "use_case": "Image generation", "api": "Limited"},
         {"name": "ElevenLabs", "use_case": "Voice synthesis", "api": "Yes"},
-        {"name": "Perplexity API", "use_case": "Research automation", "api": "Yes"},
-        {"name": "Cursor IDE", "use_case": "AI coding", "api": "No"}
+        {"name": "Perplexity API", "use_case": "Research automation", "api": "Yes"}
     ]
     
     insights["tools"] = trending_tools
@@ -63,13 +70,12 @@ def research_trends():
         {"niche": "AI video editors for YouTube Shorts", "size": "Growing fast"},
         {"niche": "LinkedIn ghostwriting services", "size": "15M+ potential users"},
         {"niche": "Notion automation consultants", "size": "5M+ users"},
-        {"niche": "TikTok trend analyzers", "size": "50M+ creators"},
-        {"niche": "SaaS metrics dashboards", "size": "100K+ founders"}
+        {"niche": "TikTok trend analyzers", "size": "50M+ creators"}
     ]
     
     insights["niches"] = emerging_niches
     
-    # 5. Recomendaciones para el Generador
+    # 5. Recomendaciones
     insights["recommendations"] = [
         "Priorizar nichos con APIs disponibles (Claude, Stripe, Notion)",
         "Combinar scraping + IA para ideas híbridas",
@@ -85,14 +91,13 @@ def research_trends():
     with open(output_file, 'w', encoding='utf-8') as f:
         json.dump(insights, f, indent=2, ensure_ascii=False)
     
-    print(f"✅ Research completado: {output_file}")
-    print(f"📊 {len(insights['trends'])} trends detectados")
-    print(f"❌ {len(insights['problems'])} problemas encontrados")
-    print(f"🛠️  {len(insights['tools'])} herramientas trending")
-    print(f"🎯 {len(insights['niches'])} nichos emergentes")
+    print(f"✅ Guardado: {output_file}")
+    print(f"📊 {len(insights['trends'])} trends")
+    print(f"❌ {len(insights['problems'])} problemas")
+    print(f"🛠️  {len(insights['tools'])} herramientas")
+    print(f"🎯 {len(insights['niches'])} nichos")
     
     return insights
-
 
 def get_research_insights():
     """Lee insights del archivo para usarlos en generator"""
@@ -106,4 +111,4 @@ def get_research_insights():
 
 
 if __name__ == "__main__":
-    research_trends()
+    run()
