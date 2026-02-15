@@ -246,6 +246,20 @@ def main():
     # 6. Actualizar cache
     update_cache()
     
+# ===================================================================
+    # PASO 7: SINCRONIZAR A NOTION
+    # ===================================================================
+    print("\n" + "="*80)
+    print("PASO 7: SINCRONIZAR A NOTION")
+    print("="*80 + "\n")
+    
+    try:
+        from agents import notion_sync_agent
+        notion_sync_agent.sync_idea_to_notion(idea)
+    except Exception as e:
+        print(f"⚠️ Error en Notion sync: {str(e)}")
+        print("   Continuando sin sync...")
+
     # 7. Resumen final
     print("\n" + "="*80)
     print("âœ… WORKFLOW COMPLETADO CON Ã‰XITO")
