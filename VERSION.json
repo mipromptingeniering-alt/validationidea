@@ -1,10 +1,17 @@
 {
-  "version": "10.0.1",
+  "version": "10.0.2",
   "major": 10,
   "minor": 0,
-  "patch": 1,
+  "patch": 2,
   "date": "2026-02-15",
   "changelog": [
+    {
+      "version": "10.0.2",
+      "date": "2026-02-15",
+      "type": "patch",
+      "description": "🔧 Fix: data/ideas.json",
+      "commit": "🔧 Fix: Corregir estructura de ideas.json a objeto"
+    },
     {
       "version": "10.0.1",
       "date": "2026-02-15",
