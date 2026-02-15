@@ -210,6 +210,37 @@ def main():
     print("-"*80)
     
     save_idea(idea)
+    save_idea(idea)
+    
+    # ===================================================================
+    # AÑADIR URLs DE LANDING Y REPORT
+    # ===================================================================
+    slug = idea.get('slug', 'unknown')
+    base_url = "https://mipromptingeniering-alt.github.io/validationidea"
+    idea['landing_url'] = f"{base_url}/landing-pages/{slug}/index.html"
+    idea['report_url'] = f"{base_url}/reports/{slug}.html"
+    
+    print(f"📄 Landing: {idea['landing_url']}")
+    print(f"📊 Report: {idea['report_url']}")
+    
+    # Actualizar idea en ideas.json con URLs
+    with open('data/ideas.json', 'r', encoding='utf-8') as f:
+        data = json.load(f)
+    
+    # Actualizar la última idea con URLs
+    for i, stored_idea in enumerate(data['ideas']):
+        if stored_idea.get('slug') == slug:
+            data['ideas'][i]['landing_url'] = idea['landing_url']
+            data['ideas'][i]['report_url'] = idea['report_url']
+            break
+    
+    with open('data/ideas.json', 'w', encoding='utf-8') as f:
+        json.dump(data, f, ensure_ascii=False, indent=2)
+    
+    print("✅ URLs añadidas a ideas.json")
+    
+    # 5. Notificar Telegram
+
     # 5. Notificar Telegram
     print("\n" + "-"*80)
     print("PASO 6: NOTIFICAR TELEGRAM")
