@@ -1,10 +1,17 @@
 {
-  "version": "10.0.3",
+  "version": "10.0.4",
   "major": 10,
   "minor": 0,
-  "patch": 3,
+  "patch": 4,
   "date": "2026-02-15",
   "changelog": [
+    {
+      "version": "10.0.4",
+      "date": "2026-02-15",
+      "type": "patch",
+      "description": "🔧 Fix: agents/notion_sync_agent.py",
+      "commit": "🐛 Fix: Parse revenue con texto + Add PASO 7 Notion sync"
+    },
     {
       "version": "10.0.3",
       "date": "2026-02-15",
