@@ -1,10 +1,17 @@
 {
-  "version": "10.0.7",
-  "major": 10,
+  "version": "11.0.0",
+  "major": 11,
   "minor": 0,
-  "patch": 7,
+  "patch": 0,
   "date": "2026-02-15",
   "changelog": [
+    {
+      "version": "11.0.0",
+      "date": "2026-02-15",
+      "type": "major",
+      "description": "⚠️  Breaking: main_workflow.py",
+      "commit": "✨ Add: Generación automática de URLs Landing/Report"
+    },
     {
       "version": "10.0.7",
       "date": "2026-02-15",
