@@ -64,3 +64,4 @@ temp/
 
 # Excepciones
 !data/ideas.json
+.env
