@@ -1,10 +1,17 @@
 {
-  "version": "11.0.1",
+  "version": "11.0.2",
   "major": 11,
   "minor": 0,
-  "patch": 1,
+  "patch": 2,
   "date": "2026-02-15",
   "changelog": [
+    {
+      "version": "11.0.2",
+      "date": "2026-02-15",
+      "type": "patch",
+      "description": "🔧 Fix: .gitignore",
+      "commit": "fix: telegram agent + gitignore .env"
+    },
     {
       "version": "11.0.1",
       "date": "2026-02-15",
