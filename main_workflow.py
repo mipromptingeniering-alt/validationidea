@@ -224,8 +224,8 @@ def main():
         }
         
         # URLs
-        landing_url = "https://github.com/mipromptingeniering-alt/validationidea/blob/main/data/ideas.json"
-        report_url = "https://github.com/mipromptingeniering-alt/validationidea/blob/main/data/viral-trends.json"
+        landing_url = f"landing-pages/{idea['id']}.html"
+        report_url = f"reports/{idea['id']}.html"
         
         # Llamar función correcta
         success = telegram_notifier.send_telegram_notification(
