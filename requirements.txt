@@ -8,3 +8,5 @@ requests
 pytz
 pytrends
 praw
+
+notion-client>=2.2.1

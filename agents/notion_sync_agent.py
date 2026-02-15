@@ -1,93 +1,105 @@
 """
-Notion Sync Agent - Sincroniza ideas.json con Notion Dashboard
+Notion Sync Agent: sincroniza ideas completas
 """
 import os
 import json
+from notion_client import Client
 from datetime import datetime
-import requests
 
-NOTION_TOKEN = os.environ.get('NOTION_TOKEN')
-DATABASE_ID = "308313aca133809cb9fde119be25681d"
-
-def _parse_revenue(value):
-    """Extrae el número de revenue del campo (puede ser '1,500 conservador')"""
-    try:
-        if isinstance(value, (int, float)):
-            return int(value)
-        # Si es string, extraer solo los dígitos
-        clean = str(value).replace(',', '').replace('€', '').strip()
-        # Tomar solo la primera palabra (el número)
-        number_str = clean.split()[0] if clean else '0'
-        return int(number_str)
-    except:
-        return 0
+notion = Client(auth=os.getenv("NOTION_TOKEN"))
+DATABASE_ID = "308313ac-a133-8009-81cf-c48f32c52146"
 
 def sync_idea_to_notion(idea):
-    """Sincroniza una idea al dashboard de Notion"""
+    """Sincroniza idea completa a Notion"""
     
-    headers = {
-        "Authorization": f"Bearer {NOTION_TOKEN}",
-        "Content-Type": "application/json",
-        "Notion-Version": "2022-06-28"
-    }
+    print(f"📤 Sincronizando '{idea.get('nombre', 'Sin nombre')}' a Notion...")
     
-    # Construir propiedades de Notion (NOMBRES EXACTOS de tu database)
+    # Reporte técnico
+    report = f"""# TECHNICAL REPORT
+
+Score: {idea.get('score_critico', 0)}/100 | Viral: {idea.get('viral_score', 0)}/100
+
+## DESCRIPTION
+{idea.get('descripcion', 'N/A')}
+
+## ANALYSIS
+Problem: {idea.get('problema', 'N/A')}
+Solution: {idea.get('solucion', 'N/A')}
+Target: {idea.get('publico_objetivo', 'N/A')}
+
+## BUSINESS
+Model: {idea.get('modelo_negocio', 'N/A')}
+Value: {idea.get('propuesta_valor', 'N/A')}
+
+## EXECUTION
+MVP: {idea.get('mvp', 'N/A')}
+KPIs: {idea.get('metricas_clave', 'N/A')}
+Marketing: {idea.get('canales_marketing', 'N/A')}
+Next 30d: {idea.get('proximos_pasos', 'N/A')}
+
+## RISKS
+{idea.get('riesgos', 'N/A')}
+"""
+    
+    # Propiedades con nombres EN INGLÉS
     properties = {
-        "nombre": {"title": [{"text": {"content": idea.get('nombre', 'Sin nombre')}}]},
-        "Score Generador": {"number": idea.get('score_generador', 0)},
-        "Score Crítico": {"number": idea.get('score_critico', 0)},
-        "Revenue Estimado (€/mes)": {"number": _parse_revenue(idea.get('revenue_6_meses', 0))},
-        "Estado": {"select": {"name": "🆕 Nueva"}},
-        "Prioridad": {"select": {"name": "🔥 Alta" if idea.get('viral_score', 0) > 80 else "⚡ Media"}},
-        "Tags": {"multi_select": [{"name": "IA"}, {"name": "SaaS"}, {"name": "Viral"}]}
+        "Name": {"title": [{"text": {"content": idea.get("nombre", "Untitled")[:100]}}]},
     }
     
-    # Añadir URLs si existen
-    if 'landing_url' in idea:
-        properties["Landing Page"] = {"url": idea['landing_url']}
-    if 'report_url' in idea:
-        properties["Report Técnico"] = {"url": idea['report_url']}
+    def add_text(key, value):
+        if value:
+            properties[key] = {"rich_text": [{"text": {"content": str(value)[:2000]}}]}
     
-    # Crear página en Notion
-    data = {
-        "parent": {"database_id": DATABASE_ID},
-        "properties": properties
-    }
+    add_text("Description", idea.get("descripcion"))
+    add_text("Problem", idea.get("problema"))
+    add_text("Solution", idea.get("solucion"))
+    add_text("Target", idea.get("publico_objetivo"))
+    add_text("Business", idea.get("modelo_negocio"))
+    add_text("MVP", idea.get("mvp"))
+    add_text("Value", idea.get("propuesta_valor"))
+    add_text("Metrics", idea.get("metricas_clave"))
+    add_text("Risks", idea.get("riesgos"))
+    add_text("Marketing", idea.get("canales_marketing"))
+    add_text("NextSteps", idea.get("proximos_pasos"))
+    add_text("Report", report)
     
-    response = requests.post(
-        "https://api.notion.com/v1/pages",
-        headers=headers,
-        json=data
-    )
+    # Números
+    properties["ScoreGen"] = {"number": idea.get("score_generador", 0)}
+    properties["ScoreCritic"] = {"number": idea.get("score_critico", 0)}
+    properties["ScoreViral"] = {"number": idea.get("viral_score", 0)}
     
-    if response.status_code == 200:
-        print(f"✅ Idea '{idea.get('nombre')}' sincronizada a Notion")
-        return response.json()
-    else:
-        print(f"❌ Error sincronizando a Notion: {response.text}")
-        return None
-
-def sync_all_ideas():
-    """Sincroniza todas las ideas de ideas.json a Notion"""
+    # Crítica
+    critique = idea.get("critique", {})
+    if critique.get("puntos_fuertes"):
+        add_text("Strengths", "\n• ".join(critique["puntos_fuertes"]))
+    if critique.get("puntos_debiles"):
+        add_text("Weaknesses", "\n• ".join(critique["puntos_debiles"]))
     
-    if not NOTION_TOKEN:
-        print("⚠️ NOTION_TOKEN no configurado - saltando sync")
-        return
+    # Research
+    if idea.get("research"):
+        add_text("Research", json.dumps(idea["research"], indent=2, ensure_ascii=False))
     
+    # Fecha
+    properties["Date"] = {"date": {"start": datetime.now().isoformat()}}
+    
+    # Tags
+    tags = []
+    if idea.get("viral_score", 0) >= 85:
+        tags.append({"name": "Viral"})
+    if idea.get("score_critico", 0) >= 85:
+        tags.append({"name": "Quality"})
+    
+    if tags:
+        properties["Tags"] = {"multi_select": tags}
+    
+    # Crear página
     try:
-        with open('data/ideas.json', 'r', encoding='utf-8') as f:
-            data = json.load(f)
-            ideas = data.get('ideas', [])
-        
-        print(f"\n📊 Sincronizando {len(ideas)} ideas a Notion...")
-        
-        for idea in ideas:
-            sync_idea_to_notion(idea)
-        
-        print(f"✅ {len(ideas)} ideas sincronizadas")
-        
+        page = notion.pages.create(
+            parent={"database_id": DATABASE_ID},
+            properties=properties
+        )
+        print(f"✅ Sincronizado: {page['url']}")
+        return page
     except Exception as e:
-        print(f"❌ Error en sync: {str(e)}")
-
-if __name__ == "__main__":
-    sync_all_ideas()
+        print(f"❌ Error: {e}")
+        return None

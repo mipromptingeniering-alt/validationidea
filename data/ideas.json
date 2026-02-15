@@ -206,8 +206,646 @@
       },
       "created_at": "2026-02-15T11:58:37.265215",
       "status": "pendiente"
+    },
+    {
+      "nombre": "Costeo Pro",
+      "slug": "producto-9635",
+      "tipo_producto": "Google Sheets Template",
+      "categoria": "Ecommerce",
+      "descripcion": "Calcula costos reales, mÃ¡rgenes y break-even personalizados por categorÃ­a de producto, ayudando a optimizar la cadena de suministro y precios en tiempo real.",
+      "descripcion_corta": "Tiendas online no trackean mÃ¡rgenes reales correctamente",
+      "problema": "Tiendas online no trackean mÃ¡rgenes reales correctamente",
+      "solucion": "Dashboard automatizado que calcula costos, mÃ¡rgenes, break-even por producto",
+      "publico_objetivo": "Ecommerce",
+      "propuesta_valor": "Costeo Pro se diferenciarÃ¡ de las alternativas ya que incluye un algoritmo de optimizaciÃ³n de inventario automatizado y alertas de riesgo de margen, ayudando a los comerciantes a tomar decisiones informadas y reducir costos.",
+      "diferenciacion": "Se enfoca en la automatizaciÃ³n de la optimizaciÃ³n de inventario y la detecciÃ³n de riesgos de margen en tiempo real, lo que lo hace Ãºnico en el mercado.",
+      "tam": "250.000",
+      "sam": "100.000",
+      "som": "50.000",
+      "competencia": "Competencia moderada en el nicho",
+      "ventaja_competitiva": "EspecializaciÃ³n y ejecuciÃ³n rÃ¡pida",
+      "precio_sugerido": "24",
+      "modelo_monetizacion": "â‚¬24 pago Ãºnico",
+      "features_core": "anÃ¡lisis de costos reales y marginales, optimizaciÃ³n de inventario automatizada, alertas de riesgo de margen, seguimiento de break-even por categorÃ­a de producto, integraciÃ³n con plataformas de gestiÃ³n de inventario.",
+      "roadmap_mvp": "Semana 1: Setup y diseÃ±o, Semana 2: Desarrollo, Semana 3: Testing y lanzamiento",
+      "stack_sugerido": "Google Sheets, Gumroad, Twitter",
+      "integraciones": "Google Sheets, Zapier, webhooks",
+      "canales_adquisicion": "Twitter, ProductHunt, Reddit, comunidades especializadas",
+      "metricas_clave": "MRR, tasa conversiÃ³n, CAC, LTV",
+      "riesgos": "Competencia puede copiar, dependencia de plataforma",
+      "validacion_inicial": "10 ventas en primeras 2 semanas",
+      "tiempo_estimado": "10-15h",
+      "inversion_inicial": "â‚¬0-â‚¬50",
+      "dificultad": "Media",
+      "revenue_6_meses": "â‚¬2,100",
+      "como_monetizar": "Gumroad + comunidades ecommerce",
+      "score_generador": 75,
+      "_fingerprint": "a540817aed4701bbc285ff956aa75b79",
+      "score_critico": 75,
+      "critique": {
+        "score_critico": 75,
+        "puntos_fuertes": [
+          "Problema claro",
+          "SoluciÃ³n viable",
+          "Stack moderno"
+        ],
+        "puntos_debiles": [
+          "Validar mercado"
+        ],
+        "resumen": "Idea aprobada con potencial"
+      },
+      "research": {
+        "competidores": [
+          "N/A"
+        ],
+        "diferenciacion_clave": "Pendiente de investigar",
+        "riesgos_principales": [
+          "Pendiente de investigar"
+        ],
+        "oportunidades": [
+          "Pendiente de investigar"
+        ],
+        "validacion_sugerida": "Pendiente de investigar"
+      },
+      "created_at": "2026-02-15T13:36:36.608914",
+      "status": "pendiente"
+    },
+    {
+      "nombre": "RecruitHub",
+      "slug": "producto-2301",
+      "tipo_producto": "Plantilla Airtable",
+      "categoria": "Recruiters",
+      "descripcion": "Plataforma de reclutamiento en la nube para pequeñas y medianas empresas que busca un enfoque más humano en la selección de personal",
+      "descripcion_corta": "Recruiters pequeÃ±os no pueden pagar ATS caros",
+      "problema": "Recruiters pequeÃ±os no pueden pagar ATS caros",
+      "solucion": "Base Airtable con pipelines, automatizaciones, email templates integrados",
+      "publico_objetivo": "Recruiters",
+      "propuesta_valor": "Nuestra versión más asequible y personalizada del ATS ayuda a los recruiters pequeños a ahorrar costos y centrarse en lo que importa: encontrar al candidato ideal",
+      "diferenciacion": "Ofrecemos una solución más personalizada y asequible que permite a los recruiter pequeños adaptarse a sus necesidades únicas y seguir creciendo sin sobrecargar su presupuesto",
+      "tam": "1.000.000",
+      "sam": "300.000",
+      "som": "15.000",
+      "competencia": "Competencia moderada en el nicho",
+      "ventaja_competitiva": "EspecializaciÃ³n y ejecuciÃ³n rÃ¡pida",
+      "precio_sugerido": "35",
+      "modelo_monetizacion": "â‚¬35 pago Ãºnico",
+      "features_core": "Creación de pipelines personalizado, automatización de tareas y correos electrónicos, integración con redes sociales y bases de datos de trabajo, gestión de candidatos y colaboración en equipo",
+      "roadmap_mvp": "Semana 1: Setup y diseÃ±o, Semana 2: Desarrollo, Semana 3: Testing y lanzamiento",
+      "stack_sugerido": "Airtable, Gumroad, Twitter",
+      "integraciones": "Airtable, Zapier, webhooks",
+      "canales_adquisicion": "Twitter, ProductHunt, Reddit, comunidades especializadas",
+      "metricas_clave": "MRR, tasa conversiÃ³n, CAC, LTV",
+      "riesgos": "Competencia puede copiar, dependencia de plataforma",
+      "validacion_inicial": "10 ventas en primeras 2 semanas",
+      "tiempo_estimado": "12-18h",
+      "inversion_inicial": "â‚¬0-â‚¬50",
+      "dificultad": "Media",
+      "revenue_6_meses": "â‚¬2,800",
+      "como_monetizar": "Gumroad + LinkedIn + Reddit r/recruiting",
+      "score_generador": 75,
+      "_fingerprint": "37427e4b382520adbdf49d2087603f5c",
+      "score_critico": 75,
+      "critique": {
+        "score_critico": 75,
+        "puntos_fuertes": [
+          "Problema claro",
+          "SoluciÃ³n viable",
+          "Stack moderno"
+        ],
+        "puntos_debiles": [
+          "Validar mercado"
+        ],
+        "resumen": "Idea aprobada con potencial"
+      },
+      "research": {
+        "competidores": [
+          "N/A"
+        ],
+        "diferenciacion_clave": "Pendiente de investigar",
+        "riesgos_principales": [
+          "Pendiente de investigar"
+        ],
+        "oportunidades": [
+          "Pendiente de investigar"
+        ],
+        "validacion_sugerida": "Pendiente de investigar"
+      },
+      "created_at": "2026-02-15T13:41:58.757332",
+      "status": "pendiente",
+      "landing_url": "https://mipromptingeniering-alt.github.io/validationidea/landing-pages/producto-2301/index.html",
+      "report_url": "https://mipromptingeniering-alt.github.io/validationidea/reports/producto-2301.html"
+    },
+    {
+      "nombre": "RecruitHub",
+      "slug": "producto-2301",
+      "tipo_producto": "Plantilla Airtable",
+      "categoria": "Recruiters",
+      "descripcion": "Plataforma de reclutamiento en la nube para pequeñas y medianas empresas que busca un enfoque más humano en la selección de personal",
+      "descripcion_corta": "Recruiters pequeÃ±os no pueden pagar ATS caros",
+      "problema": "Recruiters pequeÃ±os no pueden pagar ATS caros",
+      "solucion": "Base Airtable con pipelines, automatizaciones, email templates integrados",
+      "publico_objetivo": "Recruiters",
+      "propuesta_valor": "Nuestra versión más asequible y personalizada del ATS ayuda a los recruiters pequeños a ahorrar costos y centrarse en lo que importa: encontrar al candidato ideal",
+      "diferenciacion": "Ofrecemos una solución más personalizada y asequible que permite a los recruiter pequeños adaptarse a sus necesidades únicas y seguir creciendo sin sobrecargar su presupuesto",
+      "tam": "1.000.000",
+      "sam": "300.000",
+      "som": "15.000",
+      "competencia": "Competencia moderada en el nicho",
+      "ventaja_competitiva": "EspecializaciÃ³n y ejecuciÃ³n rÃ¡pida",
+      "precio_sugerido": "35",
+      "modelo_monetizacion": "â‚¬35 pago Ãºnico",
+      "features_core": "Creación de pipelines personalizado, automatización de tareas y correos electrónicos, integración con redes sociales y bases de datos de trabajo, gestión de candidatos y colaboración en equipo",
+      "roadmap_mvp": "Semana 1: Setup y diseÃ±o, Semana 2: Desarrollo, Semana 3: Testing y lanzamiento",
+      "stack_sugerido": "Airtable, Gumroad, Twitter",
+      "integraciones": "Airtable, Zapier, webhooks",
+      "canales_adquisicion": "Twitter, ProductHunt, Reddit, comunidades especializadas",
+      "metricas_clave": "MRR, tasa conversiÃ³n, CAC, LTV",
+      "riesgos": "Competencia puede copiar, dependencia de plataforma",
+      "validacion_inicial": "10 ventas en primeras 2 semanas",
+      "tiempo_estimado": "12-18h",
+      "inversion_inicial": "â‚¬0-â‚¬50",
+      "dificultad": "Media",
+      "revenue_6_meses": "â‚¬2,800",
+      "como_monetizar": "Gumroad + LinkedIn + Reddit r/recruiting",
+      "score_generador": 75,
+      "_fingerprint": "37427e4b382520adbdf49d2087603f5c",
+      "score_critico": 75,
+      "critique": {
+        "score_critico": 75,
+        "puntos_fuertes": [
+          "Problema claro",
+          "SoluciÃ³n viable",
+          "Stack moderno"
+        ],
+        "puntos_debiles": [
+          "Validar mercado"
+        ],
+        "resumen": "Idea aprobada con potencial"
+      },
+      "research": {
+        "competidores": [
+          "N/A"
+        ],
+        "diferenciacion_clave": "Pendiente de investigar",
+        "riesgos_principales": [
+          "Pendiente de investigar"
+        ],
+        "oportunidades": [
+          "Pendiente de investigar"
+        ],
+        "validacion_sugerida": "Pendiente de investigar"
+      },
+      "created_at": "2026-02-15T13:41:58.793537",
+      "status": "pendiente"
+    },
+    {
+      "nombre": "CostoGenius - Optimizador de Margen para Ecommerce",
+      "slug": "producto-3548",
+      "tipo_producto": "Google Sheets Template",
+      "categoria": "Ecommerce",
+      "descripcion": "Identifica y optimiza costos ocultos para aumentar margen y ganancias en tu tienda online",
+      "descripcion_corta": "Tiendas online no trackean mÃ¡rgenes reales correctamente",
+      "problema": "Tiendas online no trackean mÃ¡rgenes reales correctamente",
+      "solucion": "Dashboard automatizado que calcula costos, mÃ¡rgenes, break-even por producto",
+      "publico_objetivo": "Ecommerce",
+      "propuesta_valor": "CostoGenius no solo calcula costos y margen, sino que también proporciona recomendaciones y alertas para optimizar la cadena de suministro y reducir costos fijos",
+      "diferenciacion": "CostoGenius utiliza Inteligencia Artificial (IA) para analizar datos de tienda y proveedores, proporcionando una visión integral y personalizada de los costos y margen",
+      "tam": "Mercado global de software para ecommerce: 25.000 millones de USD (2023)",
+      "sam": "Tiendas online de más de 100.000 USD de ventas al año",
+      "som": "Tiendas online de 10.000 a 100.000 USD de ventas al año, enfocadas en el mercado de ropa, calzado y accesorios",
+      "competencia": "Competencia moderada en el nicho",
+      "ventaja_competitiva": "EspecializaciÃ³n y ejecuciÃ³n rÃ¡pida",
+      "precio_sugerido": "24",
+      "modelo_monetizacion": "â‚¬24 pago Ãºnico",
+      "features_core": "Análisis de costo de producción, optimización de inventario, detección de costos ocultos, alertas de sobreproducción y subproducción",
+      "roadmap_mvp": "Semana 1: Setup y diseÃ±o, Semana 2: Desarrollo, Semana 3: Testing y lanzamiento",
+      "stack_sugerido": "Google Sheets, Gumroad, Twitter",
+      "integraciones": "Google Sheets, Zapier, webhooks",
+      "canales_adquisicion": "Twitter, ProductHunt, Reddit, comunidades especializadas",
+      "metricas_clave": "MRR, tasa conversiÃ³n, CAC, LTV",
+      "riesgos": "Competencia puede copiar, dependencia de plataforma",
+      "validacion_inicial": "10 ventas en primeras 2 semanas",
+      "tiempo_estimado": "10-15h",
+      "inversion_inicial": "â‚¬0-â‚¬50",
+      "dificultad": "Media",
+      "revenue_6_meses": "â‚¬2,100",
+      "como_monetizar": "Gumroad + comunidades ecommerce",
+      "score_generador": 75,
+      "_fingerprint": "223e0c54f92388984017a7e90d0d9089",
+      "score_critico": 75,
+      "critique": {
+        "score_critico": 75,
+        "puntos_fuertes": [
+          "Problema claro",
+          "SoluciÃ³n viable",
+          "Stack moderno"
+        ],
+        "puntos_debiles": [
+          "Validar mercado"
+        ],
+        "resumen": "Idea aprobada con potencial"
+      },
+      "research": {
+        "competidores": [
+          "N/A"
+        ],
+        "diferenciacion_clave": "Pendiente de investigar",
+        "riesgos_principales": [
+          "Pendiente de investigar"
+        ],
+        "oportunidades": [
+          "Pendiente de investigar"
+        ],
+        "validacion_sugerida": "Pendiente de investigar"
+      },
+      "created_at": "2026-02-15T13:58:43.143004",
+      "status": "pendiente",
+      "landing_url": "https://mipromptingeniering-alt.github.io/validationidea/landing-pages/producto-3548/index.html",
+      "report_url": "https://mipromptingeniering-alt.github.io/validationidea/reports/producto-3548.html"
+    },
+    {
+      "nombre": "CostoGenius - Optimizador de Margen para Ecommerce",
+      "slug": "producto-3548",
+      "tipo_producto": "Google Sheets Template",
+      "categoria": "Ecommerce",
+      "descripcion": "Identifica y optimiza costos ocultos para aumentar margen y ganancias en tu tienda online",
+      "descripcion_corta": "Tiendas online no trackean mÃ¡rgenes reales correctamente",
+      "problema": "Tiendas online no trackean mÃ¡rgenes reales correctamente",
+      "solucion": "Dashboard automatizado que calcula costos, mÃ¡rgenes, break-even por producto",
+      "publico_objetivo": "Ecommerce",
+      "propuesta_valor": "CostoGenius no solo calcula costos y margen, sino que también proporciona recomendaciones y alertas para optimizar la cadena de suministro y reducir costos fijos",
+      "diferenciacion": "CostoGenius utiliza Inteligencia Artificial (IA) para analizar datos de tienda y proveedores, proporcionando una visión integral y personalizada de los costos y margen",
+      "tam": "Mercado global de software para ecommerce: 25.000 millones de USD (2023)",
+      "sam": "Tiendas online de más de 100.000 USD de ventas al año",
+      "som": "Tiendas online de 10.000 a 100.000 USD de ventas al año, enfocadas en el mercado de ropa, calzado y accesorios",
+      "competencia": "Competencia moderada en el nicho",
+      "ventaja_competitiva": "EspecializaciÃ³n y ejecuciÃ³n rÃ¡pida",
+      "precio_sugerido": "24",
+      "modelo_monetizacion": "â‚¬24 pago Ãºnico",
+      "features_core": "Análisis de costo de producción, optimización de inventario, detección de costos ocultos, alertas de sobreproducción y subproducción",
+      "roadmap_mvp": "Semana 1: Setup y diseÃ±o, Semana 2: Desarrollo, Semana 3: Testing y lanzamiento",
+      "stack_sugerido": "Google Sheets, Gumroad, Twitter",
+      "integraciones": "Google Sheets, Zapier, webhooks",
+      "canales_adquisicion": "Twitter, ProductHunt, Reddit, comunidades especializadas",
+      "metricas_clave": "MRR, tasa conversiÃ³n, CAC, LTV",
+      "riesgos": "Competencia puede copiar, dependencia de plataforma",
+      "validacion_inicial": "10 ventas en primeras 2 semanas",
+      "tiempo_estimado": "10-15h",
+      "inversion_inicial": "â‚¬0-â‚¬50",
+      "dificultad": "Media",
+      "revenue_6_meses": "â‚¬2,100",
+      "como_monetizar": "Gumroad + comunidades ecommerce",
+      "score_generador": 75,
+      "_fingerprint": "223e0c54f92388984017a7e90d0d9089",
+      "score_critico": 75,
+      "critique": {
+        "score_critico": 75,
+        "puntos_fuertes": [
+          "Problema claro",
+          "SoluciÃ³n viable",
+          "Stack moderno"
+        ],
+        "puntos_debiles": [
+          "Validar mercado"
+        ],
+        "resumen": "Idea aprobada con potencial"
+      },
+      "research": {
+        "competidores": [
+          "N/A"
+        ],
+        "diferenciacion_clave": "Pendiente de investigar",
+        "riesgos_principales": [
+          "Pendiente de investigar"
+        ],
+        "oportunidades": [
+          "Pendiente de investigar"
+        ],
+        "validacion_sugerida": "Pendiente de investigar"
+      },
+      "created_at": "2026-02-15T13:58:43.179462",
+      "status": "pendiente"
+    },
+    {
+      "nombre": "Zaperoptimo",
+      "slug": "producto-7579",
+      "tipo_producto": "Automation Service",
+      "categoria": "Small Business",
+      "descripcion": "Configura tus 5 automatizaciones favoritas en 24h, sin necesidad de conocimientos en Zapier. Resuelve tus tareas diarias con la ayuda de nuestros expertos",
+      "descripcion_corta": "PequeÃ±os negocios quieren automatizar pero no saben usar Zapier",
+      "problema": "PequeÃ±os negocios quieren automatizar pero no saben usar Zapier",
+      "solucion": "Servicio: configuro 5 automatizaciones personalizadas en 48h",
+      "publico_objetivo": "Small Business",
+      "propuesta_valor": "Nuestro servicio de configuración es más rápido y asequible que cualquier otro, mientras que nuestros expertos se adaptan a tus necesidades específicas",
+      "diferenciacion": "Nuestros expertos se adaptan a tus necesidades específicas y puedes hablar con ellos por teléfono y chat, lo que garantiza un servicio de alta calidad y personalizado",
+      "tam": "100.000 pequeños negocios en España que necesitan automatizar",
+      "sam": "20.000 pequeños negocios en España que han iniciado su proceso de automatización y necesitan mejorar",
+      "som": "10.000 pequeños negocios en España que iniciarán su proceso de automatización en el primer año y necesitarán expertos como nosotros",
+      "competencia": "Competencia moderada en el nicho",
+      "ventaja_competitiva": "EspecializaciÃ³n y ejecuciÃ³n rÃ¡pida",
+      "precio_sugerido": "299",
+      "modelo_monetizacion": "â‚¬299 por proyecto",
+      "features_core": "Configuración personalizada de 5 automatizaciones en 24h, Soporte por teléfono y chat, Adaptación a tus procesos y necesidades",
+      "roadmap_mvp": "Semana 1: Setup y diseÃ±o, Semana 2: Desarrollo, Semana 3: Testing y lanzamiento",
+      "stack_sugerido": "Zapier + Make, Gumroad, Twitter",
+      "integraciones": "Zapier + Make, Zapier, webhooks",
+      "canales_adquisicion": "Twitter, ProductHunt, Reddit, comunidades especializadas",
+      "metricas_clave": "MRR, tasa conversiÃ³n, CAC, LTV",
+      "riesgos": "Competencia puede copiar, dependencia de plataforma",
+      "validacion_inicial": "10 ventas en primeras 2 semanas",
+      "tiempo_estimado": "4-6h por cliente",
+      "inversion_inicial": "â‚¬0-â‚¬50",
+      "dificultad": "Media",
+      "revenue_6_meses": "â‚¬7,200",
+      "como_monetizar": "Cold email + Upwork + LinkedIn",
+      "score_generador": 75,
+      "_fingerprint": "99581c26bb74764616c170deeab66a3c",
+      "score_critico": 75,
+      "critique": {
+        "score_critico": 75,
+        "puntos_fuertes": [
+          "Problema claro",
+          "SoluciÃ³n viable",
+          "Stack moderno"
+        ],
+        "puntos_debiles": [
+          "Validar mercado"
+        ],
+        "resumen": "Idea aprobada con potencial"
+      },
+      "research": {
+        "competidores": [
+          "N/A"
+        ],
+        "diferenciacion_clave": "Pendiente de investigar",
+        "riesgos_principales": [
+          "Pendiente de investigar"
+        ],
+        "oportunidades": [
+          "Pendiente de investigar"
+        ],
+        "validacion_sugerida": "Pendiente de investigar"
+      },
+      "created_at": "2026-02-15T20:44:59.665125",
+      "status": "pendiente",
+      "landing_url": "https://mipromptingeniering-alt.github.io/validationidea/landing-pages/producto-7579/index.html",
+      "report_url": "https://mipromptingeniering-alt.github.io/validationidea/reports/producto-7579.html"
+    },
+    {
+      "nombre": "HireFlow Pro",
+      "slug": "producto-2935",
+      "tipo_producto": "Plantilla Airtable",
+      "categoria": "Recruiters",
+      "descripcion": "SoluciÃ³n de reclutamiento inteligente y accesible para pequeÃ±as agencias de recursos humanos",
+      "descripcion_corta": "Recruiters pequeÃ±os no pueden pagar ATS caros",
+      "problema": "Recruiters pequeÃ±os no pueden pagar ATS caros",
+      "solucion": "Base Airtable con pipelines, automatizaciones, email templates integrados",
+      "publico_objetivo": "Recruiters",
+      "propuesta_valor": "Ofrece un conjunto completo de herramientas de reclutamiento automatizadas y personalizadas a un precio asequible, sin comprometer la calidad o la eficiencia",
+      "diferenciacion": "Se enfoca en la satisfacciÃ³n de los pequeÃ±os reclutadores, ofreciendo una alternativa asequible a los sistemas de gestiÃ³n de recursos humanos (ATS) caros",
+      "tam": "120.000 agencias de recursos humanos pequeÃ±as en Estados Unidos y Europa",
+      "sam": "30.000 agencias de recursos humanos pequeÃ±as que usan herramientas de reclutamiento en lÃ­nea",
+      "som": "15.000 agencias de recursos humanos pequeÃ±as que estÃ¡n buscando una soluciÃ³n de reclutamiento inteligente y accesible en el primer aÃ±o",
+      "competencia": "Competencia moderada en el nicho",
+      "ventaja_competitiva": "EspecializaciÃ³n y ejecuciÃ³n rÃ¡pida",
+      "precio_sugerido": "35",
+      "modelo_monetizacion": "â‚¬35 pago Ãºnico",
+      "features_core": "Pipelines personalizables, automatizaciones de correo electrÃ³nico y envÃ­os, integraciÃ³n con redes sociales para reclutamiento, informes de desempeÃ±o y estadÃ­sticas",
+      "roadmap_mvp": "Semana 1: Setup y diseÃ±o, Semana 2: Desarrollo, Semana 3: Testing y lanzamiento",
+      "stack_sugerido": "Airtable, Gumroad, Twitter",
+      "integraciones": "Airtable, Zapier, webhooks",
+      "canales_adquisicion": "Twitter, ProductHunt, Reddit, comunidades especializadas",
+      "metricas_clave": "MRR, tasa conversiÃ³n, CAC, LTV",
+      "riesgos": "Competencia puede copiar, dependencia de plataforma",
+      "validacion_inicial": "10 ventas en primeras 2 semanas",
+      "tiempo_estimado": "12-18h",
+      "inversion_inicial": "â‚¬0-â‚¬50",
+      "dificultad": "Media",
+      "revenue_6_meses": "â‚¬2,800",
+      "como_monetizar": "Gumroad + LinkedIn + Reddit r/recruiting",
+      "score_generador": 75,
+      "_fingerprint": "f251e951e79eafaff4e573058490f4c5",
+      "score_critico": 75,
+      "critique": {
+        "score_critico": 75,
+        "puntos_fuertes": [
+          "Problema claro",
+          "SoluciÃ³n viable",
+          "Stack moderno"
+        ],
+        "puntos_debiles": [
+          "Validar mercado"
+        ],
+        "resumen": "Idea aprobada con potencial"
+      },
+      "research": {
+        "competidores": [
+          "N/A"
+        ],
+        "diferenciacion_clave": "Pendiente de investigar",
+        "riesgos_principales": [
+          "Pendiente de investigar"
+        ],
+        "oportunidades": [
+          "Pendiente de investigar"
+        ],
+        "validacion_sugerida": "Pendiente de investigar"
+      },
+      "created_at": "2026-02-15T20:46:31.749733",
+      "status": "pendiente",
+      "landing_url": "https://mipromptingeniering-alt.github.io/validationidea/landing-pages/producto-2935/index.html",
+      "report_url": "https://mipromptingeniering-alt.github.io/validationidea/reports/producto-2935.html"
+    },
+    {
+      "nombre": "Analytics Pulse",
+      "slug": "producto-1858",
+      "tipo_producto": "Micro-SaaS",
+      "categoria": "Agencias",
+      "descripcion": "Automatiza la creación de reportes semanales detallados en PDF para agencias de marketing, mejorando la productividad y satisfacción de los clientes.",
+      "descripcion_corta": "Crear reportes mensuales para clientes es tedioso",
+      "problema": "Crear reportes mensuales para clientes es tedioso",
+      "solucion": "Herramienta que conecta Google Analytics/Ads y genera reportes automÃ¡ticos en PDF",
+      "publico_objetivo": "Agencias",
+      "propuesta_valor": "Analýtic Pulse no solo genera reportes, sino que también proporciona recomendaciones basadas en datos para mejorar la estrategia de marketing de cada cliente.",
+      "diferenciacion": "Su enfoque en la automatización de reportes semanales, en lugar de mensuales, permite a las agencias responder rápidamente a cambios en el mercado y mantener a sus clientes informados.",
+      "tam": "5.000 agencias de marketing en el mercado latinoamericano",
+      "sam": "Agencias de marketing con presupuesto medio-alto (5-20 empleados) y un mínimo de 5 clientes",
+      "som": "50 agencias de marketing en el primer año, con un crecimiento anual del 20%",
+      "competencia": "Competencia moderada en el nicho",
+      "ventaja_competitiva": "EspecializaciÃ³n y ejecuciÃ³n rÃ¡pida",
+      "precio_sugerido": "49",
+      "modelo_monetizacion": "â‚¬49/mes",
+      "features_core": "Conexión automática con Google Analytics y Google Ads, definición de reportes personalizados, envío automático de reportes a clientes, análisis de tendencias y recomendaciones.",
+      "roadmap_mvp": "Semana 1: Setup y diseÃ±o, Semana 2: Desarrollo, Semana 3: Testing y lanzamiento",
+      "stack_sugerido": "No-code (Bubble/Softr), Gumroad, Twitter",
+      "integraciones": "No-code (Bubble/Softr), Zapier, webhooks",
+      "canales_adquisicion": "Twitter, ProductHunt, Reddit, comunidades especializadas",
+      "metricas_clave": "MRR, tasa conversiÃ³n, CAC, LTV",
+      "riesgos": "Competencia puede copiar, dependencia de plataforma",
+      "validacion_inicial": "10 ventas en primeras 2 semanas",
+      "tiempo_estimado": "40-60h",
+      "inversion_inicial": "â‚¬0-â‚¬50",
+      "dificultad": "Media",
+      "revenue_6_meses": "â‚¬8,400",
+      "como_monetizar": "SEO + cold email a agencias",
+      "score_generador": 75,
+      "_fingerprint": "a57cf96e29061a268328498c58f551c7",
+      "score_critico": 75,
+      "critique": {
+        "score_critico": 75,
+        "puntos_fuertes": [
+          "Problema claro",
+          "SoluciÃ³n viable",
+          "Stack moderno"
+        ],
+        "puntos_debiles": [
+          "Validar mercado"
+        ],
+        "resumen": "Idea aprobada con potencial"
+      },
+      "research": {
+        "competidores": [
+          "N/A"
+        ],
+        "diferenciacion_clave": "Pendiente de investigar",
+        "riesgos_principales": [
+          "Pendiente de investigar"
+        ],
+        "oportunidades": [
+          "Pendiente de investigar"
+        ],
+        "validacion_sugerida": "Pendiente de investigar"
+      },
+      "created_at": "2026-02-15T21:02:33.093748",
+      "status": "pendiente"
+    },
+    {
+      "nombre": "PipelinePro",
+      "slug": "producto-7686",
+      "tipo_producto": "Plantilla Airtable",
+      "categoria": "Recruiters",
+      "descripcion": "Gestiona tus pipelines de reclutamiento de manera eficiente y asequible, sin costos adicionales",
+      "descripcion_corta": "Recruiters pequeÃ±os no pueden pagar ATS caros",
+      "problema": "Recruiters pequeÃ±os no pueden pagar ATS caros",
+      "solucion": "Base Airtable con pipelines, automatizaciones, email templates integrados",
+      "publico_objetivo": "Recruiters",
+      "propuesta_valor": "Con PipelinePro, los recruiters pequeños pueden automatizar y mejorar su proceso de reclutamiento sin gastar una fortuna en ATS caros",
+      "diferenciacion": "PipelinePro se centra en la simplicidad y la accesibilidad, ofreciendo una solución de reclutamiento asequible y fácil de usar para pequeños recruiters",
+      "tam": "100.000",
+      "sam": "50.000",
+      "som": "15.000",
+      "competencia": "Competencia moderada en el nicho",
+      "ventaja_competitiva": "EspecializaciÃ³n y ejecuciÃ³n rÃ¡pida",
+      "precio_sugerido": "35",
+      "modelo_monetizacion": "â‚¬35 pago Ãºnico",
+      "features_core": "Pipelines personalizables, automatizaciones integradas con email templates, seguimiento de candidatos, notificaciones automáticas, análisis de pipeline",
+      "roadmap_mvp": "Semana 1: Setup y diseÃ±o, Semana 2: Desarrollo, Semana 3: Testing y lanzamiento",
+      "stack_sugerido": "Airtable, Gumroad, Twitter",
+      "integraciones": "Airtable, Zapier, webhooks",
+      "canales_adquisicion": "Twitter, ProductHunt, Reddit, comunidades especializadas",
+      "metricas_clave": "MRR, tasa conversiÃ³n, CAC, LTV",
+      "riesgos": "Competencia puede copiar, dependencia de plataforma",
+      "validacion_inicial": "10 ventas en primeras 2 semanas",
+      "tiempo_estimado": "12-18h",
+      "inversion_inicial": "â‚¬0-â‚¬50",
+      "dificultad": "Media",
+      "revenue_6_meses": "â‚¬2,800",
+      "como_monetizar": "Gumroad + LinkedIn + Reddit r/recruiting",
+      "score_generador": 75,
+      "_fingerprint": "7ebe0abd0cecf131982a525e0a6fec34",
+      "score_critico": 75,
+      "critique": {
+        "score_critico": 75,
+        "puntos_fuertes": [
+          "Problema claro",
+          "SoluciÃ³n viable",
+          "Stack moderno"
+        ],
+        "puntos_debiles": [
+          "Validar mercado"
+        ],
+        "resumen": "Idea aprobada con potencial"
+      },
+      "research": {
+        "competidores": [
+          "N/A"
+        ],
+        "diferenciacion_clave": "Pendiente de investigar",
+        "riesgos_principales": [
+          "Pendiente de investigar"
+        ],
+        "oportunidades": [
+          "Pendiente de investigar"
+        ],
+        "validacion_sugerida": "Pendiente de investigar"
+      },
+      "created_at": "2026-02-15T21:06:46.323387",
+      "status": "pendiente"
+    },
+    {
+      "nombre": "Analytics Hub - El Asistente de Agencias",
+      "slug": "producto-3098",
+      "tipo_producto": "Micro-SaaS",
+      "categoria": "Agencias",
+      "descripcion": "Automatiza la creación de informes para tus clientes con Analytics Hub, el herramienta que conecta Google Analytics/Ads y genera reportes detallados en PDF. Ahorra tiempo y dinero en la creación de informes personalizados",
+      "descripcion_corta": "Crear reportes mensuales para clientes es tedioso",
+      "problema": "Crear reportes mensuales para clientes es tedioso",
+      "solucion": "Herramienta que conecta Google Analytics/Ads y genera reportes automÃ¡ticos en PDF",
+      "publico_objetivo": "Agencias",
+      "propuesta_valor": "Analytics Hub es la herramienta más completa y fácil de usar para agencias, al automatizar la creación de informes y ofrecer una plataforma única de gestión de clientes",
+      "diferenciacion": " Analytics Hub se destaca por su enfoque en la agilidad y la personalización, permitiendo a las agencias crear informes únicos para cada cliente en un tiempo récord, mientras que otras herramientas más complicadas requieren horas de trabajo manual",
+      "tam": "2500",
+      "sam": "1800",
+      "som": "800",
+      "competencia": "Competencia moderada en el nicho",
+      "ventaja_competitiva": "EspecializaciÃ³n y ejecuciÃ³n rÃ¡pida",
+      "precio_sugerido": "49",
+      "modelo_monetizacion": "â‚¬49/mes",
+      "features_core": "Generación automática de informes en PDF, Conexión con Google Analytics/Ads, Personalización de informes para cada cliente, Notificaciones para mantener a los clientes informados, Historial de informes para seguimiento y análisis",
+      "roadmap_mvp": "Semana 1: Setup y diseÃ±o, Semana 2: Desarrollo, Semana 3: Testing y lanzamiento",
+      "stack_sugerido": "No-code (Bubble/Softr), Gumroad, Twitter",
+      "integraciones": "No-code (Bubble/Softr), Zapier, webhooks",
+      "canales_adquisicion": "Twitter, ProductHunt, Reddit, comunidades especializadas",
+      "metricas_clave": "MRR, tasa conversiÃ³n, CAC, LTV",
+      "riesgos": "Competencia puede copiar, dependencia de plataforma",
+      "validacion_inicial": "10 ventas en primeras 2 semanas",
+      "tiempo_estimado": "40-60h",
+      "inversion_inicial": "â‚¬0-â‚¬50",
+      "dificultad": "Media",
+      "revenue_6_meses": "â‚¬8,400",
+      "como_monetizar": "SEO + cold email a agencias",
+      "score_generador": 75,
+      "_fingerprint": "bdf7a0e760b940120bcece92840f644f",
+      "score_critico": 75,
+      "critique": {
+        "score_critico": 75,
+        "puntos_fuertes": [
+          "Problema claro",
+          "SoluciÃ³n viable",
+          "Stack moderno"
+        ],
+        "puntos_debiles": [
+          "Validar mercado"
+        ],
+        "resumen": "Idea aprobada con potencial"
+      },
+      "research": {
+        "competidores": [
+          "N/A"
+        ],
+        "diferenciacion_clave": "Pendiente de investigar",
+        "riesgos_principales": [
+          "Pendiente de investigar"
+        ],
+        "oportunidades": [
+          "Pendiente de investigar"
+        ],
+        "validacion_sugerida": "Pendiente de investigar"
+      },
+      "created_at": "2026-02-15T21:14:26.011516",
+      "status": "pendiente"
     }
   ],
-  "last_update": "2026-02-15T11:58:37.265223",
-  "total_ideas": 3
+  "last_update": "2026-02-15T21:14:26.011577",
+  "total_ideas": 13
 }
