@@ -7,7 +7,21 @@ from datetime import datetime
 import requests
 
 NOTION_TOKEN = os.environ.get('NOTION_TOKEN')
-DATABASE_ID = "308313aca133809cb9fde119be25681d"
+DATABASE_ID = "308313aca133809cb9fde119be25681d"  # Tu dashboard
+
+def _parse_revenue(value):
+    """Extrae el número de revenue del campo (puede ser '1,500 conservador')"""
+    try:
+        if isinstance(value, (int, float)):
+            return int(value)
+        # Si es string, extraer solo los dígitos
+        clean = str(value).replace(',', '').replace('€', '').strip()
+        # Tomar solo la primera palabra (el número)
+        number_str = clean.split()[0] if clean else '0'
+        return int(number_str)
+    except:
+        return 0
+
 
 def _parse_revenue(value):
     """Extrae el número de revenue del campo (puede ser '1,500 conservador')"""
@@ -37,7 +51,7 @@ def sync_idea_to_notion(idea):
         "ID Idea": {"rich_text": [{"text": {"content": idea.get('slug', 'N/A')}}]},
         "Score Generador": {"number": idea.get('score_generador', 0)},
         "Score CrÃƒÂ­tico": {"number": idea.get('score_critico', 0)},
-        "Revenue Estimado (Ã¢â€šÂ¬/mes)": {"number": int(idea.get('revenue_6_meses', 0))},
+        "Revenue Estimado (€/mes)": {"number": _parse_revenue(idea.get('revenue_6_meses', 0))},
         "Fecha GeneraciÃƒÂ³n": {
             "date": {
                 "start": idea.get('created_at', datetime.now().isoformat())[:10]
