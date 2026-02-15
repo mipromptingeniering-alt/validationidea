@@ -844,8 +844,71 @@
       },
       "created_at": "2026-02-15T21:14:26.011516",
       "status": "pendiente"
+    },
+    {
+      "nombre": "ContenidoVoyager",
+      "slug": "producto-9691",
+      "tipo_producto": "Notion Template",
+      "categoria": "Creadores de contenido",
+      "descripcion": "Planifica, organiza y monetiza tu contenido de manera automática con ContenidoVoyager, la herramienta de contenido más avanzada para creadores de contenido ",
+      "descripcion_corta": "Creadores no saben quÃ© publicar ni cuÃ¡ndo",
+      "problema": "Creadores no saben quÃ© publicar ni cuÃ¡ndo",
+      "solucion": "Sistema completo de planificaciÃ³n de contenido con calendario editorial, ideas de posts, tracking de mÃ©tricas",
+      "publico_objetivo": "Creadores de contenido",
+      "propuesta_valor": "ContenidoVoyager ofrece una inteligencia artificial personalizada para ayudarte a crear contenido relevante y atractivo, al mismo tiempo que maximiza tus resultados financieros",
+      "diferenciacion": "La IA de ContenidoVoyager se entrena en base a las tendencias y comportamientos de tu audiencia, para ofrecerte contenido más relevante y atractivo",
+      "tam": "10.000",
+      "sam": "5.000",
+      "som": "2.000",
+      "competencia": "Competencia moderada en el nicho",
+      "ventaja_competitiva": "EspecializaciÃ³n y ejecuciÃ³n rÃ¡pida",
+      "precio_sugerido": "29",
+      "modelo_monetizacion": "â‚¬29 pago Ãºnico en Gumroad",
+      "features_core": "IA personalizada para contenido, planificación de calendario con sugerencias de publicación, seguimiento de métricas y recomendaciones de monitoreo de audiencia",
+      "roadmap_mvp": "Semana 1: Setup y diseÃ±o, Semana 2: Desarrollo, Semana 3: Testing y lanzamiento",
+      "stack_sugerido": "Notion, Gumroad, Twitter",
+      "integraciones": "Notion, Zapier, webhooks",
+      "canales_adquisicion": "Twitter, ProductHunt, Reddit, comunidades especializadas",
+      "metricas_clave": "MRR, tasa conversiÃ³n, CAC, LTV",
+      "riesgos": "Competencia puede copiar, dependencia de plataforma",
+      "validacion_inicial": "10 ventas en primeras 2 semanas",
+      "tiempo_estimado": "8-12h",
+      "inversion_inicial": "â‚¬0-â‚¬50",
+      "dificultad": "Media",
+      "revenue_6_meses": "â‚¬2,500",
+      "como_monetizar": "Vender en Gumroad + promociÃ³n Twitter",
+      "score_generador": 75,
+      "_fingerprint": "a78f557de571156cba863f293b8d78b7",
+      "score_critico": 75,
+      "critique": {
+        "score_critico": 75,
+        "puntos_fuertes": [
+          "Problema claro",
+          "SoluciÃ³n viable",
+          "Stack moderno"
+        ],
+        "puntos_debiles": [
+          "Validar mercado"
+        ],
+        "resumen": "Idea aprobada con potencial"
+      },
+      "research": {
+        "competidores": [
+          "N/A"
+        ],
+        "diferenciacion_clave": "Pendiente de investigar",
+        "riesgos_principales": [
+          "Pendiente de investigar"
+        ],
+        "oportunidades": [
+          "Pendiente de investigar"
+        ],
+        "validacion_sugerida": "Pendiente de investigar"
+      },
+      "created_at": "2026-02-15T21:38:26.136478",
+      "status": "pendiente"
     }
   ],
-  "last_update": "2026-02-15T21:14:26.011577",
-  "total_ideas": 13
+  "last_update": "2026-02-15T21:38:26.136521",
+  "total_ideas": 14
 }

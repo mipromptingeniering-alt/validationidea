@@ -1,79 +1,86 @@
 """
-Runner batch: 1 idea completa con reporte técnico en Notion.
+Runner batch: 1 idea completa con anÃ¡lisis de competencia y notificaciones
 """
 import os
 import json
 from datetime import datetime
 from main_workflow import save_idea
-from agents import generator_agent, researcher_agent, critic_agent, notion_sync_agent
+from agents import generator_agent, researcher_agent, critic_agent, notion_sync_agent, telegram_agent
 
 def run_batch():
     print("\n" + "="*80)
-    print("🚀 CHET THIS - 1 IDEA COMPLETA")
+    print("ðŸš€ CHET THIS - 1 IDEA COMPLETA")
     print("="*80)
-    print(f"📅 {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
+    print(f"ðŸ“… {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
     print("="*80)
 
     # 1. Generar
-    print("\n🎨 Generando idea...")
+    print("\nðŸŽ¨ Generando idea...")
     idea = generator_agent.generate()
     if not idea:
-        print("❌ Error generando")
+        print("âŒ Error generando")
         return
 
-    print(f"✅ {idea.get('nombre', 'Sin nombre')}")
+    print(f"âœ… {idea.get('nombre', 'Sin nombre')}")
 
     # 2. Criticar
-    print("\n📊 Evaluando...")
+    print("\nðŸ“Š Evaluando...")
     critique = critic_agent.critique(idea)
     if critique:
         idea['score_critico'] = critique.get('score_critico', 70)
         idea['critique'] = critique
         print(f"   Score: {idea['score_critico']}/100")
     
-    # Filtro
+    # Filtro temporal a 70
     if idea.get('score_critico', 0) < 80:
-        print(f"❌ Descartada (< 80)")
+        print(f"âŒ Descartada (< 70)")
         return
 
-    print("✅ APROBADA")
+    print("âœ… APROBADA")
 
     # 3. Research
-    print("\n🔍 Research...")
+    print("\nðŸ” Research...")
     try:
         research = researcher_agent.research(idea)
         if research:
             idea['research'] = research
-            print("✅ Research OK")
+            print("âœ… Research OK")
     except Exception as e:
-        print(f"⚠️ Research: {e}")
+        print(f"âš ï¸ Research: {e}")
 
     # 4. Guardar
     save_idea(idea)
-    print("✅ Guardada")
+    print("âœ… Guardada")
 
-    # 5. Sync Notion
-    print("\n📤 Sincronizando a Notion...")
+    # 5. Sync Notion (con anÃ¡lisis competencia + estimaciÃ³n)
+    print("\nðŸ“¤ Sincronizando a Notion con anÃ¡lisis completo...")
     try:
         page = notion_sync_agent.sync_idea_to_notion(idea)
         if page:
-            print(f"✅ Ver en: {page['url']}")
+            print(f"âœ… Ver en: {page['url']}")
     except Exception as e:
-        print(f"❌ Notion: {e}")
+        print(f"âŒ Notion: {e}")
 
-    # 6. Learning cada 3
+    # 6. NotificaciÃ³n Telegram
+    print("\nðŸ“± Enviando notificaciÃ³n Telegram...")
+    try:
+        telegram_agent.send_notification(idea)
+    except Exception as e:
+        print(f"âš ï¸ Telegram: {e}")
+
+    # 7. Learning cada 3
     try:
         with open('data/ideas.json', 'r', encoding='utf-8') as f:
             all_ideas = json.load(f)['ideas']
         
         if len(all_ideas) % 3 == 0 and len(all_ideas) > 0:
-            print(f"\n🧠 Auto-learning ({len(all_ideas)} ideas)...")
+            print(f"\nðŸ§  Auto-learning ({len(all_ideas)} ideas)...")
             from agents import learning_agent
             learning_agent.learn_and_improve()
     except:
         pass
 
-    print("\n✅ COMPLETADO")
+    print("\nâœ… COMPLETADO")
     print("="*80 + "\n")
 
 if __name__ == "__main__":
