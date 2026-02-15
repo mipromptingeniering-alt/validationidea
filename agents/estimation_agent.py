@@ -1,48 +1,67 @@
 """
-Estimation Agent: estima inversión y tiempo de desarrollo
+Estimation Agent: estimaciones robustas
 """
 import os
+import json
+import re
 from groq import Groq
 
 client = Groq(api_key=os.getenv("GROQ_API_KEY"))
 
 def estimate_project(idea):
-    """Estima costos y tiempos"""
+    """Estima costos y tiempos con parsing robusto"""
     
     print("💰 Estimando inversión y tiempo...")
     
-    prompt = f"""Estima inversión y tiempo para esta idea:
+    prompt = f"""Estima inversión y tiempo de desarrollo para esta idea.
 
 IDEA: {idea.get('nombre')}
 MVP: {idea.get('mvp')}
 MODELO: {idea.get('modelo_negocio')}
 
-Genera estimación realista en JSON:
+Responde SOLO con un objeto JSON válido (sin markdown, sin ```json):
 {{
   "inversion_mvp_usd": 5000,
   "tiempo_desarrollo_semanas": 8,
-  "equipo_necesario": ["1 Developer", "1 Designer"],
+  "equipo_necesario": ["1 Full-stack Dev", "1 Designer"],
   "costos_mensuales_operacion": 500,
   "tiempo_breakeven_meses": 12,
-  "viabilidad_tecnica": "Alta/Media/Baja",
-  "complejidad": "Simple/Media/Compleja"
+  "viabilidad_tecnica": "Alta",
+  "complejidad": "Media"
 }}"""
 
     try:
         response = client.chat.completions.create(
             model="llama-3.3-70b-versatile",
             messages=[{"role": "user", "content": prompt}],
-            temperature=0.3,
+            temperature=0.2,
             max_tokens=800
         )
         
-        import json
-        estimation = json.loads(response.choices[0].message.content)
+        content = response.choices[0].message.content.strip()
         
-        print(f"✅ Inversión estimada: ${estimation.get('inversion_mvp_usd', 0)}")
+        # Limpiar markdown
+        content = re.sub(r'^```json\s*', '', content)
+        content = re.sub(r'\s*```$', '', content)
+        content = content.strip()
+        
+        estimation = json.loads(content)
+        
+        print(f"✅ Inversión: ${estimation.get('inversion_mvp_usd', 0):,}")
         
         return estimation
         
+    except json.JSONDecodeError as e:
+        print(f"⚠️ Error JSON: {e}")
+        return {
+            "inversion_mvp_usd": 10000,
+            "tiempo_desarrollo_semanas": 12,
+            "equipo_necesario": ["1 Developer"],
+            "costos_mensuales_operacion": 1000,
+            "tiempo_breakeven_meses": 18,
+            "viabilidad_tecnica": "Media",
+            "complejidad": "Media"
+        }
     except Exception as e:
         print(f"⚠️ Error: {e}")
         return None
