@@ -68,8 +68,77 @@
       },
       "created_at": "2026-02-15T10:56:23.796128",
       "status": "pendiente"
+    },
+    {
+      "nombre": "GuÃ­a de Ingresos Pasivos en 2026",
+      "slug": "viral-1430",
+      "tipo_producto": "GuÃ­a",
+      "categoria": "Viral Trend",
+      "descripcion": "Proporcionar una guÃ­a actualizada con estrategias y tÃ¡cticas prÃ¡cticas",
+      "descripcion_corta": "La falta de conocimiento y experiencia en crear ingresos pasivos",
+      "problema": "La falta de conocimiento y experiencia en crear ingresos pasivos",
+      "solucion": "Proporcionar una guÃ­a actualizada con estrategias y tÃ¡cticas prÃ¡cticas",
+      "publico_objetivo": "Early adopters que siguen tendencias",
+      "propuesta_valor": "La tendencia de ingresos pasivos en 2026 estÃ¡ en auge, y la gente necesita saber cÃ³mo aprovecharla",
+      "diferenciacion": "Capitaliza trend viral de ingresos pasivos 2026",
+      "tam": "1M+",
+      "sam": "100K",
+      "som": "10K",
+      "competencia": "Baja (trend reciente)",
+      "ventaja_competitiva": "First mover advantage - timing perfecto",
+      "precio_sugerido": "19",
+      "modelo_monetizacion": "â‚¬19 pago Ãºnico en Gumroad",
+      "features_core": "Crear un documento de Word con 10 estrategias, Revisarlo y actualizarlo con informaciÃ³n de 2026, Publicarlo en Gumroad",
+      "roadmap_mvp": "Crear en 16 horas â†’ Lanzar en ProductHunt â†’ Iterar segÃºn feedback",
+      "stack_sugerido": "Gumroad, Twitter, Reddit",
+      "integraciones": "Standalone (sin integraciones complejas)",
+      "canales_adquisicion": "ProductHunt, Twitter, Reddit, comunidades nicho",
+      "metricas_clave": "Ventas primeras 48h, tasa conversiÃ³n, viralidad",
+      "riesgos": "Trend puede morir rÃ¡pido si no se capitaliza a tiempo",
+      "validacion_inicial": "â‚¬10.000",
+      "tiempo_estimado": "16 horas",
+      "inversion_inicial": "â‚¬0 (o mÃ­nima para herramientas)",
+      "dificultad": "Baja-Media",
+      "revenue_6_meses": "10.000",
+      "como_monetizar": "Lanzar en Gumroad + marketing viral en redes sociales + aprovechar trend",
+      "urgency": "ðŸ”´ CRÃTICA",
+      "viral_score": 90,
+      "window": "24-48h",
+      "trend_source": "ingresos pasivos 2026",
+      "source_type": "google_trends",
+      "detected_at": "2026-02-15T11:43:43.947626",
+      "score_generador": 90,
+      "_fingerprint": "20d838d9e766d9aacfe42009ce142090",
+      "score_critico": 75,
+      "critique": {
+        "score_critico": 75,
+        "puntos_fuertes": [
+          "Problema claro",
+          "SoluciÃ³n viable",
+          "Stack moderno"
+        ],
+        "puntos_debiles": [
+          "Validar mercado"
+        ],
+        "resumen": "Idea aprobada con potencial"
+      },
+      "research": {
+        "competidores": [
+          "N/A"
+        ],
+        "diferenciacion_clave": "Pendiente de investigar",
+        "riesgos_principales": [
+          "Pendiente de investigar"
+        ],
+        "oportunidades": [
+          "Pendiente de investigar"
+        ],
+        "validacion_sugerida": "Pendiente de investigar"
+      },
+      "created_at": "2026-02-15T11:44:06.981358",
+      "status": "pendiente"
     }
   ],
-  "last_update": "2026-02-15T10:56:23.796172",
-  "total_ideas": 1
+  "last_update": "2026-02-15T11:44:06.981368",
+  "total_ideas": 2
 }
