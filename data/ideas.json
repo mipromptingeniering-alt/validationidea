@@ -1,1 +1,75 @@
-[]
+{
+  "ideas": [
+    {
+      "nombre": "Agente Virtual Rápido",
+      "slug": "viral-7922",
+      "tipo_producto": "Template",
+      "categoria": "Viral Trend",
+      "descripcion": "Esta plantilla les permite crear un agente básico en minutos",
+      "descripcion_corta": "Las personas no tienen tiempo para crear desde cero agentes autónomos",
+      "problema": "Las personas no tienen tiempo para crear desde cero agentes autónomos",
+      "solucion": "Esta plantilla les permite crear un agente básico en minutos",
+      "publico_objetivo": "Early adopters que siguen tendencias",
+      "propuesta_valor": "La tendencia de IA agentes autónomos está en alza, y esta plantilla les permite a las personas aprov",
+      "diferenciacion": "Capitaliza trend viral de IA agentes autÃ³nomos",
+      "tam": "1M+",
+      "sam": "100K",
+      "som": "10K",
+      "competencia": "Baja (trend reciente)",
+      "ventaja_competitiva": "First mover advantage - timing perfecto",
+      "precio_sugerido": "19",
+      "modelo_monetizacion": "â‚¬19 pago Ãºnico en Gumroad",
+      "features_core": "Crear una cuenta de IA, Seleccionar un modelo de aprendizaje, Personalizar la plantilla",
+      "roadmap_mvp": "Crear en 8 horas â†’ Lanzar en ProductHunt â†’ Iterar segÃºn feedback",
+      "stack_sugerido": "Gumroad, Twitter, Reddit",
+      "integraciones": "Standalone (sin integraciones complejas)",
+      "canales_adquisicion": "ProductHunt, Twitter, Reddit, comunidades nicho",
+      "metricas_clave": "Ventas primeras 48h, tasa conversiÃ³n, viralidad",
+      "riesgos": "Trend puede morir rÃ¡pido si no se capitaliza a tiempo",
+      "validacion_inicial": "â‚¬1,500 conservador",
+      "tiempo_estimado": "8 horas",
+      "inversion_inicial": "â‚¬0 (o mÃ­nima para herramientas)",
+      "dificultad": "Baja-Media",
+      "revenue_6_meses": "1,500 conservador",
+      "como_monetizar": "Lanzar en Gumroad + marketing viral en redes sociales + aprovechar trend",
+      "urgency": "ðŸ”´ CRÃTICA",
+      "viral_score": 98,
+      "window": "24-48h",
+      "trend_source": "IA agentes autÃ³nomos",
+      "source_type": "google_trends",
+      "detected_at": "2026-02-15T10:51:26.694082",
+      "score_generador": 98,
+      "_fingerprint": "db77f1c0514f7a17993edffe896c7cd5",
+      "score_critico": 75,
+      "critique": {
+        "score_critico": 75,
+        "puntos_fuertes": [
+          "Problema claro",
+          "SoluciÃ³n viable",
+          "Stack moderno"
+        ],
+        "puntos_debiles": [
+          "Validar mercado"
+        ],
+        "resumen": "Idea aprobada con potencial"
+      },
+      "research": {
+        "competidores": [
+          "N/A"
+        ],
+        "diferenciacion_clave": "Pendiente de investigar",
+        "riesgos_principales": [
+          "Pendiente de investigar"
+        ],
+        "oportunidades": [
+          "Pendiente de investigar"
+        ],
+        "validacion_sugerida": "Pendiente de investigar"
+      },
+      "created_at": "2026-02-15T10:56:23.796128",
+      "status": "pendiente"
+    }
+  ],
+  "last_update": "2026-02-15T10:56:23.796172",
+  "total_ideas": 1
+}
