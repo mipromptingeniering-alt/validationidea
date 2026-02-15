@@ -238,7 +238,37 @@ def main():
         json.dump(data, f, ensure_ascii=False, indent=2)
     
     print("✅ URLs añadidas a ideas.json")
+        print("✅ URLs añadidas a ideas.json")
     
+    # ===================================================================
+    # GENERAR LANDING PAGE Y REPORT HTML
+    # ===================================================================
+    print("\n" + "-"*80)
+    print("GENERANDO ARCHIVOS HTML")
+    print("-"*80 + "\n")
+    
+    try:
+        from agents import landing_generator, report_agent
+        
+        # Generar Landing Page
+        landing_path = landing_generator.generate_landing(idea)
+        if landing_path:
+            print(f"✅ Landing page generada: {landing_path}")
+        else:
+            print("⚠️ No se pudo generar landing page")
+        
+        # Generar Report
+        report_path = report_agent.generate_report(idea)
+        if report_path:
+            print(f"✅ Report generado: {report_path}")
+        else:
+            print("⚠️ No se pudo generar report")
+            
+    except Exception as e:
+        print(f"⚠️ Error generando HTML: {e}")
+    
+    # 5. Notificar Telegram
+
     # 5. Notificar Telegram
 
     # 5. Notificar Telegram
