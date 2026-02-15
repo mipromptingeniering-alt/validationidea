@@ -1,10 +1,17 @@
 {
-  "version": "9.0.0",
-  "major": 9,
+  "version": "10.0.0",
+  "major": 10,
   "minor": 0,
   "patch": 0,
-  "date": "2026-02-14",
+  "date": "2026-02-15",
   "changelog": [
+    {
+      "version": "10.0.0",
+      "date": "2026-02-15",
+      "type": "major",
+      "description": "⚠️  Breaking: main_workflow.py",
+      "commit": "🔧 Fix: URLs relativas + crear ideas.json"
+    },
     {
       "version": "9.0.0",
       "date": "2026-02-14",
