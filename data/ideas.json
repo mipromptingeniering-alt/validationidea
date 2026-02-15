@@ -137,8 +137,77 @@
       },
       "created_at": "2026-02-15T11:44:06.981358",
       "status": "pendiente"
+    },
+    {
+      "nombre": "IA AutÃ³nomo en 5 DÃ­as",
+      "slug": "viral-3749",
+      "tipo_producto": "Template/GuÃ­a",
+      "categoria": "Viral Trend",
+      "descripcion": "Este plan le proporciona un paso a paso para crear un agente autÃ³nomo con IA en solo 5 dÃ­as, sin necesidad de programaciÃ³n compleja",
+      "descripcion_corta": "Muchos desarrolladores estÃ¡n buscando formas de crear agentes autÃ³nomos con IA sin tener que apren",
+      "problema": "Muchos desarrolladores estÃ¡n buscando formas de crear agentes autÃ³nomos con IA sin tener que aprender a programar",
+      "solucion": "Este plan le proporciona un paso a paso para crear un agente autÃ³nomo con IA en solo 5 dÃ­as, sin necesidad de programaciÃ³n compleja",
+      "publico_objetivo": "Early adopters que siguen tendencias",
+      "propuesta_valor": "La tendencia de IA agentes autÃ³nomos estÃ¡ en auge y muchos desarrolladores estÃ¡n buscando formas ",
+      "diferenciacion": "Capitaliza trend viral de IA agentes autÃ³nomos",
+      "tam": "1M+",
+      "sam": "100K",
+      "som": "10K",
+      "competencia": "Baja (trend reciente)",
+      "ventaja_competitiva": "First mover advantage - timing perfecto",
+      "precio_sugerido": "19",
+      "modelo_monetizacion": "â‚¬19 pago Ãºnico en Gumroad",
+      "features_core": "Definir el objetivo del agente autÃ³nomo, Crear un flujo de trabajo para el agente, Implementar la IA en el agente",
+      "roadmap_mvp": "Crear en 12 horas â†’ Lanzar en ProductHunt â†’ Iterar segÃºn feedback",
+      "stack_sugerido": "Gumroad, Twitter, Reddit",
+      "integraciones": "Standalone (sin integraciones complejas)",
+      "canales_adquisicion": "ProductHunt, Twitter, Reddit, comunidades nicho",
+      "metricas_clave": "Ventas primeras 48h, tasa conversiÃ³n, viralidad",
+      "riesgos": "Trend puede morir rÃ¡pido si no se capitaliza a tiempo",
+      "validacion_inicial": "â‚¬2,500 conservador",
+      "tiempo_estimado": "12 horas",
+      "inversion_inicial": "â‚¬0 (o mÃ­nima para herramientas)",
+      "dificultad": "Baja-Media",
+      "revenue_6_meses": "2,500 conservador",
+      "como_monetizar": "Lanzar en Gumroad + marketing viral en redes sociales + aprovechar trend",
+      "urgency": "ðŸ”´ CRÃTICA",
+      "viral_score": 98,
+      "window": "24-48h",
+      "trend_source": "IA agentes autÃ³nomos",
+      "source_type": "google_trends",
+      "detected_at": "2026-02-15T11:58:11.329563",
+      "score_generador": 98,
+      "_fingerprint": "55e46969addb506b3c47e8431dbbd941",
+      "score_critico": 75,
+      "critique": {
+        "score_critico": 75,
+        "puntos_fuertes": [
+          "Problema claro",
+          "SoluciÃ³n viable",
+          "Stack moderno"
+        ],
+        "puntos_debiles": [
+          "Validar mercado"
+        ],
+        "resumen": "Idea aprobada con potencial"
+      },
+      "research": {
+        "competidores": [
+          "N/A"
+        ],
+        "diferenciacion_clave": "Pendiente de investigar",
+        "riesgos_principales": [
+          "Pendiente de investigar"
+        ],
+        "oportunidades": [
+          "Pendiente de investigar"
+        ],
+        "validacion_sugerida": "Pendiente de investigar"
+      },
+      "created_at": "2026-02-15T11:58:37.265215",
+      "status": "pendiente"
     }
   ],
-  "last_update": "2026-02-15T11:44:06.981368",
-  "total_ideas": 2
+  "last_update": "2026-02-15T11:58:37.265223",
+  "total_ideas": 3
 }
