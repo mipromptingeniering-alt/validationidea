@@ -1043,6 +1043,70 @@
       "revenue_6_meses": "€4,800",
       "como_monetizar": "Chrome Web Store + LinkedIn outreach",
       "resumen": "Idea aprobada con potencial"
+    },
+    {
+      "fortalezas": [
+        "Problema claro",
+        "Solución viable",
+        "Stack moderno"
+      ],
+      "debilidades": [
+        "Validar mercado"
+      ],
+      "puntos_fuertes": [
+        "Problema claro",
+        "Solución viable",
+        "Stack moderno"
+      ],
+      "puntos_debiles": [
+        "Validar mercado"
+      ],
+      "nombre": "ProspectaMaster: 75 plantillas de emails de prospección para freelancers en tecnología",
+      "titulo": "ProspectaMaster: 75 plantillas de emails de prospección para freelancers en tecnología",
+      "descripcion": "Descubre cómo obtener más clientes con emails efectivos en solo minutos con plantillas probadas y personalizables",
+      "problema": "Freelancers no saben cómo prospectar clientes por email",
+      "solucion": "50 plantillas de cold emails probadas con análisis de por qué funcionan",
+      "publico_objetivo": "Freelancers",
+      "target": "Freelancers",
+      "modelo_negocio": "€15 pago único. Precio: €15. Cómo: Vender en Gumroad + Twitter + ProductHunt",
+      "mvp": "Stack: Canva + Gumroad, Gumroad, Twitter. Features: 75 plantillas de email de prospección para freelancers en tecnología, análisis detallado de cada plantilla, personalización de plantillas, acceso a una comunidad de expertos en marketing de contenido y estrategias de prospección. Tiempo: 6-10h. Roadmap: Semana 1: Setup y diseño, Semana 2: Desarrollo, Semana 3: Testing y lanzamiento",
+      "propuesta_valor": "Superior a otras opciones porque ofrece plantillas 100% específicas para freelancers en tecnología, con análisis detallado de por qué funcionan y cómo personalizarlas",
+      "metricas_clave": "MRR, tasa conversión, CAC, LTV",
+      "metricas": "MRR, tasa conversión, CAC, LTV",
+      "riesgos": "Competencia puede copiar, dependencia de plataforma",
+      "canales_marketing": "Twitter, ProductHunt, Reddit, comunidades especializadas",
+      "estrategia_marketing": "Twitter, ProductHunt, Reddit, comunidades especializadas",
+      "proximos_pasos": "Semana 1: Setup y diseño, Semana 2: Desarrollo, Semana 3: Testing y lanzamiento",
+      "score_generador": 75,
+      "score_critico": 75,
+      "score_viral": 0,
+      "viral_score": 0,
+      "fecha": null,
+      "_fingerprint": "9efa54262eab4149d5147bbdab988301",
+      "research": {},
+      "research_summary": "",
+      "critique": {},
+      "slug": "producto-9448",
+      "tipo_producto": "Guía PDF",
+      "categoria": "Freelancers",
+      "descripcion_corta": "Freelancers no saben cómo prospectar clientes por email",
+      "diferenciacion": "Ofrece una combinación única de plantillas probadas, análisis detallado y personalización, lo que permite a los freelancers en tecnología obtener mejores resultados en sus campañas de prospección",
+      "tam": "250.000 freelancers en tecnología en todo el mundo",
+      "sam": "100.000 freelancers en tecnología que buscan mejorar sus habilidades de prospección",
+      "som": "10.000 freelancers en tecnología con experiencia en marketing de contenido, que buscan mejorar sus resultados en prospección y están dispuestos a invertir en herramientas y servicios de alta calidad",
+      "competencia": "Competencia moderada en el nicho",
+      "ventaja_competitiva": "Especialización y ejecución rápida",
+      "precio_sugerido": "15",
+      "modelo_monetizacion": "€15 pago único",
+      "features_core": "75 plantillas de email de prospección para freelancers en tecnología, análisis detallado de cada plantilla, personalización de plantillas, acceso a una comunidad de expertos en marketing de contenido y estrategias de prospección",
+      "stack_sugerido": "Canva + Gumroad, Gumroad, Twitter",
+      "integraciones": "Canva + Gumroad, Zapier, webhooks",
+      "tiempo_estimado": "6-10h",
+      "inversion_inicial": "€0-€50",
+      "dificultad": "Media",
+      "revenue_6_meses": "€1,800",
+      "como_monetizar": "Vender en Gumroad + Twitter + ProductHunt",
+      "resumen": "Idea aprobada con potencial"
     }
   ]
 }
