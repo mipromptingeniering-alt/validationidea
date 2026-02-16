@@ -47,9 +47,9 @@ JSON: {"score_critico": 75, "puntos_fuertes": ["P1"], "puntos_debiles": ["P1"], 
         content = str(response.choices[0].message.content).strip()
         
         if '```json' in content:
-            content = content.split('```json').split('```').strip()[1]
+            content = content.split('```json')[1].split('```')[0].strip()
         elif '```' in content:
-            content = content.split('```').split('```')[0].strip()
+            content = content.split('```')[1].split('```')[0].strip()
         
         critique = json.loads(content)
         print(f"âœ… Score: {critique['score_critico']}")
