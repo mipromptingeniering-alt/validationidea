@@ -723,6 +723,70 @@
       "revenue_6_meses": "€4,800",
       "como_monetizar": "Chrome Web Store + LinkedIn outreach",
       "resumen": "Idea aprobada con potencial"
+    },
+    {
+      "fortalezas": [
+        "Problema claro",
+        "Solución viable",
+        "Stack moderno"
+      ],
+      "debilidades": [
+        "Validar mercado"
+      ],
+      "puntos_fuertes": [
+        "Problema claro",
+        "Solución viable",
+        "Stack moderno"
+      ],
+      "puntos_debiles": [
+        "Validar mercado"
+      ],
+      "nombre": "CommentoBuzz",
+      "titulo": "CommentoBuzz",
+      "descripcion": "Lleva tu marca a la cima de LinkedIn con comentarios inteligentes y relevantes en un clic, sin requerir horas de tiempo manual.",
+      "problema": "Engagement en LinkedIn requiere tiempo manual",
+      "solucion": "Extensión que genera comentarios contextuales inteligentes con un clic usando IA",
+      "publico_objetivo": "Marketers",
+      "target": "Marketers",
+      "modelo_negocio": "€19/mes suscripción. Precio: €19. Cómo: Chrome Web Store + LinkedIn outreach",
+      "mvp": "Stack: Chrome Extension, Gumroad, Twitter. Features: Genera comentarios inteligentes con IA, optimiza el contenido para mejorar la exposición, aumenta la interacción con tus audiencia, personaliza los comentarios para cada publicación, integra con tus perfiles y redes sociales.. Tiempo: 20-30h. Roadmap: Semana 1: Setup y diseño, Semana 2: Desarrollo, Semana 3: Testing y lanzamiento",
+      "propuesta_valor": "Nuestra extensión de LinkedIn automatiza la creación de contenido contextual, ahorrando tiempo y energía para enfocarte en lo que importa: establecer tus habilidades y conectar con tus audiencia.",
+      "metricas_clave": "MRR, tasa conversión, CAC, LTV",
+      "metricas": "MRR, tasa conversión, CAC, LTV",
+      "riesgos": "Competencia puede copiar, dependencia de plataforma",
+      "canales_marketing": "Twitter, ProductHunt, Reddit, comunidades especializadas",
+      "estrategia_marketing": "Twitter, ProductHunt, Reddit, comunidades especializadas",
+      "proximos_pasos": "Semana 1: Setup y diseño, Semana 2: Desarrollo, Semana 3: Testing y lanzamiento",
+      "score_generador": 75,
+      "score_critico": 75,
+      "score_viral": 0,
+      "viral_score": 0,
+      "fecha": null,
+      "_fingerprint": "e9ac6d5f11680e15a2a5b858bda63a7c",
+      "research": {},
+      "research_summary": "",
+      "critique": {},
+      "slug": "producto-5218",
+      "tipo_producto": "Chrome Extension",
+      "categoria": "Marketers",
+      "descripcion_corta": "Engagement en LinkedIn requiere tiempo manual",
+      "diferenciacion": "Nuestra tecnología de IA utiliza un enfoque de aprendizaje automático para adaptarse a tus necesidades y estilo único, lo que te permite lucir como un experto en tu campo sin esfuerzo.",
+      "tam": "20000",
+      "sam": "15000",
+      "som": "5000",
+      "competencia": "Competencia moderada en el nicho",
+      "ventaja_competitiva": "Especialización y ejecución rápida",
+      "precio_sugerido": "19",
+      "modelo_monetizacion": "€19/mes suscripción",
+      "features_core": "Genera comentarios inteligentes con IA, optimiza el contenido para mejorar la exposición, aumenta la interacción con tus audiencia, personaliza los comentarios para cada publicación, integra con tus perfiles y redes sociales.",
+      "stack_sugerido": "Chrome Extension, Gumroad, Twitter",
+      "integraciones": "Chrome Extension, Zapier, webhooks",
+      "tiempo_estimado": "20-30h",
+      "inversion_inicial": "€0-€50",
+      "dificultad": "Media",
+      "revenue_6_meses": "€4,800",
+      "como_monetizar": "Chrome Web Store + LinkedIn outreach",
+      "resumen": "Idea aprobada con potencial"
     }
   ]
 }
