@@ -8,15 +8,15 @@ import os
 def save_idea(idea):
     """Guarda la idea en el archivo JSON"""
     ideas_file = 'data/ideas.json'
-    
+
     if os.path.exists(ideas_file):
-        with open(ideas_file, 'r', encoding='utf-8-sig') as f:
+        with open(ideas_file, 'r', encoding='utf-8') as f:
             data = json.load(f)
     else:
         data = {'ideas': []}
-    
+
     data['ideas'].append(idea)
-    
+
     with open(ideas_file, 'w', encoding='utf-8') as f:
         json.dump(data, f, indent=2, ensure_ascii=False)
 
@@ -65,6 +65,7 @@ def main():
 
 if __name__ == '__main__':
     main()
+
 
 
 

@@ -147,3 +147,4 @@ if __name__ == "__main__":
         "fecha": datetime.now().isoformat()
     }
     sync_idea_to_notion(test_idea)
+
