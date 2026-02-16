@@ -1,4 +1,4 @@
-"""
+﻿"""
 Runner batch: 1 idea completa con anÃ¡lisis de competencia y notificaciones
 """
 import os
@@ -32,7 +32,7 @@ def run_batch():
         print(f"   Score: {idea['score_critico']}/100")
     
     # Filtro temporal a 70
-    if idea.get('score_critico', 0) < 80:
+    if idea.get('score_critico', 0) < 70:
         print(f"âŒ Descartada (< 70)")
         return
 
