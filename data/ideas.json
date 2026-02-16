@@ -62,8 +62,71 @@
       },
       "created_at": "2026-02-16T09:45:20.959459",
       "status": "pendiente"
+    },
+    {
+      "nombre": "Zapero para Pequeños Gigantes",
+      "slug": "producto-1438",
+      "tipo_producto": "Automation Service",
+      "categoria": "Small Business",
+      "descripcion": "Configura hasta 5 automatizaciones personalizadas en solo 48 horas, sin necesidad de conocer Zapier. Nuestros expertos te ayudarán a aumentar la productividad y reducir el estrés en tu negocio.",
+      "descripcion_corta": "PequeÃ±os negocios quieren automatizar pero no saben usar Zapier",
+      "problema": "PequeÃ±os negocios quieren automatizar pero no saben usar Zapier",
+      "solucion": "Servicio: configuro 5 automatizaciones personalizadas en 48h",
+      "publico_objetivo": "Small Business",
+      "propuesta_valor": "Somos la solución perfecta para pequeños negocios que quieren aprovechar al máximo Zapier sin gastar horas aprendiéndolo. Nuestros expertos te ayudarán a crear flujos de trabajo personalizados para automatizar tareas y aumentar la eficiencia.",
+      "diferenciacion": "Nuestro servicio es único porque ofrecemos soporte técnico personalizado y una configuración a medida para cada negocio. No te limitamos a una sola automatización, sino que te ofrecemos una solución integral para tu empresa.",
+      "tam": "120.000",
+      "sam": "30.000",
+      "som": "5.000",
+      "competencia": "Competencia moderada en el nicho",
+      "ventaja_competitiva": "EspecializaciÃ³n y ejecuciÃ³n rÃ¡pida",
+      "precio_sugerido": "299",
+      "modelo_monetizacion": "â‚¬299 por proyecto",
+      "features_core": "Construcción de flujos de trabajo personalizados, configuración de 5 automatizaciones en 48 horas, soporte técnico para pequeños negocios, acceso exclusivo a nuestro panel de control",
+      "roadmap_mvp": "Semana 1: Setup y diseÃ±o, Semana 2: Desarrollo, Semana 3: Testing y lanzamiento",
+      "stack_sugerido": "Zapier + Make, Gumroad, Twitter",
+      "integraciones": "Zapier + Make, Zapier, webhooks",
+      "canales_adquisicion": "Twitter, ProductHunt, Reddit, comunidades especializadas",
+      "metricas_clave": "MRR, tasa conversiÃ³n, CAC, LTV",
+      "riesgos": "Competencia puede copiar, dependencia de plataforma",
+      "validacion_inicial": "10 ventas en primeras 2 semanas",
+      "tiempo_estimado": "4-6h por cliente",
+      "inversion_inicial": "â‚¬0-â‚¬50",
+      "dificultad": "Media",
+      "revenue_6_meses": "â‚¬7,200",
+      "como_monetizar": "Cold email + Upwork + LinkedIn",
+      "score_generador": 75,
+      "_fingerprint": "d1ec25d1b59d01c6af59db4d54f364fa",
+      "score_critico": 75,
+      "critique": {
+        "score_critico": 75,
+        "puntos_fuertes": [
+          "Problema claro",
+          "SoluciÃ³n viable",
+          "Stack moderno"
+        ],
+        "puntos_debiles": [
+          "Validar mercado"
+        ],
+        "resumen": "Idea aprobada con potencial"
+      },
+      "research": {
+        "competidores": [
+          "N/A"
+        ],
+        "diferenciacion_clave": "Pendiente de investigar",
+        "riesgos_principales": [
+          "Pendiente de investigar"
+        ],
+        "oportunidades": [
+          "Pendiente de investigar"
+        ],
+        "validacion_sugerida": "Pendiente de investigar"
+      },
+      "created_at": "2026-02-16T10:17:48.817600",
+      "status": "pendiente"
     }
   ],
-  "last_update": "2026-02-16T09:45:20.959472",
-  "total_ideas": 1
+  "last_update": "2026-02-16T10:17:48.817610",
+  "total_ideas": 2
 }

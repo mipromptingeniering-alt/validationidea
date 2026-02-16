@@ -5,7 +5,7 @@ import os
 import json
 from datetime import datetime
 from main_workflow import save_idea
-from agents import generator_agent, researcher_agent, critic_agent, notion_sync_agent, telegram_agent
+from agents import ge, knowledge_basenerator_agent, field_mapper, researcher_agent, critic_agent, notion_sync_agent, telegram_agent
 
 def run_batch():
     print("\n" + "="*80)
@@ -16,7 +16,7 @@ def run_batch():
 
     # 1. Generar
     print("\nðŸŽ¨ Generando idea...")
-    idea = generator_agent.generate()
+    idea = generator_agent.generate()`n`n    # Mapear campos al formato Notion`n    if idea:`n        idea = field_mapper.map_idea_fields(idea)
     if not idea:
         print("âŒ Error generando")
         return
@@ -49,7 +49,14 @@ def run_batch():
         print(f"âš ï¸ Research: {e}")
 
     # 4. Guardar
-    save_idea(idea)
+    
+    # Analizar idea para aprendizaje
+    try:
+        kb = knowledge_base.KnowledgeBase()
+        kb.analyze_idea(idea)
+        print("🧠 Idea analizada para auto-aprendizaje")
+    except Exception as e:
+        print(f"⚠️ Error en análisis: {e}")
     print("âœ… Guardada")
 
     # 5. Sync Notion (con anÃ¡lisis competencia + estimaciÃ³n)
@@ -75,7 +82,7 @@ def run_batch():
         
         if len(all_ideas) % 3 == 0 and len(all_ideas) > 0:
             print(f"\nðŸ§  Auto-learning ({len(all_ideas)} ideas)...")
-            from agents import learning_agent
+            from agents import lear, knowledge_basening_agent
             learning_agent.learn_and_improve()
     except:
         pass

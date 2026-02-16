@@ -1,10 +1,12 @@
-import os
+﻿import os
 import json
 import time
 import random
 import hashlib
 from datetime import datetime
 from groq import Groq
+from agents.prompt_optimizer import PromptOptimizer
+from agents.knowledge_base import KnowledgeBase
 
 # ============ TREND HUNTER INTEGRATION ============
 try:
@@ -324,7 +326,7 @@ JSON sin markdown:
                     {"role": "system", "content": "Eres experto en productos digitales monetizables. Generas variaciones Ãºnicas y especÃ­ficas."},
                     {"role": "user", "content": prompt}
                 ],
-                temperature=0.9,
+                temperature=temperature_optimized,
                 max_tokens=800
             )
             
