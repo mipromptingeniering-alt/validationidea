@@ -15,9 +15,9 @@ try:
     TRENDS_ENABLED = True
 except ImportError:
     TRENDS_ENABLED = False
-    print("âš ï¸ Trend Hunter no disponible - continuando sin detecciÃ³n viral")
+    print("âš ï¸ Trend Hunter no disponible - continuando sin detección viral")
 
-# ============ CONFIGURACIÃ“N ============
+# ============ CONFIGURACIí“N ============
 IDEAS_FILE = 'data/ideas.json'
 MAX_ATTEMPTS = 5
 
@@ -34,7 +34,7 @@ def load_existing_ideas():
     return []
 
 def calculate_fingerprint(nombre, descripcion):
-    """Calcula huella Ãºnica de la idea"""
+    """Calcula huella única de la idea"""
     text = f"{nombre.lower()}{descripcion[:100].lower()}"
     return hashlib.md5(text.encode()).hexdigest()
 
@@ -60,65 +60,65 @@ def get_monetizable_product():
             "tipo": "Notion Template",
             "vertical": "Creadores de contenido",
             "nombre_base": "Content Calendar Pro",
-            "problema": "Creadores no saben quÃ© publicar ni cuÃ¡ndo",
-            "producto": "Sistema completo de planificaciÃ³n de contenido con calendario editorial, ideas de posts, tracking de mÃ©tricas",
+            "problema": "Creadores no saben qué publicar ni cuándo",
+            "producto": "Sistema completo de planificación de contenido con calendario editorial, ideas de posts, tracking de métricas",
             "precio": "29",
-            "monetizacion": "â‚¬29 pago Ãºnico en Gumroad",
+            "monetizacion": "€29 pago único en Gumroad",
             "tool": "Notion",
             "esfuerzo": "8-12h",
-            "revenue_6m": "â‚¬2,500",
-            "como": "Vender en Gumroad + promociÃ³n Twitter"
+            "revenue_6m": "€2,500",
+            "como": "Vender en Gumroad + promoción Twitter"
         },
         {
             "tipo": "Chrome Extension",
             "vertical": "Marketers",
             "nombre_base": "LinkedIn Auto-Commenter",
             "problema": "Engagement en LinkedIn requiere tiempo manual",
-            "producto": "ExtensiÃ³n que genera comentarios contextuales inteligentes con un clic usando IA",
+            "producto": "Extensión que genera comentarios contextuales inteligentes con un clic usando IA",
             "precio": "19",
-            "monetizacion": "â‚¬19/mes suscripciÃ³n",
+            "monetizacion": "€19/mes suscripción",
             "tool": "Chrome Extension",
             "esfuerzo": "20-30h",
-            "revenue_6m": "â‚¬4,800",
+            "revenue_6m": "€4,800",
             "como": "Chrome Web Store + LinkedIn outreach"
         },
         {
-            "tipo": "GuÃ­a PDF",
+            "tipo": "Guía PDF",
             "vertical": "Freelancers",
             "nombre_base": "Cold Email Templates Pack",
-            "problema": "Freelancers no saben cÃ³mo prospectar clientes por email",
-            "producto": "50 plantillas de cold emails probadas con anÃ¡lisis de por quÃ© funcionan",
+            "problema": "Freelancers no saben cómo prospectar clientes por email",
+            "producto": "50 plantillas de cold emails probadas con análisis de por qué funcionan",
             "precio": "15",
-            "monetizacion": "â‚¬15 pago Ãºnico",
+            "monetizacion": "€15 pago único",
             "tool": "Canva + Gumroad",
             "esfuerzo": "6-10h",
-            "revenue_6m": "â‚¬1,800",
+            "revenue_6m": "€1,800",
             "como": "Vender en Gumroad + Twitter + ProductHunt"
         },
         {
             "tipo": "Figma Plugin",
-            "vertical": "DiseÃ±adores",
+            "vertical": "Diseñadores",
             "nombre_base": "AI Color Palette Generator",
             "problema": "Crear paletas de colores coherentes toma mucho tiempo",
             "producto": "Plugin que genera paletas profesionales con IA basadas en mood/industria",
             "precio": "12",
-            "monetizacion": "â‚¬12 pago Ãºnico",
+            "monetizacion": "€12 pago único",
             "tool": "Figma Plugin",
             "esfuerzo": "15-25h",
-            "revenue_6m": "â‚¬3,200",
+            "revenue_6m": "€3,200",
             "como": "Figma Community + Twitter + Reddit r/FigmaDesign"
         },
         {
             "tipo": "Google Sheets Template",
             "vertical": "Ecommerce",
             "nombre_base": "Profit Calculator Dashboard",
-            "problema": "Tiendas online no trackean mÃ¡rgenes reales correctamente",
-            "producto": "Dashboard automatizado que calcula costos, mÃ¡rgenes, break-even por producto",
+            "problema": "Tiendas online no trackean márgenes reales correctamente",
+            "producto": "Dashboard automatizado que calcula costos, márgenes, break-even por producto",
             "precio": "24",
-            "monetizacion": "â‚¬24 pago Ãºnico",
+            "monetizacion": "€24 pago único",
             "tool": "Google Sheets",
             "esfuerzo": "10-15h",
-            "revenue_6m": "â‚¬2,100",
+            "revenue_6m": "€2,100",
             "como": "Gumroad + comunidades ecommerce"
         },
         {
@@ -126,12 +126,12 @@ def get_monetizable_product():
             "vertical": "Agencias",
             "nombre_base": "Client Report Generator",
             "problema": "Crear reportes mensuales para clientes es tedioso",
-            "producto": "Herramienta que conecta Google Analytics/Ads y genera reportes automÃ¡ticos en PDF",
+            "producto": "Herramienta que conecta Google Analytics/Ads y genera reportes automáticos en PDF",
             "precio": "49",
-            "monetizacion": "â‚¬49/mes",
+            "monetizacion": "€49/mes",
             "tool": "No-code (Bubble/Softr)",
             "esfuerzo": "40-60h",
-            "revenue_6m": "â‚¬8,400",
+            "revenue_6m": "€8,400",
             "como": "SEO + cold email a agencias"
         },
         {
@@ -139,51 +139,51 @@ def get_monetizable_product():
             "vertical": "Developers",
             "nombre_base": "7-Day API Integration Course",
             "problema": "Developers junior no saben integrar APIs de terceros",
-            "producto": "7 emails con ejemplos prÃ¡cticos de integrar Stripe, Mailchimp, etc.",
+            "producto": "7 emails con ejemplos prácticos de integrar Stripe, Mailchimp, etc.",
             "precio": "39",
-            "monetizacion": "â‚¬39 pago Ãºnico",
+            "monetizacion": "€39 pago único",
             "tool": "ConvertKit + Notion",
             "esfuerzo": "12-20h",
-            "revenue_6m": "â‚¬3,500",
+            "revenue_6m": "€3,500",
             "como": "Lanzar en ProductHunt + Dev.to + Twitter"
         },
         {
             "tipo": "Plantilla Airtable",
             "vertical": "Recruiters",
             "nombre_base": "ATS Lite - Candidate Tracker",
-            "problema": "Recruiters pequeÃ±os no pueden pagar ATS caros",
+            "problema": "Recruiters pequeños no pueden pagar ATS caros",
             "producto": "Base Airtable con pipelines, automatizaciones, email templates integrados",
             "precio": "35",
-            "monetizacion": "â‚¬35 pago Ãºnico",
+            "monetizacion": "€35 pago único",
             "tool": "Airtable",
             "esfuerzo": "12-18h",
-            "revenue_6m": "â‚¬2,800",
+            "revenue_6m": "€2,800",
             "como": "Gumroad + LinkedIn + Reddit r/recruiting"
         },
         {
             "tipo": "Webflow Template",
             "vertical": "SaaS Founders",
             "nombre_base": "SaaS Landing Page Template",
-            "problema": "Founders tÃ©cnicos no saben diseÃ±ar landing pages que conviertan",
+            "problema": "Founders técnicos no saben diseñar landing pages que conviertan",
             "producto": "Template Webflow con 5 secciones probadas + animaciones + responsive",
             "precio": "79",
-            "monetizacion": "â‚¬79 pago Ãºnico",
+            "monetizacion": "€79 pago único",
             "tool": "Webflow",
             "esfuerzo": "25-35h",
-            "revenue_6m": "â‚¬5,900",
+            "revenue_6m": "€5,900",
             "como": "Webflow Marketplace + Twitter + Indie Hackers"
         },
         {
             "tipo": "Automation Service",
             "vertical": "Small Business",
             "nombre_base": "Zapier Automation Setup Service",
-            "problema": "PequeÃ±os negocios quieren automatizar pero no saben usar Zapier",
+            "problema": "Pequeños negocios quieren automatizar pero no saben usar Zapier",
             "producto": "Servicio: configuro 5 automatizaciones personalizadas en 48h",
             "precio": "299",
-            "monetizacion": "â‚¬299 por proyecto",
+            "monetizacion": "€299 por proyecto",
             "tool": "Zapier + Make",
             "esfuerzo": "4-6h por cliente",
-            "revenue_6m": "â‚¬7,200",
+            "revenue_6m": "€7,200",
             "como": "Cold email + Upwork + LinkedIn"
         }
     ]
@@ -221,15 +221,15 @@ def generate():
                     print("   â„¹ï¸  No hay oportunidades virales urgentes (score < 70)")
                     viral_opportunity = None
             else:
-                print("   âš ï¸  Cache de trends expirado (se actualizarÃ¡ en prÃ³xima ejecuciÃ³n)")
+                print("   âš ï¸  Cache de trends expirado (se actualizará en próxima ejecución)")
         
         except Exception as e:
             print(f"   âš ï¸  Error verificando trends: {e}")
             viral_opportunity = None
     else:
-        print("   â„¹ï¸  Trend Hunter deshabilitado - usando generaciÃ³n normal")
+        print("   â„¹ï¸  Trend Hunter deshabilitado - usando generación normal")
     
-    # ============ INTENTOS DE GENERACIÃ“N ============
+    # ============ INTENTOS DE GENERACIí“N ============
     for attempt in range(1, MAX_ATTEMPTS + 1):
         print(f"\nðŸ“ Intento {attempt}/{MAX_ATTEMPTS}...")
         
@@ -257,20 +257,20 @@ def generate():
                 'som': '10K',
                 'competencia': 'Baja (trend reciente)',
                 'ventaja_competitiva': 'First mover advantage - timing perfecto',
-                'precio_sugerido': viral_opportunity.get('precio_sugerido', 'â‚¬29').replace('â‚¬', '').strip(),
-                'modelo_monetizacion': f"{viral_opportunity.get('precio_sugerido', 'â‚¬29')} pago Ãºnico en {viral_opportunity.get('plataforma', 'Gumroad')}",
+                'precio_sugerido': viral_opportunity.get('precio_sugerido', '€29').replace('€', '').strip(),
+                'modelo_monetizacion': f"{viral_opportunity.get('precio_sugerido', '€29')} pago único en {viral_opportunity.get('plataforma', 'Gumroad')}",
                 'features_core': ', '.join(viral_opportunity.get('pasos_rapidos', ['Feature 1', 'Feature 2', 'Feature 3'])[:3]),
-                'roadmap_mvp': f"Crear en {viral_opportunity.get('tiempo_creacion', '48h')} â†’ Lanzar en ProductHunt â†’ Iterar segÃºn feedback",
+                'roadmap_mvp': f"Crear en {viral_opportunity.get('tiempo_creacion', '48h')} â†’ Lanzar en ProductHunt â†’ Iterar según feedback",
                 'stack_sugerido': viral_opportunity.get('plataforma', 'Gumroad') + ', Twitter, Reddit',
                 'integraciones': 'Standalone (sin integraciones complejas)',
                 'canales_adquisicion': 'ProductHunt, Twitter, Reddit, comunidades nicho',
-                'metricas_clave': 'Ventas primeras 48h, tasa conversiÃ³n, viralidad',
-                'riesgos': 'Trend puede morir rÃ¡pido si no se capitaliza a tiempo',
-                'validacion_inicial': viral_opportunity.get('revenue_estimado_2_semanas', 'â‚¬500-â‚¬1000'),
+                'metricas_clave': 'Ventas primeras 48h, tasa conversión, viralidad',
+                'riesgos': 'Trend puede morir rápido si no se capitaliza a tiempo',
+                'validacion_inicial': viral_opportunity.get('revenue_estimado_2_semanas', '€500-€1000'),
                 'tiempo_estimado': viral_opportunity.get('tiempo_creacion', '24-48h'),
-                'inversion_inicial': 'â‚¬0 (o mÃ­nima para herramientas)',
+                'inversion_inicial': '€0 (o mínima para herramientas)',
                 'dificultad': 'Baja-Media',
-                'revenue_6_meses': viral_opportunity.get('revenue_estimado_2_semanas', 'â‚¬1,000').replace('â‚¬', '').strip(),
+                'revenue_6_meses': viral_opportunity.get('revenue_estimado_2_semanas', '€1,000').replace('€', '').strip(),
                 'como_monetizar': f"Lanzar en {viral_opportunity.get('plataforma', 'Gumroad')} + marketing viral en redes sociales + aprovechar trend",
                 
                 # Metadata viral
@@ -285,9 +285,9 @@ def generate():
                 '_fingerprint': calculate_fingerprint(viral_opportunity['nombre'], viral_opportunity.get('problema', ''))
             }
             
-            # Verificar si es Ãºnica
+            # Verificar si es única
             if not is_duplicate(idea, existing_ideas):
-                print(f"âœ… IDEA VIRAL ÃšNICA - {idea['nombre']}")
+                print(f"âœ… IDEA VIRAL íšNICA - {idea['nombre']}")
                 return idea
             else:
                 print("   âš ï¸  Idea viral duplicada - usando fallback normal...")
@@ -306,25 +306,25 @@ def generate():
 Vertical: {product['vertical']}
 Problema: {product['problema']}
 
-Genera variaciÃ³n ÃšNICA y ESPECÃFICA. No copies el producto base tal cual.
+Genera variación íšNICA y ESPECíFICA. No copies el producto base tal cual.
 
 JSON sin markdown:
 {{
-  "nombre": "[Nombre especÃ­fico diferente]",
-  "descripcion": "[DescripciÃ³n Ãºnica 150 chars]",
-  "propuesta_valor": "[Por quÃ© es mejor que alternativas]",
+  "nombre": "[Nombre específico diferente]",
+  "descripcion": "[Descripción única 150 chars]",
+  "propuesta_valor": "[Por qué es mejor que alternativas]",
   "features_core": "[3-5 features concretas separadas por comas]",
-  "diferenciacion": "[QuÃ© lo hace Ãºnico]",
-  "tam": "[TamaÃ±o mercado total]",
+  "diferenciacion": "[Qué lo hace único]",
+  "tam": "[Tamaño mercado total]",
   "sam": "[Mercado alcanzable]",
-  "som": "[Mercado objetivo primer aÃ±o]"
+  "som": "[Mercado objetivo primer año]"
 }}"""
 
         try:
             response = client.chat.completions.create(
                 model="llama-3.1-8b-instant",
                 messages=[
-                    {"role": "system", "content": "Eres experto en productos digitales monetizables. Generas variaciones Ãºnicas y especÃ­ficas."},
+                    {"role": "system", "content": "Eres experto en productos digitales monetizables. Generas variaciones únicas y específicas."},
                     {"role": "user", "content": prompt}
                 ],
                 temperature=0.9,
@@ -351,25 +351,25 @@ JSON sin markdown:
                 'problema': product['problema'],
                 'solucion': product['producto'],
                 'publico_objetivo': product['vertical'],
-                'propuesta_valor': enrichment.get('propuesta_valor', 'SoluciÃ³n efectiva y rÃ¡pida'),
-                'diferenciacion': enrichment.get('diferenciacion', f"EspecÃ­fico para {product['vertical']}"),
+                'propuesta_valor': enrichment.get('propuesta_valor', 'Solución efectiva y rápida'),
+                'diferenciacion': enrichment.get('diferenciacion', f"Específico para {product['vertical']}"),
                 'tam': enrichment.get('tam', '50M'),
                 'sam': enrichment.get('sam', '5M'),
                 'som': enrichment.get('som', '500K'),
                 'competencia': 'Competencia moderada en el nicho',
-                'ventaja_competitiva': 'EspecializaciÃ³n y ejecuciÃ³n rÃ¡pida',
+                'ventaja_competitiva': 'Especialización y ejecución rápida',
                 'precio_sugerido': product['precio'],
                 'modelo_monetizacion': product['monetizacion'],
                 'features_core': enrichment.get('features_core', 'Feature 1, Feature 2, Feature 3'),
-                'roadmap_mvp': 'Semana 1: Setup y diseÃ±o, Semana 2: Desarrollo, Semana 3: Testing y lanzamiento',
+                'roadmap_mvp': 'Semana 1: Setup y diseño, Semana 2: Desarrollo, Semana 3: Testing y lanzamiento',
                 'stack_sugerido': f"{product['tool']}, Gumroad, Twitter",
                 'integraciones': f"{product['tool']}, Zapier, webhooks",
                 'canales_adquisicion': 'Twitter, ProductHunt, Reddit, comunidades especializadas',
-                'metricas_clave': 'MRR, tasa conversiÃ³n, CAC, LTV',
+                'metricas_clave': 'MRR, tasa conversión, CAC, LTV',
                 'riesgos': 'Competencia puede copiar, dependencia de plataforma',
                 'validacion_inicial': '10 ventas en primeras 2 semanas',
                 'tiempo_estimado': product['esfuerzo'],
-                'inversion_inicial': 'â‚¬0-â‚¬50',
+                'inversion_inicial': '€0-€50',
                 'dificultad': 'Media',
                 'revenue_6_meses': product['revenue_6m'],
                 'como_monetizar': product['como'],
@@ -379,17 +379,17 @@ JSON sin markdown:
             
             # Verificar duplicados
             if not is_duplicate(idea, existing_ideas):
-                print(f"âœ… IDEA NORMAL ÃšNICA - {idea['nombre']}")
+                print(f"âœ… IDEA NORMAL íšNICA - {idea['nombre']}")
                 return idea
             else:
                 print(f"   âš ï¸  Idea duplicada (attempt {attempt})")
         
         except Exception as e:
-            print(f"   âš ï¸  Error en generaciÃ³n: {e}")
+            print(f"   âš ï¸  Error en generación: {e}")
             continue
     
-    # Si llegamos aquÃ­, no se pudo generar idea Ãºnica
-    print("\nâŒ No se pudo generar idea Ãºnica despuÃ©s de 5 intentos")
+    # Si llegamos aquí, no se pudo generar idea única
+    print("\nâŒ No se pudo generar idea única después de 5 intentos")
     return None
 
 # ============ MAIN ============
@@ -402,7 +402,7 @@ if __name__ == "__main__":
         print("="*80)
         print(json.dumps(idea, indent=2, ensure_ascii=False))
     else:
-        print("\nâŒ No se generÃ³ idea")
+        print("\nâŒ No se generó idea")
 
 
 
