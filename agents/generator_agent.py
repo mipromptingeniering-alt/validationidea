@@ -330,7 +330,7 @@ JSON sin markdown:
                 max_tokens=800
             )
             
-            content = response.choices[0].message.content.strip()
+            content = response.choices[0].message.content.strip().encode('latin-1').decode('utf-8')
             
             # Limpiar markdown
             if '```json' in content:
@@ -402,5 +402,6 @@ if __name__ == "__main__":
         print(json.dumps(idea, indent=2, ensure_ascii=False))
     else:
         print("\nâŒ No se generÃ³ idea")
+
 
 
