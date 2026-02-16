@@ -851,6 +851,70 @@
       "revenue_6_meses": "€5,900",
       "como_monetizar": "Webflow Marketplace + Twitter + Indie Hackers",
       "resumen": "Idea aprobada con potencial"
+    },
+    {
+      "fortalezas": [
+        "Problema claro",
+        "Solución viable",
+        "Stack moderno"
+      ],
+      "debilidades": [
+        "Validar mercado"
+      ],
+      "puntos_fuertes": [
+        "Problema claro",
+        "Solución viable",
+        "Stack moderno"
+      ],
+      "puntos_debiles": [
+        "Validar mercado"
+      ],
+      "nombre": "Zapify",
+      "titulo": "Zapify",
+      "descripcion": "Automatiza 5 procesos críticos para tu pequeño negocio en solo 48 horas",
+      "problema": "Pequeños negocios quieren automatizar pero no saben usar Zapier",
+      "solucion": "Servicio: configuro 5 automatizaciones personalizadas en 48h",
+      "publico_objetivo": "Small Business",
+      "target": "Small Business",
+      "modelo_negocio": "€299 por proyecto. Precio: €299. Cómo: Cold email + Upwork + LinkedIn",
+      "mvp": "Stack: Zapier + Make, Gumroad, Twitter. Features: Configuración personalizada de automatizaciones, integración con herramientas de gestión de proyectos, alertas y notificaciones personalizadas, seguimiento de KPIs, ajuste de configuraciones según resultados. Tiempo: 4-6h por cliente. Roadmap: Semana 1: Setup y diseño, Semana 2: Desarrollo, Semana 3: Testing y lanzamiento",
+      "propuesta_valor": "Nuestra fórmula de automatización personalizada para pequeñas empresas te ayuda a aumentar la productividad y reducir errores",
+      "metricas_clave": "MRR, tasa conversión, CAC, LTV",
+      "metricas": "MRR, tasa conversión, CAC, LTV",
+      "riesgos": "Competencia puede copiar, dependencia de plataforma",
+      "canales_marketing": "Twitter, ProductHunt, Reddit, comunidades especializadas",
+      "estrategia_marketing": "Twitter, ProductHunt, Reddit, comunidades especializadas",
+      "proximos_pasos": "Semana 1: Setup y diseño, Semana 2: Desarrollo, Semana 3: Testing y lanzamiento",
+      "score_generador": 75,
+      "score_critico": 75,
+      "score_viral": 0,
+      "viral_score": 0,
+      "fecha": null,
+      "_fingerprint": "d7ea1effeac6c68cdc3897f000868b2d",
+      "research": {},
+      "research_summary": "",
+      "critique": {},
+      "slug": "producto-7855",
+      "tipo_producto": "Automation Service",
+      "categoria": "Small Business",
+      "descripcion_corta": "Pequeños negocios quieren automatizar pero no saben usar Zapier",
+      "diferenciacion": "Nuestro equipo de expertos te ofrece una visión integral de tus flujos de trabajo y te ayuda a identificar áreas de mejora",
+      "tam": "3.7 millones",
+      "sam": "1.2 millones",
+      "som": "500.000",
+      "competencia": "Competencia moderada en el nicho",
+      "ventaja_competitiva": "Especialización y ejecución rápida",
+      "precio_sugerido": "299",
+      "modelo_monetizacion": "€299 por proyecto",
+      "features_core": "Configuración personalizada de automatizaciones, integración con herramientas de gestión de proyectos, alertas y notificaciones personalizadas, seguimiento de KPIs, ajuste de configuraciones según resultados",
+      "stack_sugerido": "Zapier + Make, Gumroad, Twitter",
+      "integraciones": "Zapier + Make, Zapier, webhooks",
+      "tiempo_estimado": "4-6h por cliente",
+      "inversion_inicial": "€0-€50",
+      "dificultad": "Media",
+      "revenue_6_meses": "€7,200",
+      "como_monetizar": "Cold email + Upwork + LinkedIn",
+      "resumen": "Idea aprobada con potencial"
     }
   ]
 }
