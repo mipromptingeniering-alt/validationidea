@@ -33,6 +33,11 @@ def map_idea_fields(raw_idea):
     
     # Mapear campos
     mapped = {
+        # Crítica (mapear puntos_fuertes/debiles a fortalezas/debilidades)
+        'fortalezas': raw_idea.get('puntos_fuertes', []),
+        'debilidades': raw_idea.get('puntos_debiles', []),
+        'puntos_fuertes': raw_idea.get('puntos_fuertes', []),
+        'puntos_debiles': raw_idea.get('puntos_debiles', []),
         # Básicos
         'nombre': raw_idea.get('nombre', 'Sin nombre'),
         'titulo': raw_idea.get('nombre', 'Sin nombre'),
@@ -108,4 +113,5 @@ if __name__ == '__main__':
     mapped = map_idea_fields(test_idea)
     import json
     print(json.dumps(mapped, indent=2, ensure_ascii=False))
+
 
