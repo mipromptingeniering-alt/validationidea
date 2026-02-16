@@ -1,10 +1,17 @@
 {
-  "version": "11.0.3",
+  "version": "11.0.4",
   "major": 11,
   "minor": 0,
-  "patch": 3,
+  "patch": 4,
   "date": "2026-02-16",
   "changelog": [
+    {
+      "version": "11.0.4",
+      "date": "2026-02-16",
+      "type": "patch",
+      "description": "🔧 Fix: agents/notion_sync_agent.py",
+      "commit": "fix: corregir encoding UTF-8 y mapeo de campos en Notion\n\n- Forzar encoding UTF-8 en todos los campo"
+    },
     {
       "version": "11.0.3",
       "date": "2026-02-16",
