@@ -1,10 +1,17 @@
 {
-  "version": "11.0.2",
+  "version": "11.0.3",
   "major": 11,
   "minor": 0,
-  "patch": 2,
-  "date": "2026-02-15",
+  "patch": 3,
+  "date": "2026-02-16",
   "changelog": [
+    {
+      "version": "11.0.3",
+      "date": "2026-02-16",
+      "type": "patch",
+      "description": "🔧 Fix: data/ideas.json",
+      "commit": "fix: corregir filtro score (80→70) + restaurar ideas.json\n\n- Cambiar umbral de rechazo de < 80 a < 7"
+    },
     {
       "version": "11.0.2",
       "date": "2026-02-15",
