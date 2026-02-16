@@ -915,6 +915,70 @@
       "revenue_6_meses": "€7,200",
       "como_monetizar": "Cold email + Upwork + LinkedIn",
       "resumen": "Idea aprobada con potencial"
+    },
+    {
+      "fortalezas": [
+        "Problema claro",
+        "Solución viable",
+        "Stack moderno"
+      ],
+      "debilidades": [
+        "Validar mercado"
+      ],
+      "puntos_fuertes": [
+        "Problema claro",
+        "Solución viable",
+        "Stack moderno"
+      ],
+      "puntos_debiles": [
+        "Validar mercado"
+      ],
+      "nombre": "ProfitPilot Ecommerce",
+      "titulo": "ProfitPilot Ecommerce",
+      "descripcion": "Gestiona y optimiza tus márgenes de ventas en tiempo real, aumenta tus ganancias y previene pérdidas con análisis precisos",
+      "problema": "Tiendas online no trackean márgenes reales correctamente",
+      "solucion": "Dashboard automatizado que calcula costos, márgenes, break-even por producto",
+      "publico_objetivo": "Ecommerce",
+      "target": "Ecommerce",
+      "modelo_negocio": "€24 pago único. Precio: €24. Cómo: Gumroad + comunidades ecommerce",
+      "mvp": "Stack: Google Sheets, Gumroad, Twitter. Features: Cálculo automático de costos y márgenes, Alertas de pérdidas de margen, Análisis de brecha de precios, Comparación de rendimientos entre productos, Integración con tus plataformas de pago y de inventario. Tiempo: 10-15h. Roadmap: Semana 1: Setup y diseño, Semana 2: Desarrollo, Semana 3: Testing y lanzamiento",
+      "propuesta_valor": "La única herramienta de automatización de costos y márgenes diseñada específicamente para tiendas en línea, ofreciendo análisis detallados y recomendaciones personalizadas para maximizar tus beneficios",
+      "metricas_clave": "MRR, tasa conversión, CAC, LTV",
+      "metricas": "MRR, tasa conversión, CAC, LTV",
+      "riesgos": "Competencia puede copiar, dependencia de plataforma",
+      "canales_marketing": "Twitter, ProductHunt, Reddit, comunidades especializadas",
+      "estrategia_marketing": "Twitter, ProductHunt, Reddit, comunidades especializadas",
+      "proximos_pasos": "Semana 1: Setup y diseño, Semana 2: Desarrollo, Semana 3: Testing y lanzamiento",
+      "score_generador": 75,
+      "score_critico": 75,
+      "score_viral": 0,
+      "viral_score": 0,
+      "fecha": null,
+      "_fingerprint": "ac8ad38e5a586e51caa612b6af18b0e2",
+      "research": {},
+      "research_summary": "",
+      "critique": {},
+      "slug": "producto-5230",
+      "tipo_producto": "Google Sheets Template",
+      "categoria": "Ecommerce",
+      "descripcion_corta": "Tiendas online no trackean márgenes reales correctamente",
+      "diferenciacion": "ProfitPilot Ecommerce se enfoca en la automatización del seguimiento de costos y márgenes, lo que permite a los emprendedores y propietarios de tiendas en línea tomar decisiones informadas y estratégicas para maximizar sus ganancias",
+      "tam": "250.000",
+      "sam": "30%",
+      "som": "10%",
+      "competencia": "Competencia moderada en el nicho",
+      "ventaja_competitiva": "Especialización y ejecución rápida",
+      "precio_sugerido": "24",
+      "modelo_monetizacion": "€24 pago único",
+      "features_core": "Cálculo automático de costos y márgenes, Alertas de pérdidas de margen, Análisis de brecha de precios, Comparación de rendimientos entre productos, Integración con tus plataformas de pago y de inventario",
+      "stack_sugerido": "Google Sheets, Gumroad, Twitter",
+      "integraciones": "Google Sheets, Zapier, webhooks",
+      "tiempo_estimado": "10-15h",
+      "inversion_inicial": "€0-€50",
+      "dificultad": "Media",
+      "revenue_6_meses": "€2,100",
+      "como_monetizar": "Gumroad + comunidades ecommerce",
+      "resumen": "Idea aprobada con potencial"
     }
   ]
 }
