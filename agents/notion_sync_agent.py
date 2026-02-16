@@ -80,15 +80,15 @@ def sync_idea_to_notion(idea):
             "✅ FORTALEZAS:",
         ]
         
-        if critique.get("puntos_fuertes"):
-            for punto in critique["puntos_fuertes"][:3]:
+        if fortalezas:
+            for punto in fortalezas[:3]:
                 report_lines.append(f"  • {punto}")
         
         report_lines.append("")
         report_lines.append("⚠️ DEBILIDADES:")
         
-        if critique.get("puntos_debiles"):
-            for punto in critique["puntos_debiles"][:3]:
+        if debilidades:
+            for punto in debilidades[:3]:
                 report_lines.append(f"  • {punto}")
         
         properties["Report"] = text_prop("\n".join(report_lines))
