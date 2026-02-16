@@ -7,6 +7,7 @@ from datetime import datetime
 from groq import Groq
 from agents.prompt_optimizer import PromptOptimizer
 from agents.knowledge_base import KnowledgeBase
+from agents.encoding_helper import fix_llm_encoding
 
 # ============ TREND HUNTER INTEGRATION ============
 try:
@@ -330,7 +331,7 @@ JSON sin markdown:
                 max_tokens=800
             )
             
-            content = response.choices[0].message.content.strip().encode('latin-1').decode('utf-8')
+            content = fix_llm_encoding(response.choices[0].message.content.strip())
             
             # Limpiar markdown
             if '```json' in content:
@@ -402,6 +403,7 @@ if __name__ == "__main__":
         print(json.dumps(idea, indent=2, ensure_ascii=False))
     else:
         print("\nâŒ No se generÃ³ idea")
+
 
 
 

@@ -1,4 +1,5 @@
-﻿import os
+﻿from agents.encoding_helper import fix_llm_encoding
+import os
 import json
 from groq import Groq
 
@@ -75,6 +76,7 @@ def decide_publish(idea, critique, config):
     
     print(f"âŒ RECHAZAR - Gen:{score_gen} Crit:{score_crit}")
     return False
+
 
 
 
