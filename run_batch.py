@@ -56,7 +56,7 @@ def main():
     
     # Sincronizar con Notion
     try:
-        notion_sync_agent.sync_to_notion(idea)
+        notion_sync_agent.sync_idea_to_notion(idea)
         print('Idea sincronizada con Notion')
     except Exception as e:
         print(f'Error en Notion sync: {e}')
@@ -65,4 +65,5 @@ def main():
 
 if __name__ == '__main__':
     main()
+
 
