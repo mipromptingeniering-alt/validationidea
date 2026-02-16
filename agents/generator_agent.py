@@ -326,7 +326,7 @@ JSON sin markdown:
                     {"role": "system", "content": "Eres experto en productos digitales monetizables. Generas variaciones Ãºnicas y especÃ­ficas."},
                     {"role": "user", "content": prompt}
                 ],
-                temperature=temperature_optimized,
+                temperature=0.9,
                 max_tokens=800
             )
             
