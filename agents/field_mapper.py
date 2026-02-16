@@ -108,3 +108,4 @@ if __name__ == '__main__':
     mapped = map_idea_fields(test_idea)
     import json
     print(json.dumps(mapped, indent=2, ensure_ascii=False))
+
