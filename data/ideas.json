@@ -62,8 +62,71 @@
       },
       "created_at": "2026-02-16T09:45:20.959459",
       "status": "pendiente"
+    },
+    {
+      "nombre": "Analytics Provisor",
+      "slug": "producto-5226",
+      "tipo_producto": "Micro-SaaS",
+      "categoria": "Agencias",
+      "descripcion": "Automatiza la creaciÃ³n de informes detallados para agencias de marketing, liberando recursos para estrategias mÃ¡s innovadoras",
+      "descripcion_corta": "Crear reportes mensuales para clientes es tedioso",
+      "problema": "Crear reportes mensuales para clientes es tedioso",
+      "solucion": "Herramienta que conecta Google Analytics/Ads y genera reportes automÃ¡ticos en PDF",
+      "publico_objetivo": "Agencias",
+      "propuesta_valor": "Nos destacamos por conectar directamente con Google Analytics/Ads y ofrecer un proceso de creaciÃ³n de informes mÃ¡s eficiente",
+      "diferenciacion": "Ofrecemos un enfoque centrado en las necesidades de las agencias, con un foco en la facilidad de uso y la escalabilidad",
+      "tam": "10,000 agencias de marketing en el mundo",
+      "sam": "Agencias con presupuesto de $10,000 a $50,000 por aÃ±o en soluciones de analytics",
+      "som": "150 agencias de marketing con un presupuesto de $20,000 a $40,000 por aÃ±o en el primer aÃ±o, que buscan mejorar la eficiencia en la creaciÃ³n de informes",
+      "competencia": "Competencia moderada en el nicho",
+      "ventaja_competitiva": "EspecializaciÃ³n y ejecuciÃ³n rÃ¡pida",
+      "precio_sugerido": "49",
+      "modelo_monetizacion": "â‚¬49/mes",
+      "features_core": "GeneraciÃ³n automÃ¡tica de informes en PDF, VisualizaciÃ³n de datos en dashboards personalizables, Alertas personalizadas para cambios significativos en el rendimiento",
+      "roadmap_mvp": "Semana 1: Setup y diseÃ±o, Semana 2: Desarrollo, Semana 3: Testing y lanzamiento",
+      "stack_sugerido": "No-code (Bubble/Softr), Gumroad, Twitter",
+      "integraciones": "No-code (Bubble/Softr), Zapier, webhooks",
+      "canales_adquisicion": "Twitter, ProductHunt, Reddit, comunidades especializadas",
+      "metricas_clave": "MRR, tasa conversiÃ³n, CAC, LTV",
+      "riesgos": "Competencia puede copiar, dependencia de plataforma",
+      "validacion_inicial": "10 ventas en primeras 2 semanas",
+      "tiempo_estimado": "40-60h",
+      "inversion_inicial": "â‚¬0-â‚¬50",
+      "dificultad": "Media",
+      "revenue_6_meses": "â‚¬8,400",
+      "como_monetizar": "SEO + cold email a agencias",
+      "score_generador": 75,
+      "_fingerprint": "9575007069b73c62429559f6c8ce16fc",
+      "score_critico": 75,
+      "critique": {
+        "score_critico": 75,
+        "puntos_fuertes": [
+          "Problema claro",
+          "SoluciÃ³n viable",
+          "Stack moderno"
+        ],
+        "puntos_debiles": [
+          "Validar mercado"
+        ],
+        "resumen": "Idea aprobada con potencial"
+      },
+      "research": {
+        "competidores": [
+          "N/A"
+        ],
+        "diferenciacion_clave": "Pendiente de investigar",
+        "riesgos_principales": [
+          "Pendiente de investigar"
+        ],
+        "oportunidades": [
+          "Pendiente de investigar"
+        ],
+        "validacion_sugerida": "Pendiente de investigar"
+      },
+      "created_at": "2026-02-16T09:08:42.709176",
+      "status": "pendiente"
     }
   ],
-  "last_update": "2026-02-16T09:45:20.959472",
-  "total_ideas": 1
+  "last_update": "2026-02-16T09:08:42.709184",
+  "total_ideas": 2
 }
