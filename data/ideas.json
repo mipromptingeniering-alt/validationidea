@@ -1171,6 +1171,70 @@
       "revenue_6_meses": "€8,400",
       "como_monetizar": "SEO + cold email a agencias",
       "resumen": "Idea aprobada con potencial"
+    },
+    {
+      "fortalezas": [
+        "Problema claro",
+        "Solución viable",
+        "Stack moderno"
+      ],
+      "debilidades": [
+        "Validar mercado"
+      ],
+      "puntos_fuertes": [
+        "Problema claro",
+        "Solución viable",
+        "Stack moderno"
+      ],
+      "puntos_debiles": [
+        "Validar mercado"
+      ],
+      "nombre": "ColorMind: Paletas Profesionales para Diseñadores",
+      "titulo": "ColorMind: Paletas Profesionales para Diseñadores",
+      "descripcion": "Crea paletas de colores coherentes en segundos con la inteligencia artificial de ColorMind",
+      "problema": "Crear paletas de colores coherentes toma mucho tiempo",
+      "solucion": "Plugin que genera paletas profesionales con IA basadas en mood/industria",
+      "publico_objetivo": "Diseñadores",
+      "target": "Diseñadores",
+      "modelo_negocio": "€12 pago único. Precio: €12. Cómo: Figma Community + Twitter + Reddit r/FigmaDesign",
+      "mvp": "Stack: Figma Plugin, Gumroad, Twitter. Features: Generación automática de paletas con IA, integración con Adobe Creative Cloud, compatibilidad con dispositivos móviles y tabletas. Tiempo: 15-25h. Roadmap: Semana 1: Setup y diseño, Semana 2: Desarrollo, Semana 3: Testing y lanzamiento",
+      "propuesta_valor": "Más rápido y preciso que herramientas manualistas, con una variedad de opciones para cualquier industria",
+      "metricas_clave": "MRR, tasa conversión, CAC, LTV",
+      "metricas": "MRR, tasa conversión, CAC, LTV",
+      "riesgos": "Competencia puede copiar, dependencia de plataforma",
+      "canales_marketing": "Twitter, ProductHunt, Reddit, comunidades especializadas",
+      "estrategia_marketing": "Twitter, ProductHunt, Reddit, comunidades especializadas",
+      "proximos_pasos": "Semana 1: Setup y diseño, Semana 2: Desarrollo, Semana 3: Testing y lanzamiento",
+      "score_generador": 75,
+      "score_critico": 75,
+      "score_viral": 0,
+      "viral_score": 0,
+      "fecha": null,
+      "_fingerprint": "7373079a4ceb5674052ecdabc4953645",
+      "research": {},
+      "research_summary": "",
+      "critique": {},
+      "slug": "producto-6813",
+      "tipo_producto": "Figma Plugin",
+      "categoria": "Diseñadores",
+      "descripcion_corta": "Crear paletas de colores coherentes toma mucho tiempo",
+      "diferenciacion": "La única herramienta que combina la precisión de la IA con la creatividad del diseño humano",
+      "tam": "300 millones de diseñadores y profesionales del arte digital",
+      "sam": "Diseñadores individuales y pequeñas agencias que buscan mejorar su proceso de creación de paletas",
+      "som": "1 millón de diseñadores individuales y 10.000 pequeñas agencias en el primer año",
+      "competencia": "Competencia moderada en el nicho",
+      "ventaja_competitiva": "Especialización y ejecución rápida",
+      "precio_sugerido": "12",
+      "modelo_monetizacion": "€12 pago único",
+      "features_core": "Generación automática de paletas con IA, integración con Adobe Creative Cloud, compatibilidad con dispositivos móviles y tabletas",
+      "stack_sugerido": "Figma Plugin, Gumroad, Twitter",
+      "integraciones": "Figma Plugin, Zapier, webhooks",
+      "tiempo_estimado": "15-25h",
+      "inversion_inicial": "€0-€50",
+      "dificultad": "Media",
+      "revenue_6_meses": "€3,200",
+      "como_monetizar": "Figma Community + Twitter + Reddit r/FigmaDesign",
+      "resumen": "Idea aprobada con potencial"
     }
   ]
 }
