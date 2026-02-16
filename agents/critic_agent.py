@@ -11,10 +11,10 @@ def load_config():
     }
 
 def critique(idea):
-    """CrÃ­tico MUY PERMISIVO"""
-    print("\nðŸŽ¯ CrÃ­tico...")
+    """Crítico MUY PERMISIVO"""
+    print("\nðŸŽ¯ Crítico...")
     
-    # Aprobar directamente si tiene campos bÃ¡sicos
+    # Aprobar directamente si tiene campos básicos
     nombre = str(idea.get('nombre', ''))
     problema = str(idea.get('problema', ''))
     
@@ -22,7 +22,7 @@ def critique(idea):
         print(f"âœ… Score: 75 (auto-aprobado)")
         return {
             'score_critico': 75,
-            'puntos_fuertes': ['Problema claro', 'SoluciÃ³n viable', 'Stack moderno'],
+            'puntos_fuertes': ['Problema claro', 'Solución viable', 'Stack moderno'],
             'puntos_debiles': ['Validar mercado'],
             'resumen': 'Idea aprobada con potencial'
         }
