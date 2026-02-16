@@ -64,8 +64,8 @@ def main():
     print('Proceso completado')
 
 if __name__ == '__main__':
-    main()if __name__ == '__main__':
     main()
+
 
 
 
