@@ -1,175 +1,60 @@
 {
   "ideas": [
     {
-      "nombre": "HiringHub",
-      "slug": "producto-4207",
-      "tipo_producto": "Plantilla Airtable",
-      "categoria": "Recruiters",
-      "descripcion": "Plataforma de gestión de reclutamiento para consultores en pequeñas empresas. Automatiza y eficienta la búsqueda de talento y gestión de candidatos, sin necesidad de un ATS caro.",
-      "descripcion_corta": "Recruiters pequeÃ±os no pueden pagar ATS caros",
-      "problema": "Recruiters pequeÃ±os no pueden pagar ATS caros",
-      "solucion": "Base Airtable con pipelines, automatizaciones, email templates integrados",
-      "publico_objetivo": "Recruiters",
-      "propuesta_valor": "Ofrece funcionalidades integrales de ATS a precios accesibles, permitiendo que consultores pequeños en crecimiento puedan competir con agencias de reclutamiento más grandes y avanzadas.",
-      "diferenciacion": "HiringHub ofrece un enfoque de consultoría a pequeñas empresas, brindando soporte personalizado y educación continua, para asegurar su éxito en la gestión de reclutamiento.",
-      "tam": "10.000",
-      "sam": "3.000",
-      "som": "1.500",
-      "competencia": "Competencia moderada en el nicho",
-      "ventaja_competitiva": "EspecializaciÃ³n y ejecuciÃ³n rÃ¡pida",
-      "precio_sugerido": "35",
-      "modelo_monetizacion": "â‚¬35 pago Ãºnico",
-      "features_core": "Pipelines personalizables, automatizaciones de candidatos, plantillas de correos electrónicos, integraciones con redes de trabajo y bases de datos de profesionales",
-      "roadmap_mvp": "Semana 1: Setup y diseÃ±o, Semana 2: Desarrollo, Semana 3: Testing y lanzamiento",
-      "stack_sugerido": "Airtable, Gumroad, Twitter",
-      "integraciones": "Airtable, Zapier, webhooks",
-      "canales_adquisicion": "Twitter, ProductHunt, Reddit, comunidades especializadas",
+      "nombre": "CostOptix",
+      "titulo": "CostOptix",
+      "descripcion": "Calcula y optimiza tus costos de envío y almacenamiento para aumentar tus márgenes de beneficio en tiempo real.",
+      "problema": "Tiendas online no trackean mÃ¡rgenes reales correctamente",
+      "solucion": "Dashboard automatizado que calcula costos, mÃ¡rgenes, break-even por producto",
+      "publico_objetivo": "Ecommerce",
+      "target": "Ecommerce",
+      "modelo_negocio": "â‚¬24 pago Ãºnico. Precio: €24. Cómo: Gumroad + comunidades ecommerce",
+      "mvp": "Stack: Google Sheets, Gumroad, Twitter. Features: Calculo automático de costos de envío, seguimiento de costos de almacenamiento, alertas de cambio en costos, análisis de impacto en márgenes de beneficio, recomendaciones de optimización de rutas y almacenes.. Tiempo: 10-15h. Roadmap: Semana 1: Setup y diseÃ±o, Semana 2: Desarrollo, Semana 3: Testing y lanzamiento",
+      "propuesta_valor": "Al ser más precisos y personalizados, los análisis de CostOptix te ayudan a tomar decisiones informadas y rentables para tu tienda online.",
       "metricas_clave": "MRR, tasa conversiÃ³n, CAC, LTV",
+      "metricas": "MRR, tasa conversiÃ³n, CAC, LTV",
       "riesgos": "Competencia puede copiar, dependencia de plataforma",
-      "validacion_inicial": "10 ventas en primeras 2 semanas",
-      "tiempo_estimado": "12-18h",
-      "inversion_inicial": "â‚¬0-â‚¬50",
-      "dificultad": "Media",
-      "revenue_6_meses": "â‚¬2,800",
-      "como_monetizar": "Gumroad + LinkedIn + Reddit r/recruiting",
+      "canales_marketing": "Twitter, ProductHunt, Reddit, comunidades especializadas",
+      "estrategia_marketing": "Twitter, ProductHunt, Reddit, comunidades especializadas",
+      "proximos_pasos": "Semana 1: Setup y diseÃ±o, Semana 2: Desarrollo, Semana 3: Testing y lanzamiento",
       "score_generador": 75,
-      "_fingerprint": "fecd0c1b56346280ce09a3331970dd63",
       "score_critico": 75,
-      "critique": {
-        "score_critico": 75,
-        "puntos_fuertes": [
-          "Problema claro",
-          "SoluciÃ³n viable",
-          "Stack moderno"
-        ],
-        "puntos_debiles": [
-          "Validar mercado"
-        ],
-        "resumen": "Idea aprobada con potencial"
-      },
-      "research": {
-        "competidores": [
-          "N/A"
-        ],
-        "diferenciacion_clave": "Pendiente de investigar",
-        "riesgos_principales": [
-          "Pendiente de investigar"
-        ],
-        "oportunidades": [
-          "Pendiente de investigar"
-        ],
-        "validacion_sugerida": "Pendiente de investigar"
-      },
-      "created_at": "2026-02-16T09:45:20.959459",
-      "status": "pendiente"
-    },
-    {
-<<<<<<< HEAD
-      "nombre": "Zapero para Pequeños Gigantes",
-      "slug": "producto-1438",
-      "tipo_producto": "Automation Service",
-      "categoria": "Small Business",
-      "descripcion": "Configura hasta 5 automatizaciones personalizadas en solo 48 horas, sin necesidad de conocer Zapier. Nuestros expertos te ayudarán a aumentar la productividad y reducir el estrés en tu negocio.",
-      "descripcion_corta": "PequeÃ±os negocios quieren automatizar pero no saben usar Zapier",
-      "problema": "PequeÃ±os negocios quieren automatizar pero no saben usar Zapier",
-      "solucion": "Servicio: configuro 5 automatizaciones personalizadas en 48h",
-      "publico_objetivo": "Small Business",
-      "propuesta_valor": "Somos la solución perfecta para pequeños negocios que quieren aprovechar al máximo Zapier sin gastar horas aprendiéndolo. Nuestros expertos te ayudarán a crear flujos de trabajo personalizados para automatizar tareas y aumentar la eficiencia.",
-      "diferenciacion": "Nuestro servicio es único porque ofrecemos soporte técnico personalizado y una configuración a medida para cada negocio. No te limitamos a una sola automatización, sino que te ofrecemos una solución integral para tu empresa.",
-      "tam": "120.000",
-      "sam": "30.000",
-      "som": "5.000",
+      "score_viral": 0,
+      "viral_score": 0,
+      "fecha": null,
+      "_fingerprint": "bccec2eca8c22f42569f8ed7d581940f",
+      "research": {},
+      "research_summary": "",
+      "critique": {},
+      "slug": "producto-7425",
+      "tipo_producto": "Google Sheets Template",
+      "categoria": "Ecommerce",
+      "descripcion_corta": "Tiendas online no trackean mÃ¡rgenes reales correctamente",
+      "diferenciacion": "CostOptix utiliza algoritmos avanzados y datos actualizados para proporcionar análisis de costos precisos y personalizados, lo que te permite identificar áreas de mejora y tomar decisiones informadas.",
+      "tam": "3,4 millones de tiendas en línea en todo el mundo (2022)",
+      "sam": "1,2 millones de empresas en línea que buscan optimizar costos y mejorar márgenes de beneficio en Norteamérica y Europa (2022)",
+      "som": "500 empresas en línea en la industria del retail en Estados Unidos que buscan implementar soluciones de costos optimizados en el primer año de operación",
       "competencia": "Competencia moderada en el nicho",
       "ventaja_competitiva": "EspecializaciÃ³n y ejecuciÃ³n rÃ¡pida",
-      "precio_sugerido": "299",
-      "modelo_monetizacion": "â‚¬299 por proyecto",
-      "features_core": "Construcción de flujos de trabajo personalizados, configuración de 5 automatizaciones en 48 horas, soporte técnico para pequeños negocios, acceso exclusivo a nuestro panel de control",
-      "roadmap_mvp": "Semana 1: Setup y diseÃ±o, Semana 2: Desarrollo, Semana 3: Testing y lanzamiento",
-      "stack_sugerido": "Zapier + Make, Gumroad, Twitter",
-      "integraciones": "Zapier + Make, Zapier, webhooks",
-=======
-      "nombre": "Analytics Provisor",
-      "slug": "producto-5226",
-      "tipo_producto": "Micro-SaaS",
-      "categoria": "Agencias",
-      "descripcion": "Automatiza la creaciÃ³n de informes detallados para agencias de marketing, liberando recursos para estrategias mÃ¡s innovadoras",
-      "descripcion_corta": "Crear reportes mensuales para clientes es tedioso",
-      "problema": "Crear reportes mensuales para clientes es tedioso",
-      "solucion": "Herramienta que conecta Google Analytics/Ads y genera reportes automÃ¡ticos en PDF",
-      "publico_objetivo": "Agencias",
-      "propuesta_valor": "Nos destacamos por conectar directamente con Google Analytics/Ads y ofrecer un proceso de creaciÃ³n de informes mÃ¡s eficiente",
-      "diferenciacion": "Ofrecemos un enfoque centrado en las necesidades de las agencias, con un foco en la facilidad de uso y la escalabilidad",
-      "tam": "10,000 agencias de marketing en el mundo",
-      "sam": "Agencias con presupuesto de $10,000 a $50,000 por aÃ±o en soluciones de analytics",
-      "som": "150 agencias de marketing con un presupuesto de $20,000 a $40,000 por aÃ±o en el primer aÃ±o, que buscan mejorar la eficiencia en la creaciÃ³n de informes",
-      "competencia": "Competencia moderada en el nicho",
-      "ventaja_competitiva": "EspecializaciÃ³n y ejecuciÃ³n rÃ¡pida",
-      "precio_sugerido": "49",
-      "modelo_monetizacion": "â‚¬49/mes",
-      "features_core": "GeneraciÃ³n automÃ¡tica de informes en PDF, VisualizaciÃ³n de datos en dashboards personalizables, Alertas personalizadas para cambios significativos en el rendimiento",
-      "roadmap_mvp": "Semana 1: Setup y diseÃ±o, Semana 2: Desarrollo, Semana 3: Testing y lanzamiento",
-      "stack_sugerido": "No-code (Bubble/Softr), Gumroad, Twitter",
-      "integraciones": "No-code (Bubble/Softr), Zapier, webhooks",
->>>>>>> 6114d887c2386cee9886ef44534d42904ab35697
-      "canales_adquisicion": "Twitter, ProductHunt, Reddit, comunidades especializadas",
-      "metricas_clave": "MRR, tasa conversiÃ³n, CAC, LTV",
-      "riesgos": "Competencia puede copiar, dependencia de plataforma",
-      "validacion_inicial": "10 ventas en primeras 2 semanas",
-<<<<<<< HEAD
-      "tiempo_estimado": "4-6h por cliente",
+      "precio_sugerido": "24",
+      "modelo_monetizacion": "â‚¬24 pago Ãºnico",
+      "features_core": "Calculo automático de costos de envío, seguimiento de costos de almacenamiento, alertas de cambio en costos, análisis de impacto en márgenes de beneficio, recomendaciones de optimización de rutas y almacenes.",
+      "stack_sugerido": "Google Sheets, Gumroad, Twitter",
+      "integraciones": "Google Sheets, Zapier, webhooks",
+      "tiempo_estimado": "10-15h",
       "inversion_inicial": "â‚¬0-â‚¬50",
       "dificultad": "Media",
-      "revenue_6_meses": "â‚¬7,200",
-      "como_monetizar": "Cold email + Upwork + LinkedIn",
-      "score_generador": 75,
-      "_fingerprint": "d1ec25d1b59d01c6af59db4d54f364fa",
-=======
-      "tiempo_estimado": "40-60h",
-      "inversion_inicial": "â‚¬0-â‚¬50",
-      "dificultad": "Media",
-      "revenue_6_meses": "â‚¬8,400",
-      "como_monetizar": "SEO + cold email a agencias",
-      "score_generador": 75,
-      "_fingerprint": "9575007069b73c62429559f6c8ce16fc",
->>>>>>> 6114d887c2386cee9886ef44534d42904ab35697
-      "score_critico": 75,
-      "critique": {
-        "score_critico": 75,
-        "puntos_fuertes": [
-          "Problema claro",
-          "SoluciÃ³n viable",
-          "Stack moderno"
-        ],
-        "puntos_debiles": [
-          "Validar mercado"
-        ],
-        "resumen": "Idea aprobada con potencial"
-      },
-      "research": {
-        "competidores": [
-          "N/A"
-        ],
-        "diferenciacion_clave": "Pendiente de investigar",
-        "riesgos_principales": [
-          "Pendiente de investigar"
-        ],
-        "oportunidades": [
-          "Pendiente de investigar"
-        ],
-        "validacion_sugerida": "Pendiente de investigar"
-      },
-<<<<<<< HEAD
-      "created_at": "2026-02-16T10:17:48.817600",
-      "status": "pendiente"
+      "revenue_6_meses": "â‚¬2,100",
+      "como_monetizar": "Gumroad + comunidades ecommerce",
+      "puntos_fuertes": [
+        "Problema claro",
+        "SoluciÃ³n viable",
+        "Stack moderno"
+      ],
+      "puntos_debiles": [
+        "Validar mercado"
+      ],
+      "resumen": "Idea aprobada con potencial"
     }
-  ],
-  "last_update": "2026-02-16T10:17:48.817610",
-=======
-      "created_at": "2026-02-16T09:08:42.709176",
-      "status": "pendiente"
-    }
-  ],
-  "last_update": "2026-02-16T09:08:42.709184",
->>>>>>> 6114d887c2386cee9886ef44534d42904ab35697
-  "total_ideas": 2
+  ]
 }

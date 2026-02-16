@@ -10,7 +10,7 @@ def save_idea(idea):
     ideas_file = 'data/ideas.json'
     
     if os.path.exists(ideas_file):
-        with open(ideas_file, 'r', encoding='utf-8') as f:
+        with open(ideas_file, 'r', encoding='utf-8-sig') as f:
             data = json.load(f)
     else:
         data = {'ideas': []}
@@ -37,7 +37,7 @@ def main():
     print(f'Idea generada: {idea.get("nombre", "Sin nombre")}')
     
     # Criticar y evaluar
-    critic_result = critic_agent.evaluate(idea)
+    critic_result = critic_agent.critique(idea)
     idea.update(critic_result)
     
     print(f'Score crítico: {idea.get("score_critico", 0)}')
@@ -56,7 +56,7 @@ def main():
     
     # Sincronizar con Notion
     try:
-        notion_sync_agent.sync_idea(idea)
+        notion_sync_agent.sync_to_notion(idea)
         print('Idea sincronizada con Notion')
     except Exception as e:
         print(f'Error en Notion sync: {e}')
@@ -65,3 +65,4 @@ def main():
 
 if __name__ == '__main__':
     main()
+
