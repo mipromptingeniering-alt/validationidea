@@ -787,6 +787,70 @@
       "revenue_6_meses": "€4,800",
       "como_monetizar": "Chrome Web Store + LinkedIn outreach",
       "resumen": "Idea aprobada con potencial"
+    },
+    {
+      "fortalezas": [
+        "Problema claro",
+        "Solución viable",
+        "Stack moderno"
+      ],
+      "debilidades": [
+        "Validar mercado"
+      ],
+      "puntos_fuertes": [
+        "Problema claro",
+        "Solución viable",
+        "Stack moderno"
+      ],
+      "puntos_debiles": [
+        "Validar mercado"
+      ],
+      "nombre": "LandingFlow Pro",
+      "titulo": "LandingFlow Pro",
+      "descripcion": "Convierte tus landing pages con plantillas profesionales y fácilmente editables para SaaS Founders técnicos",
+      "problema": "Founders técnicos no saben diseñar landing pages que conviertan",
+      "solucion": "Template Webflow con 5 secciones probadas + animaciones + responsive",
+      "publico_objetivo": "SaaS Founders",
+      "target": "SaaS Founders",
+      "modelo_negocio": "€79 pago único. Precio: €79. Cómo: Webflow Marketplace + Twitter + Indie Hackers",
+      "mvp": "Stack: Webflow, Gumroad, Twitter. Features: Temas de diseño premium, edición en vivo, personalización de texto y colores, integración con herramientas de pago y marketing, respaldo de seguridad. Tiempo: 25-35h. Roadmap: Semana 1: Setup y diseño, Semana 2: Desarrollo, Semana 3: Testing y lanzamiento",
+      "propuesta_valor": "Sin necesidad de conocimientos de diseño o codificación, crea landing pages personalizadas y atractivas para aumentar tus conversiones",
+      "metricas_clave": "MRR, tasa conversión, CAC, LTV",
+      "metricas": "MRR, tasa conversión, CAC, LTV",
+      "riesgos": "Competencia puede copiar, dependencia de plataforma",
+      "canales_marketing": "Twitter, ProductHunt, Reddit, comunidades especializadas",
+      "estrategia_marketing": "Twitter, ProductHunt, Reddit, comunidades especializadas",
+      "proximos_pasos": "Semana 1: Setup y diseño, Semana 2: Desarrollo, Semana 3: Testing y lanzamiento",
+      "score_generador": 75,
+      "score_critico": 75,
+      "score_viral": 0,
+      "viral_score": 0,
+      "fecha": null,
+      "_fingerprint": "fc6e89cc7d7be84c48a2d86e06089734",
+      "research": {},
+      "research_summary": "",
+      "critique": {},
+      "slug": "producto-2486",
+      "tipo_producto": "Webflow Template",
+      "categoria": "SaaS Founders",
+      "descripcion_corta": "Founders técnicos no saben diseñar landing pages que conviertan",
+      "diferenciacion": "Nuestra plantilla se adapta a tus necesidades específicas, con una interfaz de usuario intuitiva y un acceso directo a expertos en diseño para ayudarte a optimizar tus landing pages",
+      "tam": "1.4 millones",
+      "sam": "150k",
+      "som": "35k",
+      "competencia": "Competencia moderada en el nicho",
+      "ventaja_competitiva": "Especialización y ejecución rápida",
+      "precio_sugerido": "79",
+      "modelo_monetizacion": "€79 pago único",
+      "features_core": "Temas de diseño premium, edición en vivo, personalización de texto y colores, integración con herramientas de pago y marketing, respaldo de seguridad",
+      "stack_sugerido": "Webflow, Gumroad, Twitter",
+      "integraciones": "Webflow, Zapier, webhooks",
+      "tiempo_estimado": "25-35h",
+      "inversion_inicial": "€0-€50",
+      "dificultad": "Media",
+      "revenue_6_meses": "€5,900",
+      "como_monetizar": "Webflow Marketplace + Twitter + Indie Hackers",
+      "resumen": "Idea aprobada con potencial"
     }
   ]
 }
