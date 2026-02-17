@@ -1235,6 +1235,70 @@
       "revenue_6_meses": "€3,200",
       "como_monetizar": "Figma Community + Twitter + Reddit r/FigmaDesign",
       "resumen": "Idea aprobada con potencial"
+    },
+    {
+      "fortalezas": [
+        "Problema claro",
+        "Solución viable",
+        "Stack moderno"
+      ],
+      "debilidades": [
+        "Validar mercado"
+      ],
+      "puntos_fuertes": [
+        "Problema claro",
+        "Solución viable",
+        "Stack moderno"
+      ],
+      "puntos_debiles": [
+        "Validar mercado"
+      ],
+      "nombre": "ProfitPro - Margen Max",
+      "titulo": "ProfitPro - Margen Max",
+      "descripcion": "Calcula márgenes reales y costos ocultos en tu tienda online, para maximizar ganancias y minimizar pérdidas",
+      "problema": "Tiendas online no trackean márgenes reales correctamente",
+      "solucion": "Dashboard automatizado que calcula costos, márgenes, break-even por producto",
+      "publico_objetivo": "Ecommerce",
+      "target": "Ecommerce",
+      "modelo_negocio": "€24 pago único. Precio: €24. Cómo: Gumroad + comunidades ecommerce",
+      "mvp": "Stack: Google Sheets, Gumroad, Twitter. Features: Análisis de costos ocultos, cálculo de márgenes reales, predicción de ventas y ganancias, identificación de áreas para optimizar. Tiempo: 10-15h. Roadmap: Semana 1: Setup y diseño, Semana 2: Desarrollo, Semana 3: Testing y lanzamiento",
+      "propuesta_valor": "Con ProfitPro - Margen Max, descubre los márgenes reales de tus productos y optimiza tus estrategias de precio, con mayor precisión",
+      "metricas_clave": "MRR, tasa conversión, CAC, LTV",
+      "metricas": "MRR, tasa conversión, CAC, LTV",
+      "riesgos": "Competencia puede copiar, dependencia de plataforma",
+      "canales_marketing": "Twitter, ProductHunt, Reddit, comunidades especializadas",
+      "estrategia_marketing": "Twitter, ProductHunt, Reddit, comunidades especializadas",
+      "proximos_pasos": "Semana 1: Setup y diseño, Semana 2: Desarrollo, Semana 3: Testing y lanzamiento",
+      "score_generador": 75,
+      "score_critico": 75,
+      "score_viral": 0,
+      "viral_score": 0,
+      "fecha": null,
+      "_fingerprint": "c364ddb68675f947b6200a6823f29038",
+      "research": {},
+      "research_summary": "",
+      "critique": {},
+      "slug": "producto-8272",
+      "tipo_producto": "Google Sheets Template",
+      "categoria": "Ecommerce",
+      "descripcion_corta": "Tiendas online no trackean márgenes reales correctamente",
+      "diferenciacion": "Nuestro algoritmo avanza utiliza técnicas de aprendizaje automático para detectar patrones de costo y precio en grandes conjuntos de datos",
+      "tam": "5.000 tiendas online en América Latina",
+      "sam": "1.500 tiendas online en América Latina con facturación mensual entre $10.000 y $100.000",
+      "som": "500 tiendas online en América Latina con facturación mensual superior a $100.000",
+      "competencia": "Competencia moderada en el nicho",
+      "ventaja_competitiva": "Especialización y ejecución rápida",
+      "precio_sugerido": "24",
+      "modelo_monetizacion": "€24 pago único",
+      "features_core": "Análisis de costos ocultos, cálculo de márgenes reales, predicción de ventas y ganancias, identificación de áreas para optimizar",
+      "stack_sugerido": "Google Sheets, Gumroad, Twitter",
+      "integraciones": "Google Sheets, Zapier, webhooks",
+      "tiempo_estimado": "10-15h",
+      "inversion_inicial": "€0-€50",
+      "dificultad": "Media",
+      "revenue_6_meses": "€2,100",
+      "como_monetizar": "Gumroad + comunidades ecommerce",
+      "resumen": "Idea aprobada con potencial"
     }
   ]
 }
