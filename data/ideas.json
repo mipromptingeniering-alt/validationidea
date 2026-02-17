@@ -1299,6 +1299,70 @@
       "revenue_6_meses": "€2,100",
       "como_monetizar": "Gumroad + comunidades ecommerce",
       "resumen": "Idea aprobada con potencial"
+    },
+    {
+      "fortalezas": [
+        "Problema claro",
+        "Solución viable",
+        "Stack moderno"
+      ],
+      "debilidades": [
+        "Validar mercado"
+      ],
+      "puntos_fuertes": [
+        "Problema claro",
+        "Solución viable",
+        "Stack moderno"
+      ],
+      "puntos_debiles": [
+        "Validar mercado"
+      ],
+      "nombre": "EngageGenius",
+      "titulo": "EngageGenius",
+      "descripcion": "Automatiza y mejora tus interacciones en LinkedIn con comentarios inteligentes y relevantes en cuestión de segundos.",
+      "problema": "Engagement en LinkedIn requiere tiempo manual",
+      "solucion": "Extensión que genera comentarios contextuales inteligentes con un clic usando IA",
+      "publico_objetivo": "Marketers",
+      "target": "Marketers",
+      "modelo_negocio": "€19/mes suscripción. Precio: €19. Cómo: Chrome Web Store + LinkedIn outreach",
+      "mvp": "Stack: Chrome Extension, Gumroad, Twitter. Features: Generación de comentarios auténticos, Personalización de tono y estilo, Integración con calendario de publicaciones, Análisis de rendimiento y sugerencias de mejora. Tiempo: 20-30h. Roadmap: Semana 1: Setup y diseño, Semana 2: Desarrollo, Semana 3: Testing y lanzamiento",
+      "propuesta_valor": "Ahorra tiempo y esfuerzo manual y aumenta la visibilidad y engagement de tus publicaciones y contenido en LinkedIn.",
+      "metricas_clave": "MRR, tasa conversión, CAC, LTV",
+      "metricas": "MRR, tasa conversión, CAC, LTV",
+      "riesgos": "Competencia puede copiar, dependencia de plataforma",
+      "canales_marketing": "Twitter, ProductHunt, Reddit, comunidades especializadas",
+      "estrategia_marketing": "Twitter, ProductHunt, Reddit, comunidades especializadas",
+      "proximos_pasos": "Semana 1: Setup y diseño, Semana 2: Desarrollo, Semana 3: Testing y lanzamiento",
+      "score_generador": 75,
+      "score_critico": 75,
+      "score_viral": 0,
+      "viral_score": 0,
+      "fecha": null,
+      "_fingerprint": "e41af581c3be82123a916e11914803c8",
+      "research": {},
+      "research_summary": "",
+      "critique": {},
+      "slug": "producto-2900",
+      "tipo_producto": "Chrome Extension",
+      "categoria": "Marketers",
+      "descripcion_corta": "Engagement en LinkedIn requiere tiempo manual",
+      "diferenciacion": "Nuestra tecnología de IA utiliza un algoritmo innovador que imita el tono y estilo de tus publicaciones, lo que hace que tus comentarios sean aún más convincentes y atractivos.",
+      "tam": "150 millones de usuarios de LinkedIn",
+      "sam": "Marketing digitales, empresarios y profesionales",
+      "som": "5.000 marketing digitales y empresarios en su primer año",
+      "competencia": "Competencia moderada en el nicho",
+      "ventaja_competitiva": "Especialización y ejecución rápida",
+      "precio_sugerido": "19",
+      "modelo_monetizacion": "€19/mes suscripción",
+      "features_core": "Generación de comentarios auténticos, Personalización de tono y estilo, Integración con calendario de publicaciones, Análisis de rendimiento y sugerencias de mejora",
+      "stack_sugerido": "Chrome Extension, Gumroad, Twitter",
+      "integraciones": "Chrome Extension, Zapier, webhooks",
+      "tiempo_estimado": "20-30h",
+      "inversion_inicial": "€0-€50",
+      "dificultad": "Media",
+      "revenue_6_meses": "€4,800",
+      "como_monetizar": "Chrome Web Store + LinkedIn outreach",
+      "resumen": "Idea aprobada con potencial"
     }
   ]
 }
