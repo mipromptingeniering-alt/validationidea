@@ -1683,6 +1683,70 @@
       "revenue_6_meses": "€3,200",
       "como_monetizar": "Figma Community + Twitter + Reddit r/FigmaDesign",
       "resumen": "Idea aprobada con potencial"
+    },
+    {
+      "fortalezas": [
+        "Problema claro",
+        "Solución viable",
+        "Stack moderno"
+      ],
+      "debilidades": [
+        "Validar mercado"
+      ],
+      "puntos_fuertes": [
+        "Problema claro",
+        "Solución viable",
+        "Stack moderno"
+      ],
+      "puntos_debiles": [
+        "Validar mercado"
+      ],
+      "nombre": "Zápateo Avanzado",
+      "titulo": "Zápateo Avanzado",
+      "descripcion": "Automatiza 5 procesos clave en tu negocio en solo 48 horas con nuestra solución personalizada",
+      "problema": "Pequeños negocios quieren automatizar pero no saben usar Zapier",
+      "solucion": "Servicio: configuro 5 automatizaciones personalizadas en 48h",
+      "publico_objetivo": "Small Business",
+      "target": "Small Business",
+      "modelo_negocio": "€299 por proyecto. Precio: €299. Cómo: Cold email + Upwork + LinkedIn",
+      "mvp": "Stack: Zapier + Make, Gumroad, Twitter. Features: Configuración personalizada de 5 automatizaciones, Soporte técnico en 48 horas, Análisis de flujo de trabajo, Mejora del tiempo de respuesta, Integración con herramientas de gestión de proyectos. Tiempo: 4-6h por cliente. Roadmap: Semana 1: Setup y diseño, Semana 2: Desarrollo, Semana 3: Testing y lanzamiento",
+      "propuesta_valor": "Nuestro servicio te permite ahorrar tiempo y recursos mientras estableces un flujo de trabajo eficiente y escalable",
+      "metricas_clave": "MRR, tasa conversión, CAC, LTV",
+      "metricas": "MRR, tasa conversión, CAC, LTV",
+      "riesgos": "Competencia puede copiar, dependencia de plataforma",
+      "canales_marketing": "Twitter, ProductHunt, Reddit, comunidades especializadas",
+      "estrategia_marketing": "Twitter, ProductHunt, Reddit, comunidades especializadas",
+      "proximos_pasos": "Semana 1: Setup y diseño, Semana 2: Desarrollo, Semana 3: Testing y lanzamiento",
+      "score_generador": 75,
+      "score_critico": 75,
+      "score_viral": 0,
+      "viral_score": 0,
+      "fecha": null,
+      "_fingerprint": "1d5d0c27603b375aa5f78a4daaaa0f50",
+      "research": {},
+      "research_summary": "",
+      "critique": {},
+      "slug": "producto-7602",
+      "tipo_producto": "Automation Service",
+      "categoria": "Small Business",
+      "descripcion_corta": "Pequeños negocios quieren automatizar pero no saben usar Zapier",
+      "diferenciacion": "Nuestro equipo de expertos en Zapier te brinda una solución única y adaptada a tus necesidades específicas",
+      "tam": "5,000 pequeños negocios en Estados Unidos",
+      "sam": "2,500 pequeños negocios en Estados Unidos con ingresos anuales menores a $1 millón",
+      "som": "1,000 pequeños negocios en Estados Unidos con ingresos anuales menores a $500,000",
+      "competencia": "Competencia moderada en el nicho",
+      "ventaja_competitiva": "Especialización y ejecución rápida",
+      "precio_sugerido": "299",
+      "modelo_monetizacion": "€299 por proyecto",
+      "features_core": "Configuración personalizada de 5 automatizaciones, Soporte técnico en 48 horas, Análisis de flujo de trabajo, Mejora del tiempo de respuesta, Integración con herramientas de gestión de proyectos",
+      "stack_sugerido": "Zapier + Make, Gumroad, Twitter",
+      "integraciones": "Zapier + Make, Zapier, webhooks",
+      "tiempo_estimado": "4-6h por cliente",
+      "inversion_inicial": "€0-€50",
+      "dificultad": "Media",
+      "revenue_6_meses": "€7,200",
+      "como_monetizar": "Cold email + Upwork + LinkedIn",
+      "resumen": "Idea aprobada con potencial"
     }
   ]
 }
