@@ -1491,6 +1491,70 @@
       "revenue_6_meses": "€2,100",
       "como_monetizar": "Gumroad + comunidades ecommerce",
       "resumen": "Idea aprobada con potencial"
+    },
+    {
+      "fortalezas": [
+        "Problema claro",
+        "Solución viable",
+        "Stack moderno"
+      ],
+      "debilidades": [
+        "Validar mercado"
+      ],
+      "puntos_fuertes": [
+        "Problema claro",
+        "Solución viable",
+        "Stack moderno"
+      ],
+      "puntos_debiles": [
+        "Validar mercado"
+      ],
+      "nombre": "Cazador de Clientes para Freelancers",
+      "titulo": "Cazador de Clientes para Freelancers",
+      "descripcion": "Recibe 50 plantillas de emails probados y personalizables para encontrar clientes potenciales",
+      "problema": "Freelancers no saben cómo prospectar clientes por email",
+      "solucion": "50 plantillas de cold emails probadas con análisis de por qué funcionan",
+      "publico_objetivo": "Freelancers",
+      "target": "Freelancers",
+      "modelo_negocio": "€15 pago único. Precio: €15. Cómo: Vender en Gumroad + Twitter + ProductHunt",
+      "mvp": "Stack: Canva + Gumroad, Gumroad, Twitter. Features: Plantillas de emails probadas, Análisis de por qué funcionan, Herramienta de personalización, Base de conocimiento para mejorar tus habilidades. Tiempo: 6-10h. Roadmap: Semana 1: Setup y diseño, Semana 2: Desarrollo, Semana 3: Testing y lanzamiento",
+      "propuesta_valor": "Nuestro producto no solo te da plantillas, sino que también proporciona un marco de referencia para entender por qué funcionan y cómo personalizarlas",
+      "metricas_clave": "MRR, tasa conversión, CAC, LTV",
+      "metricas": "MRR, tasa conversión, CAC, LTV",
+      "riesgos": "Competencia puede copiar, dependencia de plataforma",
+      "canales_marketing": "Twitter, ProductHunt, Reddit, comunidades especializadas",
+      "estrategia_marketing": "Twitter, ProductHunt, Reddit, comunidades especializadas",
+      "proximos_pasos": "Semana 1: Setup y diseño, Semana 2: Desarrollo, Semana 3: Testing y lanzamiento",
+      "score_generador": 75,
+      "score_critico": 75,
+      "score_viral": 0,
+      "viral_score": 0,
+      "fecha": null,
+      "_fingerprint": "aad6820df398cf8684cd25a638c28e32",
+      "research": {},
+      "research_summary": "",
+      "critique": {},
+      "slug": "producto-5495",
+      "tipo_producto": "Guía PDF",
+      "categoria": "Freelancers",
+      "descripcion_corta": "Freelancers no saben cómo prospectar clientes por email",
+      "diferenciacion": "Ofrecemos un enfoque holístico para la prospección de clientes, no solo plantillas",
+      "tam": "1.000.000 de freelancers en todo el mundo",
+      "sam": "500.000 freelancers que buscan mejorar su estrategia de prospección",
+      "som": "100.000 freelancers que necesitan ayuda para encontrar clientes potenciales en el primer año",
+      "competencia": "Competencia moderada en el nicho",
+      "ventaja_competitiva": "Especialización y ejecución rápida",
+      "precio_sugerido": "15",
+      "modelo_monetizacion": "€15 pago único",
+      "features_core": "Plantillas de emails probadas, Análisis de por qué funcionan, Herramienta de personalización, Base de conocimiento para mejorar tus habilidades",
+      "stack_sugerido": "Canva + Gumroad, Gumroad, Twitter",
+      "integraciones": "Canva + Gumroad, Zapier, webhooks",
+      "tiempo_estimado": "6-10h",
+      "inversion_inicial": "€0-€50",
+      "dificultad": "Media",
+      "revenue_6_meses": "€1,800",
+      "como_monetizar": "Vender en Gumroad + Twitter + ProductHunt",
+      "resumen": "Idea aprobada con potencial"
     }
   ]
 }
