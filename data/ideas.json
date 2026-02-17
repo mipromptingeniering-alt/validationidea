@@ -1427,6 +1427,70 @@
       "revenue_6_meses": "€2,100",
       "como_monetizar": "Gumroad + comunidades ecommerce",
       "resumen": "Idea aprobada con potencial"
+    },
+    {
+      "fortalezas": [
+        "Problema claro",
+        "Solución viable",
+        "Stack moderno"
+      ],
+      "debilidades": [
+        "Validar mercado"
+      ],
+      "puntos_fuertes": [
+        "Problema claro",
+        "Solución viable",
+        "Stack moderno"
+      ],
+      "puntos_debiles": [
+        "Validar mercado"
+      ],
+      "nombre": "ProfitSight",
+      "titulo": "ProfitSight",
+      "descripcion": "Optimiza tus márgenes de venta con análisis automatizados y recomendaciones personalizadas para tiendas en línea",
+      "problema": "Tiendas online no trackean márgenes reales correctamente",
+      "solucion": "Dashboard automatizado que calcula costos, márgenes, break-even por producto",
+      "publico_objetivo": "Ecommerce",
+      "target": "Ecommerce",
+      "modelo_negocio": "€24 pago único. Precio: €24. Cómo: Gumroad + comunidades ecommerce",
+      "mvp": "Stack: Google Sheets, Gumroad, Twitter. Features: Cálculos de márgenes y costos automatizados, previsiones de ventas y análisis de rendimiento, recomendaciones de precios óptimos y seguimiento de KPI clave. Tiempo: 10-15h. Roadmap: Semana 1: Setup y diseño, Semana 2: Desarrollo, Semana 3: Testing y lanzamiento",
+      "propuesta_valor": "Aumenta tus ganancias con precisión, gracias a la automatización de cálculos y la capacidad de identificar oportunidades de mejora en tus productos",
+      "metricas_clave": "MRR, tasa conversión, CAC, LTV",
+      "metricas": "MRR, tasa conversión, CAC, LTV",
+      "riesgos": "Competencia puede copiar, dependencia de plataforma",
+      "canales_marketing": "Twitter, ProductHunt, Reddit, comunidades especializadas",
+      "estrategia_marketing": "Twitter, ProductHunt, Reddit, comunidades especializadas",
+      "proximos_pasos": "Semana 1: Setup y diseño, Semana 2: Desarrollo, Semana 3: Testing y lanzamiento",
+      "score_generador": 75,
+      "score_critico": 75,
+      "score_viral": 0,
+      "viral_score": 0,
+      "fecha": null,
+      "_fingerprint": "4ce54452ac4d22bb6c2f463dfffdf168",
+      "research": {},
+      "research_summary": "",
+      "critique": {},
+      "slug": "producto-8776",
+      "tipo_producto": "Google Sheets Template",
+      "categoria": "Ecommerce",
+      "descripcion_corta": "Tiendas online no trackean márgenes reales correctamente",
+      "diferenciacion": "ProfitSight utiliza algoritmos de machine learning para analizar tus datos y adaptarse a tus necesidades, lo que no es posible con herramientas manuales o de bajo nivel",
+      "tam": "120 millones de tiendas en línea en todo el mundo",
+      "sam": "15 millones de tiendas en línea con menos de 10 empleados",
+      "som": "5000 tiendas en línea en el mercado de ropa y accesorios en América Latina",
+      "competencia": "Competencia moderada en el nicho",
+      "ventaja_competitiva": "Especialización y ejecución rápida",
+      "precio_sugerido": "24",
+      "modelo_monetizacion": "€24 pago único",
+      "features_core": "Cálculos de márgenes y costos automatizados, previsiones de ventas y análisis de rendimiento, recomendaciones de precios óptimos y seguimiento de KPI clave",
+      "stack_sugerido": "Google Sheets, Gumroad, Twitter",
+      "integraciones": "Google Sheets, Zapier, webhooks",
+      "tiempo_estimado": "10-15h",
+      "inversion_inicial": "€0-€50",
+      "dificultad": "Media",
+      "revenue_6_meses": "€2,100",
+      "como_monetizar": "Gumroad + comunidades ecommerce",
+      "resumen": "Idea aprobada con potencial"
     }
   ]
 }
