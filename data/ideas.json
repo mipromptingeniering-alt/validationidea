@@ -1811,6 +1811,70 @@
       "revenue_6_meses": "€3,200",
       "como_monetizar": "Figma Community + Twitter + Reddit r/FigmaDesign",
       "resumen": "Idea aprobada con potencial"
+    },
+    {
+      "fortalezas": [
+        "Problema claro",
+        "Solución viable",
+        "Stack moderno"
+      ],
+      "debilidades": [
+        "Validar mercado"
+      ],
+      "puntos_fuertes": [
+        "Problema claro",
+        "Solución viable",
+        "Stack moderno"
+      ],
+      "puntos_debiles": [
+        "Validar mercado"
+      ],
+      "nombre": "RapidoReport",
+      "titulo": "RapidoReport",
+      "descripcion": "Conecta Google Analytics y Ads para generar reportes automáticos personalizados en minutos",
+      "problema": "Crear reportes mensuales para clientes es tedioso",
+      "solucion": "Herramienta que conecta Google Analytics/Ads y genera reportes automáticos en PDF",
+      "publico_objetivo": "Agencias",
+      "target": "Agencias",
+      "modelo_negocio": "€49/mes. Precio: €49. Cómo: SEO + cold email a agencias",
+      "mvp": "Stack: No-code (Bubble/Softr), Gumroad, Twitter. Features: Conexión automática con Google Analytics y Ads, generación de reportes personalizados, análisis de tendencias y recomendaciones de mejora. Tiempo: 40-60h. Roadmap: Semana 1: Setup y diseño, Semana 2: Desarrollo, Semana 3: Testing y lanzamiento",
+      "propuesta_valor": "Reduce el tiempo de preparación de reportes mensuales en un 90% y mejora la precisión con análisis automatizados",
+      "metricas_clave": "MRR, tasa conversión, CAC, LTV",
+      "metricas": "MRR, tasa conversión, CAC, LTV",
+      "riesgos": "Competencia puede copiar, dependencia de plataforma",
+      "canales_marketing": "Twitter, ProductHunt, Reddit, comunidades especializadas",
+      "estrategia_marketing": "Twitter, ProductHunt, Reddit, comunidades especializadas",
+      "proximos_pasos": "Semana 1: Setup y diseño, Semana 2: Desarrollo, Semana 3: Testing y lanzamiento",
+      "score_generador": 75,
+      "score_critico": 75,
+      "score_viral": 0,
+      "viral_score": 0,
+      "fecha": null,
+      "_fingerprint": "d64f50ffa4a88bef726732574fac3add",
+      "research": {},
+      "research_summary": "",
+      "critique": {},
+      "slug": "producto-4365",
+      "tipo_producto": "Micro-SaaS",
+      "categoria": "Agencias",
+      "descripcion_corta": "Crear reportes mensuales para clientes es tedioso",
+      "diferenciacion": "Ofrece una experiencia intuitiva y personalizable para agencias, con la capacidad de agregar o eliminar métricas y dimensiones según se requiera",
+      "tam": "10.000 agencias en América Latina",
+      "sam": "2.500 agencias de tamaño mediano a grande",
+      "som": "1.000 agencias de primer año con un crecimiento del 20% en ventas",
+      "competencia": "Competencia moderada en el nicho",
+      "ventaja_competitiva": "Especialización y ejecución rápida",
+      "precio_sugerido": "49",
+      "modelo_monetizacion": "€49/mes",
+      "features_core": "Conexión automática con Google Analytics y Ads, generación de reportes personalizados, análisis de tendencias y recomendaciones de mejora",
+      "stack_sugerido": "No-code (Bubble/Softr), Gumroad, Twitter",
+      "integraciones": "No-code (Bubble/Softr), Zapier, webhooks",
+      "tiempo_estimado": "40-60h",
+      "inversion_inicial": "€0-€50",
+      "dificultad": "Media",
+      "revenue_6_meses": "€8,400",
+      "como_monetizar": "SEO + cold email a agencias",
+      "resumen": "Idea aprobada con potencial"
     }
   ]
 }
