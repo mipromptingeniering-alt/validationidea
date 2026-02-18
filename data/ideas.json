@@ -1875,6 +1875,70 @@
       "revenue_6_meses": "€8,400",
       "como_monetizar": "SEO + cold email a agencias",
       "resumen": "Idea aprobada con potencial"
+    },
+    {
+      "fortalezas": [
+        "Problema claro",
+        "Solución viable",
+        "Stack moderno"
+      ],
+      "debilidades": [
+        "Validar mercado"
+      ],
+      "puntos_fuertes": [
+        "Problema claro",
+        "Solución viable",
+        "Stack moderno"
+      ],
+      "puntos_debiles": [
+        "Validar mercado"
+      ],
+      "nombre": "Comenta Pro",
+      "titulo": "Comenta Pro",
+      "descripcion": "Genera respuestas inteligentes en LinkedIn sin esfuerzo con solo un clic, mejorando instantáneamente el engagement en tus publicaciones",
+      "problema": "Engagement en LinkedIn requiere tiempo manual",
+      "solucion": "Extensión que genera comentarios contextuales inteligentes con un clic usando IA",
+      "publico_objetivo": "Marketers",
+      "target": "Marketers",
+      "modelo_negocio": "€19/mes suscripción. Precio: €19. Cómo: Chrome Web Store + LinkedIn outreach",
+      "mvp": "Stack: Chrome Extension, Gumroad, Twitter. Features: Sistema de IA integrado, personalización de comentarios según el público objetivo, seguimiento en tiempo real de engagement y análisis de rendimiento de contenido. Tiempo: 20-30h. Roadmap: Semana 1: Setup y diseño, Semana 2: Desarrollo, Semana 3: Testing y lanzamiento",
+      "propuesta_valor": "Sobrepasa a las herramientas de automatización tradicionales con la combinación de IA y personalización avanzada para comentarios auténticos y relevantes que cautivan a tus seguidores",
+      "metricas_clave": "MRR, tasa conversión, CAC, LTV",
+      "metricas": "MRR, tasa conversión, CAC, LTV",
+      "riesgos": "Competencia puede copiar, dependencia de plataforma",
+      "canales_marketing": "Twitter, ProductHunt, Reddit, comunidades especializadas",
+      "estrategia_marketing": "Twitter, ProductHunt, Reddit, comunidades especializadas",
+      "proximos_pasos": "Semana 1: Setup y diseño, Semana 2: Desarrollo, Semana 3: Testing y lanzamiento",
+      "score_generador": 75,
+      "score_critico": 75,
+      "score_viral": 0,
+      "viral_score": 0,
+      "fecha": null,
+      "_fingerprint": "416612cd89547d201b43d934f6d091a2",
+      "research": {},
+      "research_summary": "",
+      "critique": {},
+      "slug": "producto-9586",
+      "tipo_producto": "Chrome Extension",
+      "categoria": "Marketers",
+      "descripcion_corta": "Engagement en LinkedIn requiere tiempo manual",
+      "diferenciacion": "Su interfaz intuitiva y la capacidad de ajustar el tono y el estilo de los comentarios para adaptarse a la identidad de marca de cada usuario lo convierten en el rey de la automatización de engagement en LinkedIn",
+      "tam": "2,000,000,000",
+      "sam": "500,000 usuarios profesionales en LinkedIn que buscan herramientas de automatización de contenido para ahorrar tiempo y aumentar la visibilidad de sus publicaciones",
+      "som": "500,000 usuarios de LinkedIn que son responsables de la estrategia y la ejecución del marketing digital en sus empresas, con una edad promedio de 35 años y con un interés creciente en las herramientas de automatización de contenido",
+      "competencia": "Competencia moderada en el nicho",
+      "ventaja_competitiva": "Especialización y ejecución rápida",
+      "precio_sugerido": "19",
+      "modelo_monetizacion": "€19/mes suscripción",
+      "features_core": "Sistema de IA integrado, personalización de comentarios según el público objetivo, seguimiento en tiempo real de engagement y análisis de rendimiento de contenido",
+      "stack_sugerido": "Chrome Extension, Gumroad, Twitter",
+      "integraciones": "Chrome Extension, Zapier, webhooks",
+      "tiempo_estimado": "20-30h",
+      "inversion_inicial": "€0-€50",
+      "dificultad": "Media",
+      "revenue_6_meses": "€4,800",
+      "como_monetizar": "Chrome Web Store + LinkedIn outreach",
+      "resumen": "Idea aprobada con potencial"
     }
   ]
 }
