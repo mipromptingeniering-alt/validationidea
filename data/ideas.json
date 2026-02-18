@@ -741,6 +741,7 @@
       "puntos_debiles": [
         "Validar mercado"
       ],
+<<<<<<< Updated upstream
       "nombre": "CommentoBuzz",
       "titulo": "CommentoBuzz",
       "descripcion": "Lleva tu marca a la cima de LinkedIn con comentarios inteligentes y relevantes en un clic, sin requerir horas de tiempo manual.",
@@ -872,13 +873,23 @@
       "nombre": "Zapify",
       "titulo": "Zapify",
       "descripcion": "Automatiza 5 procesos críticos para tu pequeño negocio en solo 48 horas",
+=======
+      "nombre": "Zaperope: Automatiza tus Procesos Críticos",
+      "titulo": "Zaperope: Automatiza tus Procesos Críticos",
+      "descripcion": "Automatiza 5 flujos de trabajo complejos en solo 48 horas, sin necesidad de conocimientos de programación",
+>>>>>>> Stashed changes
       "problema": "Pequeños negocios quieren automatizar pero no saben usar Zapier",
       "solucion": "Servicio: configuro 5 automatizaciones personalizadas en 48h",
       "publico_objetivo": "Small Business",
       "target": "Small Business",
       "modelo_negocio": "€299 por proyecto. Precio: €299. Cómo: Cold email + Upwork + LinkedIn",
+<<<<<<< Updated upstream
       "mvp": "Stack: Zapier + Make, Gumroad, Twitter. Features: Configuración personalizada de automatizaciones, integración con herramientas de gestión de proyectos, alertas y notificaciones personalizadas, seguimiento de KPIs, ajuste de configuraciones según resultados. Tiempo: 4-6h por cliente. Roadmap: Semana 1: Setup y diseño, Semana 2: Desarrollo, Semana 3: Testing y lanzamiento",
       "propuesta_valor": "Nuestra fórmula de automatización personalizada para pequeñas empresas te ayuda a aumentar la productividad y reducir errores",
+=======
+      "mvp": "Stack: Zapier + Make, Gumroad, Twitter. Features: Configuración de 5 automatizaciones personalizadas, gestión de flujos de trabajo complejos, integración con herramientas populares, seguimiento de tiempos de respuesta, alertas personalizadas. Tiempo: 4-6h por cliente. Roadmap: Semana 1: Setup y diseño, Semana 2: Desarrollo, Semana 3: Testing y lanzamiento",
+      "propuesta_valor": "Mejor que otras soluciones: no requiere habilidades técnicas ni inversión en herramientas adicionales",
+>>>>>>> Stashed changes
       "metricas_clave": "MRR, tasa conversión, CAC, LTV",
       "metricas": "MRR, tasa conversión, CAC, LTV",
       "riesgos": "Competencia puede copiar, dependencia de plataforma",
@@ -890,6 +901,7 @@
       "score_viral": 0,
       "viral_score": 0,
       "fecha": null,
+<<<<<<< Updated upstream
       "_fingerprint": "d7ea1effeac6c68cdc3897f000868b2d",
       "research": {},
       "research_summary": "",
@@ -902,11 +914,29 @@
       "tam": "3.7 millones",
       "sam": "1.2 millones",
       "som": "500.000",
+=======
+      "_fingerprint": "a88b4872f0ee479bfa464c16999d4aff",
+      "research": {},
+      "research_summary": "",
+      "critique": {},
+      "slug": "producto-5449",
+      "tipo_producto": "Automation Service",
+      "categoria": "Small Business",
+      "descripcion_corta": "Pequeños negocios quieren automatizar pero no saben usar Zapier",
+      "diferenciacion": "La única solución diseñada específicamente para pequeños negocios que requieren automatización de procesos complejos",
+      "tam": "15.000 pequeños negocios en Latinoamérica",
+      "sam": "Negocios con menos de 50 empleados, con presencia en línea y necesidad de automatización de procesos clave",
+      "som": "Negocios con menos de 20 empleados, con menos de $100k en facturación anual, que necesiten automatizar flujos de trabajo complejos",
+>>>>>>> Stashed changes
       "competencia": "Competencia moderada en el nicho",
       "ventaja_competitiva": "Especialización y ejecución rápida",
       "precio_sugerido": "299",
       "modelo_monetizacion": "€299 por proyecto",
+<<<<<<< Updated upstream
       "features_core": "Configuración personalizada de automatizaciones, integración con herramientas de gestión de proyectos, alertas y notificaciones personalizadas, seguimiento de KPIs, ajuste de configuraciones según resultados",
+=======
+      "features_core": "Configuración de 5 automatizaciones personalizadas, gestión de flujos de trabajo complejos, integración con herramientas populares, seguimiento de tiempos de respuesta, alertas personalizadas",
+>>>>>>> Stashed changes
       "stack_sugerido": "Zapier + Make, Gumroad, Twitter",
       "integraciones": "Zapier + Make, Zapier, webhooks",
       "tiempo_estimado": "4-6h por cliente",
@@ -933,6 +963,7 @@
       "puntos_debiles": [
         "Validar mercado"
       ],
+<<<<<<< Updated upstream
       "nombre": "ProfitPilot Ecommerce",
       "titulo": "ProfitPilot Ecommerce",
       "descripcion": "Gestiona y optimiza tus márgenes de ventas en tiempo real, aumenta tus ganancias y previene pérdidas con análisis precisos",
@@ -1000,13 +1031,23 @@
       "nombre": "SmartScribe",
       "titulo": "SmartScribe",
       "descripcion": "Automatiza sus publicaciones en LinkedIn con respuestas contextuales inteligentes, aumentando la conversación y el engagement",
+=======
+      "nombre": "LinkedIn Luminari",
+      "titulo": "LinkedIn Luminari",
+      "descripcion": "Acelera tus interacciones en LinkedIn con inteligencia artificial y aumenta tus conexiones relevantes de manera automática.",
+>>>>>>> Stashed changes
       "problema": "Engagement en LinkedIn requiere tiempo manual",
       "solucion": "Extensión que genera comentarios contextuales inteligentes con un clic usando IA",
       "publico_objetivo": "Marketers",
       "target": "Marketers",
       "modelo_negocio": "€19/mes suscripción. Precio: €19. Cómo: Chrome Web Store + LinkedIn outreach",
+<<<<<<< Updated upstream
       "mvp": "Stack: Chrome Extension, Gumroad, Twitter. Features: Genera respuestas inteligentes con un clic, personaliza el lenguaje y el tono, integra con herramientas de LinkedIn, agrega enlaces y formatos de texto. Tiempo: 20-30h. Roadmap: Semana 1: Setup y diseño, Semana 2: Desarrollo, Semana 3: Testing y lanzamiento",
       "propuesta_valor": "No solo ahorra tiempo, también personaliza el contenido con IA para conectar con sus audiencias de manera más profunda",
+=======
+      "mvp": "Stack: Chrome Extension, Gumroad, Twitter. Features: Generación automática de comentarios contextuales con un clic, personalización de contenido para ajustarse a tu tono y estilo, análisis de desempeño para optimizar tus interacciones.. Tiempo: 20-30h. Roadmap: Semana 1: Setup y diseño, Semana 2: Desarrollo, Semana 3: Testing y lanzamiento",
+      "propuesta_valor": "Nos supera a otras herramientas de automatización de comentarios porque ofrece respostas personalizadas y relevantes, basadas en IA y alineadas con tus objetivos de marketing.",
+>>>>>>> Stashed changes
       "metricas_clave": "MRR, tasa conversión, CAC, LTV",
       "metricas": "MRR, tasa conversión, CAC, LTV",
       "riesgos": "Competencia puede copiar, dependencia de plataforma",
@@ -1018,6 +1059,7 @@
       "score_viral": 0,
       "viral_score": 0,
       "fecha": null,
+<<<<<<< Updated upstream
       "_fingerprint": "06db09f100a4af42b005bdac10860051",
       "research": {},
       "research_summary": "",
@@ -1030,11 +1072,29 @@
       "tam": "120 millones de pequeñas empresas y marketing en línea",
       "sam": "30% de pequeñas empresas en línea en América Latina",
       "som": "Marketing de contenido especializado en América Latina, principal audiencia objetivo en el primer año, con crecimiento proyectado en Europa y Estados Unidos",
+=======
+      "_fingerprint": "fce383adb79accecb22ec3bd560532ab",
+      "research": {},
+      "research_summary": "",
+      "critique": {},
+      "slug": "producto-6389",
+      "tipo_producto": "Chrome Extension",
+      "categoria": "Marketers",
+      "descripcion_corta": "Engagement en LinkedIn requiere tiempo manual",
+      "diferenciacion": "Nos distinguimos por nuestra capacidad para analizar y responder a las tendencias y temas de conversación en tu nicho específico, asegurando que tus comentarios sean relevantes y atractivos.",
+      "tam": "500 millones de usuarios en LinkedIn, con 260 millones de usuarios únicos activos mensualmente",
+      "sam": "20% de los usuarios de LinkedIn que son profesionales autónomos y empresarios, con un presupuesto promedio para marketing de $1,000 al mes",
+      "som": "Empresarios y profesionales autónomos que necesitan aumentar su presencia en LinkedIn y generar conexión con su audiencia objetivo en el primer año",
+>>>>>>> Stashed changes
       "competencia": "Competencia moderada en el nicho",
       "ventaja_competitiva": "Especialización y ejecución rápida",
       "precio_sugerido": "19",
       "modelo_monetizacion": "€19/mes suscripción",
+<<<<<<< Updated upstream
       "features_core": "Genera respuestas inteligentes con un clic, personaliza el lenguaje y el tono, integra con herramientas de LinkedIn, agrega enlaces y formatos de texto",
+=======
+      "features_core": "Generación automática de comentarios contextuales con un clic, personalización de contenido para ajustarse a tu tono y estilo, análisis de desempeño para optimizar tus interacciones.",
+>>>>>>> Stashed changes
       "stack_sugerido": "Chrome Extension, Gumroad, Twitter",
       "integraciones": "Chrome Extension, Zapier, webhooks",
       "tiempo_estimado": "20-30h",
@@ -1061,6 +1121,7 @@
       "puntos_debiles": [
         "Validar mercado"
       ],
+<<<<<<< Updated upstream
       "nombre": "ProspectaMaster: 75 plantillas de emails de prospección para freelancers en tecnología",
       "titulo": "ProspectaMaster: 75 plantillas de emails de prospección para freelancers en tecnología",
       "descripcion": "Descubre cómo obtener más clientes con emails efectivos en solo minutos con plantillas probadas y personalizables",
@@ -1128,13 +1189,23 @@
       "nombre": "Reporte Automático para Agencias Pro",
       "titulo": "Reporte Automático para Agencias Pro",
       "descripcion": "Conecta Google Analytics y Google Ads para generar reportes mensuales automáticamente en PDF",
+=======
+      "nombre": "AutoTrack",
+      "titulo": "AutoTrack",
+      "descripcion": "Conecta Google Analytics/Ads y genera informes detallados en PDF para agencias de marketing",
+>>>>>>> Stashed changes
       "problema": "Crear reportes mensuales para clientes es tedioso",
       "solucion": "Herramienta que conecta Google Analytics/Ads y genera reportes automáticos en PDF",
       "publico_objetivo": "Agencias",
       "target": "Agencias",
       "modelo_negocio": "€49/mes. Precio: €49. Cómo: SEO + cold email a agencias",
+<<<<<<< Updated upstream
       "mvp": "Stack: No-code (Bubble/Softr), Gumroad, Twitter. Features: Conexión automatizada con Google Analytics y Google Ads, generación de reportes en PDF, análisis de datos en tiempo real. Tiempo: 40-60h. Roadmap: Semana 1: Setup y diseño, Semana 2: Desarrollo, Semana 3: Testing y lanzamiento",
       "propuesta_valor": "Reduce el tiempo dedicado a crear reportes mensuales en hasta un 90%, liberando recursos para estrategias de marketing más efectivas",
+=======
+      "mvp": "Stack: No-code (Bubble/Softr), Gumroad, Twitter. Features: Conexión automática con Google Analytics y Google Ads, Generación de informes en PDF, Visualización de métricas clave, Comparación de metas con objetivos, Notificaciones personalizadas de desempeño. Tiempo: 40-60h. Roadmap: Semana 1: Setup y diseño, Semana 2: Desarrollo, Semana 3: Testing y lanzamiento",
+      "propuesta_valor": "AutoTrack simplifica la creación de informes mensuales para clientes, ahorrando tiempo y aumentando la eficiencia en la toma de decisiones",
+>>>>>>> Stashed changes
       "metricas_clave": "MRR, tasa conversión, CAC, LTV",
       "metricas": "MRR, tasa conversión, CAC, LTV",
       "riesgos": "Competencia puede copiar, dependencia de plataforma",
@@ -1146,6 +1217,7 @@
       "score_viral": 0,
       "viral_score": 0,
       "fecha": null,
+<<<<<<< Updated upstream
       "_fingerprint": "4b5cba0cfe2729348e79a68fb747e670",
       "research": {},
       "research_summary": "",
@@ -1158,11 +1230,29 @@
       "tam": "10.000 agencias",
       "sam": "Agencias con más de 10 clientes",
       "som": "1.000 agencias con presencia en 5 países en el primer año",
+=======
+      "_fingerprint": "902100f7b4bf67a896cf11508ca548f3",
+      "research": {},
+      "research_summary": "",
+      "critique": {},
+      "slug": "producto-2283",
+      "tipo_producto": "Micro-SaaS",
+      "categoria": "Agencias",
+      "descripcion_corta": "Crear reportes mensuales para clientes es tedioso",
+      "diferenciacion": "AutoTrack se destaca por su capacidad para integrarse con múltiples cuentas de Google y generar informes personalizados con una interfaz intuitiva y fácil de usar",
+      "tam": "500 millones de dólares (Mercado de agencias de marketing digitales)",
+      "sam": "Agencias de marketing con más de 10 empleados, que utilizan Google Analytics y Google Ads como herramientas principales",
+      "som": "100,000 agencias de marketing con más de 10 empleados, que buscan herramientas que les ayuden a reducir el tiempo de creación de informes y mejorar la eficiencia en la toma de decisiones",
+>>>>>>> Stashed changes
       "competencia": "Competencia moderada en el nicho",
       "ventaja_competitiva": "Especialización y ejecución rápida",
       "precio_sugerido": "49",
       "modelo_monetizacion": "€49/mes",
+<<<<<<< Updated upstream
       "features_core": "Conexión automatizada con Google Analytics y Google Ads, generación de reportes en PDF, análisis de datos en tiempo real",
+=======
+      "features_core": "Conexión automática con Google Analytics y Google Ads, Generación de informes en PDF, Visualización de métricas clave, Comparación de metas con objetivos, Notificaciones personalizadas de desempeño",
+>>>>>>> Stashed changes
       "stack_sugerido": "No-code (Bubble/Softr), Gumroad, Twitter",
       "integraciones": "No-code (Bubble/Softr), Zapier, webhooks",
       "tiempo_estimado": "40-60h",
@@ -1189,6 +1279,7 @@
       "puntos_debiles": [
         "Validar mercado"
       ],
+<<<<<<< Updated upstream
       "nombre": "ColorMind: Paletas Profesionales para Diseñadores",
       "titulo": "ColorMind: Paletas Profesionales para Diseñadores",
       "descripcion": "Crea paletas de colores coherentes en segundos con la inteligencia artificial de ColorMind",
@@ -1832,13 +1923,23 @@
       "nombre": "RapidoReport",
       "titulo": "RapidoReport",
       "descripcion": "Conecta Google Analytics y Ads para generar reportes automáticos personalizados en minutos",
+=======
+      "nombre": "Análisis Inteligente",
+      "titulo": "Análisis Inteligente",
+      "descripcion": "Automatiza reportes de Google Analytics y Ads para agencias, ahorrando tiempo y aumentando productividad.",
+>>>>>>> Stashed changes
       "problema": "Crear reportes mensuales para clientes es tedioso",
       "solucion": "Herramienta que conecta Google Analytics/Ads y genera reportes automáticos en PDF",
       "publico_objetivo": "Agencias",
       "target": "Agencias",
       "modelo_negocio": "€49/mes. Precio: €49. Cómo: SEO + cold email a agencias",
+<<<<<<< Updated upstream
       "mvp": "Stack: No-code (Bubble/Softr), Gumroad, Twitter. Features: Conexión automática con Google Analytics y Ads, generación de reportes personalizados, análisis de tendencias y recomendaciones de mejora. Tiempo: 40-60h. Roadmap: Semana 1: Setup y diseño, Semana 2: Desarrollo, Semana 3: Testing y lanzamiento",
       "propuesta_valor": "Reduce el tiempo de preparación de reportes mensuales en un 90% y mejora la precisión con análisis automatizados",
+=======
+      "mvp": "Stack: No-code (Bubble/Softr), Gumroad, Twitter. Features: Conexión automatizada con Google Analytics y Ads, reportes personalizados en PDF, recomendaciones de optimización, seguimiento de metas y KPI, integración con herramientas de marketing. Tiempo: 40-60h. Roadmap: Semana 1: Setup y diseño, Semana 2: Desarrollo, Semana 3: Testing y lanzamiento",
+      "propuesta_valor": "Nuestra herramienta es más que solo reportes automáticos; ofrece recomendaciones personalizadas basadas en datos para mejorar la estrategia de nuestros clientes.",
+>>>>>>> Stashed changes
       "metricas_clave": "MRR, tasa conversión, CAC, LTV",
       "metricas": "MRR, tasa conversión, CAC, LTV",
       "riesgos": "Competencia puede copiar, dependencia de plataforma",
@@ -1850,6 +1951,7 @@
       "score_viral": 0,
       "viral_score": 0,
       "fecha": null,
+<<<<<<< Updated upstream
       "_fingerprint": "d64f50ffa4a88bef726732574fac3add",
       "research": {},
       "research_summary": "",
@@ -1862,11 +1964,29 @@
       "tam": "10.000 agencias en América Latina",
       "sam": "2.500 agencias de tamaño mediano a grande",
       "som": "1.000 agencias de primer año con un crecimiento del 20% en ventas",
+=======
+      "_fingerprint": "a6b5fc94cd5e33a0d7dabaa23989bd70",
+      "research": {},
+      "research_summary": "",
+      "critique": {},
+      "slug": "producto-1020",
+      "tipo_producto": "Micro-SaaS",
+      "categoria": "Agencias",
+      "descripcion_corta": "Crear reportes mensuales para clientes es tedioso",
+      "diferenciacion": "Nuestra herramienta se distingue por su enfoque en la personalización y la automatización, lo que la hace ideal para agencias que buscan ofrecer un valor añadido a sus clientes.",
+      "tam": "El mercado de soluciones para agencias digitales está en crecimiento y alcanza $12.4 mil millones en 2025",
+      "sam": "Un 30% del mercado de soluciones para agencias es vulnerable a la automatización y la personalización",
+      "som": "Nuestro objetivo es alcanzar un 20% de participación en el mercado objetivo dentro de los primeros 2 años, lo que equivale a $2.48 mil millones",
+>>>>>>> Stashed changes
       "competencia": "Competencia moderada en el nicho",
       "ventaja_competitiva": "Especialización y ejecución rápida",
       "precio_sugerido": "49",
       "modelo_monetizacion": "€49/mes",
+<<<<<<< Updated upstream
       "features_core": "Conexión automática con Google Analytics y Ads, generación de reportes personalizados, análisis de tendencias y recomendaciones de mejora",
+=======
+      "features_core": "Conexión automatizada con Google Analytics y Ads, reportes personalizados en PDF, recomendaciones de optimización, seguimiento de metas y KPI, integración con herramientas de marketing",
+>>>>>>> Stashed changes
       "stack_sugerido": "No-code (Bubble/Softr), Gumroad, Twitter",
       "integraciones": "No-code (Bubble/Softr), Zapier, webhooks",
       "tiempo_estimado": "40-60h",
@@ -1893,6 +2013,7 @@
       "puntos_debiles": [
         "Validar mercado"
       ],
+<<<<<<< Updated upstream
       "nombre": "Comenta Pro",
       "titulo": "Comenta Pro",
       "descripcion": "Genera respuestas inteligentes en LinkedIn sin esfuerzo con solo un clic, mejorando instantáneamente el engagement en tus publicaciones",
@@ -1960,13 +2081,23 @@
       "nombre": "HireFlow",
       "titulo": "HireFlow",
       "descripcion": "Plataforma de automatización de reclutamiento para pequeños consultores, alineada con la gestión de proyectos y la mejora de la productividad",
+=======
+      "nombre": "RecruitEasy",
+      "titulo": "RecruitEasy",
+      "descripcion": "Administración de candidatos y pipelines en la nube, diseñado para pequeños reclutadores",
+>>>>>>> Stashed changes
       "problema": "Recruiters pequeños no pueden pagar ATS caros",
       "solucion": "Base Airtable con pipelines, automatizaciones, email templates integrados",
       "publico_objetivo": "Recruiters",
       "target": "Recruiters",
       "modelo_negocio": "€35 pago único. Precio: €35. Cómo: Gumroad + LinkedIn + Reddit r/recruiting",
+<<<<<<< Updated upstream
       "mvp": "Stack: Airtable, Gumroad, Twitter. Features: Automatizaciones de reclutamiento, gestión de proyectos, seguimiento de candidatos, notificaciones personalizadas, integración con correo electrónico. Tiempo: 12-18h. Roadmap: Semana 1: Setup y diseño, Semana 2: Desarrollo, Semana 3: Testing y lanzamiento",
       "propuesta_valor": "Nos diferenciamos por la capacidad de integrar automatizaciones de reclutamiento con la gestión de proyectos y la optimización de la productividad en una sola plataforma",
+=======
+      "mvp": "Stack: Airtable, Gumroad, Twitter. Features: Pipelines personalizables, automatizaciones de correo electrónico, seguimiento de candidatos. Tiempo: 12-18h. Roadmap: Semana 1: Setup y diseño, Semana 2: Desarrollo, Semana 3: Testing y lanzamiento",
+      "propuesta_valor": "Ofrece una plataforma de ATS escalable y accesible a pequeños reclutadores, con una gran potencial de crecimiento",
+>>>>>>> Stashed changes
       "metricas_clave": "MRR, tasa conversión, CAC, LTV",
       "metricas": "MRR, tasa conversión, CAC, LTV",
       "riesgos": "Competencia puede copiar, dependencia de plataforma",
@@ -1978,6 +2109,7 @@
       "score_viral": 0,
       "viral_score": 0,
       "fecha": null,
+<<<<<<< Updated upstream
       "_fingerprint": "9ad99d8d2cf5f66956e78260f44d9841",
       "research": {},
       "research_summary": "",
@@ -1990,11 +2122,29 @@
       "tam": "500.000 pequeños consultores en el mercado",
       "sam": "200.000 consultores que utilizan herramientas de automatización de reclutamiento",
       "som": "50.000 consultores que buscan una solución integral para sus necesidades de reclutamiento",
+=======
+      "_fingerprint": "bd9a1d8798e1a7dc5b421184c1eedb0e",
+      "research": {},
+      "research_summary": "",
+      "critique": {},
+      "slug": "producto-8497",
+      "tipo_producto": "Plantilla Airtable",
+      "categoria": "Recruiters",
+      "descripcion_corta": "Recruiters pequeños no pueden pagar ATS caros",
+      "diferenciacion": "Ofrece un plan gratuito ilimitado para pequeños reclutadores con hasta 10 contrataciones al mes",
+      "tam": "100.000 pequeños reclutadores en todo el mundo",
+      "sam": "20.000 pequeños reclutadores en Estados Unidos que necesitan una plataforma de ATS",
+      "som": "5.000 pequeños reclutadores en Estados Unidos que están dispuestos a pagar por una plataforma de ATS al menos $50 al mes",
+>>>>>>> Stashed changes
       "competencia": "Competencia moderada en el nicho",
       "ventaja_competitiva": "Especialización y ejecución rápida",
       "precio_sugerido": "35",
       "modelo_monetizacion": "€35 pago único",
+<<<<<<< Updated upstream
       "features_core": "Automatizaciones de reclutamiento, gestión de proyectos, seguimiento de candidatos, notificaciones personalizadas, integración con correo electrónico",
+=======
+      "features_core": "Pipelines personalizables, automatizaciones de correo electrónico, seguimiento de candidatos",
+>>>>>>> Stashed changes
       "stack_sugerido": "Airtable, Gumroad, Twitter",
       "integraciones": "Airtable, Zapier, webhooks",
       "tiempo_estimado": "12-18h",
@@ -2003,6 +2153,7 @@
       "revenue_6_meses": "€2,800",
       "como_monetizar": "Gumroad + LinkedIn + Reddit r/recruiting",
       "resumen": "Idea aprobada con potencial"
+<<<<<<< Updated upstream
     },
     {
       "fortalezas": [
@@ -2067,6 +2218,8 @@
       "revenue_6_meses": "€4,800",
       "como_monetizar": "Chrome Web Store + LinkedIn outreach",
       "resumen": "Idea aprobada con potencial"
+=======
+>>>>>>> Stashed changes
     }
   ]
 }
