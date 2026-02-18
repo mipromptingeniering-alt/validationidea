@@ -1939,6 +1939,70 @@
       "revenue_6_meses": "€4,800",
       "como_monetizar": "Chrome Web Store + LinkedIn outreach",
       "resumen": "Idea aprobada con potencial"
+    },
+    {
+      "fortalezas": [
+        "Problema claro",
+        "Solución viable",
+        "Stack moderno"
+      ],
+      "debilidades": [
+        "Validar mercado"
+      ],
+      "puntos_fuertes": [
+        "Problema claro",
+        "Solución viable",
+        "Stack moderno"
+      ],
+      "puntos_debiles": [
+        "Validar mercado"
+      ],
+      "nombre": "HireFlow",
+      "titulo": "HireFlow",
+      "descripcion": "Plataforma de automatización de reclutamiento para pequeños consultores, alineada con la gestión de proyectos y la mejora de la productividad",
+      "problema": "Recruiters pequeños no pueden pagar ATS caros",
+      "solucion": "Base Airtable con pipelines, automatizaciones, email templates integrados",
+      "publico_objetivo": "Recruiters",
+      "target": "Recruiters",
+      "modelo_negocio": "€35 pago único. Precio: €35. Cómo: Gumroad + LinkedIn + Reddit r/recruiting",
+      "mvp": "Stack: Airtable, Gumroad, Twitter. Features: Automatizaciones de reclutamiento, gestión de proyectos, seguimiento de candidatos, notificaciones personalizadas, integración con correo electrónico. Tiempo: 12-18h. Roadmap: Semana 1: Setup y diseño, Semana 2: Desarrollo, Semana 3: Testing y lanzamiento",
+      "propuesta_valor": "Nos diferenciamos por la capacidad de integrar automatizaciones de reclutamiento con la gestión de proyectos y la optimización de la productividad en una sola plataforma",
+      "metricas_clave": "MRR, tasa conversión, CAC, LTV",
+      "metricas": "MRR, tasa conversión, CAC, LTV",
+      "riesgos": "Competencia puede copiar, dependencia de plataforma",
+      "canales_marketing": "Twitter, ProductHunt, Reddit, comunidades especializadas",
+      "estrategia_marketing": "Twitter, ProductHunt, Reddit, comunidades especializadas",
+      "proximos_pasos": "Semana 1: Setup y diseño, Semana 2: Desarrollo, Semana 3: Testing y lanzamiento",
+      "score_generador": 75,
+      "score_critico": 75,
+      "score_viral": 0,
+      "viral_score": 0,
+      "fecha": null,
+      "_fingerprint": "9ad99d8d2cf5f66956e78260f44d9841",
+      "research": {},
+      "research_summary": "",
+      "critique": {},
+      "slug": "producto-4684",
+      "tipo_producto": "Plantilla Airtable",
+      "categoria": "Recruiters",
+      "descripcion_corta": "Recruiters pequeños no pueden pagar ATS caros",
+      "diferenciacion": "Nuestra plataforma está diseñada específicamente para pequeños consultores, ofrece una experiencia de usuario amigable y permite la escalabilidad a medida que crece su negocio",
+      "tam": "500.000 pequeños consultores en el mercado",
+      "sam": "200.000 consultores que utilizan herramientas de automatización de reclutamiento",
+      "som": "50.000 consultores que buscan una solución integral para sus necesidades de reclutamiento",
+      "competencia": "Competencia moderada en el nicho",
+      "ventaja_competitiva": "Especialización y ejecución rápida",
+      "precio_sugerido": "35",
+      "modelo_monetizacion": "€35 pago único",
+      "features_core": "Automatizaciones de reclutamiento, gestión de proyectos, seguimiento de candidatos, notificaciones personalizadas, integración con correo electrónico",
+      "stack_sugerido": "Airtable, Gumroad, Twitter",
+      "integraciones": "Airtable, Zapier, webhooks",
+      "tiempo_estimado": "12-18h",
+      "inversion_inicial": "€0-€50",
+      "dificultad": "Media",
+      "revenue_6_meses": "€2,800",
+      "como_monetizar": "Gumroad + LinkedIn + Reddit r/recruiting",
+      "resumen": "Idea aprobada con potencial"
     }
   ]
 }
