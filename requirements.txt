@@ -1,12 +1,4 @@
-groq==0.11.0
-requests==2.31.0
-python-telegram-bot==20.8
-pytz==2024.1
-python-dotenv==1.0.0
-groq
-requests
-pytz
-pytrends
-praw
-
-notion-client>=2.2.1
+groq>=1.0.0
+requests>=2.31.0
+python-dotenv>=1.0.0
+notion-client>=2.0.0

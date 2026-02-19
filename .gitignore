@@ -65,3 +65,13 @@ temp/
 # Excepciones
 !data/ideas.json
 .env
+
+.env
+__pycache__/
+*.pyc
+*.pyo
+data/ideas.json
+data/knowledge_base.json
+data/system.log
+data/monitor.log
+
