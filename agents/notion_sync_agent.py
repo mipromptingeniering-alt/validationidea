@@ -1,28 +1,32 @@
-﻿"""
-Notion Sync Agent - Sincronización correcta a base de datos real
-✅ Mapeo exacto a las 21 columnas que existen en tu Notion
-"""
-import os
+﻿import os
+import requests
 from datetime import datetime
-from notion_client import Client
+from dotenv import load_dotenv
 
-DATABASE_ID = "308313aca133800981cfc48f32c52146"
+load_dotenv()
+
+NOTION_TOKEN = os.environ.get("NOTION_TOKEN")
+DATABASE_ID = os.environ.get("NOTION_DATABASE_ID", "308313aca133800981cfc48f32c52146")
+
+HEADERS = {
+    "Authorization": f"Bearer {NOTION_TOKEN}",
+    "Content-Type": "application/json",
+    "Notion-Version": "2022-06-28",
+}
+
+
+def text_prop(value):
+    if not value:
+        return {"rich_text": []}
+    return {"rich_text": [{"text": {"content": str(value)[:2000]}}]}
+
 
 def sync_idea_to_notion(idea):
-    """Sincroniza idea completa a Notion"""
     try:
-        notion = Client(auth=os.environ.get("NOTION_TOKEN"))
+        score = idea.get("score_critico", 0) or 0
+        viral = idea.get("viral_score", 0) or 0
+        gen = idea.get("score_generador", 0) or 0
 
-        print(f"📤 Sincronizando '{idea.get('nombre', 'Sin nombre')}' a Notion...")
-
-        # Helper para textos
-        def text_prop(value):
-            if not value:
-                return {"rich_text": []}
-            return {"rich_text": [{"text": {"content": str(value)[:2000]}}]}
-
-        # Determinar emoji
-        score = idea.get('score_critico', 0)
         if score >= 90:
             emoji = "💎"
         elif score >= 85:
@@ -32,119 +36,92 @@ def sync_idea_to_notion(idea):
         else:
             emoji = "💡"
 
-        # Propiedades base
-        properties = {
-            "Name": {
-                "title": [{"text": {"content": f"{emoji} {idea.get('nombre', 'Sin título')[:95]}"}}]
-            }
-        }
+        nombre = idea.get("nombre", "Sin titulo")
+        print(f"📤 Sincronizando '{nombre}' a Notion...")
 
-        # Mapeo de campos textuales
-        text_fields = {
-            "Description": idea.get("descripcion"),
-            "Problem": idea.get("problema"),
-            "Solution": idea.get("solucion"),
-            "Target": idea.get("publico_objetivo") or idea.get("target"),
-            "Business": idea.get("modelo_negocio"),
-            "MVP": idea.get("mvp"),
-            "Value": idea.get("propuesta_valor"),
-            "Metrics": idea.get("metricas_clave") or idea.get("metricas"),
-            "Risks": idea.get("riesgos"),
-            "Marketing": idea.get("canales_marketing") or idea.get("estrategia_marketing"),
-            "NextSteps": idea.get("proximos_pasos"),
-            "Research": idea.get("research_summary") or "",
-        }
+        fortalezas = idea.get("fortalezas", idea.get("puntos_fuertes", []))
+        debilidades = idea.get("debilidades", idea.get("puntos_debiles", []))
 
-        for field_name, field_value in text_fields.items():
-            if field_value:
-                properties[field_name] = text_prop(field_value)
+        if isinstance(fortalezas, str):
+            fortalezas = [fortalezas]
+        if isinstance(debilidades, str):
+            debilidades = [debilidades]
 
-        # Fortalezas y Debilidades (DIRECTO desde idea)
-        fortalezas = idea.get("fortalezas", [])
-        if fortalezas:
-            strengths = "\n• ".join(fortalezas)
-            properties["Strengths"] = text_prop(strengths)
+        fortalezas_text = "\n• ".join(fortalezas) if fortalezas else ""
+        debilidades_text = "\n• ".join(debilidades) if debilidades else ""
 
-        debilidades = idea.get("debilidades", [])
-        if debilidades:
-            weaknesses = "\n• ".join(debilidades)
-            properties["Weaknesses"] = text_prop(weaknesses)
-
-        # Report generado
         report_lines = [
-            f"📊 ANÁLISIS COMPLETO - {idea.get('nombre', 'Sin nombre')}",
-            "",
-            f"🎯 Score Crítico: {idea.get('score_critico', 0)}/100",
-            f"🔥 Score Viral: {idea.get('viral_score', idea.get('score_viral', 0))}/100",
-            f"📈 Score Generador: {idea.get('score_generador', 0)}/100",
+            f"📊 ANALISIS - {nombre}",
+            f"🎯 Score Critico: {score}/100",
+            f"🚀 Score Viral: {viral}/100",
+            f"⚙️  Score Generador: {gen}/100",
             "",
             "✅ FORTALEZAS:",
         ]
-
-        if fortalezas:
-            for punto in fortalezas[:3]:
-                report_lines.append(f"  • {punto}")
-
+        for f in fortalezas[:3]:
+            report_lines.append(f"  • {f}")
         report_lines.append("")
         report_lines.append("⚠️ DEBILIDADES:")
+        for d in debilidades[:3]:
+            report_lines.append(f"  • {d}")
 
-        if debilidades:
-            for punto in debilidades[:3]:
-                report_lines.append(f"  • {punto}")
-
-        properties["Report"] = text_prop("\n".join(report_lines))
-
-        # Scores numéricos
-        properties["ScoreGen"] = {"number": int(idea.get("score_generador", 0))}
-        properties["ScoreCritic"] = {"number": int(idea.get("score_critico", 0))}
-        properties["ScoreViral"] = {"number": int(idea.get("viral_score", idea.get("score_viral", 0)))}
-
-        # Fecha
-        properties["Date"] = {"date": {"start": idea.get("fecha") or datetime.now().isoformat()}}
-
-        # Tags
         tags = []
-        score_critico = idea.get("score_critico", 0)
-
-        if score_critico >= 90:
+        if score >= 90:
             tags.append({"name": "💎 Excepcional"})
-        elif score_critico >= 85:
+        elif score >= 85:
             tags.append({"name": "⭐ Premium"})
-        elif score_critico >= 80:
+        elif score >= 80:
             tags.append({"name": "🔥 Calidad"})
-
-        if idea.get("viral_score", 0) >= 85:
+        if viral >= 85:
             tags.append({"name": "🚀 Viral"})
 
-        if idea.get("riesgos") and "bajo" in str(idea.get("riesgos")).lower():
-            tags.append({"name": "✅ Bajo Riesgo"})
+        properties = {
+            "Name": {
+                "title": [{"text": {"content": f"{emoji} {nombre[:95]}"}}]
+            },
+            "Description": text_prop(idea.get("descripcion")),
+            "Problem": text_prop(idea.get("problema")),
+            "Solution": text_prop(idea.get("solucion")),
+            "Value": text_prop(idea.get("propuesta_valor")),
+            "Target": text_prop(idea.get("vertical")),
+            "Business": text_prop(idea.get("monetizacion")),
+            "MVP": text_prop(idea.get("esfuerzo")),
+            "Marketing": text_prop(idea.get("como")),
+            "Strengths": text_prop(fortalezas_text),
+            "Weaknesses": text_prop(debilidades_text),
+            "Report": text_prop("\n".join(report_lines)),
+            "ScoreGen": {"number": int(gen)},
+            "ScoreCritic": {"number": int(score)},
+            "ScoreViral": {"number": int(viral)},
+            "Date": {"date": {"start": idea.get("fecha") or datetime.now().isoformat()}},
+        }
 
         if tags:
             properties["Tags"] = {"multi_select": tags}
 
-        # Crear página
-        page = notion.pages.create(
-            parent={"database_id": DATABASE_ID},
-            properties=properties
+        payload = {
+            "parent": {"database_id": DATABASE_ID},
+            "properties": properties,
+        }
+
+        response = requests.post(
+            "https://api.notion.com/v1/pages",
+            headers=HEADERS,
+            json=payload,
+            timeout=30,
         )
 
-        print(f"✅ Sincronizado: {page['url']}")
-        return page
+        if response.status_code == 200 or response.status_code == 201:
+            page = response.json()
+            url = page.get("url", "")
+            print(f"✅ Sincronizado: {url}")
+            return page
+        else:
+            print(f"❌ Error Notion {response.status_code}: {response.text[:300]}")
+            return None
 
     except Exception as e:
         print(f"❌ Error Notion: {e}")
         import traceback
         traceback.print_exc()
         return None
-
-if __name__ == "__main__":
-    # Test con idea mínima
-    test_idea = {
-        "nombre": "Test Product",
-        "descripcion": "Descripción de prueba",
-        "problema": "Problema a resolver",
-        "score_critico": 85,
-        "fecha": datetime.now().isoformat()
-    }
-    sync_idea_to_notion(test_idea)
-

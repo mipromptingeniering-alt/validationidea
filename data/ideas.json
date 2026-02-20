@@ -134,5 +134,110 @@
     "id": 4,
     "fecha": "2026-02-19T16:36:49.387082",
     "date": "2026-02-19T16:36:49.387082"
+  },
+  {
+    "nombre": "WebAudit",
+    "problema": "Dificultad para los propietarios de sitios web para identificar y solucionar problemas de accesibilidad y usabilidad",
+    "solucion": "Utiliza inteligencia artificial para analizar y proporcionar informes personalizados sobre la accesibilidad y usabilidad de los sitios web, ofreciendo recomendaciones para mejorar",
+    "descripcion": "WebAudit es una herramienta en línea que ayuda a los propietarios de sitios web a mejorar la accesibilidad y usabilidad de sus sitios, aumentando la experiencia del usuario y reduciendo el riesgo de problemas legales. Con WebAudit, los propietarios de sitios web pueden identificar y solucionar problemas de accesibilidad y usabilidad de manera eficiente y efectiva.",
+    "propuesta_valor": "WebAudit es mejor que las alternativas porque ofrece informes personalizados y recomendaciones específicas para cada sitio web, lo que permite a los propietarios de sitios web tomar medidas concretas para mejorar la accesibilidad y usabilidad de sus sitios",
+    "tipo": "SaaS",
+    "vertical": "Propietarios de sitios web y desarrolladores web",
+    "precio": "29",
+    "monetizacion": "suscripcion",
+    "tool": "Python, Django, React",
+    "esfuerzo": "30",
+    "revenue_6m": "2500",
+    "como": [
+      "1. Desarrollar el algoritmo de análisis de accesibilidad y usabilidad utilizando técnicas de inteligencia artificial",
+      "2. Crear una interfaz de usuario intuitiva y fácil de usar para que los propietarios de sitios web puedan ingresar su sitio web y obtener informes personalizados",
+      "3. Lanzar una campaña de marketing en redes sociales y publicidad en línea para promocionar WebAudit y atraer a los primeros clientes"
+    ],
+    "score_critico": 80,
+    "score_generador": 80,
+    "viral_score": 60,
+    "fortalezas": [
+      "La utilización de inteligencia artificial para analizar la accesibilidad y usabilidad de los sitios web es una ventaja competitiva",
+      "El mercado de propietarios de sitios web y desarrolladores web es amplio y en constante crecimiento",
+      "La oferta de informes personalizados y recomendaciones para mejorar es un valor agregado significativo"
+    ],
+    "debilidades": [
+      "La competencia en el mercado de herramientas de análisis de sitios web es alta, lo que podría dificultar la diferenciación de WebAudit",
+      "La efectividad de la inteligencia artificial en la detección de problemas de accesibilidad y usabilidad dependerá de la calidad de los algoritmos y la base de datos utilizados"
+    ],
+    "resumen": "WebAudit es una idea de negocio digital con un mercado claro y una ventaja competitiva potencial, pero debe diferenciarse en un mercado competitivo y asegurarse de que su tecnología sea efectiva. Con una ejecución adecuada, WebAudit puede convertirse en una herramienta valiosa para propietarios de sitios web y desarrolladores web.",
+    "id": 5,
+    "fecha": "2026-02-19T20:24:00.225398",
+    "date": "2026-02-19T20:24:00.225398"
+  },
+  {
+    "nombre": "EmailOptimizer",
+    "problema": "Dificultad para los pequeños y medianos negocios para personalizar y optimizar sus campañas de correo electrónico para aumentar la tasa de apertura y conversión",
+    "solucion": "Utiliza inteligencia artificial para analizar y optimizar el contenido y el diseño de los correos electrónicos, proporcionando recomendaciones personalizadas para mejorar la eficacia de las campañas",
+    "descripcion": "EmailOptimizer es una herramienta de optimización de correo electrónico que utiliza IA para mejorar la eficacia de las campañas de marketing por correo electrónico. Ayuda a los pequeños y medianos negocios a aumentar la tasa de apertura y conversión de sus correos electrónicos, mejorando la personalización y el diseño de los mismos.",
+    "propuesta_valor": "EmailOptimizer se diferencia de otras herramientas de marketing por correo electrónico al utilizar IA para analizar y optimizar el contenido y el diseño de los correos electrónicos de forma personalizada, lo que permite a los negocios aumentar la eficacia de sus campañas de marketing por correo electrónico",
+    "tipo": "SaaS",
+    "vertical": "Pequeños y medianos negocios",
+    "precio": "29",
+    "monetizacion": "suscripcion",
+    "tool": "Python, No-code, Mailchimp API",
+    "esfuerzo": "30",
+    "revenue_6m": "2500",
+    "como": [
+      "Investigar y seleccionar las APIs de correo electrónico más populares para integrar con EmailOptimizer",
+      "Desarrollar un algoritmo de IA que analice y optimice el contenido y el diseño de los correos electrónicos",
+      "Crear un sitio web y una interfaz de usuario fácil de usar para que los clientes puedan configurar y utilizar EmailOptimizer"
+    ],
+    "score_critico": 80,
+    "score_generador": 80,
+    "viral_score": 60,
+    "fortalezas": [
+      "La utilización de inteligencia artificial para analizar y optimizar el contenido y el diseño de los correos electrónicos es una ventaja competitiva clara",
+      "El enfoque en pequeños y medianos negocios es un mercado claro y con necesidades específicas",
+      "La monetización a través de suscripción es un modelo de negocio escalable y predecible"
+    ],
+    "debilidades": [
+      "La competencia en el mercado de herramientas de marketing por correo electrónico es alta y puede ser difícil diferenciarse",
+      "La calidad y la precisión de las recomendaciones proporcionadas por la inteligencia artificial dependerán de la calidad de los datos y la complejidad del algoritmo"
+    ],
+    "resumen": "EmailOptimizer es una idea de negocio digital sólida con un mercado claro y una ventaja competitiva clara, pero requiere una ejecución cuidadosa y una diferenciación efectiva en un mercado competitivo. Con una buena implementación y un enfoque en la calidad de los datos y el algoritmo, puede convertirse en una herramienta valiosa para pequeños y medianos negocios.",
+    "id": 6,
+    "fecha": "2026-02-20T19:19:06.518683",
+    "date": "2026-02-20T19:19:06.518683"
+  },
+  {
+    "nombre": "VistaSocial",
+    "problema": "Dificultad para los creadores de contenido en redes sociales para medir y analizar el impacto de sus publicaciones",
+    "solucion": "Utiliza inteligencia artificial para analizar y proporcionar informes personalizados sobre el rendimiento de las publicaciones en redes sociales, ofreciendo recomendaciones para mejorar",
+    "descripcion": "VistaSocial es una herramienta de análisis de redes sociales que utiliza IA para ayudar a los creadores de contenido a entender mejor a su audiencia y optimizar sus estrategias de contenido. Con VistaSocial, los usuarios pueden analizar sus publicaciones, identificar patrones y tendencias, y recibir recomendaciones personalizadas para mejorar su presencia en redes sociales.",
+    "propuesta_valor": "VistaSocial es mejor que las alternativas porque ofrece una visión integral del rendimiento de las publicaciones en redes sociales, incluyendo análisis de audiencia, competidores y tendencias, lo que permite a los creadores de contenido tomar decisiones informadas y mejorar su estrategia de contenido",
+    "tipo": "SaaS",
+    "vertical": "Creadores de contenido en redes sociales y pequeñas y medianas empresas",
+    "precio": "29",
+    "monetizacion": "suscripcion",
+    "tool": "Python, No-code, Google Analytics",
+    "esfuerzo": "30",
+    "revenue_6m": "2500",
+    "como": [
+      "Investigar y seleccionar las redes sociales más populares y necesarias para analizar",
+      "Desarrollar un algoritmo de IA que pueda analizar y proporcionar informes personalizados sobre el rendimiento de las publicaciones",
+      "Diseñar una interfaz de usuario intuitiva y fácil de usar para que los usuarios puedan acceder y analizar sus datos"
+    ],
+    "score_critico": 80,
+    "score_generador": 80,
+    "viral_score": 60,
+    "fortalezas": [
+      "La utilización de inteligencia artificial para analizar y proporcionar informes personalizados sobre el rendimiento de las publicaciones en redes sociales es una ventaja competitiva clara",
+      "El mercado de creadores de contenido en redes sociales y pequeñas y medianas empresas es amplio y en constante crecimiento",
+      "La monetización a través de suscripción es un modelo de negocio estable y predecible"
+    ],
+    "debilidades": [
+      "La competencia en el mercado de análisis de redes sociales es alta, con empresas establecidas como Hootsuite y Sprout Social",
+      "La calidad y precisión de los informes y recomendaciones dependerán en gran medida de la calidad de los algoritmos de inteligencia artificial utilizados"
+    ],
+    "resumen": "VistaSocial es una idea de negocio digital con un mercado claro y una ventaja competitiva clara, pero enfrenta una competencia alta en el mercado. Con una ejecución sólida y una atención al detalle en la calidad de los algoritmos de inteligencia artificial, VistaSocial puede convertirse en una herramienta valiosa para creadores de contenido en redes sociales y pequeñas y medianas empresas.",
+    "id": 7,
+    "fecha": "2026-02-20T19:25:20.383988",
+    "date": "2026-02-20T19:25:20.383988"
   }
 ]
