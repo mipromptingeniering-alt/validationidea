@@ -239,5 +239,40 @@
     "id": 7,
     "fecha": "2026-02-20T19:25:20.383988",
     "date": "2026-02-20T19:25:20.383988"
+  },
+  {
+    "nombre": "ContentGenie",
+    "problema": "Dificultad para los bloggers y creadores de contenido para generar ideas y títulos atractivos y relevantes para sus artículos y publicaciones",
+    "solucion": "Utiliza inteligencia artificial para analizar y generar ideas y títulos personalizados y atractivos para los bloggers y creadores de contenido",
+    "descripcion": "ContentGenie es una herramienta de SaaS que utiliza IA para generar ideas y títulos de contenido atractivos y relevantes para bloggers y creadores de contenido. Ayuda a ahorrar tiempo y aumentar la productividad en la creación de contenido.",
+    "propuesta_valor": "Es mejor que las alternativas porque utiliza un algoritmo de aprendizaje automático para analizar y generar ideas y títulos personalizados y relevantes para cada usuario",
+    "tipo": "SaaS",
+    "vertical": "Bloggers y creadores de contenido",
+    "precio": "29",
+    "monetizacion": "suscripcion",
+    "tool": "Python y No-code",
+    "esfuerzo": "30",
+    "revenue_6m": "2500",
+    "como": [
+      "Desarrollar el algoritmo de IA para generar ideas y títulos de contenido",
+      "Crear un diseño de interfaz de usuario atractivo y fácil de usar",
+      "Lanzar una campaña de marketing en redes sociales y plataformas de contenido para atraer a los primeros usuarios"
+    ],
+    "score_critico": 80,
+    "score_generador": 80,
+    "viral_score": 70,
+    "fortalezas": [
+      "La utilización de inteligencia artificial para generar ideas y títulos personalizados es una ventaja competitiva clara",
+      "El mercado de bloggers y creadores de contenido es amplio y en constante crecimiento",
+      "La monetización a través de suscripción es un modelo de negocio escalable"
+    ],
+    "debilidades": [
+      "La dependencia de la calidad de los algoritmos de inteligencia artificial puede ser un riesgo si no se implementan correctamente",
+      "La competencia con herramientas de generación de contenido existentes puede ser intensa"
+    ],
+    "resumen": "ContentGenie es una idea de negocio digital con un mercado claro y una ventaja competitiva clara, pero requiere una implementación sólida de la inteligencia artificial para generar ideas y títulos de alta calidad. Con una ejecución adecuada, puede convertirse en una herramienta valiosa para bloggers y creadores de contenido, pero debe estar atento a la competencia y la calidad de sus algoritmos.",
+    "id": 8,
+    "fecha": "2026-02-20T19:32:07.169676",
+    "date": "2026-02-20T19:32:07.169676"
   }
 ]
