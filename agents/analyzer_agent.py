@@ -1,140 +1,187 @@
 import os
 import time
 import requests
-from groq import Groq
-from agents.encoding_helper import fix_llm_encoding
+from dotenv import load_dotenv
+
+load_dotenv()
+
+GROQ_API_KEY = os.environ.get("GROQ_API_KEY")
+GEMINI_API_KEY = os.environ.get("GEMINI_API_KEY")
+GROQ_MODEL = "llama-3.3-70b-versatile"
+GEMINI_MODEL = "gemini-2.0-flash"
+
+
+def _llamar_groq(prompt, max_tokens=4000, temperatura=0.7):
+    try:
+        from groq import Groq
+        client = Groq(api_key=GROQ_API_KEY)
+        for intento in range(3):
+            try:
+                response = client.chat.completions.create(
+                    model=GROQ_MODEL,
+                    messages=[{"role": "user", "content": prompt}],
+                    temperature=temperatura,
+                    max_tokens=max_tokens,
+                )
+                choices = response.choices
+                if choices:
+                    return next(iter(choices)).message.content
+            except Exception as e:
+                msg = str(e).lower()
+                if "rate_limit" in msg or "429" in msg or "daily" in msg:
+                    espera = 30 * (intento + 1)
+                    print(f"⚠️  Groq rate limit. Esperando {espera}s...")
+                    time.sleep(espera)
+                else:
+                    print(f"❌ Groq error: {e}")
+                    break
+    except Exception as e:
+        print(f"❌ Groq init error: {e}")
+    return None
+
+
+def _llamar_gemini(prompt, max_tokens=4000):
+    if not GEMINI_API_KEY:
+        return None
+    url = (
+        f"https://generativelanguage.googleapis.com/v1beta/models/"
+        f"{GEMINI_MODEL}:generateContent?key={GEMINI_API_KEY}"
+    )
+    payload = {
+        "contents": [{"parts": [{"text": prompt}]}],
+        "generationConfig": {
+            "temperature": 0.7,
+            "maxOutputTokens": max_tokens,
+        },
+    }
+    for intento in range(3):
+        try:
+            r = requests.post(url, json=payload, timeout=60)
+            if r.status_code == 200:
+                data = r.json()
+                candidates = data.get("candidates", [])
+                if candidates:
+                    parts = candidates[0].get("content", {}).get("parts", [])
+                    if parts:
+                        return parts[0].get("text", "")
+            elif r.status_code == 429:
+                espera = 45 * (intento + 1)
+                print(f"⚠️  Gemini rate limit. Esperando {espera}s...")
+                time.sleep(espera)
+            else:
+                print(f"❌ Gemini error {r.status_code}: {r.text[:200]}")
+                break
+        except Exception as e:
+            print(f"❌ Gemini error: {e}")
+            time.sleep(30)
+    return None
+
+
+def llamar_ia(prompt, max_tokens=4000):
+    """Llama a Groq primero, si falla usa Gemini."""
+    print("🤖 Llamando a Groq...")
+    resultado = _llamar_groq(prompt, max_tokens=max_tokens)
+    if resultado and len(resultado.strip()) > 50:
+        return resultado
+    print("🔄 Groq falló. Usando Gemini...")
+    resultado = _llamar_gemini(prompt, max_tokens=max_tokens)
+    if resultado and len(resultado.strip()) > 50:
+        return resultado
+    print("❌ Ambos LLMs fallaron.")
+    return None
 
 
 def generate_complete_report(idea):
-    """Genera informe completo de 15 secciones (~2500 palabras)"""
+    """Genera un informe completo de 15 apartados (~2500 palabras)."""
 
-    context = f"""
-NOMBRE: {idea.get('nombre', 'N/A')}
-PROBLEMA: {idea.get('problema', 'N/A')}
-SOLUCION: {idea.get('solucion', 'N/A')}
-DESCRIPCION: {idea.get('descripcion', 'N/A')}
-PROPUESTA DE VALOR: {idea.get('propuesta_valor', idea.get('Value', 'N/A'))}
-TIPO: {idea.get('tipo', 'N/A')}
-MERCADO OBJETIVO: {idea.get('vertical', idea.get('Target', 'N/A'))}
-PRECIO: {idea.get('precio', 'N/A')} euros
-MONETIZACION: {idea.get('monetizacion', idea.get('Business', 'N/A'))}
-STACK TECNOLOGICO: {idea.get('tool', 'N/A')}
-ESFUERZO MVP: {idea.get('esfuerzo', 'N/A')} horas
-REVENUE ESTIMADO 6 MESES: {idea.get('revenue_6m', 'N/A')} euros
-ESTRATEGIA LANZAMIENTO: {idea.get('como', idea.get('Marketing', 'N/A'))}
-SCORE CRITICO: {idea.get('score_critico', 'N/A')}/100
-SCORE VIRAL: {idea.get('viral_score', 'N/A')}/100
-SCORE GENERADOR: {idea.get('score_generador', 'N/A')}/100
-FORTALEZAS: {', '.join(idea.get('fortalezas', idea.get('puntos_fuertes', [])))}
-DEBILIDADES: {', '.join(idea.get('debilidades', idea.get('puntos_debiles', [])))}
+    nombre = idea.get("nombre", "Sin nombre")
+    print(f"📝 Generando informe completo para: {nombre}")
+
+    contexto = f"""
+NOMBRE: {idea.get('nombre', '')}
+PROBLEMA: {idea.get('problema', idea.get('Problem', ''))}
+SOLUCIÓN: {idea.get('solucion', idea.get('Solution', ''))}
+DESCRIPCIÓN: {idea.get('descripcion', idea.get('Description', ''))}
+PROPUESTA DE VALOR: {idea.get('propuesta_valor', idea.get('Value', ''))}
+TIPO: {idea.get('tipo', '')}
+VERTICAL/MERCADO: {idea.get('vertical', idea.get('Target', ''))}
+PRECIO: {idea.get('precio', '')}
+MONETIZACIÓN: {idea.get('monetizacion', idea.get('Business', ''))}
+STACK TECNOLÓGICO: {idea.get('tool', '')}
+ESFUERZO MVP: {idea.get('esfuerzo', idea.get('MVP', ''))}
+REVENUE 6 MESES: {idea.get('revenue_6m', '')}
+ESTRATEGIA LANZAMIENTO: {idea.get('como', idea.get('Marketing', ''))}
+FORTALEZAS: {', '.join(idea.get('fortalezas', [])) if isinstance(idea.get('fortalezas', []), list) else idea.get('fortalezas', '')}
+DEBILIDADES: {', '.join(idea.get('debilidades', [])) if isinstance(idea.get('debilidades', []), list) else idea.get('debilidades', '')}
+SCORE CRÍTICO: {idea.get('score_critico', idea.get('ScoreCritic', 0))}/100
+SCORE VIRAL: {idea.get('viral_score', idea.get('ScoreViral', 0))}/100
+SCORE GENERADOR: {idea.get('score_generador', idea.get('ScoreGen', 0))}/100
 """
 
-    prompt = f"""Eres un analista de negocios experto con 15 anos de experiencia en startups digitales. 
-Genera un informe COMPLETO y DETALLADO en espanol sobre esta idea de negocio.
-{context}
-Genera EXACTAMENTE estos 15 apartados. Cada uno con minimo 150 palabras, datos concretos y ejemplos reales:
+    prompt = f"""Eres un experto analista de negocios digitales con 15 años de experiencia lanzando productos SaaS, herramientas de IA y negocios online. 
+
+Analiza esta idea de negocio y genera un INFORME COMPLETO, DETALLADO y ACCIONABLE en español.
+
+--- DATOS DE LA IDEA ---
+{contexto.strip()}
+--- FIN DATOS ---
+
+Genera el informe con EXACTAMENTE estos 15 apartados, usando ## para los títulos. 
+Cada apartado debe tener mínimo 150 palabras con datos concretos, ejemplos reales y pasos accionables.
+Usa números, porcentajes y referencias a empresas/herramientas reales cuando sea posible.
 
 ## 1. IDEA Y PROPUESTA DE VALOR
-[Que hace unico este producto, diferenciacion vs competencia, por que ahora]
+Explica el problema con datos de mercado. Cuantifica el dolor. Describe la solución con claridad. Define la propuesta de valor única y por qué es difícil de copiar.
 
-## 2. ANALISIS DE MERCADO
-[TAM/SAM/SOM con numeros reales en euros, tendencias 2025-2026, tasa de crecimiento]
+## 2. ANÁLISIS DE MERCADO
+Tamaño del mercado TAM/SAM/SOM con cifras reales. Tendencias actuales. Por qué es el momento adecuado para lanzar ahora. Segmentación del mercado.
 
 ## 3. CLIENTE IDEAL (BUYER PERSONA)
-[Perfil detallado: edad, profesion, ingresos, problemas diarios, donde los encuentras online]
+Define 2 perfiles de cliente con nombre ficticio, edad, trabajo, ingresos, problemas diarios, dónde busca soluciones, qué le frena comprar, qué le haría comprar.
 
-## 4. ANALISIS DE LA COMPETENCIA
-[3-5 competidores reales con sus precios, puntos debiles y como diferenciarte]
+## 4. ANÁLISIS DE LA COMPETENCIA
+Lista 4-5 competidores reales con nombre. Para cada uno: precio, fortaleza principal, debilidad principal. Tabla comparativa. Posicionamiento diferencial de esta idea.
 
 ## 5. MODELO DE NEGOCIO
-[Flujo de ingresos detallado, pricing por tier, costes fijos/variables, margen bruto estimado]
+Estructura de ingresos detallada. Precios por tier (Gratis/Basic/Pro/Enterprise si aplica). Proyección de MRR a 3/6/12 meses con escenario conservador y optimista. Métricas unitarias: LTV, CAC, payback period.
 
-## 6. VALIDACION DEL NEGOCIO
-[Como validar en 2 semanas: landing page, encuestas, MVP minimo, metricas de validacion]
+## 6. VALIDACIÓN DEL NEGOCIO
+Plan de validación en 30 días sin gastar dinero. Landing page + waitlist. Canales para encontrar los primeros 10 clientes. Indicadores que confirman product-market fit. Señales de alarma.
 
 ## 7. PLAN FINANCIERO
-[Proyeccion mes 1-12: costes iniciales, punto de equilibrio, ingresos esperados con numeros]
+Inversión inicial necesaria (desglosada). Costes fijos mensuales. Punto de equilibrio. Flujo de caja mes a mes para los primeros 6 meses. Qué necesitas para ser rentable.
 
 ## 8. ESTRATEGIA DE MARKETING DIGITAL
-[Canales prioritarios, contenido SEO, ads, email, estrategia de lanzamiento semana a semana]
+3 canales principales con tácticas específicas. Contenido que funciona para este nicho. Estrategia SEO con 10 keywords objetivo. Plan de redes sociales. Estrategia de email marketing.
 
-## 9. TECNOLOGIA Y HERRAMIENTAS
-[Stack completo con herramientas especificas, no-code vs codigo, tiempo real de desarrollo]
+## 9. TECNOLOGÍA Y HERRAMIENTAS
+Stack técnico recomendado con herramientas concretas y coste. Plan de desarrollo del MVP en fases. Tiempo estimado por fase. Qué externalizar y qué construir tú mismo. Herramientas de IA que aceleran el desarrollo.
 
-## 10. METRICAS Y KPIs
-[8 KPIs criticos con objetivos concretos para dia 30, dia 60, dia 90]
+## 10. MÉTRICAS Y KPIs
+10 métricas clave organizadas por categoría (adquisición, activación, retención, ingresos, referidos). Valores objetivo para cada métrica. Dashboard recomendado. Frecuencia de revisión.
 
 ## 11. ASPECTOS LEGALES Y FISCALES
-[Forma juridica en Espana, IVA, LOPD/RGPD, terminos de servicio, registro necesario]
+Forma jurídica recomendada. Registros necesarios. Protección de datos (RGPD si aplica). Términos de servicio esenciales. Aspectos fiscales clave. Riesgos legales específicos de este negocio.
 
-## 12. OPERACIONES Y GESTION
-[Flujo operativo diario, tareas automatizables, herramientas de gestion, tiempo dedicacion]
+## 12. OPERACIONES Y GESTIÓN
+Estructura del equipo para el lanzamiento (puede ser solo fundador). Procesos clave a automatizar desde el día 1. Herramientas de gestión recomendadas. Plan de escalado del equipo.
 
 ## 13. MARCA Y CONFIANZA
-[Nombre, identidad, estrategia de contenido para construir autoridad en 90 dias]
+Estrategia de naming y posicionamiento de marca. Cómo construir autoridad en el nicho en 90 días. Estrategia de social proof (casos de éxito, testimonios). Construcción de comunidad.
 
 ## 14. RIESGOS Y PLAN B
-[Top 5 riesgos con probabilidad e impacto, estrategias de mitigacion, alternativas]
+Top 5 riesgos ordenados por probabilidad e impacto. Plan de mitigación para cada uno. Señales de que hay que pivotar. 3 pivots posibles si el modelo principal no funciona.
 
-## 15. HOJA DE RUTA: PRIMEROS 90 DIAS
-[Semana 1-2: validacion. Semana 3-4: MVP. Mes 2: primeros clientes. Mes 3: escalar]
+## 15. MENTALIDAD Y ESTRATEGIA PERSONAL
+Hoja de ruta semana a semana para los primeros 90 días. Los 3 errores más comunes en este tipo de negocio. Recursos (libros, cursos, comunidades) específicos para este nicho. El único KPI más importante en el que enfocarse el primer mes.
 
-IMPORTANTE: Minimo 2500 palabras. Se especifico con datos reales. Sin frases genericas."""
+Recuerda: mínimo 2500 palabras en total, máximo detalle, ejemplos concretos y accionables."""
 
-    # Intentar con Groq primero
-    groq_key = os.environ.get("GROQ_API_KEY")
-    if groq_key:
-        for attempt in range(3):
-            try:
-                print(f"🔄 Generando informe Groq (intento {attempt + 1}/3)...")
-                client = Groq(api_key=groq_key)
-                response = client.chat.completions.create(
-                    model="llama-3.3-70b-versatile",
-                    messages=[{"role": "user", "content": prompt}],
-                    temperature=0.7,
-                    max_tokens=4000,
-                )
-                text = response.choices[0].message.content.strip()
-                text = fix_llm_encoding(text)
-                if len(text) > 500:
-                    print(f"✅ Informe Groq: {len(text)} caracteres")
-                    return text
-            except Exception as e:
-                err = str(e)
-                if "rate_limit" in err or "429" in err or "quota" in err.lower():
-                    wait = 45 * (attempt + 1)
-                    print(f"⏳ Rate limit Groq. Esperando {wait}s...")
-                    time.sleep(wait)
-                else:
-                    print(f"⚠️  Error Groq intento {attempt + 1}: {e}")
-                    time.sleep(5)
+    informe = llamar_ia(prompt, max_tokens=4000)
 
-    # Fallback: Gemini
-    gemini_key = os.environ.get("GEMINI_API_KEY")
-    if gemini_key:
-        for attempt in range(3):
-            try:
-                print(f"🔄 Fallback Gemini (intento {attempt + 1}/3)...")
-                url = (
-                    f"https://generativelanguage.googleapis.com/v1beta/models/"
-                    f"gemini-2.0-flash:generateContent?key={gemini_key}"
-                )
-                payload = {
-                    "contents": [{"parts": [{"text": prompt}]}],
-                    "generationConfig": {"maxOutputTokens": 4000, "temperature": 0.7},
-                }
-                resp = requests.post(url, json=payload, timeout=90)
-                resp.raise_for_status()
-                data = resp.json()
-                text = data["candidates"][0]["content"]["parts"][0]["text"]
-                text = fix_llm_encoding(text)
-                if len(text) > 500:
-                    print(f"✅ Informe Gemini: {len(text)} caracteres")
-                    return text
-            except Exception as e:
-                wait = 30 * (attempt + 1)
-                print(f"⚠️  Gemini intento {attempt + 1}: {e}. Esperando {wait}s...")
-                time.sleep(wait)
+    if not informe:
+        print(f"❌ No se pudo generar informe para {nombre}")
+        return None
 
-    print("❌ No se pudo generar el informe")
-    return None
+    print(f"✅ Informe generado: {len(informe)} caracteres, ~{len(informe.split()) } palabras")
+    return informe

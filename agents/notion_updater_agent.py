@@ -1,87 +1,152 @@
 import os
 import time
-from notion_client import Client
+import requests
+from dotenv import load_dotenv
+
+load_dotenv()
+
+NOTION_TOKEN = os.environ.get("NOTION_TOKEN")
+HEADERS = {
+    "Authorization": f"Bearer {NOTION_TOKEN}",
+    "Content-Type": "application/json",
+    "Notion-Version": "2022-06-28",
+}
 
 
-def update_informe_completo(page_id, report_text, idea_nombre=""):
-    """Marca la propiedad y escribe el informe como bloques en la pagina"""
-    notion = Client(auth=os.environ.get("NOTION_TOKEN"))
+def _texto_a_bloques(texto):
+    """Convierte texto con ## ### - * 1. en bloques de Notion."""
+    bloques = []
+    for linea in texto.split("\n"):
+        linea_strip = linea.strip()
+        if not linea_strip:
+            continue
 
-    # 1. Marcar propiedad para no reprocesar
-    try:
-        notion.pages.update(
-            page_id=page_id,
-            properties={
-                "Informe Completo": {
-                    "rich_text": [{"text": {"content": "Generado automaticamente"}}]
-                }
-            },
-        )
-        print(f"✅ Propiedad 'Informe Completo' marcada: {idea_nombre}")
-    except Exception as e:
-        print(f"⚠️  Error marcando propiedad: {e}")
-
-    # 2. Convertir texto a bloques Notion
-    blocks = text_to_notion_blocks(report_text)
-    total = len(blocks)
-
-    # 3. Enviar en lotes de 100 (limite de Notion)
-    written = 0
-    for i in range(0, total, 100):
-        batch = blocks[i: i + 100]
-        try:
-            notion.blocks.children.append(block_id=page_id, children=batch)
-            written += len(batch)
-            print(f"📝 Bloques: {written}/{total}")
-            time.sleep(0.4)
-        except Exception as e:
-            print(f"⚠️  Error lote {i // 100 + 1}: {e}")
-            time.sleep(2)
-
-    print(f"✅ Informe escrito: {written}/{total} bloques en Notion")
-    return written
-
-
-def text_to_notion_blocks(text):
-    """Convierte markdown a bloques de Notion"""
-    blocks = []
-    for line in text.split("\n"):
-        s = line.strip()
-
-        if not s:
-            blocks.append({"object": "block", "type": "paragraph",
-                            "paragraph": {"rich_text": []}})
-
-        elif s.startswith("## "):
-            blocks.append({"object": "block", "type": "heading_2",
-                            "heading_2": {"rich_text": [
-                                {"type": "text", "text": {"content": s[3:][:2000]}}
-                            ]}})
-
-        elif s.startswith("### "):
-            blocks.append({"object": "block", "type": "heading_3",
-                            "heading_3": {"rich_text": [
-                                {"type": "text", "text": {"content": s[4:][:2000]}}
-                            ]}})
-
-        elif s.startswith(("- ", "* ")):
-            blocks.append({"object": "block", "type": "bulleted_list_item",
-                            "bulleted_list_item": {"rich_text": [
-                                {"type": "text", "text": {"content": s[2:][:2000]}}
-                            ]}})
-
-        elif len(s) > 1 and s[0].isdigit() and s[1] in ".)" and len(s) > 2:
-            blocks.append({"object": "block", "type": "numbered_list_item",
-                            "numbered_list_item": {"rich_text": [
-                                {"type": "text", "text": {"content": s[2:].strip()[:2000]}}
-                            ]}})
-
+        if linea_strip.startswith("## "):
+            titulo = linea_strip[3:].strip()[:2000]
+            bloques.append({
+                "object": "block",
+                "type": "heading_2",
+                "heading_2": {
+                    "rich_text": [{"type": "text", "text": {"content": titulo}}]
+                },
+            })
+        elif linea_strip.startswith("### "):
+            titulo = linea_strip[4:].strip()[:2000]
+            bloques.append({
+                "object": "block",
+                "type": "heading_3",
+                "heading_3": {
+                    "rich_text": [{"type": "text", "text": {"content": titulo}}]
+                },
+            })
+        elif linea_strip.startswith(("- ", "* ", "• ")):
+            contenido = linea_strip[2:].strip()[:2000]
+            bloques.append({
+                "object": "block",
+                "type": "bulleted_list_item",
+                "bulleted_list_item": {
+                    "rich_text": [{"type": "text", "text": {"content": contenido}}]
+                },
+            })
+        elif len(linea_strip) > 1 and linea_strip[0].isdigit() and linea_strip[1] in (".", ")"):
+            contenido = linea_strip[2:].strip()[:2000]
+            bloques.append({
+                "object": "block",
+                "type": "numbered_list_item",
+                "numbered_list_item": {
+                    "rich_text": [{"type": "text", "text": {"content": contenido}}]
+                },
+            })
         else:
-            # Cortar parrafos largos en chunks de 2000
-            chunks = [s[i: i + 2000] for i in range(0, len(s), 2000)]
-            for chunk in chunks:
-                blocks.append({"object": "block", "type": "paragraph",
-                                "paragraph": {"rich_text": [
-                                    {"type": "text", "text": {"content": chunk}}
-                                ]}})
-    return blocks
+            contenido = linea_strip[:2000]
+            bloques.append({
+                "object": "block",
+                "type": "paragraph",
+                "paragraph": {
+                    "rich_text": [{"type": "text", "text": {"content": contenido}}]
+                },
+            })
+
+    return bloques
+
+
+def _enviar_bloques(page_id, bloques):
+    """Envía bloques en lotes de 100 (límite de Notion)."""
+    url = f"https://api.notion.com/v1/blocks/{page_id}/children"
+    total = len(bloques)
+    enviados = 0
+
+    for i in range(0, total, 100):
+        lote = bloques[i: i + 100]
+        r = requests.patch(url, headers=HEADERS, json={"children": lote}, timeout=30)
+        if r.status_code == 200:
+            enviados += len(lote)
+            print(f"   📦 Bloques enviados: {enviados}/{total}")
+        else:
+            print(f"   ❌ Error enviando bloques: {r.status_code} — {r.text[:200]}")
+            return False
+        time.sleep(0.5)
+
+    return True
+
+
+def _marcar_informe_completo(page_id):
+    """Marca la propiedad 'Informe Completo' para no reprocesar."""
+    url = f"https://api.notion.com/v1/pages/{page_id}"
+    payload = {
+        "properties": {
+            "Informe Completo": {
+                "rich_text": [{
+                    "type": "text",
+                    "text": {"content": "Generado automaticamente"}
+                }]
+            }
+        }
+    }
+    r = requests.patch(url, headers=HEADERS, json=payload, timeout=15)
+    if r.status_code == 200:
+        print("   ✅ Marcado como 'Informe Completo'")
+        return True
+    else:
+        print(f"   ❌ Error marcando informe: {r.status_code}")
+        return False
+
+
+def _limpiar_bloques_existentes(page_id):
+    """Obtiene y elimina los bloques actuales de la página."""
+    url = f"https://api.notion.com/v1/blocks/{page_id}/children"
+    r = requests.get(url, headers=HEADERS, timeout=15)
+    if r.status_code != 200:
+        return
+    bloques = r.json().get("results", [])
+    for bloque in bloques:
+        bid = bloque.get("id")
+        if bid:
+            requests.delete(
+                f"https://api.notion.com/v1/blocks/{bid}",
+                headers=HEADERS,
+                timeout=10,
+            )
+            time.sleep(0.1)
+
+
+def write_report_to_notion(page_id, informe_texto, limpiar=False):
+    """Escribe el informe completo como bloques en la página de Notion."""
+    print(f"   📄 Escribiendo informe en página {page_id[:8]}...")
+
+    if limpiar:
+        print("   🧹 Limpiando bloques existentes...")
+        _limpiar_bloques_existentes(page_id)
+
+    bloques = _texto_a_bloques(informe_texto)
+    print(f"   🔢 Total bloques generados: {len(bloques)}")
+
+    exito = _enviar_bloques(page_id, bloques)
+
+    if exito:
+        _marcar_informe_completo(page_id)
+        print(f"   ✅ Informe escrito correctamente ({len(bloques)} bloques)")
+        return True
+    else:
+        print("   ❌ Error escribiendo informe")
+        return False
