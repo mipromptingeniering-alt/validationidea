@@ -1,252 +1,108 @@
-import os
+﻿import os
 import time
-import subprocess
+import logging
 import requests
 from datetime import datetime
 from dotenv import load_dotenv
 
 load_dotenv()
 
-TELEGRAM_BOT_TOKEN  = os.environ.get("TELEGRAM_BOT_TOKEN")
-TELEGRAM_CHAT_ID    = os.environ.get("TELEGRAM_CHAT_ID")
-NOTION_API_KEY      = os.environ.get("NOTION_TOKEN") or os.environ.get("NOTION_API_KEY")
-NOTION_DATABASE_ID  = os.environ.get("NOTION_DATABASE_ID")
-NOTION_VERSION      = "2022-06-28"
+logging.basicConfig(
+    level=logging.INFO,
+    format='%(asctime)s - %(levelname)s - %(message)s'
+)
+logger = logging.getLogger(__name__)
 
-INTERVALO_GENERAR  = 30 * 60   # genera idea nueva cada 30 min
-INTERVALO_INFORMES =  5 * 60   # revisa informes pendientes cada 5 min
+TELEGRAM_BOT_TOKEN = os.getenv("TELEGRAM_BOT_TOKEN")
+TELEGRAM_CHAT_ID = os.getenv("TELEGRAM_CHAT_ID")
 
-
-def telegram(msg: str):
-    if not TELEGRAM_BOT_TOKEN or not TELEGRAM_CHAT_ID:
-        return
+def send_telegram(message):
     try:
-        requests.post(
-            f"https://api.telegram.org/bot{TELEGRAM_BOT_TOKEN}/sendMessage",
-            json={"chat_id": TELEGRAM_CHAT_ID, "text": msg, "parse_mode": "HTML"},
-            timeout=10,
-        )
+        url = f"https://api.telegram.org/bot{TELEGRAM_BOT_TOKEN}/sendMessage"
+        data = {
+            "chat_id": TELEGRAM_CHAT_ID,
+            "text": message,
+            "parse_mode": "HTML"
+        }
+        requests.post(url, data=data, timeout=10)
     except Exception as e:
-        print(f"[Telegram] Error: {e}")
+        logger.error(f"Error Telegram: {e}")
 
+def generar_y_sincronizar():
+    from agents.generator_agent import generate
+    from agents.notion_sync_agent import sync_idea_to_notion
+    logger.info("Generando 2 ideas automaticas...")
+    for i in range(2):
+        try:
+            idea = generate()
+            if idea:
+                resultado = sync_idea_to_notion(idea)
+                nombre = idea.get('name', 'Sin nombre')
+                page_id = ''
+                if resultado and isinstance(resultado, dict):
+                    page_id = resultado.get('id', '')
+                if page_id:
+                    url_n = f"https://notion.so/{page_id.replace('-', '')}"
+                else:
+                    url_n = "Notion"
+                send_telegram(f"Nueva idea generada:\n{nombre}\n{url_n}")
+                logger.info(f"Idea {i+1} creada: {nombre}")
+                time.sleep(3)
+        except Exception as e:
+            logger.error(f"Error idea {i+1}: {e}")
+            send_telegram(f"Error generando idea: {e}")
 
-def ejecutar(script: str, timeout: int = 600) -> str:
-    """
-    Ejecuta script Python de forma robusta en Windows.
-    - PYTHONUTF8=1 fuerza UTF-8 en el subproceso
-    - Captura bytes y decodifica con errors='replace' para evitar crash con emojis
-    """
+def proceso_nocturno():
+    import run_monitor
+    logger.info("Proceso nocturno 03:00")
+    send_telegram("Proceso nocturno iniciado")
     try:
-        env = {
-            **os.environ,
-            "PYTHONIOENCODING": "utf-8",
-            "PYTHONUTF8": "1",
-        }
-        res = subprocess.run(
-            ["python", "-u", script],
-            stdout=subprocess.PIPE,
-            stderr=subprocess.PIPE,
-            timeout=timeout,
-            env=env,
-        )
-        stdout = (res.stdout or b"").decode("utf-8", errors="replace")
-        stderr = (res.stderr or b"").decode("utf-8", errors="replace")
-        salida = stdout + stderr
-        return salida[-2000:] if len(salida) > 2000 else salida
-    except subprocess.TimeoutExpired:
-        return f"TIMEOUT tras {timeout}s en {script}"
+        run_monitor.main()
+        send_telegram("Proceso nocturno completado OK")
     except Exception as e:
-        return f"ERROR ejecutando {script}: {e}"
-
-
-def _h():
-    return {
-        "Authorization": f"Bearer {NOTION_API_KEY}",
-        "Content-Type": "application/json",
-        "Notion-Version": NOTION_VERSION,
-    }
-
-
-def get_todas_ideas() -> list:
-    url = f"https://api.notion.com/v1/databases/{NOTION_DATABASE_ID}/query"
-    ideas, cursor = [], None
-    while True:
-        body = {"page_size": 100}
-        if cursor:
-            body["start_cursor"] = cursor
-        try:
-            r = requests.post(url, headers=_h(), json=body, timeout=30)
-            data = r.json()
-            ideas.extend(data.get("results", []))
-            if not data.get("has_more"):
-                break
-            cursor = data.get("next_cursor")
-        except Exception as e:
-            print(f"[Monitor] Error Notion: {e}")
-            break
-    return ideas
-
-
-def get_ideas_sin_informe() -> list:
-    url = f"https://api.notion.com/v1/databases/{NOTION_DATABASE_ID}/query"
-    ideas, cursor = [], None
-    while True:
-        body = {
-            "page_size": 100,
-            "filter": {
-                "property": "Informe Completo",
-                "rich_text": {"is_empty": True}
-            }
-        }
-        if cursor:
-            body["start_cursor"] = cursor
-        try:
-            r = requests.post(url, headers=_h(), json=body, timeout=30)
-            data = r.json()
-            ideas.extend(data.get("results", []))
-            if not data.get("has_more"):
-                break
-            cursor = data.get("next_cursor")
-        except Exception as e:
-            print(f"[Monitor] Error sin_informe: {e}")
-            break
-    return ideas
-
-
-def nombre_idea(page: dict) -> str:
-    t = page.get("properties", {}).get("Name", {}).get("title", [])
-    return t[0]["plain_text"] if t else "Sin nombre"
-
-
-def url_idea(page: dict) -> str:
-    return f"https://notion.so/{page['id'].replace('-', '')}"
-
+        logger.error(f"Error nocturno: {e}")
+        send_telegram(f"Error nocturno: {e}")
 
 def resumen_diario():
-    ideas   = get_todas_ideas()
-    total   = len(ideas)
-    con_inf = sum(
-        1 for i in ideas
-        if i.get("properties", {}).get("Informe Completo", {}).get("rich_text")
-    )
-    scores = []
-    for i in ideas:
-        props = i.get("properties", {})
-        # Buscar en ScoreGen y también en Score (campo antiguo)
-        s = props.get("ScoreGen", {}).get("number")
-        if s is None:
-            s = props.get("Score", {}).get("number")
-        if s is not None:   # ← FIX: is not None, no "if s:"
-            scores.append(s)
-    avg = round(sum(scores) / len(scores), 1) if scores else 0
+    logger.info("Resumen diario 08:00")
+    send_telegram("Buenos dias! El monitor lleva 24h activo generando ideas.")
 
+def detectar_sin_informe():
     try:
-        from agents.knowledge_base import get_stats
-        kb = get_stats()
-        kb_txt = (
-            f"\n\n🧠 <b>Auto-aprendizaje:</b>\n"
-            f"  Analizadas: {kb['total']} | Exitosas: {kb['exitosas']}\n"
-            f"  Mejor tipo: {kb['mejor_tipo']}\n"
-            f"  Mejor vertical: {kb['mejor_vertical']}"
-        )
-    except Exception:
-        kb_txt = ""
-
-    telegram(
-        f"📊 <b>Resumen {datetime.now().strftime('%d/%m/%Y')}</b>\n"
-        f"💡 Total ideas: <b>{total}</b>\n"
-        f"✅ Con informe: <b>{con_inf}</b>\n"
-        f"⏳ Sin informe: <b>{total - con_inf}</b>\n"
-        f"📈 Score medio: <b>{avg}/100</b>"
-        + kb_txt
-    )
-
+        import run_monitor
+        run_monitor.main()
+    except Exception as e:
+        logger.error(f"Error detectando informes: {e}")
 
 def main():
-    telegram(
-        "🚀 <b>Monitor nocturno iniciado</b>\n"
-        "💡 Nueva idea cada 30 min\n"
-        "📝 Informes cada 5 min\n"
-        "📊 Resumen 08:00 | 🌙 Mantenimiento 03:00\n"
-        "🧠 Auto-aprendizaje activo"
-    )
-
-    ts_ultimo_informe  = 0
-    # Primera idea en 2 minutos, no inmediatamente
-    ts_ultima_idea     = time.time() - INTERVALO_GENERAR + 120
-    ultimo_dia_resumen = -1
-    ultima_hora_mant   = -1
-
-    seen_ids = {p["id"] for p in get_todas_ideas()}
-    print(f"[Monitor] Iniciado. {len(seen_ids)} ideas en Notion.")
-
+    logger.info("Monitor nocturno iniciado")
+    send_telegram("Monitor 24/7 activo y funcionando")
+    ultimo_2h = 0
+    ultimo_5min = 0
+    nocturno_fecha = None
+    resumen_fecha = None
     while True:
-        try:
-            ahora = datetime.now()
-            ts    = time.time()
-
-            # ── Cada 5 min: detección de nuevas ideas + informes ──────
-            if ts - ts_ultimo_informe >= INTERVALO_INFORMES:
-                ts_ultimo_informe = ts
-                todas = get_todas_ideas()
-
-                # Notificar ideas nuevas detectadas
-                for p in todas:
-                    if p["id"] not in seen_ids:
-                        seen_ids.add(p["id"])
-                        telegram(
-                            f"💡 <b>Nueva idea:</b> {nombre_idea(p)}\n"
-                            f"{url_idea(p)}"
-                        )
-
-                # Generar informes pendientes
-                sin_inf = get_ideas_sin_informe()
-                if sin_inf:
-                    n = len(sin_inf)
-                    print(f"[Monitor] {n} ideas sin informe → run_monitor.py")
-                    telegram(f"📝 <b>{n} ideas sin informe.</b> Generando...")
-                    out = ejecutar("run_monitor.py", timeout=600)
-                    time.sleep(3)  # esperar que Notion API actualice
-                    aun_pend = len(get_ideas_sin_informe())
-                    generados = n - aun_pend
-                    telegram(
-                        f"✅ <b>{generados} informes generados.</b>\n"
-                        f"Pendientes: {aun_pend}"
-                    )
-                    print(f"[Monitor] Resultado run_monitor:\n{out[-400:]}")
-
-            # ── Cada 30 min: generar idea nueva ───────────────────────
-            if ts - ts_ultima_idea >= INTERVALO_GENERAR:
-                ts_ultima_idea = ts
-                print("[Monitor] Auto-generando idea nueva...")
-                telegram("🤖 <b>Generando idea nueva...</b>")
-                out = ejecutar("run_batch.py", timeout=120)
-                if "traceback" in out.lower() or "error" in out.lower():
-                    telegram(
-                        f"⚠️ <b>Error en run_batch:</b>\n"
-                        f"<code>{out[-400:]}</code>"
-                    )
-                else:
-                    print(f"[Monitor] Idea generada: {out[-200:]}")
-
-            # ── 08:00 Resumen diario ──────────────────────────────────
-            if ahora.hour == 8 and ahora.day != ultimo_dia_resumen:
-                ultimo_dia_resumen = ahora.day
+        ahora = time.time()
+        dt = datetime.now()
+        h = dt.hour
+        m = dt.minute
+        if ahora - ultimo_2h >= 7200:
+            generar_y_sincronizar()
+            ultimo_2h = ahora
+        if ahora - ultimo_5min >= 300:
+            detectar_sin_informe()
+            ultimo_5min = ahora
+        if h == 3 and m == 0:
+            hoy = dt.date()
+            if nocturno_fecha != hoy:
+                proceso_nocturno()
+                nocturno_fecha = hoy
+        if h == 8 and m == 0:
+            hoy = dt.date()
+            if resumen_fecha != hoy:
                 resumen_diario()
-
-            # ── 03:00 Mantenimiento nocturno ──────────────────────────
-            if ahora.hour == 3 and ahora.hour != ultima_hora_mant:
-                ultima_hora_mant = ahora.hour
-                telegram("🌙 <b>Mantenimiento nocturno iniciado...</b>")
-                ejecutar("completar_campos.py", timeout=600)
-                ejecutar("run_monitor.py",      timeout=600)
-                telegram("✅ <b>Mantenimiento completado.</b>")
-
-        except Exception as e:
-            print(f"[Monitor] Error en bucle: {e}")
-
-        time.sleep(60)
-
+                resumen_fecha = hoy
+        time.sleep(30)
 
 if __name__ == "__main__":
     main()
