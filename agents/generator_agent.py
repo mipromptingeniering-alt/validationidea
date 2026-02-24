@@ -1,160 +1,116 @@
-﻿# agents/generator_agent.py - VERSION 2.0 con auto-mejora dinamica
+﻿import os
 import json
-import hashlib
-import os
-from collections import Counter
-from groq import Groq
-from dotenv import load_dotenv
-from agents.encoding_helper import fix_llm_encoding
-
-load_dotenv()
-client = Groq(api_key=os.getenv("GROQ_API_KEY"))
+import time
 
 
-def load_existing_ideas():
+def generar_idea(ideas_existentes=None):
+    """Genera 1 idea de negocio única usando Groq con contexto evolutivo de KB."""
     try:
-        if os.path.exists("data/ideas.json"):
-            with open("data/ideas.json", "r", encoding="utf-8") as f:
-                ideas = json.load(f)
-            return ideas if isinstance(ideas, list) else []
-    except Exception:
-        pass
-    return []
+        import groq
+        from agents.knowledge_base import get_contexto_para_generador
+    except ImportError as e:
+        print(f"❌ Error importando dependencias en generator_agent: {e}")
+        return None
 
+    client = groq.Groq(api_key=os.environ.get("GROQ_API_KEY"))
 
-def get_best_examples(ideas, n=5):
-    """Obtiene los N mejores ejemplos ordenados por score (auto-mejora real)"""
-    scored = [i for i in ideas if isinstance(i.get("score"), (int, float))]
-    if not scored:
-        return ideas[:n]
-    return sorted(scored, key=lambda x: x.get("score", 0), reverse=True)[:n]
-
-
-def get_idea_hash(idea):
-    key = f"{idea.get('nombre', '')}{idea.get('problema', '')}"
-    return hashlib.md5(key.lower().encode()).hexdigest()
-
-
-def get_existing_hashes(ideas):
-    return {get_idea_hash(i) for i in ideas}
-
-
-def build_dynamic_prompt(existing_ideas):
-    """Construye prompt con ejemplos dinamicos de las mejores ideas"""
-    best = get_best_examples(existing_ideas, n=5)
-    existing_names = {i.get("nombre", "").lower() for i in existing_ideas}
-
-    # Detectar verticales saturadas (>= 3 ideas en la misma vertical)
-    vertical_count = Counter(i.get("vertical", "") for i in existing_ideas)
-    overused = [v for v, c in vertical_count.items() if c >= 3 and v]
-
-    # --- Seccion de ejemplos dinamicos ---
-    if best:
-        examples_text = "\n\nEJEMPLOS DE IDEAS CON MEJOR SCORE (aprende de su estructura):\n"
-        for idx, ex in enumerate(best, 1):
-            examples_text += (
-                f"\nEjemplo {idx} — Score: {ex.get('score', 'N/A')}\n"
-                f"  Nombre: {ex.get('nombre', '')}\n"
-                f"  Problema: {ex.get('problema', '')}\n"
-                f"  Solucion: {ex.get('solucion', '')}\n"
-                f"  Tipo: {ex.get('tipo', '')} | Vertical: {ex.get('vertical', '')}\n"
-                f"  Monetizacion: {ex.get('monetizacion', '')}\n"
+    # ── P1: Inyectar contexto de Knowledge Base ──────────────────────────────
+    kb_contexto = ""
+    try:
+        kb_raw = get_contexto_para_generador()
+        if kb_raw:
+            kb_contexto = (
+                "\n\nCONTEXTO DE APRENDIZAJE — usa esto para mejorar la calidad:\n"
+                + str(kb_raw)
             )
-    else:
-        examples_text = """
-EJEMPLOS DE IDEAS EXITOSAS:
-Ejemplo 1: MealPlanAI - SaaS que genera planes de comida personalizados con IA, 9EUR/mes
-Ejemplo 2: ContractBot - Plugin para abogados que analiza contratos, 29EUR/mes
-Ejemplo 3: SEO Mentor Guide - PDF completo de SEO para freelancers, 27EUR unico pago
-"""
+            print("📚 Contexto KB inyectado en el prompt")
+    except Exception as e:
+        print(f"⚠️ No se pudo obtener contexto KB (continuamos sin él): {e}")
 
-    # --- Seccion de restricciones ---
-    avoid_section = ""
-    if existing_names:
-        sample_names = ", ".join(list(existing_names)[:8])
-        avoid_section += f"\n\nNO generes ideas similares a: {sample_names}"
-    if overused:
-        avoid_section += f"\nEVITA las verticales ya saturadas: {', '.join(overused)}"
+    # ── Exclusiones: ideas ya generadas ──────────────────────────────────────
+    exclusiones = ""
+    if ideas_existentes:
+        nombres = []
+        for i in ideas_existentes[-20:]:
+            if isinstance(i, dict):
+                n = i.get("nombre") or i.get("name") or ""
+                if n:
+                    nombres.append(n)
+        if nombres:
+            exclusiones = (
+                "\n\nIDEAS YA GENERADAS (no repitas ni hagas variaciones):\n"
+                + "\n".join(f"- {n}" for n in nombres)
+            )
 
-    prompt = f"""Eres un experto en negocios digitales. Genera UNA idea de negocio UNICA, ORIGINAL y ALTAMENTE VIABLE con score objetivo de 80+.
+    system_prompt = (
+        "Eres un experto en startups, validación de ideas de negocio y emprendimiento digital. "
+        "Tu misión es generar ideas CONCRETAS, INNOVADORAS y con ALTO POTENCIAL de monetización. "
+        "Prioriza: modelo de negocio claro, problema urgente y solución diferenciada."
+        + kb_contexto
+    )
 
-CRITERIOS DE CALIDAD:
-- Resuelve un problema REAL y especifico (no generico)
-- Nicho claro y alcanzable
-- Modelo de monetizacion probado (SaaS, info-product, etc.)
-- Construible con IA/automatizacion con presupuesto bajo
-- MVP realizable en menos de 40 horas
-- Revenue potencial 6 meses: entre 500 EUR y 5000 EUR
-{examples_text}{avoid_section}
+    user_prompt = (
+        "Genera exactamente 1 idea de negocio nueva y viable.\n"
+        "Responde ÚNICAMENTE con JSON válido, sin texto antes ni después:\n"
+        "{\n"
+        '  "nombre": "Nombre memorable de la idea",\n'
+        '  "vertical": "SaaS / App móvil / Marketplace / IA / Hardware / Servicio / E-commerce / Educación / Salud / Fintech",\n'
+        '  "problema": "Descripción clara del problema (mínimo 50 palabras)",\n'
+        '  "solucion": "Cómo lo resuelve de forma concreta (mínimo 50 palabras)",\n'
+        '  "descripcion": "Descripción completa del negocio (mínimo 100 palabras)",\n'
+        '  "propuesta_valor": "Propuesta única y diferenciada",\n'
+        '  "cliente_objetivo": "Cliente ideal con demografía y comportamiento",\n'
+        '  "mvp": "Producto mínimo viable para validar en 30 días",\n'
+        '  "marketing": "Estrategia de adquisición de primeros clientes",\n'
+        '  "metricas": "3-5 métricas clave de éxito",\n'
+        '  "modelo_negocio": "Cómo genera ingresos con precio aproximado",\n'
+        '  "investigacion": "Tamaño de mercado y contexto competitivo"\n'
+        "}"
+        + exclusiones
+    )
 
-Responde EXCLUSIVAMENTE en formato JSON valido (sin markdown, sin texto extra):
-{{
-  "nombre": "Nombre memorable del producto",
-  "problema": "Problema especifico que resuelve",
-  "solucion": "Como lo resuelve de forma unica",
-  "descripcion": "Descripcion en 2-3 frases",
-  "propuesta_valor": "Por que es mejor que alternativas",
-  "tipo": "SaaS|PDF|Plugin|Agencia|Marketplace|Tool",
-  "vertical": "Mercado objetivo especifico",
-  "precio": "Precio en euros (numero)",
-  "monetizacion": "suscripcion|unico pago|freemium|comision",
-  "tool": "Stack tecnico: Python|No-code|Webflow|etc",
-  "esfuerzo": "Horas para MVP",
-  "revenue_6m": "Ingresos estimados 6 meses en euros",
-  "como": "3 pasos concretos para lanzar"
-}}"""
-    return prompt
-
-
-def generate():
-    """Genera una idea de negocio unica — retorna dict o None"""
-    existing_ideas = load_existing_ideas()
-    existing_hashes = get_existing_hashes(existing_ideas)
-
-    for attempt in range(1, 6):
+    for intento in range(5):
         try:
-            prompt = build_dynamic_prompt(existing_ideas)
-
             response = client.chat.completions.create(
                 model="llama-3.3-70b-versatile",
-                messages=[{"role": "user", "content": prompt}],
+                messages=[
+                    {"role": "system", "content": system_prompt},
+                    {"role": "user", "content": user_prompt}
+                ],
                 temperature=0.9,
-                max_tokens=1000,
+                max_tokens=800
             )
 
-            content = response.choices[0].message.content.strip()
+            contenido = response.choices[0].message.content.strip()
 
             # Limpiar markdown si existe
-            if "```json" in content:
-                content = content.split("```json").split("```").strip()[1]
-            elif "```" in content:
-                content = content.split("```")[1].split("```")[0].strip()
+            if "```json" in contenido:
+                contenido = contenido.split("```json").split("```").strip()[1]
+            elif "```" in contenido:
+                contenido = contenido.split("```")[1].split("```")[0].strip()
 
-            # Fix encoding UTF-8
-            content = fix_llm_encoding(content)
+            # Extraer solo el bloque JSON
+            inicio = contenido.find("{")
+            fin = contenido.rfind("}") + 1
+            if inicio >= 0 and fin > inicio:
+                contenido = contenido[inicio:fin]
 
-            # Parsear JSON
-            idea = json.loads(content)
-
-            # Validar campos requeridos
-            required = ["nombre", "problema", "solucion", "descripcion", "tipo"]
-            if not all(f in idea for f in required):
-                print(f"⚠️  Intento {attempt}: Faltan campos requeridos")
-                continue
-
-            # Verificar unicidad
-            h = get_idea_hash(idea)
-            if h in existing_hashes:
-                print(f"⚠️  Intento {attempt}: Idea duplicada, generando otra...")
-                continue
-
-            print(f"✅ Idea generada (intento {attempt}): {idea.get('nombre')}")
+            idea = json.loads(contenido)
+            print(f"✅ Idea generada (con KB context): {idea.get('nombre', 'Sin nombre')}")
             return idea
 
         except json.JSONDecodeError as e:
-            print(f"⚠️  Intento {attempt}: Error JSON — {e}")
+            print(f"⚠️ JSON inválido intento {intento + 1}: {e}")
+            time.sleep(5)
         except Exception as e:
-            print(f"⚠️  Intento {attempt}: Error — {e}")
+            error_str = str(e)
+            if "429" in error_str or "rate_limit" in error_str.lower():
+                espera = 30 * (2 ** min(intento, 3))
+                print(f"⚠️ Rate limit Groq (intento {intento + 1}), esperando {espera}s...")
+                time.sleep(espera)
+            else:
+                print(f"❌ Error Groq intento {intento + 1}: {e}")
+                time.sleep(5)
 
-    print("❌ No se pudo generar idea valida despues de 5 intentos")
+    print("❌ Todos los intentos con Groq fallaron en generator_agent")
     return None
