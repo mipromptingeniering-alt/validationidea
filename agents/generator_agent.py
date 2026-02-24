@@ -1,116 +1,131 @@
 ﻿import os
+import sys
 import json
-import time
+from datetime import datetime
+
+os.environ["PYTHONUTF8"] = "1"
+
+SCORE_LANDING_MINIMO = 85   # P9: umbral para generar landing automática
 
 
-def generar_idea(ideas_existentes=None):
-    """Genera 1 idea de negocio única usando Groq con contexto evolutivo de KB."""
-    try:
-        import groq
-        from agents.knowledge_base import get_contexto_para_generador
-    except ImportError as e:
-        print(f"❌ Error importando dependencias en generator_agent: {e}")
-        return None
+def ejecutar_batch():
+    print(f"\n{'=' * 50}")
+    print(f"🚀 run_batch iniciado: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
 
-    client = groq.Groq(api_key=os.environ.get("GROQ_API_KEY"))
+    from agents.generator_agent import generar_idea
+    from agents.critic_agent    import critique
+    from agents.knowledge_base  import aprender
+    from agents.notion_sync_agent import sync_idea_to_notion
+    from agents.cola_csv        import guardar_en_cola
 
-    # ── P1: Inyectar contexto de Knowledge Base ──────────────────────────────
-    kb_contexto = ""
-    try:
-        kb_raw = get_contexto_para_generador()
-        if kb_raw:
-            kb_contexto = (
-                "\n\nCONTEXTO DE APRENDIZAJE — usa esto para mejorar la calidad:\n"
-                + str(kb_raw)
-            )
-            print("📚 Contexto KB inyectado en el prompt")
-    except Exception as e:
-        print(f"⚠️ No se pudo obtener contexto KB (continuamos sin él): {e}")
-
-    # ── Exclusiones: ideas ya generadas ──────────────────────────────────────
-    exclusiones = ""
-    if ideas_existentes:
-        nombres = []
-        for i in ideas_existentes[-20:]:
-            if isinstance(i, dict):
-                n = i.get("nombre") or i.get("name") or ""
-                if n:
-                    nombres.append(n)
-        if nombres:
-            exclusiones = (
-                "\n\nIDEAS YA GENERADAS (no repitas ni hagas variaciones):\n"
-                + "\n".join(f"- {n}" for n in nombres)
-            )
-
-    system_prompt = (
-        "Eres un experto en startups, validación de ideas de negocio y emprendimiento digital. "
-        "Tu misión es generar ideas CONCRETAS, INNOVADORAS y con ALTO POTENCIAL de monetización. "
-        "Prioriza: modelo de negocio claro, problema urgente y solución diferenciada."
-        + kb_contexto
-    )
-
-    user_prompt = (
-        "Genera exactamente 1 idea de negocio nueva y viable.\n"
-        "Responde ÚNICAMENTE con JSON válido, sin texto antes ni después:\n"
-        "{\n"
-        '  "nombre": "Nombre memorable de la idea",\n'
-        '  "vertical": "SaaS / App móvil / Marketplace / IA / Hardware / Servicio / E-commerce / Educación / Salud / Fintech",\n'
-        '  "problema": "Descripción clara del problema (mínimo 50 palabras)",\n'
-        '  "solucion": "Cómo lo resuelve de forma concreta (mínimo 50 palabras)",\n'
-        '  "descripcion": "Descripción completa del negocio (mínimo 100 palabras)",\n'
-        '  "propuesta_valor": "Propuesta única y diferenciada",\n'
-        '  "cliente_objetivo": "Cliente ideal con demografía y comportamiento",\n'
-        '  "mvp": "Producto mínimo viable para validar en 30 días",\n'
-        '  "marketing": "Estrategia de adquisición de primeros clientes",\n'
-        '  "metricas": "3-5 métricas clave de éxito",\n'
-        '  "modelo_negocio": "Cómo genera ingresos con precio aproximado",\n'
-        '  "investigacion": "Tamaño de mercado y contexto competitivo"\n'
-        "}"
-        + exclusiones
-    )
-
-    for intento in range(5):
+    # Cargar ideas existentes para evitar repeticiones
+    ideas_existentes = []
+    ruta_ideas = os.path.join("data", "ideas.json")
+    if os.path.exists(ruta_ideas):
         try:
-            response = client.chat.completions.create(
-                model="llama-3.3-70b-versatile",
-                messages=[
-                    {"role": "system", "content": system_prompt},
-                    {"role": "user", "content": user_prompt}
-                ],
-                temperature=0.9,
-                max_tokens=800
-            )
+            with open(ruta_ideas, "r", encoding="utf-8") as f:
+                ideas_existentes = json.load(f)
+        except Exception:
+            ideas_existentes = []
 
-            contenido = response.choices[0].message.content.strip()
+    # 1. Generar idea (P1 KB context + P10 detector semántico)
+    print("🧠 Generando idea con KB context + detector semántico...")
+    idea = generar_idea(ideas_existentes)
+    if not idea:
+        print("❌ No se pudo generar la idea")
+        return False
 
-            # Limpiar markdown si existe
-            if "```json" in contenido:
-                contenido = contenido.split("```json").split("```").strip()[1]
-            elif "```" in contenido:
-                contenido = contenido.split("```")[1].split("```")[0].strip()
+    nombre = idea.get("nombre", "Idea sin nombre")
+    print(f"💡 Idea: {nombre}")
 
-            # Extraer solo el bloque JSON
-            inicio = contenido.find("{")
-            fin = contenido.rfind("}") + 1
-            if inicio >= 0 and fin > inicio:
-                contenido = contenido[inicio:fin]
+    # 2. Evaluar con critique() (P5 ScoreMoney incluido)
+    print("🔍 Evaluando con critic_agent...")
+    try:
+        evaluacion = critique(idea)
+        if evaluacion:
+            idea.update(evaluacion)
+            sc = idea.get("score_critico")
+            sv = idea.get("viral_score")
+            sg = idea.get("score_generador")
+            sm = idea.get("score_money")
+            print(f"📊 Critico:{sc} | Viral:{sv} | Gen:{sg} | Money:{sm}")
+    except Exception as e:
+        print(f"⚠️ Error evaluando (continuamos): {e}")
 
-            idea = json.loads(contenido)
-            print(f"✅ Idea generada (con KB context): {idea.get('nombre', 'Sin nombre')}")
-            return idea
+    # 3. Guardar localmente
+    ideas_existentes.append(idea)
+    os.makedirs("data", exist_ok=True)
+    try:
+        with open(ruta_ideas, "w", encoding="utf-8") as f:
+            json.dump(ideas_existentes, f, ensure_ascii=False, indent=2)
+        print("💾 Guardada en data/ideas.json")
+    except Exception as e:
+        print(f"⚠️ Error guardando local: {e}")
 
-        except json.JSONDecodeError as e:
-            print(f"⚠️ JSON inválido intento {intento + 1}: {e}")
-            time.sleep(5)
+    # 4. Actualizar Knowledge Base
+    try:
+        score_kb = idea.get("score_generador")
+        if score_kb is not None:
+            aprender(idea, score_kb)
+            print(f"📚 KB actualizada (score={score_kb})")
+    except Exception as e:
+        print(f"⚠️ Error actualizando KB: {e}")
+
+    # 5. Sincronizar con Notion — P2: cola CSV si falla
+    print("🔗 Sincronizando con Notion...")
+    notion_page = None
+    try:
+        notion_page = sync_idea_to_notion(idea)
+        if notion_page:
+            print(f"✅ Sincronizada en Notion: {nombre}")
+        else:
+            raise Exception("sync_idea_to_notion devolvió None/False")
+    except Exception as e:
+        print(f"❌ Fallo Notion: {e}")
+        guardar_en_cola(
+            nombre_idea=nombre,
+            motivo_fallo=str(e),
+            datos_json=idea
+        )
+        print("📋 Idea en cola CSV — se reintentará en 5 min")
+        return False
+
+    # 6. P9: Landing automática si score_generador >= 85
+    score_para_landing = idea.get("score_generador")
+    if score_para_landing is not None and score_para_landing >= SCORE_LANDING_MINIMO:
+        print(f"🌐 Score {score_para_landing} >= {SCORE_LANDING_MINIMO} — generando landing...")
+        try:
+            from agents.landing_agent import publicar_landing
+            url_landing = publicar_landing(idea)
+            if url_landing:
+                print(f"🌐 Landing publicada: {url_landing}")
+                # Actualizar Notion con URL de landing
+                if notion_page:
+                    try:
+                        import requests as req
+                        token   = os.environ.get("NOTION_TOKEN", "")
+                        page_id = notion_page.get("id", "")
+                        if page_id and token:
+                            req.patch(
+                                f"https://api.notion.com/v1/pages/{page_id}",
+                                headers={
+                                    "Authorization": f"Bearer {token}",
+                                    "Notion-Version": "2022-06-28",
+                                    "Content-Type": "application/json"
+                                },
+                                json={"properties": {
+                                    "Research": {"rich_text": [{"text": {"content": f"Landing: {url_landing}"}}]}
+                                }},
+                                timeout=15
+                            )
+                    except Exception:
+                        pass
         except Exception as e:
-            error_str = str(e)
-            if "429" in error_str or "rate_limit" in error_str.lower():
-                espera = 30 * (2 ** min(intento, 3))
-                print(f"⚠️ Rate limit Groq (intento {intento + 1}), esperando {espera}s...")
-                time.sleep(espera)
-            else:
-                print(f"❌ Error Groq intento {intento + 1}: {e}")
-                time.sleep(5)
+            print(f"⚠️ Error generando landing (no crítico): {e}")
 
-    print("❌ Todos los intentos con Groq fallaron en generator_agent")
-    return None
+    return True
+
+
+if __name__ == "__main__":
+    exito = ejecutar_batch()
+    sys.exit(0 if exito else 1)
