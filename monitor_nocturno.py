@@ -3,7 +3,7 @@ import sys
 import json
 import time
 import subprocess
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 
 import pytz
 
@@ -12,20 +12,16 @@ os.environ["PYTHONUTF8"] = "1"
 ZONA = pytz.timezone("Europe/Madrid")
 
 
-# ── Logging ───────────────────────────────────────────────────────────────────
-
 def log(msg):
     ts = datetime.now(ZONA).strftime("%Y-%m-%d %H:%M:%S")
     print(f"[{ts}] {msg}", flush=True)
 
 
-# ── Telegram via requests (sin bot async) ─────────────────────────────────────
-
 def enviar_telegram(mensaje):
-    token = os.environ.get("TELEGRAM_BOT_TOKEN", "")
+    token   = os.environ.get("TELEGRAM_BOT_TOKEN", "")
     chat_id = os.environ.get("TELEGRAM_CHAT_ID", "")
     if not token or not chat_id:
-        log("⚠️ Variables Telegram no configuradas")
+        log("⚠️ Variables Telegram no configuradas (normal en local)")
         return
     try:
         import requests
@@ -42,8 +38,6 @@ def enviar_telegram(mensaje):
         log(f"❌ Error Telegram: {e}")
 
 
-# ── Subprocess seguro (bytes + decode, sin text=True) ─────────────────────────
-
 def ejecutar_script(nombre):
     log(f"▶️  {nombre}...")
     try:
@@ -52,9 +46,9 @@ def ejecutar_script(nombre):
             capture_output=True,
             timeout=300
         )
-        salida = resultado.stdout.decode("utf-8", errors="replace")
+        salida  = resultado.stdout.decode("utf-8", errors="replace")
         errores = resultado.stderr.decode("utf-8", errors="replace")
-        exito = resultado.returncode == 0
+        exito   = resultado.returncode == 0
         if not exito and errores:
             log(f"STDERR {nombre}: {errores[:300]}")
         return exito, salida
@@ -85,10 +79,9 @@ def hc_groq():
 
 def hc_gemini():
     try:
-        import google.generativeai as genai
-        genai.configure(api_key=os.environ.get("GEMINI_API_KEY"))
-        model = genai.GenerativeModel("gemini-2.0-flash")
-        model.generate_content("ok", generation_config={"max_output_tokens": 3})
+        from google import genai
+        client = genai.Client(api_key=os.environ.get("GEMINI_API_KEY"))
+        client.models.generate_content(model="gemini-2.0-flash", contents="ok")
         return True, "OK"
     except Exception as e:
         return False, str(e)[:200]
@@ -97,8 +90,8 @@ def hc_gemini():
 def hc_notion():
     try:
         import requests
-        token = os.environ.get("NOTION_TOKEN", "")
-        db_id = os.environ.get("NOTION_DATABASE_ID", "308313aca133800981cfc48f32c52146")
+        token  = os.environ.get("NOTION_TOKEN", "")
+        db_id  = os.environ.get("NOTION_DATABASE_ID", "308313aca133800981cfc48f32c52146")
         resp = requests.get(
             f"https://api.notion.com/v1/databases/{db_id}",
             headers={
@@ -119,7 +112,7 @@ def ejecutar_health_check():
     ahora_str = datetime.now(ZONA).strftime("%d/%m/%Y %H:%M:%S")
 
     checks = {
-        "Groq": hc_groq(),
+        "Groq":   hc_groq(),
         "Gemini": hc_gemini(),
         "Notion": hc_notion()
     }
@@ -157,8 +150,8 @@ def procesar_cola_csv():
         log(f"📋 Cola CSV: {len(pendientes)} pendiente(s)")
 
         for fila in pendientes:
-            ts = fila.get("timestamp", "")
-            nombre = fila.get("nombre_idea", "?")
+            ts      = fila.get("timestamp", "")
+            nombre  = fila.get("nombre_idea", "?")
             intentos = int(fila.get("intentos", 1))
             log(f"🔄 Reintento {intentos}/3 — '{nombre}'")
             try:
@@ -207,11 +200,11 @@ def enviar_resumen_diario():
     log("☀️ Resumen diario (08:00)...")
     try:
         from agents.knowledge_base import get_stats
-        stats = get_stats()
-        total = stats.get("total_ideas", 0)
+        stats      = get_stats()
+        total      = stats.get("total_ideas", 0)
         score_prom = stats.get("score_promedio", 0)
-        mejor_v = stats.get("mejor_vertical", "N/A")
-        mejor_t = stats.get("mejor_tipo", "N/A")
+        mejor_v    = stats.get("mejor_vertical", "N/A")
+        mejor_t    = stats.get("mejor_tipo", "N/A")
 
         cola_txt = ""
         try:
@@ -240,51 +233,48 @@ def enviar_resumen_diario():
 # ── LOOP PRINCIPAL ────────────────────────────────────────────────────────────
 
 def main():
-    log("🚀 monitor_nocturno.py iniciado — P1+P2+P3 activos")
+    log("🚀 monitor_nocturno.py iniciado — P1+P2+P3+P4+P5 activos")
     enviar_telegram(
         "🟢 <b>Monitor ValidationIdea arrancado</b>\n\n"
         "✅ P1: Prompt evolutivo con KB\n"
         "✅ P2: Cola CSV reintentos automáticos\n"
-        "✅ P3: Health check cada hora"
+        "✅ P3: Health check cada hora\n"
+        "✅ P4: Validador calidad informes\n"
+        "✅ P5: ScoreMoney activado"
     )
 
-    ahora_utc = datetime.utcnow()
-    ultimo_batch = ahora_utc - timedelta(minutes=31)    # ejecutar pronto al iniciar
-    ultimo_informe = ahora_utc - timedelta(minutes=6)   # ejecutar pronto al iniciar
-    ultimo_health = ahora_utc - timedelta(hours=1, minutes=1)  # ejecutar pronto
+    ahora_utc = datetime.now(timezone.utc)
+    ultimo_batch   = ahora_utc - timedelta(minutes=31)
+    ultimo_informe = ahora_utc - timedelta(minutes=6)
+    ultimo_health  = ahora_utc - timedelta(hours=1, minutes=1)
 
-    dia_resumen = -1
+    dia_resumen       = -1
     dia_mantenimiento = -1
 
     while True:
         try:
-            ahora_utc = datetime.utcnow()
+            ahora_utc   = datetime.now(timezone.utc)   # ← sin utcnow()
             ahora_local = datetime.now(ZONA)
             hora = ahora_local.hour
-            dia = ahora_local.day
+            dia  = ahora_local.day
 
-            # Cada 30 min — generar idea nueva
             if (ahora_utc - ultimo_batch).total_seconds() >= 30 * 60:
                 generar_nueva_idea()
                 ultimo_batch = ahora_utc
 
-            # Cada 5 min — informes + cola CSV (P2)
             if (ahora_utc - ultimo_informe).total_seconds() >= 5 * 60:
                 procesar_informes()
                 procesar_cola_csv()
                 ultimo_informe = ahora_utc
 
-            # Cada 60 min — health check (P3)
             if (ahora_utc - ultimo_health).total_seconds() >= 60 * 60:
                 ejecutar_health_check()
                 ultimo_health = ahora_utc
 
-            # A las 08:00 — resumen diario
             if hora == 8 and dia != dia_resumen:
                 enviar_resumen_diario()
                 dia_resumen = dia
 
-            # A las 03:00 — mantenimiento nocturno
             if hora == 3 and dia != dia_mantenimiento:
                 mantenimiento_nocturno()
                 dia_mantenimiento = dia
