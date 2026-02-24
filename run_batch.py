@@ -5,7 +5,6 @@ from dotenv import load_dotenv
 from agents.generator_agent import generate
 from agents.critic_agent import critique
 from agents.notion_sync_agent import sync_idea_to_notion
-from agents.knowledge_base import KnowledgeBase
 
 load_dotenv()
 
@@ -27,9 +26,9 @@ def load_ideas():
 
 def save_idea(idea):
     ideas = load_ideas()
-    idea["id"] = len(ideas) + 1
+    idea["id"]    = len(ideas) + 1
     idea["fecha"] = datetime.now().isoformat()
-    idea["date"] = idea["fecha"]
+    idea["date"]  = idea["fecha"]
     ideas.append(idea)
     with open(DATA_FILE, "w", encoding="utf-8") as f:
         json.dump(ideas, f, ensure_ascii=False, indent=2)
@@ -41,12 +40,16 @@ def main():
     print("🚀 VALIDATION IDEA — Generador Automatico v2.0")
     print("=" * 60 + "\n")
 
-    # PASO 0: Knowledge Base activa
-    kb = KnowledgeBase()
-    kb_summary = kb.get_summary()
-    print(f"📚 KB: {kb_summary['total_ideas']} ideas | Score avg: {kb_summary['avg_score']}")
-    for insight in kb_summary.get("insights", []):
-        print(f"   {insight}")
+    # KB: mostrar stats sin bloquear
+    try:
+        from agents.knowledge_base import get_stats, get_contexto_para_generador
+        kb = get_stats()
+        print(f"📚 KB: {kb['total']} ideas analizadas | Mejor tipo: {kb['mejor_tipo']}")
+        ctx = get_contexto_para_generador()
+        if ctx:
+            print(f"   💡 {ctx[:200]}")
+    except Exception as e:
+        print(f"📚 KB no disponible: {e}")
 
     # PASO 1: Generar idea
     print("\n--- GENERANDO IDEA ---")
@@ -63,21 +66,20 @@ def main():
         print("❌ No se pudo evaluar la idea")
         return False
 
-    score = evaluation.get("score_critico", 0)
+    score = evaluation.get("score_critico") or evaluation.get("score", 0)
 
-    # Mapear campos del critic al formato de notion_sync_agent
-    idea["score_critico"] = score
+    idea["score_critico"]   = score
     idea["score_generador"] = idea.get("score_generador", 80)
-    idea["viral_score"] = evaluation.get("viral_score", 0)
-    idea["fortalezas"] = evaluation.get("puntos_fuertes", [])
-    idea["debilidades"] = evaluation.get("puntos_debiles", [])
-    idea["resumen"] = evaluation.get("resumen", "")
+    idea["viral_score"]     = evaluation.get("viral_score", 0)
+    idea["fortalezas"]      = evaluation.get("puntos_fuertes", [])
+    idea["debilidades"]     = evaluation.get("puntos_debiles", [])
+    idea["resumen"]         = evaluation.get("resumen", "")
 
     print(f"📊 Score: {score}/100")
     print(f"💪 Fortalezas: {idea['fortalezas']}")
     print(f"⚠️  Debilidades: {idea['debilidades']}")
 
-    # PASO 3: Verificacion de calidad minima
+    # PASO 3: Verificación de calidad mínima
     if score < MIN_SCORE:
         print(f"\n⚠️  Score {score} < {MIN_SCORE} — idea descartada")
         return False
@@ -88,19 +90,21 @@ def main():
     save_idea(idea)
 
     # PASO 5: Actualizar Knowledge Base
-    print("\n--- ACTUALIZANDO KNOWLEDGE BASE ---")
-    kb.analyze(idea)
-    for hint in kb.get_prompt_hints():
-        print(f"   💡 {hint}")
+    try:
+        from agents.knowledge_base import aprender
+        aprender(idea, score)
+        print("🧠 Knowledge Base actualizada")
+    except Exception as e:
+        print(f"⚠️  KB no actualizada: {e}")
 
     # PASO 6: Sincronizar con Notion
     print("\n--- SINCRONIZANDO CON NOTION ---")
     try:
         result = sync_idea_to_notion(idea)
         if result:
-            print(f"✅ Sincronizado con Notion: {result.get('url', 'OK')}")
+            print(f"✅ Sincronizado: {result.get('url', result)}")
         else:
-            print("⚠️  Notion fallo, pero idea guardada localmente")
+            print("⚠️  Notion falló, pero idea guardada localmente")
     except Exception as e:
         print(f"⚠️  Error Notion: {e}")
 
