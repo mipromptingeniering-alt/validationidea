@@ -61,12 +61,12 @@ def ejecutar_batch():
 
     # 4. Actualizar Knowledge Base
     try:
-        score_kb = idea.get("score_general")
-        if score_kb is None:
-            score_kb = idea.get("ScoreGen")
+        score_kb = idea.get("score_generador")      # ← nombre real de critique()
         if score_kb is not None:
             aprender(idea, score_kb)
             print(f"📚 KB actualizada (score={score_kb})")
+        else:
+            print("⚠️ score_generador no encontrado, KB no actualizada")
     except Exception as e:
         print(f"⚠️ Error actualizando KB: {e}")
 
