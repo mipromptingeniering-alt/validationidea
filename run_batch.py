@@ -11,7 +11,7 @@ def ejecutar_batch():
     print(f"🚀 run_batch iniciado: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
 
     from agents.generator_agent import generar_idea
-    from agents.critic_agent import evaluar_idea
+    from agents.critic_agent import critique          # ← nombre real
     from agents.knowledge_base import aprender
     from agents.notion_sync_agent import sync_idea_to_notion
     from agents.cola_csv import guardar_en_cola
@@ -26,7 +26,7 @@ def ejecutar_batch():
         except Exception:
             ideas_existentes = []
 
-    # 1. Generar idea (con contexto KB — P1 activo en generator_agent)
+    # 1. Generar idea (con contexto KB — P1 activo)
     print("🧠 Generando idea con contexto KB...")
     idea = generar_idea(ideas_existentes)
     if not idea:
@@ -36,10 +36,10 @@ def ejecutar_batch():
     nombre = idea.get("nombre", "Idea sin nombre")
     print(f"💡 Idea: {nombre}")
 
-    # 2. Evaluar con critic_agent
+    # 2. Evaluar con critique()
     print("🔍 Evaluando con critic_agent...")
     try:
-        evaluacion = evaluar_idea(idea)
+        evaluacion = critique(idea)
         if evaluacion:
             idea.update(evaluacion)
             score = idea.get("score_general")
