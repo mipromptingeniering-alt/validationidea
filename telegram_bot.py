@@ -138,6 +138,7 @@ async def cmd_ayuda(update: Update, context: ContextTypes.DEFAULT_TYPE):
         "/estado — Estadísticas del sistema\n"
         "/insights — Qué tipos de ideas funcionan mejor\n"
         "/logs — Últimas 20 líneas del log de hoy 📋\n"
+        "/exportar — Newsletter top 10 ideas en Markdown 📰\n"
         "/aprobar &lt;nombre&gt; — Marca idea como aprobada\n"
         "/rechazar &lt;nombre&gt; — Marca idea como rechazada\n"
         "/ayuda — Esta ayuda",
@@ -239,12 +240,12 @@ async def cmd_top5(update: Update, context: ContextTypes.DEFAULT_TYPE):
         msg      = "🏆 <b>Top 5 — ScoreGen</b>\n\n"
         medallas = ["🥇", "🥈", "🥉", "4️⃣", "5️⃣"]
         for i, (s, p) in enumerate(top5):
-            props  = p.get("properties", {})
-            nombre = get_txt(props, "Name") or "Sin nombre"
-            money  = get_num(props, "ScoreMoney")
+            props     = p.get("properties", {})
+            nombre    = get_txt(props, "Name") or "Sin nombre"
+            money     = get_num(props, "ScoreMoney")
             money_txt = f" | 💰{money}" if money is not None else ""
-            link   = f"https://notion.so/{p['id'].replace('-', '')}"
-            msg   += f"{medallas[i]} <b>{nombre}</b> — {s}/100{money_txt}\n<a href='{link}'>Ver</a>\n\n"
+            link      = f"https://notion.so/{p['id'].replace('-', '')}"
+            msg      += f"{medallas[i]} <b>{nombre}</b> — {s}/100{money_txt}\n<a href='{link}'>Ver</a>\n\n"
         await update.message.reply_text(msg, parse_mode="HTML", disable_web_page_preview=True)
     except Exception as e:
         await update.message.reply_text(f"❌ Error: {e}")
@@ -365,7 +366,6 @@ async def cmd_insights(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 
 async def cmd_logs(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    """P7 — Muestra las últimas 20 líneas del log de hoy."""
     if not solo_mi_chat(update):
         return
     try:
@@ -390,7 +390,6 @@ async def cmd_logs(update: Update, context: ContextTypes.DEFAULT_TYPE):
             return
 
         texto = "".join(ultimas).strip()
-        # Telegram tiene límite de 4096 chars
         if len(texto) > 3800:
             texto = "...\n" + texto[-3800:]
 
@@ -401,6 +400,112 @@ async def cmd_logs(update: Update, context: ContextTypes.DEFAULT_TYPE):
         )
     except Exception as e:
         await update.message.reply_text(f"❌ Error leyendo logs: {e}")
+
+
+async def cmd_exportar(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    """P8 — Genera newsletter Markdown con top 10 ideas y la envía como archivo."""
+    if not solo_mi_chat(update):
+        return
+
+    await update.message.reply_text("📰 Generando newsletter con top 10 ideas...")
+
+    try:
+        import pytz
+        zona   = pytz.timezone("Europe/Madrid")
+        ahora  = datetime.now(zona)
+        semana = ahora.strftime("%Y-semana%W")
+        fecha  = ahora.strftime("%d/%m/%Y")
+
+        # Obtener todas las ideas y ordenar por ScoreGen
+        ideas     = get_ideas(200)
+        con_score = []
+        for p in ideas:
+            props = p.get("properties", {})
+            s = get_score(props)
+            if s is not None:
+                con_score.append((s, p))
+        con_score.sort(key=lambda x: x[0], reverse=True)
+        top10 = con_score[:10]
+
+        if not top10:
+            await update.message.reply_text("❌ No hay ideas con score para exportar.")
+            return
+
+        # Construir contenido Markdown
+        lineas = [
+            f"# 💡 ValidationIdea — Newsletter {semana}",
+            f"",
+            f"**Fecha:** {fecha}  ",
+            f"**Ideas analizadas esta semana:** {len(ideas)}  ",
+            f"**Top 10 por ScoreGen**",
+            f"",
+            f"---",
+            f"",
+        ]
+
+        medallas = ["🥇", "🥈", "🥉", "4️⃣", "5️⃣", "6️⃣", "7️⃣", "8️⃣", "9️⃣", "🔟"]
+
+        for i, (score, p) in enumerate(top10):
+            props       = p.get("properties", {})
+            nombre      = get_txt(props, "Name")  or "Sin nombre"
+            problema    = get_txt(props, "Problem")   or "—"
+            solucion    = get_txt(props, "Solution")  or "—"
+            negocio     = get_txt(props, "Business")  or "—"
+            target      = get_txt(props, "Target")    or "—"
+            score_viral = get_num(props, "ScoreViral")
+            score_money = get_num(props, "ScoreMoney")
+            link        = f"https://notion.so/{p['id'].replace('-', '')}"
+
+            score_extra = ""
+            if score_viral is not None:
+                score_extra += f" | 🚀 Viral: {score_viral}"
+            if score_money is not None:
+                score_extra += f" | 💰 Money: {score_money}"
+
+            lineas += [
+                f"## {medallas[i]} {nombre}",
+                f"",
+                f"**Score:** {score}/100{score_extra}  ",
+                f"**Problema:** {problema[:300]}  ",
+                f"**Solución:** {solucion[:300]}  ",
+                f"**Modelo de negocio:** {negocio[:200]}  ",
+                f"**Cliente objetivo:** {target[:200]}  ",
+                f"**Ver informe completo:** [{nombre}]({link})",
+                f"",
+                f"---",
+                f"",
+            ]
+
+        # Pie de página
+        lineas += [
+            f"*Generado automáticamente por ValidationIdea — sistema autónomo de ideas de negocio*",
+            f"",
+            f"*¿Quieres recibir esto cada semana? Suscríbete por 9€/mes.*",
+        ]
+
+        contenido = "\n".join(lineas)
+
+        # Guardar en data/exports/
+        os.makedirs(os.path.join("data", "exports"), exist_ok=True)
+        ruta = os.path.join("data", "exports", f"{semana}.md")
+        with open(ruta, "w", encoding="utf-8") as f:
+            f.write(contenido)
+
+        # Enviar archivo por Telegram
+        with open(ruta, "rb") as f:
+            await update.message.reply_document(
+                document=f,
+                filename=f"validationidea-{semana}.md",
+                caption=(
+                    f"📰 <b>Newsletter {semana}</b>\n"
+                    f"Top {len(top10)} ideas · {fecha}\n\n"
+                    f"Archivo Markdown listo para publicar o enviar a suscriptores."
+                ),
+                parse_mode="HTML"
+            )
+
+    except Exception as e:
+        await update.message.reply_text(f"❌ Error generando newsletter: {e}")
 
 
 async def cmd_aprobar(update: Update, context: ContextTypes.DEFAULT_TYPE):
@@ -478,6 +583,7 @@ def main():
     app.add_handler(CommandHandler("estado",    cmd_estado))
     app.add_handler(CommandHandler("insights",  cmd_insights))
     app.add_handler(CommandHandler("logs",      cmd_logs))
+    app.add_handler(CommandHandler("exportar",  cmd_exportar))
     app.add_handler(CommandHandler("aprobar",   cmd_aprobar))
     app.add_handler(CommandHandler("rechazar",  cmd_rechazar))
 
