@@ -2,8 +2,10 @@
 import sys
 import json
 import time
+import logging
 import subprocess
 from datetime import datetime, timedelta, timezone
+from logging.handlers import TimedRotatingFileHandler
 
 import pytz
 
@@ -11,13 +13,43 @@ os.environ["PYTHONUTF8"] = "1"
 
 ZONA = pytz.timezone("Europe/Madrid")
 
+# ── P7: Sistema de logs persistentes ──────────────────────────────────────────
 
-def log(msg):
-    ts = datetime.now(ZONA).strftime("%Y-%m-%d %H:%M:%S")
-    print(f"[{ts}] {msg}", flush=True)
+def _configurar_logger() -> logging.Logger:
+    os.makedirs(os.path.join("data", "logs"), exist_ok=True)
+    log_path = os.path.join(
+        "data", "logs",
+        datetime.now(ZONA).strftime("%Y-%m-%d") + ".log"
+    )
+    logger = logging.getLogger("validationidea")
+    logger.setLevel(logging.INFO)
+
+    if not logger.handlers:
+        # Archivo: rotación semanal, guarda 4 semanas
+        fh = TimedRotatingFileHandler(
+            log_path, when="W0", interval=1, backupCount=4, encoding="utf-8"
+        )
+        fh.setFormatter(logging.Formatter("%(asctime)s %(message)s", "%Y-%m-%d %H:%M:%S"))
+        logger.addHandler(fh)
+
+        # Consola: Railway lo captura en sus logs
+        ch = logging.StreamHandler(sys.stdout)
+        ch.setFormatter(logging.Formatter("[%(asctime)s] %(message)s", "%Y-%m-%d %H:%M:%S"))
+        logger.addHandler(ch)
+
+    return logger
 
 
-def enviar_telegram(mensaje):
+_logger = _configurar_logger()
+
+
+def log(msg: str):
+    _logger.info(msg)
+
+
+# ── Telegram via requests ──────────────────────────────────────────────────────
+
+def enviar_telegram(mensaje: str):
     token   = os.environ.get("TELEGRAM_BOT_TOKEN", "")
     chat_id = os.environ.get("TELEGRAM_CHAT_ID", "")
     if not token or not chat_id:
@@ -38,7 +70,9 @@ def enviar_telegram(mensaje):
         log(f"❌ Error Telegram: {e}")
 
 
-def ejecutar_script(nombre):
+# ── Subprocess seguro ──────────────────────────────────────────────────────────
+
+def ejecutar_script(nombre: str):
     log(f"▶️  {nombre}...")
     try:
         resultado = subprocess.run(
@@ -60,7 +94,7 @@ def ejecutar_script(nombre):
         return False, str(e)
 
 
-# ── P3: HEALTH CHECK ──────────────────────────────────────────────────────────
+# ── P3: Health Check ───────────────────────────────────────────────────────────
 
 def hc_groq():
     try:
@@ -69,8 +103,7 @@ def hc_groq():
         client.chat.completions.create(
             model="llama-3.3-70b-versatile",
             messages=[{"role": "user", "content": "ok"}],
-            max_tokens=3,
-            temperature=0
+            max_tokens=3, temperature=0
         )
         return True, "OK"
     except Exception as e:
@@ -90,19 +123,14 @@ def hc_gemini():
 def hc_notion():
     try:
         import requests
-        token  = os.environ.get("NOTION_TOKEN", "")
-        db_id  = os.environ.get("NOTION_DATABASE_ID", "308313aca133800981cfc48f32c52146")
-        resp = requests.get(
+        token = os.environ.get("NOTION_TOKEN", "")
+        db_id = os.environ.get("NOTION_DATABASE_ID", "308313aca133800981cfc48f32c52146")
+        resp  = requests.get(
             f"https://api.notion.com/v1/databases/{db_id}",
-            headers={
-                "Authorization": f"Bearer {token}",
-                "Notion-Version": "2022-06-28"
-            },
+            headers={"Authorization": f"Bearer {token}", "Notion-Version": "2022-06-28"},
             timeout=10
         )
-        if resp.status_code == 200:
-            return True, "OK"
-        return False, f"HTTP {resp.status_code}"
+        return (True, "OK") if resp.status_code == 200 else (False, f"HTTP {resp.status_code}")
     except Exception as e:
         return False, str(e)[:200]
 
@@ -110,21 +138,13 @@ def hc_notion():
 def ejecutar_health_check():
     log("🏥 Health check iniciado...")
     ahora_str = datetime.now(ZONA).strftime("%d/%m/%Y %H:%M:%S")
-
-    checks = {
-        "Groq":   hc_groq(),
-        "Gemini": hc_gemini(),
-        "Notion": hc_notion()
-    }
-
-    fallos = [(srv, msg) for srv, (ok, msg) in checks.items() if not ok]
+    checks    = {"Groq": hc_groq(), "Gemini": hc_gemini(), "Notion": hc_notion()}
+    fallos    = [(srv, msg) for srv, (ok, msg) in checks.items() if not ok]
 
     if fallos:
         lineas = "\n".join(f"❌ <b>{srv}</b>: {msg}" for srv, msg in fallos)
         enviar_telegram(
-            f"🚨 <b>HEALTH CHECK — FALLO</b>\n"
-            f"🕐 {ahora_str}\n\n"
-            f"{lineas}\n\n"
+            f"🚨 <b>HEALTH CHECK — FALLO</b>\n🕐 {ahora_str}\n\n{lineas}\n\n"
             f"⚙️ Revisa Railway logs para detalles."
         )
         log(f"🚨 Servicios fallidos: {[s for s, _ in fallos]}")
@@ -134,13 +154,11 @@ def ejecutar_health_check():
     return len(fallos) == 0
 
 
-# ── P2: REINTENTOS COLA CSV ───────────────────────────────────────────────────
+# ── P2: Cola CSV ───────────────────────────────────────────────────────────────
 
 def procesar_cola_csv():
     try:
-        from agents.cola_csv import (
-            obtener_pendientes, eliminar_de_cola, incrementar_intentos
-        )
+        from agents.cola_csv import obtener_pendientes, eliminar_de_cola, incrementar_intentos
         from agents.notion_sync_agent import sync_idea_to_notion
 
         pendientes = obtener_pendientes()
@@ -148,7 +166,6 @@ def procesar_cola_csv():
             return
 
         log(f"📋 Cola CSV: {len(pendientes)} pendiente(s)")
-
         for fila in pendientes:
             ts      = fila.get("timestamp", "")
             nombre  = fila.get("nombre_idea", "?")
@@ -163,20 +180,19 @@ def procesar_cola_csv():
                 else:
                     raise Exception("sync devolvió None/False")
             except json.JSONDecodeError:
-                log(f"❌ JSON corrupto para '{nombre}', eliminando de cola")
+                log(f"❌ JSON corrupto para '{nombre}', eliminando")
                 eliminar_de_cola(ts)
             except Exception as e:
                 log(f"❌ Reintento fallido para '{nombre}': {e}")
                 incrementar_intentos(ts)
-
     except Exception as e:
         log(f"❌ Error procesando cola CSV: {e}")
 
 
-# ── TAREAS PROGRAMADAS ────────────────────────────────────────────────────────
+# ── Tareas programadas ─────────────────────────────────────────────────────────
 
 def generar_nueva_idea():
-    log("🧠 Generando nueva idea (con KB context)...")
+    log("🧠 Generando nueva idea...")
     exito, _ = ejecutar_script("run_batch.py")
     if not exito:
         log("❌ Error generando idea")
@@ -211,9 +227,13 @@ def enviar_resumen_diario():
             from agents.cola_csv import contar_pendientes
             n = contar_pendientes()
             if n > 0:
-                cola_txt = f"\n⏳ Ideas en cola CSV: <b>{n}</b> (se reintentarán)"
+                cola_txt = f"\n⏳ Ideas en cola CSV: <b>{n}</b>"
         except Exception:
             pass
+
+        # P7: informar ruta del log de hoy
+        log_hoy = os.path.join("data", "logs", datetime.now(ZONA).strftime("%Y-%m-%d") + ".log")
+        log_txt = f"\n📋 Log hoy: <code>{log_hoy}</code>" if os.path.exists(log_hoy) else ""
 
         enviar_telegram(
             f"☀️ <b>Resumen diario — ValidationIdea</b>\n"
@@ -222,7 +242,7 @@ def enviar_resumen_diario():
             f"📊 Score promedio: <b>{score_prom:.1f}/100</b>\n"
             f"🏆 Mejor vertical: <b>{mejor_v}</b>\n"
             f"🚀 Mejor tipo: <b>{mejor_t}</b>"
-            f"{cola_txt}\n\n"
+            f"{cola_txt}{log_txt}\n\n"
             f"Sistema operativo 24/7 ✅"
         )
     except Exception as e:
@@ -230,20 +250,22 @@ def enviar_resumen_diario():
         enviar_telegram(f"☀️ Sistema activo — error generando resumen: {e}")
 
 
-# ── LOOP PRINCIPAL ────────────────────────────────────────────────────────────
+# ── Loop principal ─────────────────────────────────────────────────────────────
 
 def main():
-    log("🚀 monitor_nocturno.py iniciado — P1+P2+P3+P4+P5 activos")
+    log("🚀 monitor_nocturno.py iniciado — P1+P2+P3+P4+P5+P6+P7 activos")
     enviar_telegram(
         "🟢 <b>Monitor ValidationIdea arrancado</b>\n\n"
-        "✅ P1: Prompt evolutivo con KB\n"
-        "✅ P2: Cola CSV reintentos automáticos\n"
+        "✅ P1: Prompt evolutivo KB\n"
+        "✅ P2: Cola CSV reintentos\n"
         "✅ P3: Health check cada hora\n"
         "✅ P4: Validador calidad informes\n"
-        "✅ P5: ScoreMoney activado"
+        "✅ P5: ScoreMoney\n"
+        "✅ P6: Anti-saturación verticales\n"
+        "✅ P7: Logs persistentes activos"
     )
 
-    ahora_utc = datetime.now(timezone.utc)
+    ahora_utc      = datetime.now(timezone.utc)
     ultimo_batch   = ahora_utc - timedelta(minutes=31)
     ultimo_informe = ahora_utc - timedelta(minutes=6)
     ultimo_health  = ahora_utc - timedelta(hours=1, minutes=1)
@@ -253,7 +275,7 @@ def main():
 
     while True:
         try:
-            ahora_utc   = datetime.now(timezone.utc)   # ← sin utcnow()
+            ahora_utc   = datetime.now(timezone.utc)
             ahora_local = datetime.now(ZONA)
             hora = ahora_local.hour
             dia  = ahora_local.day

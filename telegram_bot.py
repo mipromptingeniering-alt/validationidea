@@ -34,7 +34,7 @@ def get_ideas(page_size: int = 200) -> list:
         body = {"page_size": min(page_size, 100)}
         if cursor:
             body["start_cursor"] = cursor
-        r = requests.post(url, headers=_h(), json=body, timeout=30)
+        r    = requests.post(url, headers=_h(), json=body, timeout=30)
         data = r.json()
         ideas.extend(data.get("results", []))
         if not data.get("has_more") or len(ideas) >= page_size:
@@ -137,6 +137,7 @@ async def cmd_ayuda(update: Update, context: ContextTypes.DEFAULT_TYPE):
         "/top5money — Top 5 ideas por ScoreMoney 💰\n"
         "/estado — Estadísticas del sistema\n"
         "/insights — Qué tipos de ideas funcionan mejor\n"
+        "/logs — Últimas 20 líneas del log de hoy 📋\n"
         "/aprobar &lt;nombre&gt; — Marca idea como aprobada\n"
         "/rechazar &lt;nombre&gt; — Marca idea como rechazada\n"
         "/ayuda — Esta ayuda",
@@ -224,7 +225,7 @@ async def cmd_top5(update: Update, context: ContextTypes.DEFAULT_TYPE):
         return
     await update.message.reply_text("🔍 Buscando top 5 por ScoreGen...")
     try:
-        ideas = get_ideas(200)
+        ideas     = get_ideas(200)
         con_score = []
         for p in ideas:
             s = get_score(p.get("properties", {}))
@@ -235,7 +236,7 @@ async def cmd_top5(update: Update, context: ContextTypes.DEFAULT_TYPE):
         if not top5:
             await update.message.reply_text("❌ Ninguna idea tiene ScoreGen.")
             return
-        msg     = "🏆 <b>Top 5 — ScoreGen</b>\n\n"
+        msg      = "🏆 <b>Top 5 — ScoreGen</b>\n\n"
         medallas = ["🥇", "🥈", "🥉", "4️⃣", "5️⃣"]
         for i, (s, p) in enumerate(top5):
             props  = p.get("properties", {})
@@ -250,12 +251,11 @@ async def cmd_top5(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 
 async def cmd_top5money(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    """Top 5 ideas ordenadas por ScoreMoney — P5."""
     if not solo_mi_chat(update):
         return
     await update.message.reply_text("💰 Buscando top 5 por ScoreMoney...")
     try:
-        ideas = get_ideas(200)
+        ideas     = get_ideas(200)
         con_money = []
         for p in ideas:
             props = p.get("properties", {})
@@ -273,12 +273,12 @@ async def cmd_top5money(update: Update, context: ContextTypes.DEFAULT_TYPE):
         msg      = "💰 <b>Top 5 — ScoreMoney</b>\n\n"
         medallas = ["🥇", "🥈", "🥉", "4️⃣", "5️⃣"]
         for i, (m, p) in enumerate(top5):
-            props  = p.get("properties", {})
-            nombre = get_txt(props, "Name") or "Sin nombre"
-            gen    = get_score(props)
+            props   = p.get("properties", {})
+            nombre  = get_txt(props, "Name") or "Sin nombre"
+            gen     = get_score(props)
             gen_txt = f" | 📊{gen}" if gen is not None else ""
-            link   = f"https://notion.so/{p['id'].replace('-', '')}"
-            msg   += f"{medallas[i]} <b>{nombre}</b> — 💰{m}/100{gen_txt}\n<a href='{link}'>Ver</a>\n\n"
+            link    = f"https://notion.so/{p['id'].replace('-', '')}"
+            msg    += f"{medallas[i]} <b>{nombre}</b> — 💰{m}/100{gen_txt}\n<a href='{link}'>Ver</a>\n\n"
         await update.message.reply_text(msg, parse_mode="HTML", disable_web_page_preview=True)
     except Exception as e:
         await update.message.reply_text(f"❌ Error: {e}")
@@ -307,7 +307,6 @@ async def cmd_estado(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
         avg       = round(sum(scores) / len(scores), 1) if scores else 0
         avg_money = round(sum(moneys) / len(moneys), 1) if moneys else 0
-        sin_informe = total - con_inf
 
         try:
             from agents.knowledge_base import get_stats
@@ -328,7 +327,7 @@ async def cmd_estado(update: Update, context: ContextTypes.DEFAULT_TYPE):
             f"📊 <b>Estado del Sistema</b>\n\n"
             f"💡 Ideas totales: <b>{total}</b>\n"
             f"📝 Con informe: <b>{con_inf}</b>\n"
-            f"⏳ Sin informe: <b>{sin_informe}</b>\n"
+            f"⏳ Sin informe: <b>{total - con_inf}</b>\n"
             f"📈 ScoreGen promedio: <b>{avg}/100</b>"
             f"{money_txt}"
             + kb_txt,
@@ -347,8 +346,7 @@ async def cmd_insights(update: Update, context: ContextTypes.DEFAULT_TYPE):
         ctx = get_contexto_para_generador()
         if kb["total"] < 5:
             await update.message.reply_text(
-                f"🧠 <b>Auto-aprendizaje</b>\n\n"
-                f"Ideas analizadas: {kb['total']}/5\n"
+                f"🧠 <b>Auto-aprendizaje</b>\n\nIdeas analizadas: {kb['total']}/5\n"
                 f"⚠️ Necesitas al menos 5 ideas con score.",
                 parse_mode="HTML",
             )
@@ -357,13 +355,52 @@ async def cmd_insights(update: Update, context: ContextTypes.DEFAULT_TYPE):
             f"🧠 <b>Insights del Sistema</b>\n\n"
             f"📚 Ideas analizadas: <b>{kb['total']}</b>\n"
             f"⭐ Con score alto (>75): <b>{kb['exitosas']}</b>\n"
-            f"🏆 Mejor tipo de producto: <b>{kb['mejor_tipo']}</b>\n"
-            f"🎯 Mejor vertical/mercado: <b>{kb['mejor_vertical']}</b>\n\n"
-            f"<b>Recomendaciones:</b>\n{ctx}",
+            f"🏆 Mejor tipo: <b>{kb['mejor_tipo']}</b>\n"
+            f"🎯 Mejor vertical: <b>{kb['mejor_vertical']}</b>\n\n"
+            f"<b>Recomendaciones P6:</b>\n{ctx}",
             parse_mode="HTML",
         )
     except Exception as e:
         await update.message.reply_text(f"❌ Error KB: {e}")
+
+
+async def cmd_logs(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    """P7 — Muestra las últimas 20 líneas del log de hoy."""
+    if not solo_mi_chat(update):
+        return
+    try:
+        import pytz
+        zona     = pytz.timezone("Europe/Madrid")
+        hoy      = datetime.now(zona).strftime("%Y-%m-%d")
+        log_path = os.path.join("data", "logs", f"{hoy}.log")
+
+        if not os.path.exists(log_path):
+            await update.message.reply_text(
+                f"📋 No hay log para hoy ({hoy}).\n"
+                f"Se creará cuando el monitor genere la próxima idea."
+            )
+            return
+
+        with open(log_path, "r", encoding="utf-8", errors="replace") as f:
+            lineas = f.readlines()
+
+        ultimas = lineas[-20:]
+        if not ultimas:
+            await update.message.reply_text("📋 Log vacío por ahora.")
+            return
+
+        texto = "".join(ultimas).strip()
+        # Telegram tiene límite de 4096 chars
+        if len(texto) > 3800:
+            texto = "...\n" + texto[-3800:]
+
+        await update.message.reply_text(
+            f"📋 <b>Log {hoy} — últimas {len(ultimas)} líneas</b>\n\n"
+            f"<pre>{texto}</pre>",
+            parse_mode="HTML"
+        )
+    except Exception as e:
+        await update.message.reply_text(f"❌ Error leyendo logs: {e}")
 
 
 async def cmd_aprobar(update: Update, context: ContextTypes.DEFAULT_TYPE):
@@ -372,8 +409,8 @@ async def cmd_aprobar(update: Update, context: ContextTypes.DEFAULT_TYPE):
     if not context.args:
         await update.message.reply_text("❌ Uso: /aprobar &lt;nombre&gt;", parse_mode="HTML")
         return
-    buscar = " ".join(context.args).lower()
-    ideas  = get_ideas(200)
+    buscar     = " ".join(context.args).lower()
+    ideas      = get_ideas(200)
     encontrada = next(
         (p for p in ideas if buscar in get_txt(p.get("properties", {}), "Name").lower()), None
     )
@@ -395,8 +432,8 @@ async def cmd_rechazar(update: Update, context: ContextTypes.DEFAULT_TYPE):
     if not context.args:
         await update.message.reply_text("❌ Uso: /rechazar &lt;nombre&gt;", parse_mode="HTML")
         return
-    buscar = " ".join(context.args).lower()
-    ideas  = get_ideas(200)
+    buscar     = " ".join(context.args).lower()
+    ideas      = get_ideas(200)
     encontrada = next(
         (p for p in ideas if buscar in get_txt(p.get("properties", {}), "Name").lower()), None
     )
@@ -433,20 +470,21 @@ def main():
 
     app = Application.builder().token(TOKEN).build()
 
-    app.add_handler(CommandHandler("start",      cmd_ayuda))
-    app.add_handler(CommandHandler("ayuda",      cmd_ayuda))
-    app.add_handler(CommandHandler("nueva",      cmd_nueva))
-    app.add_handler(CommandHandler("top5",       cmd_top5))
-    app.add_handler(CommandHandler("top5money",  cmd_top5money))
-    app.add_handler(CommandHandler("estado",     cmd_estado))
-    app.add_handler(CommandHandler("insights",   cmd_insights))
-    app.add_handler(CommandHandler("aprobar",    cmd_aprobar))
-    app.add_handler(CommandHandler("rechazar",   cmd_rechazar))
+    app.add_handler(CommandHandler("start",     cmd_ayuda))
+    app.add_handler(CommandHandler("ayuda",     cmd_ayuda))
+    app.add_handler(CommandHandler("nueva",     cmd_nueva))
+    app.add_handler(CommandHandler("top5",      cmd_top5))
+    app.add_handler(CommandHandler("top5money", cmd_top5money))
+    app.add_handler(CommandHandler("estado",    cmd_estado))
+    app.add_handler(CommandHandler("insights",  cmd_insights))
+    app.add_handler(CommandHandler("logs",      cmd_logs))
+    app.add_handler(CommandHandler("aprobar",   cmd_aprobar))
+    app.add_handler(CommandHandler("rechazar",  cmd_rechazar))
 
     print("[Bot] ✅ Escuchando comandos...")
     app.run_polling(
         allowed_updates=Update.ALL_TYPES,
-        drop_pending_updates=True      # ← fix conflicto instancias en redeploy
+        drop_pending_updates=True
     )
 
 
