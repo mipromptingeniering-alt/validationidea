@@ -4,7 +4,6 @@ from datetime import datetime
 
 KB_FILE = "data/knowledge_base.json"
 
-# Estructura base garantizada — usada si el archivo no existe o tiene formato antiguo
 _ESTRUCTURA_BASE = {
     "total_analizadas": 0,
     "patrones_exitosos": [],
@@ -13,19 +12,23 @@ _ESTRUCTURA_BASE = {
     "ultima_actualizacion": None,
 }
 
+# Umbral P6: vertical saturada si tiene más ideas que esto
+UMBRAL_SATURACION = 10
+# Umbral P6: vertical a explorar si tiene menos ideas que esto
+UMBRAL_EXPLORACION = 3
+
 
 def _cargar() -> dict:
     if os.path.exists(KB_FILE):
         try:
             with open(KB_FILE, "r", encoding="utf-8") as f:
                 datos = json.load(f)
-            # Migración: si faltan claves del formato nuevo, añadirlas
             for clave, valor in _ESTRUCTURA_BASE.items():
                 if clave not in datos:
                     datos[clave] = valor
             return datos
         except Exception:
-            pass  # Archivo corrupto → empezar de cero
+            pass
     return dict(_ESTRUCTURA_BASE)
 
 
@@ -39,8 +42,8 @@ def aprender(idea: dict, score: int):
     """Registra una idea evaluada y actualiza estadísticas de tipos y verticales."""
     kb = _cargar()
 
-    kb["total_analizadas"] = kb.get("total_analizadas", 0) + 1
-    kb["ultima_actualizacion"] = datetime.now().isoformat()
+    kb["total_analizadas"]      = kb.get("total_analizadas", 0) + 1
+    kb["ultima_actualizacion"]  = datetime.now().isoformat()
 
     tipo     = str(idea.get("tipo")     or "Desconocido")[:60]
     vertical = str(idea.get("vertical") or "Desconocido")[:60]
@@ -51,12 +54,9 @@ def aprender(idea: dict, score: int):
             grupo[valor] = {"total": 0, "suma": 0, "avg": 0}
         grupo[valor]["total"] += 1
         grupo[valor]["suma"]  += score
-        grupo[valor]["avg"]    = round(
-            grupo[valor]["suma"] / grupo[valor]["total"], 1
-        )
+        grupo[valor]["avg"]    = round(grupo[valor]["suma"] / grupo[valor]["total"], 1)
         kb[campo] = grupo
 
-    # Guardar solo ideas exitosas (score >= 75) — máximo 30
     if score >= 75:
         patron = {
             "nombre":   str(idea.get("nombre") or "")[:100],
@@ -78,13 +78,17 @@ def aprender(idea: dict, score: int):
 
 
 def get_contexto_para_generador() -> str:
-    """Devuelve texto con insights para mejorar el generador de ideas."""
+    """
+    Devuelve texto con insights para mejorar el generador de ideas.
+    Incluye P6: verticales saturadas a evitar y verticales a explorar.
+    """
     kb = _cargar()
     if kb.get("total_analizadas", 0) < 5:
         return ""
 
     lineas = []
 
+    # ── Tipos más exitosos ────────────────────────────────────────────────────
     tipos = kb.get("stats_tipos", {})
     if tipos:
         top = sorted(tipos.items(), key=lambda x: x[1].get("avg", 0), reverse=True)
@@ -95,6 +99,7 @@ def get_contexto_para_generador() -> str:
                 ", ".join(f"{t}({d['avg']:.0f}/100)" for t, d in top3)
             )
 
+    # ── Verticales más rentables ──────────────────────────────────────────────
     verticales = kb.get("stats_verticales", {})
     if verticales:
         top = sorted(verticales.items(), key=lambda x: x[1].get("avg", 0), reverse=True)
@@ -105,18 +110,56 @@ def get_contexto_para_generador() -> str:
                 ", ".join(f"{v}({d['avg']:.0f}/100)" for v, d in top3)
             )
 
+    # ── P6: Anti-saturación de verticales ─────────────────────────────────────
+    if verticales:
+        saturadas = [
+            v for v, d in verticales.items()
+            if d.get("total", 0) > UMBRAL_SATURACION
+        ]
+        a_explorar = [
+            v for v, d in verticales.items()
+            if d.get("total", 0) < UMBRAL_EXPLORACION
+        ]
+        todas_las_verticales = set(verticales.keys())
+
+        # Verticales nunca exploradas (no aparecen en KB)
+        verticales_conocidas = {
+            "SaaS", "App móvil", "Marketplace", "IA", "Hardware",
+            "Servicio", "E-commerce", "Educación", "Salud", "Fintech",
+            "Legal Tech", "Sostenibilidad", "Productividad", "Recursos Humanos",
+            "Logística", "Turismo", "Inmobiliaria", "Deportes", "Alimentación"
+        }
+        sin_explorar = sorted(verticales_conocidas - todas_las_verticales)
+
+        if saturadas:
+            lineas.append(
+                "VERTICALES SATURADAS — evitar repetir: " +
+                ", ".join(saturadas)
+            )
+        if a_explorar or sin_explorar:
+            explorar = list(a_explorar) + sin_explorar[:3]
+            lineas.append(
+                "VERTICALES A EXPLORAR — priorizar estas: " +
+                ", ".join(explorar[:6])
+            )
+
+    # ── Ideas recientes exitosas ──────────────────────────────────────────────
     patrones = kb.get("patrones_exitosos", [])
     if patrones:
         recientes = patrones[-3:]
         nombres = [p["nombre"] for p in recientes if p.get("nombre")]
         if nombres:
-            lineas.append(f"Ideas recientes exitosas: {', '.join(nombres)}")
+            lineas.append(f"Ideas recientes exitosas (no repetir): {', '.join(nombres)}")
 
     return "\n".join(lineas)
 
 
 def get_stats() -> dict:
-    """Retorna estadísticas resumidas. Nunca lanza excepciones."""
+    """
+    Retorna estadísticas resumidas.
+    Devuelve total_ideas, score_promedio, mejor_tipo, mejor_vertical.
+    Nunca lanza excepciones.
+    """
     try:
         kb = _cargar()
 
@@ -132,11 +175,29 @@ def get_stats() -> dict:
         if verts_validos:
             mejor_vert = max(verts_validos.items(), key=lambda x: x[1].get("avg", 0))[0]
 
+        # Calcular score promedio global
+        todos_los_scores = [
+            v.get("avg", 0) * v.get("total", 0)
+            for v in verts.values() if v.get("total", 0) > 0
+        ]
+        total_ideas_con_score = sum(v.get("total", 0) for v in verts.values())
+        score_promedio = (
+            round(sum(todos_los_scores) / total_ideas_con_score, 1)
+            if total_ideas_con_score > 0 else 0
+        )
+
+        total = kb.get("total_analizadas", 0)
+
         return {
-            "total":           kb.get("total_analizadas", 0),
-            "exitosas":        len(kb.get("patrones_exitosos", [])),
-            "mejor_tipo":      mejor_tipo,
-            "mejor_vertical":  mejor_vert,
+            "total":          total,
+            "total_ideas":    total,           # alias para monitor_nocturno
+            "exitosas":       len(kb.get("patrones_exitosos", [])),
+            "mejor_tipo":     mejor_tipo,
+            "mejor_vertical": mejor_vert,
+            "score_promedio": score_promedio,  # para resumen diario Telegram
         }
     except Exception:
-        return {"total": 0, "exitosas": 0, "mejor_tipo": "N/A", "mejor_vertical": "N/A"}
+        return {
+            "total": 0, "total_ideas": 0, "exitosas": 0,
+            "mejor_tipo": "N/A", "mejor_vertical": "N/A", "score_promedio": 0
+        }
