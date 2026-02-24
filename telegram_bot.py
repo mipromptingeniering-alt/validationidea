@@ -17,7 +17,7 @@ GROQ_API_KEY       = os.environ.get("GROQ_API_KEY")
 NOTION_VERSION     = "2022-06-28"
 
 
-# ─── Helpers Notion ──────────────────────────────────────────────────────────
+# ── Helpers Notion ─────────────────────────────────────────────────────────────
 
 def _h():
     return {
@@ -54,14 +54,13 @@ def get_num(props, key: str):
 
 
 def get_score(props) -> int | None:
-    """Busca score en ScoreGen (nuevo) y en Score (campo antiguo)."""
     s = get_num(props, "ScoreGen")
     if s is None:
         s = get_num(props, "Score")
     return s
 
 
-# ─── Helper LLM ──────────────────────────────────────────────────────────────
+# ── Helper LLM ─────────────────────────────────────────────────────────────────
 
 def llamar_groq(prompt: str, max_tokens: int = 600) -> str:
     r = requests.post(
@@ -96,8 +95,8 @@ def crear_idea_notion(nombre, problema, solucion, descripcion,
             "Value":       {"rich_text": rt(valor)},
             "Target":      {"rich_text": rt(target)},
             "Business":    {"rich_text": rt(negocio)},
-            "ScoreGen":    {"number":    score},
-            "Date":        {"date":      {"start": datetime.now().strftime("%Y-%m-%d")}},
+            "ScoreGen":    {"number": score},
+            "Date":        {"date": {"start": datetime.now().strftime("%Y-%m-%d")}},
         },
     }
     r = requests.post("https://api.notion.com/v1/pages",
@@ -121,7 +120,7 @@ def añadir_tag(page_id: str, props: dict, nuevo_tag: str, quitar_tag: str = "")
     return r.status_code == 200
 
 
-# ─── Handlers ────────────────────────────────────────────────────────────────
+# ── Handlers ───────────────────────────────────────────────────────────────────
 
 def solo_mi_chat(update: Update) -> bool:
     return str(update.effective_chat.id) == str(CHAT_ID)
@@ -135,6 +134,7 @@ async def cmd_ayuda(update: Update, context: ContextTypes.DEFAULT_TYPE):
         "<b>Comandos:</b>\n"
         "/nueva &lt;tema&gt; — Genera idea sobre ese tema\n"
         "/top5 — Top 5 ideas por ScoreGen\n"
+        "/top5money — Top 5 ideas por ScoreMoney 💰\n"
         "/estado — Estadísticas del sistema\n"
         "/insights — Qué tipos de ideas funcionan mejor\n"
         "/aprobar &lt;nombre&gt; — Marca idea como aprobada\n"
@@ -148,7 +148,10 @@ async def cmd_nueva(update: Update, context: ContextTypes.DEFAULT_TYPE):
     if not solo_mi_chat(update):
         return
     if not context.args:
-        await update.message.reply_text("❌ Uso: /nueva &lt;tema&gt;\nEjemplo: /nueva automatización para freelancers", parse_mode="HTML")
+        await update.message.reply_text(
+            "❌ Uso: /nueva &lt;tema&gt;\nEjemplo: /nueva automatización para freelancers",
+            parse_mode="HTML"
+        )
         return
 
     tema = " ".join(context.args)
@@ -172,28 +175,26 @@ Responde ÚNICAMENTE en JSON exacto (sin markdown ni texto extra):
         texto = llamar_groq(prompt, max_tokens=600)
         texto = texto.strip()
         if "```" in texto:
-            partes = texto.split("```")
-            for parte in partes:
+            for parte in texto.split("```"):
                 parte = parte.strip().lstrip("json").strip()
                 if parte.startswith("{"):
                     texto = parte
                     break
 
         data        = json.loads(texto)
-        nombre      = data.get("nombre", "Nueva Idea")
-        problema    = data.get("problema", "")
-        solucion    = data.get("solucion", "")
+        nombre      = data.get("nombre",      "Nueva Idea")
+        problema    = data.get("problema",    "")
+        solucion    = data.get("solucion",    "")
         descripcion = data.get("descripcion", "")
-        valor       = data.get("valor", "")
-        target      = data.get("target", "")
-        negocio     = data.get("negocio", "")
-        score       = int(data.get("score", 70))
+        valor       = data.get("valor",       "")
+        target      = data.get("target",      "")
+        negocio     = data.get("negocio",     "")
+        score       = int(data.get("score",   70))
 
         notion_url = crear_idea_notion(
             nombre, problema, solucion, descripcion, valor, target, negocio, score
         )
 
-        # Auto-aprendizaje: registrar en KB
         try:
             from agents.knowledge_base import aprender
             aprender({"nombre": nombre, "tipo": "Nueva", "vertical": target}, score)
@@ -213,9 +214,7 @@ Responde ÚNICAMENTE en JSON exacto (sin markdown ni texto extra):
         )
 
     except json.JSONDecodeError:
-        await update.message.reply_text(
-            "⚠️ El LLM no devolvió JSON válido. Intenta de nuevo."
-        )
+        await update.message.reply_text("⚠️ El LLM no devolvió JSON válido. Intenta de nuevo.")
     except Exception as e:
         await update.message.reply_text(f"❌ Error: {e}")
 
@@ -223,9 +222,7 @@ Responde ÚNICAMENTE en JSON exacto (sin markdown ni texto extra):
 async def cmd_top5(update: Update, context: ContextTypes.DEFAULT_TYPE):
     if not solo_mi_chat(update):
         return
-
-    await update.message.reply_text("🔍 Buscando top 5...")
-
+    await update.message.reply_text("🔍 Buscando top 5 por ScoreGen...")
     try:
         ideas = get_ideas(200)
         con_score = []
@@ -233,25 +230,56 @@ async def cmd_top5(update: Update, context: ContextTypes.DEFAULT_TYPE):
             s = get_score(p.get("properties", {}))
             if s is not None:
                 con_score.append((s, p))
-
         con_score.sort(key=lambda x: x[0], reverse=True)
         top5 = con_score[:5]
-
         if not top5:
             await update.message.reply_text("❌ Ninguna idea tiene ScoreGen.")
             return
-
-        msg = "🏆 <b>Top 5 Ideas</b>\n\n"
+        msg     = "🏆 <b>Top 5 — ScoreGen</b>\n\n"
         medallas = ["🥇", "🥈", "🥉", "4️⃣", "5️⃣"]
         for i, (s, p) in enumerate(top5):
             props  = p.get("properties", {})
             nombre = get_txt(props, "Name") or "Sin nombre"
+            money  = get_num(props, "ScoreMoney")
+            money_txt = f" | 💰{money}" if money is not None else ""
             link   = f"https://notion.so/{p['id'].replace('-', '')}"
-            msg   += f"{medallas[i]} <b>{nombre}</b> — {s}/100\n<a href='{link}'>Ver</a>\n\n"
+            msg   += f"{medallas[i]} <b>{nombre}</b> — {s}/100{money_txt}\n<a href='{link}'>Ver</a>\n\n"
+        await update.message.reply_text(msg, parse_mode="HTML", disable_web_page_preview=True)
+    except Exception as e:
+        await update.message.reply_text(f"❌ Error: {e}")
 
-        await update.message.reply_text(
-            msg, parse_mode="HTML", disable_web_page_preview=True
-        )
+
+async def cmd_top5money(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    """Top 5 ideas ordenadas por ScoreMoney — P5."""
+    if not solo_mi_chat(update):
+        return
+    await update.message.reply_text("💰 Buscando top 5 por ScoreMoney...")
+    try:
+        ideas = get_ideas(200)
+        con_money = []
+        for p in ideas:
+            props = p.get("properties", {})
+            m = get_num(props, "ScoreMoney")
+            if m is not None:
+                con_money.append((m, p))
+        con_money.sort(key=lambda x: x[0], reverse=True)
+        top5 = con_money[:5]
+        if not top5:
+            await update.message.reply_text(
+                "❌ Ninguna idea tiene ScoreMoney aún.\n"
+                "Las próximas ideas generadas ya incluirán este score."
+            )
+            return
+        msg      = "💰 <b>Top 5 — ScoreMoney</b>\n\n"
+        medallas = ["🥇", "🥈", "🥉", "4️⃣", "5️⃣"]
+        for i, (m, p) in enumerate(top5):
+            props  = p.get("properties", {})
+            nombre = get_txt(props, "Name") or "Sin nombre"
+            gen    = get_score(props)
+            gen_txt = f" | 📊{gen}" if gen is not None else ""
+            link   = f"https://notion.so/{p['id'].replace('-', '')}"
+            msg   += f"{medallas[i]} <b>{nombre}</b> — 💰{m}/100{gen_txt}\n<a href='{link}'>Ver</a>\n\n"
+        await update.message.reply_text(msg, parse_mode="HTML", disable_web_page_preview=True)
     except Exception as e:
         await update.message.reply_text(f"❌ Error: {e}")
 
@@ -259,29 +287,31 @@ async def cmd_top5(update: Update, context: ContextTypes.DEFAULT_TYPE):
 async def cmd_estado(update: Update, context: ContextTypes.DEFAULT_TYPE):
     if not solo_mi_chat(update):
         return
-
     await update.message.reply_text("📊 Consultando...")
-
     try:
         ideas   = get_ideas(200)
         total   = len(ideas)
         con_inf = 0
         scores  = []
-
+        moneys  = []
         for p in ideas:
             props = p.get("properties", {})
             if props.get("Informe Completo", {}).get("rich_text"):
                 con_inf += 1
             s = get_score(props)
-            if s is not None:          # ← FIX: is not None (no "if s:")
+            if s is not None:
                 scores.append(s)
+            m = get_num(props, "ScoreMoney")
+            if m is not None:
+                moneys.append(m)
 
-        avg         = round(sum(scores) / len(scores), 1) if scores else 0
+        avg       = round(sum(scores) / len(scores), 1) if scores else 0
+        avg_money = round(sum(moneys) / len(moneys), 1) if moneys else 0
         sin_informe = total - con_inf
 
         try:
             from agents.knowledge_base import get_stats
-            kb = get_stats()
+            kb     = get_stats()
             kb_txt = (
                 f"\n\n🧠 <b>Auto-aprendizaje:</b>\n"
                 f"  Analizadas: {kb['total']} | Exitosas: {kb['exitosas']}\n"
@@ -290,14 +320,17 @@ async def cmd_estado(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 f"<i>Usa /insights para ver detalles</i>"
             )
         except Exception:
-            kb_txt = "\n\n<i>KB no disponible. Ejecuta poblar_knowledge_base.py</i>"
+            kb_txt = "\n\n<i>KB no disponible</i>"
+
+        money_txt = f"\n💰 ScoreMoney promedio: <b>{avg_money}/100</b>" if moneys else ""
 
         await update.message.reply_text(
             f"📊 <b>Estado del Sistema</b>\n\n"
             f"💡 Ideas totales: <b>{total}</b>\n"
             f"📝 Con informe: <b>{con_inf}</b>\n"
             f"⏳ Sin informe: <b>{sin_informe}</b>\n"
-            f"📈 Score promedio: <b>{avg}/100</b>"
+            f"📈 ScoreGen promedio: <b>{avg}/100</b>"
+            f"{money_txt}"
             + kb_txt,
             parse_mode="HTML",
         )
@@ -308,23 +341,18 @@ async def cmd_estado(update: Update, context: ContextTypes.DEFAULT_TYPE):
 async def cmd_insights(update: Update, context: ContextTypes.DEFAULT_TYPE):
     if not solo_mi_chat(update):
         return
-
     try:
         from agents.knowledge_base import get_stats, get_contexto_para_generador
         kb  = get_stats()
         ctx = get_contexto_para_generador()
-
         if kb["total"] < 5:
             await update.message.reply_text(
                 f"🧠 <b>Auto-aprendizaje</b>\n\n"
                 f"Ideas analizadas: {kb['total']}/5\n"
-                f"⚠️ Necesitas al menos 5 ideas con score.\n\n"
-                f"Ejecuta en PowerShell:\n"
-                f"<code>python poblar_knowledge_base.py</code>",
+                f"⚠️ Necesitas al menos 5 ideas con score.",
                 parse_mode="HTML",
             )
             return
-
         await update.message.reply_text(
             f"🧠 <b>Insights del Sistema</b>\n\n"
             f"📚 Ideas analizadas: <b>{kb['total']}</b>\n"
@@ -344,22 +372,21 @@ async def cmd_aprobar(update: Update, context: ContextTypes.DEFAULT_TYPE):
     if not context.args:
         await update.message.reply_text("❌ Uso: /aprobar &lt;nombre&gt;", parse_mode="HTML")
         return
-
     buscar = " ".join(context.args).lower()
     ideas  = get_ideas(200)
     encontrada = next(
-        (p for p in ideas if buscar in get_txt(p.get("properties", {}), "Name").lower()),
-        None,
+        (p for p in ideas if buscar in get_txt(p.get("properties", {}), "Name").lower()), None
     )
     if not encontrada:
         await update.message.reply_text(f"❌ No encontré '{buscar}'")
         return
-
     props  = encontrada.get("properties", {})
     nombre = get_txt(props, "Name")
     ok     = añadir_tag(encontrada["id"], props, "Aprobada", quitar_tag="Rechazada")
-    msg    = f"✅ <b>{nombre}</b> marcada como <b>Aprobada</b>" if ok else "❌ Error al actualizar"
-    await update.message.reply_text(msg, parse_mode="HTML")
+    await update.message.reply_text(
+        f"✅ <b>{nombre}</b> marcada como <b>Aprobada</b>" if ok else "❌ Error al actualizar",
+        parse_mode="HTML"
+    )
 
 
 async def cmd_rechazar(update: Update, context: ContextTypes.DEFAULT_TYPE):
@@ -368,30 +395,28 @@ async def cmd_rechazar(update: Update, context: ContextTypes.DEFAULT_TYPE):
     if not context.args:
         await update.message.reply_text("❌ Uso: /rechazar &lt;nombre&gt;", parse_mode="HTML")
         return
-
     buscar = " ".join(context.args).lower()
     ideas  = get_ideas(200)
     encontrada = next(
-        (p for p in ideas if buscar in get_txt(p.get("properties", {}), "Name").lower()),
-        None,
+        (p for p in ideas if buscar in get_txt(p.get("properties", {}), "Name").lower()), None
     )
     if not encontrada:
         await update.message.reply_text(f"❌ No encontré '{buscar}'")
         return
-
     props  = encontrada.get("properties", {})
     nombre = get_txt(props, "Name")
     ok     = añadir_tag(encontrada["id"], props, "Rechazada", quitar_tag="Aprobada")
-    msg    = f"🚫 <b>{nombre}</b> marcada como <b>Rechazada</b>" if ok else "❌ Error al actualizar"
-    await update.message.reply_text(msg, parse_mode="HTML")
+    await update.message.reply_text(
+        f"🚫 <b>{nombre}</b> marcada como <b>Rechazada</b>" if ok else "❌ Error al actualizar",
+        parse_mode="HTML"
+    )
 
 
-# ─── Main ─────────────────────────────────────────────────────────────────────
+# ── Main ───────────────────────────────────────────────────────────────────────
 
 def main():
     print("[Bot] Iniciando IdeaValidator Bot...")
 
-    # Notificar por Telegram que el bot arrancó
     if TOKEN and CHAT_ID:
         try:
             requests.post(
@@ -408,17 +433,21 @@ def main():
 
     app = Application.builder().token(TOKEN).build()
 
-    app.add_handler(CommandHandler("start",    cmd_ayuda))
-    app.add_handler(CommandHandler("ayuda",    cmd_ayuda))
-    app.add_handler(CommandHandler("nueva",    cmd_nueva))
-    app.add_handler(CommandHandler("top5",     cmd_top5))
-    app.add_handler(CommandHandler("estado",   cmd_estado))
-    app.add_handler(CommandHandler("insights", cmd_insights))
-    app.add_handler(CommandHandler("aprobar",  cmd_aprobar))
-    app.add_handler(CommandHandler("rechazar", cmd_rechazar))
+    app.add_handler(CommandHandler("start",      cmd_ayuda))
+    app.add_handler(CommandHandler("ayuda",      cmd_ayuda))
+    app.add_handler(CommandHandler("nueva",      cmd_nueva))
+    app.add_handler(CommandHandler("top5",       cmd_top5))
+    app.add_handler(CommandHandler("top5money",  cmd_top5money))
+    app.add_handler(CommandHandler("estado",     cmd_estado))
+    app.add_handler(CommandHandler("insights",   cmd_insights))
+    app.add_handler(CommandHandler("aprobar",    cmd_aprobar))
+    app.add_handler(CommandHandler("rechazar",   cmd_rechazar))
 
     print("[Bot] ✅ Escuchando comandos...")
-    app.run_polling(allowed_updates=Update.ALL_TYPES)
+    app.run_polling(
+        allowed_updates=Update.ALL_TYPES,
+        drop_pending_updates=True      # ← fix conflicto instancias en redeploy
+    )
 
 
 if __name__ == "__main__":
