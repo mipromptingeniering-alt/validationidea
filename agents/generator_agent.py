@@ -1,4 +1,4 @@
-﻿import os
+import os
 import re
 import json
 import time
@@ -101,7 +101,7 @@ def generar_idea(ideas_existentes=None):
         + exclusiones
     )
 
-    MAX_INTENTOS_LLM       = 5
+    MAX_INTENTOS_LLM       = 3
     MAX_REINTENTOS_SIMILAR = 2
     reintentos_similitud   = 0
 
@@ -175,7 +175,7 @@ def generar_idea(ideas_existentes=None):
         except Exception as e:
             error_str = str(e)
             if "429" in error_str or "rate_limit" in error_str.lower():
-                espera = 30 * (2 ** min(intento, 3))
+                espera = 8 * (2 ** min(intento, 2))
                 print(f"⚠️ Rate limit Groq (intento {intento + 1}), esperando {espera}s...")
                 time.sleep(espera)
             else:
