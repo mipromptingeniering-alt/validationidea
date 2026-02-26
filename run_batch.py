@@ -1,12 +1,9 @@
-﻿@"
-import os
+﻿import os
 import sys
 import json
 from datetime import datetime
 
 os.environ["PYTHONUTF8"] = "1"
-
-SCORE_LANDING_MINIMO = 85
 
 
 def ejecutar_batch():
@@ -14,11 +11,12 @@ def ejecutar_batch():
     print(f"🚀 run_batch iniciado: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
 
     from agents.generator_agent import generar_idea
-    from agents.critic_agent import critique
+    from agents.critic_agent import critique          # ← nombre real
     from agents.knowledge_base import aprender
     from agents.notion_sync_agent import sync_idea_to_notion
     from agents.cola_csv import guardar_en_cola
 
+    # Cargar ideas existentes para evitar repeticiones
     ideas_existentes = []
     ruta_ideas = os.path.join("data", "ideas.json")
     if os.path.exists(ruta_ideas):
@@ -28,6 +26,7 @@ def ejecutar_batch():
         except Exception:
             ideas_existentes = []
 
+    # 1. Generar idea (con contexto KB — P1 activo)
     print("🧠 Generando idea con contexto KB...")
     idea = generar_idea(ideas_existentes)
     if not idea:
@@ -37,19 +36,20 @@ def ejecutar_batch():
     nombre = idea.get("nombre", "Idea sin nombre")
     print(f"💡 Idea: {nombre}")
 
+    # 2. Evaluar con critique()
     print("🔍 Evaluando con critic_agent...")
     try:
         evaluacion = critique(idea)
         if evaluacion:
             idea.update(evaluacion)
-            sc = idea.get("score_critico",   0)
-            sv = idea.get("viral_score",     0)
-            sg = idea.get("score_generador", 0)
-            sm = idea.get("score_money",     0)
-            print(f"📊 Critico:{sc} | Viral:{sv} | Gen:{sg} | Money:{sm}")
+            score = idea.get("score_general")
+            if score is None:
+                score = idea.get("ScoreGen")
+            print(f"📊 Score: {score}/100")
     except Exception as e:
-        print(f"⚠️ Error evaluando (continuamos): {e}")
+        print(f"⚠️ Error evaluando (continuamos sin score): {e}")
 
+    # 3. Guardar localmente
     ideas_existentes.append(idea)
     os.makedirs("data", exist_ok=True)
     try:
@@ -59,49 +59,37 @@ def ejecutar_batch():
     except Exception as e:
         print(f"⚠️ Error guardando local: {e}")
 
+    # 4. Actualizar Knowledge Base
     try:
-        score_kb = idea.get("score_generador")
+        score_kb = idea.get("score_generador")      # ← nombre real de critique()
         if score_kb is not None:
             aprender(idea, score_kb)
             print(f"📚 KB actualizada (score={score_kb})")
+        else:
+            print("⚠️ score_generador no encontrado, KB no actualizada")
     except Exception as e:
         print(f"⚠️ Error actualizando KB: {e}")
 
+    # 5. Sincronizar con Notion — P2: cola CSV si falla
     print("🔗 Sincronizando con Notion...")
     try:
         resultado = sync_idea_to_notion(idea)
         if resultado:
             print(f"✅ Sincronizada en Notion: {nombre}")
+            return True
         else:
-            raise Exception("sync_idea_to_notion devolvio None/False")
+            raise Exception("sync_idea_to_notion devolvió None/False")
     except Exception as e:
         print(f"❌ Fallo Notion: {e}")
-        guardar_en_cola(nombre_idea=nombre, motivo_fallo=str(e), datos_json=idea)
-        print("📋 Idea en cola CSV")
+        guardar_en_cola(
+            nombre_idea=nombre,
+            motivo_fallo=str(e),
+            datos_json=idea
+        )
+        print("📋 Idea en cola CSV — se reintentará automáticamente cada 5 min")
         return False
-
-    score_para_landing = idea.get("score_generador", 0) or 0
-    if score_para_landing >= SCORE_LANDING_MINIMO:
-        print(f"🌐 Score {score_para_landing} >= {SCORE_LANDING_MINIMO} — generando landing...")
-        try:
-            from agents.landing_agent import publicar_landing
-            url = publicar_landing(idea)
-            if url:
-                print(f"🌐 Landing: {url}")
-        except Exception as e:
-            print(f"⚠️ Error landing (no critico): {e}")
-
-    return True
 
 
 if __name__ == "__main__":
     exito = ejecutar_batch()
     sys.exit(0 if exito else 1)
-"@ | Set-Content run_batch.py -Encoding UTF8
-
-# Quitar BOM
-$c = Get-Content run_batch.py -Raw
-$c = $c.TrimStart([char]0xFEFF)
-[System.IO.File]::WriteAllText((Resolve-Path run_batch.py), $c, [System.Text.UTF8Encoding]::new($false))
-
-python -c "import ast; ast.parse(open('run_batch.py', encoding='utf-8').read()); print('Sintaxis OK')"
