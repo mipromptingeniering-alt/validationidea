@@ -13,41 +13,24 @@ os.environ["PYTHONUTF8"] = "1"
 
 ZONA = pytz.timezone("Europe/Madrid")
 
-# ── P7: Sistema de logs persistentes ──────────────────────────────────────────
-
 def _configurar_logger() -> logging.Logger:
     os.makedirs(os.path.join("data", "logs"), exist_ok=True)
-    log_path = os.path.join(
-        "data", "logs",
-        datetime.now(ZONA).strftime("%Y-%m-%d") + ".log"
-    )
+    log_path = os.path.join("data", "logs", datetime.now(ZONA).strftime("%Y-%m-%d") + ".log")
     logger = logging.getLogger("validationidea")
     logger.setLevel(logging.INFO)
-
     if not logger.handlers:
-        # Archivo: rotación semanal, guarda 4 semanas
-        fh = TimedRotatingFileHandler(
-            log_path, when="W0", interval=1, backupCount=4, encoding="utf-8"
-        )
+        fh = TimedRotatingFileHandler(log_path, when="W0", interval=1, backupCount=4, encoding="utf-8")
         fh.setFormatter(logging.Formatter("%(asctime)s %(message)s", "%Y-%m-%d %H:%M:%S"))
         logger.addHandler(fh)
-
-        # Consola: Railway lo captura en sus logs
         ch = logging.StreamHandler(sys.stdout)
         ch.setFormatter(logging.Formatter("[%(asctime)s] %(message)s", "%Y-%m-%d %H:%M:%S"))
         logger.addHandler(ch)
-
     return logger
-
 
 _logger = _configurar_logger()
 
-
 def log(msg: str):
     _logger.info(msg)
-
-
-# ── Telegram via requests ──────────────────────────────────────────────────────
 
 def enviar_telegram(mensaje: str):
     token   = os.environ.get("TELEGRAM_BOT_TOKEN", "")
@@ -69,17 +52,10 @@ def enviar_telegram(mensaje: str):
     except Exception as e:
         log(f"❌ Error Telegram: {e}")
 
-
-# ── Subprocess seguro ──────────────────────────────────────────────────────────
-
 def ejecutar_script(nombre: str):
     log(f"▶️  {nombre}...")
     try:
-        resultado = subprocess.run(
-            [sys.executable, nombre],
-            capture_output=True,
-            timeout=300
-        )
+        resultado = subprocess.run([sys.executable, nombre], capture_output=True, timeout=300)
         salida  = resultado.stdout.decode("utf-8", errors="replace")
         errores = resultado.stderr.decode("utf-8", errors="replace")
         exito   = resultado.returncode == 0
@@ -92,9 +68,6 @@ def ejecutar_script(nombre: str):
     except Exception as e:
         log(f"❌ Error ejecutando {nombre}: {e}")
         return False, str(e)
-
-
-# ── P3: Health Check ───────────────────────────────────────────────────────────
 
 def hc_groq():
     try:
@@ -109,7 +82,6 @@ def hc_groq():
     except Exception as e:
         return False, str(e)[:200]
 
-
 def hc_gemini():
     try:
         from google import genai
@@ -118,7 +90,6 @@ def hc_gemini():
         return True, "OK"
     except Exception as e:
         return False, str(e)[:200]
-
 
 def hc_notion():
     try:
@@ -134,12 +105,20 @@ def hc_notion():
     except Exception as e:
         return False, str(e)[:200]
 
-
 def ejecutar_health_check():
     log("🏥 Health check iniciado...")
     ahora_str = datetime.now(ZONA).strftime("%d/%m/%Y %H:%M:%S")
-    checks    = {"Groq": hc_groq(), "Gemini": hc_gemini(), "Notion": hc_notion()}
-    fallos    = [(srv, msg) for srv, (ok, msg) in checks.items() if not ok]
+
+    # Gemini opcional — no bloquea el health check si falla
+    try:
+        ok_g, msg_g = hc_gemini()
+        if not ok_g:
+            log(f"⚠️ Gemini degradado (no crítico): {msg_g}")
+    except Exception as eg:
+        log(f"⚠️ Gemini no disponible: {eg}")
+
+    checks = {"Groq": hc_groq(), "Notion": hc_notion()}
+    fallos = [(srv, msg) for srv, (ok, msg) in checks.items() if not ok]
 
     if fallos:
         lineas = "\n".join(f"❌ <b>{srv}</b>: {msg}" for srv, msg in fallos)
@@ -149,26 +128,21 @@ def ejecutar_health_check():
         )
         log(f"🚨 Servicios fallidos: {[s for s, _ in fallos]}")
     else:
-        log("✅ Health check OK — Groq ✅  Gemini ✅  Notion ✅")
+        log("✅ Health check OK — Groq ✅  Notion ✅")
 
     return len(fallos) == 0
-
-
-# ── P2: Cola CSV ───────────────────────────────────────────────────────────────
 
 def procesar_cola_csv():
     try:
         from agents.cola_csv import obtener_pendientes, eliminar_de_cola, incrementar_intentos
         from agents.notion_sync_agent import sync_idea_to_notion
-
         pendientes = obtener_pendientes()
         if not pendientes:
             return
-
         log(f"📋 Cola CSV: {len(pendientes)} pendiente(s)")
         for fila in pendientes:
-            ts      = fila.get("timestamp", "")
-            nombre  = fila.get("nombre_idea", "?")
+            ts       = fila.get("timestamp", "")
+            nombre   = fila.get("nombre_idea", "?")
             intentos = int(fila.get("intentos", 1))
             log(f"🔄 Reintento {intentos}/3 — '{nombre}'")
             try:
@@ -188,9 +162,6 @@ def procesar_cola_csv():
     except Exception as e:
         log(f"❌ Error procesando cola CSV: {e}")
 
-
-# ── Tareas programadas ─────────────────────────────────────────────────────────
-
 def generar_nueva_idea():
     log("🧠 Generando nueva idea...")
     exito, _ = ejecutar_script("run_batch.py")
@@ -198,19 +169,16 @@ def generar_nueva_idea():
         log("❌ Error generando idea")
     return exito
 
-
 def procesar_informes():
     log("📄 Revisando informes pendientes...")
     exito, _ = ejecutar_script("run_monitor.py")
     return exito
-
 
 def mantenimiento_nocturno():
     log("🔧 Mantenimiento nocturno (03:00)...")
     ejecutar_script("completar_campos.py")
     ejecutar_script("run_monitor.py")
     log("🔧 Mantenimiento completado")
-
 
 def enviar_resumen_diario():
     log("☀️ Resumen diario (08:00)...")
@@ -231,7 +199,6 @@ def enviar_resumen_diario():
         except Exception:
             pass
 
-        # P7: informar ruta del log de hoy
         log_hoy = os.path.join("data", "logs", datetime.now(ZONA).strftime("%Y-%m-%d") + ".log")
         log_txt = f"\n📋 Log hoy: <code>{log_hoy}</code>" if os.path.exists(log_hoy) else ""
 
@@ -249,20 +216,13 @@ def enviar_resumen_diario():
         log(f"❌ Error resumen diario: {e}")
         enviar_telegram(f"☀️ Sistema activo — error generando resumen: {e}")
 
-
-# ── Loop principal ─────────────────────────────────────────────────────────────
-
 def main():
-    log("🚀 monitor_nocturno.py iniciado — P1+P2+P3+P4+P5+P6+P7 activos")
+    log("🚀 monitor_nocturno.py iniciado — P1→P10 activos")
     enviar_telegram(
         "🟢 <b>Monitor ValidationIdea arrancado</b>\n\n"
-        "✅ P1: Prompt evolutivo KB\n"
-        "✅ P2: Cola CSV reintentos\n"
-        "✅ P3: Health check cada hora\n"
-        "✅ P4: Validador calidad informes\n"
-        "✅ P5: ScoreMoney\n"
-        "✅ P6: Anti-saturación verticales\n"
-        "✅ P7: Logs persistentes activos"
+        "✅ P1–P10 activos\n"
+        "✅ Gemini: modo opcional (no bloquea)\n"
+        "✅ Groq + Notion: críticos"
     )
 
     ahora_utc      = datetime.now(timezone.utc)
@@ -305,7 +265,6 @@ def main():
             log(f"❌ Error en loop principal: {e}")
 
         time.sleep(60)
-
 
 if __name__ == "__main__":
     main()
