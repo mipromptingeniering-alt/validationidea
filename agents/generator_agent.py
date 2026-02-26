@@ -108,7 +108,7 @@ def generar_idea(ideas_existentes=None):
     for intento in range(MAX_INTENTOS_LLM):
         try:
             response = client.chat.completions.create(
-                model="llama-3.3-70b-versatile",
+                model="llama-3.1-8b-instant",
                 messages=[
                     {"role": "system", "content": system_prompt},
                     {"role": "user",   "content": user_prompt}
@@ -145,7 +145,7 @@ def generar_idea(ideas_existentes=None):
                         f"\n- ESPECIALMENTE evitar cualquier idea similar a: {nombre_similar}"
                     )
                     response2 = client.chat.completions.create(
-                        model="llama-3.3-70b-versatile",
+                        model="llama-3.1-8b-instant",
                         messages=[
                             {"role": "system", "content": system_prompt},
                             {"role": "user",   "content": user_prompt_extra}
@@ -175,7 +175,7 @@ def generar_idea(ideas_existentes=None):
         except Exception as e:
             error_str = str(e)
             if "429" in error_str or "rate_limit" in error_str.lower():
-                espera = 8 * (2 ** min(intento, 2))
+                espera = 5 * (2 ** min(intento, 1))
                 print(f"⚠️ Rate limit Groq (intento {intento + 1}), esperando {espera}s...")
                 time.sleep(espera)
             else:
