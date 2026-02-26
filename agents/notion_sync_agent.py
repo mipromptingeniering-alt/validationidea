@@ -1,4 +1,7 @@
-﻿import os
+﻿cd C:\Users\juanj\Documents\validationidea
+
+@"
+import os
 import requests
 from datetime import datetime
 from dotenv import load_dotenv
@@ -21,12 +24,26 @@ def text_prop(value):
     return {"rich_text": [{"text": {"content": str(value)[:2000]}}]}
 
 
+def _get_db_properties():
+    """Obtiene las propiedades existentes en la DB de Notion."""
+    try:
+        r = requests.get(
+            f"https://api.notion.com/v1/databases/{DATABASE_ID}",
+            headers=HEADERS, timeout=10
+        )
+        if r.status_code == 200:
+            return set(r.json().get("properties", {}).keys())
+    except Exception:
+        pass
+    return set()
+
+
 def sync_idea_to_notion(idea):
     try:
-        score = idea.get("score_critico",  0) or 0
-        viral = idea.get("viral_score",    0) or 0
-        gen   = idea.get("score_generador",0) or 0
-        money = idea.get("score_money",    0) or 0   # ← P5 ScoreMoney
+        score = idea.get("score_critico",   0) or 0
+        viral = idea.get("viral_score",     0) or 0
+        gen   = idea.get("score_generador", 0) or 0
+        money = idea.get("score_money",     0) or 0
 
         if score >= 90:
             emoji = "💎"
@@ -42,7 +59,6 @@ def sync_idea_to_notion(idea):
 
         fortalezas  = idea.get("fortalezas",  idea.get("puntos_fuertes",  []))
         debilidades = idea.get("debilidades", idea.get("puntos_debiles", []))
-
         if isinstance(fortalezas,  str): fortalezas  = [fortalezas]
         if isinstance(debilidades, str): debilidades = [debilidades]
 
@@ -54,7 +70,7 @@ def sync_idea_to_notion(idea):
             f"🎯 Score Critico:   {score}/100",
             f"🚀 Score Viral:     {viral}/100",
             f"⚙️  Score Generador: {gen}/100",
-            f"💰 Score Money:     {money}/100",   # ← P5
+            f"💰 Score Money:     {money}/100",
             "",
             "✅ FORTALEZAS:",
         ]
@@ -75,8 +91,9 @@ def sync_idea_to_notion(idea):
         if viral >= 85:
             tags.append({"name": "🚀 Viral"})
         if money >= 85:
-            tags.append({"name": "💰 Alto Money"})   # ← P5
+            tags.append({"name": "💰 Alto Money"})
 
+        # Propiedades base — siempre existen
         properties = {
             "Name":        {"title": [{"text": {"content": f"{emoji} {nombre[:95]}"}}]},
             "Description": text_prop(idea.get("descripcion")),
@@ -93,12 +110,18 @@ def sync_idea_to_notion(idea):
             "ScoreGen":    {"number": int(gen)},
             "ScoreCritic": {"number": int(score)},
             "ScoreViral":  {"number": int(viral)},
-            "ScoreMoney":  {"number": int(money)},   # ← P5
             "Date":        {"date": {"start": idea.get("fecha") or datetime.now().isoformat()}},
         }
 
         if tags:
             properties["Tags"] = {"multi_select": tags}
+
+        # ScoreMoney: solo añadir si existe en la DB de Notion
+        db_props = _get_db_properties()
+        if "ScoreMoney" in db_props:
+            properties["ScoreMoney"] = {"number": int(money)}
+        else:
+            print("⚠️ ScoreMoney no existe en Notion DB — omitido (crear campo manualmente)")
 
         payload = {
             "parent":     {"database_id": DATABASE_ID},
@@ -126,3 +149,11 @@ def sync_idea_to_notion(idea):
         import traceback
         traceback.print_exc()
         return None
+"@ | Set-Content agents\notion_sync_agent.py -Encoding UTF8
+
+# Quitar BOM
+$c = Get-Content agents\notion_sync_agent.py -Raw
+$c = $c.TrimStart([char]0xFEFF)
+[System.IO.File]::WriteAllText((Resolve-Path agents\notion_sync_agent.py), $c, [System.Text.UTF8Encoding]::new($false))
+
+python -c "import ast; ast.parse(open('agents/notion_sync_agent.py', encoding='utf-8').read()); print('Sintaxis OK')"
