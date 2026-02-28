@@ -1,56 +1,44 @@
 import os
 import sys
-import time
-from datetime import datetime
+import json
 
 os.environ["PYTHONUTF8"] = "1"
 
-MINUTOS_ENTRE_IDEAS = 30  # Genera una idea cada 30 minutos
-
-def log(mensaje):
-    hora = datetime.now().strftime("%H:%M:%S")
-    print(f"[{hora}] {mensaje}", flush=True)
-
-def ejecutar_una_idea():
-    try:
-        from run_batch import ejecutar_batch
-        resultado = ejecutar_batch()
-        if resultado:
-            log("✅ Idea TOP generada y sincronizada")
-        else:
-            log("⚠️ Batch completado sin idea TOP (normal, se reintentará)")
-        return True
-    except Exception as e:
-        log(f"❌ Error en batch: {e}")
-        return False
-
 def main():
-    log("=" * 60)
-    log("🚀 MONITOR AUTOMÁTICO - validationidea")
-    log(f"⏰ Genera ideas cada {MINUTOS_ENTRE_IDEAS} minutos")
-    log("=" * 60)
+    print("📄 run_monitor.py — procesando cola y pendientes...")
 
-    ciclo = 1
-    while True:
-        log(f"\n🔄 CICLO #{ciclo} - {datetime.now().strftime('%d/%m/%Y %H:%M')}")
-        
-        ejecutar_una_idea()
-        
-        proxima = MINUTOS_ENTRE_IDEAS * 60
-        log(f"😴 Esperando {MINUTOS_ENTRE_IDEAS} minutos... (Ctrl+C para parar)")
-        
-        # Espera en trozos de 60s para que no parezca colgado
-        for i in range(MINUTOS_ENTRE_IDEAS):
-            time.sleep(60)
-            restantes = MINUTOS_ENTRE_IDEAS - i - 1
-            if restantes > 0 and restantes % 5 == 0:
-                log(f"⏳ {restantes} minutos para próxima idea...")
-        
-        ciclo += 1
+    # Procesar cola CSV (reintentos de Notion)
+    try:
+        from agents.cola_csv import obtener_pendientes, eliminar_de_cola, incrementar_intentos
+        from agents.notion_sync_agent import sync_idea_to_notion
+        pendientes = obtener_pendientes()
+        if pendientes:
+            print(f"📋 Cola CSV: {len(pendientes)} pendiente(s)")
+            for fila in pendientes:
+                ts = fila.get("timestamp", "")
+                nombre = fila.get("nombre_idea", "?")
+                intentos = int(fila.get("intentos", 1))
+                if intentos > 3:
+                    print(f"⏭️ Descartando '{nombre}' (>3 intentos)")
+                    eliminar_de_cola(ts)
+                    continue
+                try:
+                    datos = json.loads(fila.get("datos_json", "{}"))
+                    resultado = sync_idea_to_notion(datos)
+                    if resultado:
+                        print(f"✅ Reintento exitoso: '{nombre}'")
+                        eliminar_de_cola(ts)
+                    else:
+                        incrementar_intentos(ts)
+                except Exception as e:
+                    print(f"❌ Fallo reintento '{nombre}': {e}")
+                    incrementar_intentos(ts)
+        else:
+            print("✅ Cola CSV vacía")
+    except Exception as e:
+        print(f"⚠️ Error cola CSV: {e}")
+
+    print("✅ run_monitor.py completado")
 
 if __name__ == "__main__":
-    try:
-        main()
-    except KeyboardInterrupt:
-        log("🛑 Monitor parado por el usuario")
-        sys.exit(0)
+    main()
