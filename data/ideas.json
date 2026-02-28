@@ -274,5 +274,411 @@
     "id": 8,
     "fecha": "2026-02-20T19:32:07.169676",
     "date": "2026-02-20T19:32:07.169676"
+  },
+  {
+    "nombre": "RecetaFit",
+    "problema": "Dificultad para encontrar y personalizar recetas de comida saludable y seguras para personas con restricciones alimentarias específicas",
+    "solucion": "Utiliza inteligencia artificial para analizar y generar recetas personalizadas basadas en las necesidades y preferencias del usuario, considerando alergias, intolerancias y objetivos de salud",
+    "descripcion": "RecetaFit es una plataforma que proporciona recetas personalizadas y seguras para personas con restricciones alimentarias específicas, ayudándoles a mantener una dieta saludable y equilibrada. La plataforma utiliza inteligencia artificial para analizar y generar recetas basadas en las necesidades y preferencias del usuario.",
+    "propuesta_valor": "RecetaFit es mejor que las alternativas porque ofrece recetas personalizadas y seguras, considerando alergias y intolerancias, y proporciona un plan de comidas personalizado para cada usuario",
+    "tipo": "SaaS",
+    "vertical": "Personas con restricciones alimentarias específicas",
+    "precio": "19.99",
+    "monetizacion": "suscripcion",
+    "tool": "Python|No-code|Webflow",
+    "esfuerzo": "30",
+    "revenue_6m": "2500",
+    "como": [
+      "Paso 1: Investigar y recopilar datos sobre recetas saludables y seguras para personas con restricciones alimentarias específicas",
+      "Paso 2: Desarrollar un algoritmo de inteligencia artificial que analice y genere recetas personalizadas basadas en las necesidades y preferencias del usuario",
+      "Paso 3: Crear una plataforma web y móvil para que los usuarios puedan acceder y utilizar la plataforma RecetaFit"
+    ],
+    "score_critico": 80,
+    "score_generador": 80,
+    "viral_score": 90,
+    "fortalezas": [
+      "La utilización de inteligencia artificial para personalizar recetas es una ventaja competitiva significativa",
+      "El mercado de personas con restricciones alimentarias específicas es grande y en crecimiento",
+      "La monetización por suscripción es un modelo de negocio escalable y predecible"
+    ],
+    "debilidades": [
+      "La competencia en el mercado de recetas saludables es alta, lo que puede dificultar la adquisición de usuarios",
+      "La precisión y la confiabilidad de la inteligencia artificial para generar recetas seguras y efectivas es crucial, y cualquier error podría dañar la reputación del negocio"
+    ],
+    "resumen": "RecetaFit es una idea de negocio digital sólida con un mercado claro y una ventaja competitiva significativa, pero requiere una ejecución impecable y una atención constante a la calidad y la seguridad de las recetas generadas. Con una estrategia de marketing efectiva y una atención al detalle, RecetaFit puede convertirse en un líder en el mercado de recetas saludables personalizadas.",
+    "id": 9,
+    "fecha": "2026-02-24T20:14:10.559093",
+    "date": "2026-02-24T20:14:10.559093"
+  },
+  {
+    "nombre": "MindPal",
+    "vertical": "SaaS",
+    "problema": "La salud mental es un tema cada vez más importante en la sociedad actual, pero muchas personas no tienen acceso a recursos y herramientas efectivas para manejar el estrés, la ansiedad y otros trastornos mentales. Los profesionales de la salud mental a menudo tienen listas de espera largas y las aplicaciones existentes pueden ser demasiado generales o no personalizadas para las necesidades individuales.",
+    "solucion": "MindPal ofrece una plataforma de salud mental personalizada y accesible, que utiliza inteligencia artificial para diagnosticar y tratar problemas de salud mental de manera efectiva. La plataforma proporciona un enfoque integral que incluye terapias cognitivo-conductuales, meditación guiada y seguimiento personalizado, todo desde la comodidad del hogar del usuario.",
+    "descripcion": "MindPal es una plataforma de salud mental en línea que busca proporcionar acceso a herramientas y recursos efectivos para manejar la salud mental. La plataforma utiliza inteligencia artificial para personalizar el tratamiento y proporcionar un enfoque integral para el bienestar mental. Los usuarios pueden acceder a terapias cognitivo-conductuales, meditación guiada y seguimiento personalizado, todo desde la comodidad de su hogar. La plataforma también ofrece un sistema de seguimiento y evaluación para monitorear el progreso y ajustar el tratamiento según sea necesario.",
+    "propuesta_valor": "MindPal se diferencia de otras plataformas de salud mental en su enfoque personalizado y integral, que utiliza inteligencia artificial para diagnosticar y tratar problemas de salud mental de manera efectiva.",
+    "cliente_objetivo": "Personas de 25 a 45 años que buscan mejorar su salud mental y bienestar, pero que no tienen acceso a recursos y herramientas efectivas. Estos individuos son conscientes de la importancia de la salud mental y están dispuestos a invertir en su bienestar.",
+    "mvp": "Desarrollar una versión minimalista de la plataforma que incluya un cuestionario de evaluación, un plan de tratamiento personalizado y acceso a terapias cognitivo-conductuales básicas.",
+    "marketing": "Utilizar redes sociales y marketing de contenido para llegar a los clientes objetivos, así como colaborar con profesionales de la salud mental y organizaciones de bienestar para promocionar la plataforma.",
+    "metricas": [
+      "Nivel de satisfacción del usuario",
+      "Tasa de retención de usuarios",
+      "Mejora en los síntomas de salud mental"
+    ],
+    "modelo_negocio": "Suscripción mensual o anual, con un precio aproximado de $20-$50 al mes.",
+    "investigacion": "El mercado de la salud mental en línea está en crecimiento, con un tamaño de mercado estimado de $10 mil millones para 2025. La competencia es moderada, pero MindPal se diferencia en su enfoque personalizado y integral.",
+    "score_critico": 80,
+    "viral_score": 90,
+    "score_generador": 85,
+    "puntos_fuertes": [
+      "La plataforma de salud mental personalizada es una necesidad creciente en la sociedad actual",
+      "La utilización de inteligencia artificial para diagnosticar y tratar problemas de salud mental es innovadora y efectiva",
+      "La plataforma ofrece un enfoque integral que incluye terapias cognitivo-conductuales, meditación guiada y seguimiento personalizado"
+    ],
+    "puntos_debiles": [
+      "La competencia en el mercado de aplicaciones de salud mental es alta y puede ser difícil diferenciarse",
+      "La plataforma requiere una gran cantidad de datos y análisis para entrenar y mejorar la inteligencia artificial, lo que puede ser un desafío"
+    ],
+    "resumen": "MindPal es una plataforma de salud mental personalizada y accesible que utiliza inteligencia artificial para diagnosticar y tratar problemas de salud mental de manera efectiva, con un gran potencial de difusión orgánica y una buena calidad técnica. Sin embargo, la competencia en el mercado y la necesidad de grandes cantidades de datos y análisis pueden ser desafíos importantes para su éxito."
+  },
+  {
+    "nombre": "SerenaMind",
+    "vertical": "SaaS",
+    "problema": "La salud mental es un tema cada vez más importante en la sociedad actual, sin embargo, muchos individuos no tienen acceso a herramientas y recursos efectivos para manejar el estrés, la ansiedad y otros trastornos. Los profesionales de la salud mental a menudo tienen listas de espera largas y los costos pueden ser prohibitivos. Además, la estigmatización alrededor de la salud mental puede hacer que las personas se sientan incómodas buscando ayuda",
+    "solucion": "SerenaMind ofrece una plataforma en línea de salud mental que proporciona acceso a herramientas de terapia cognitivo conductual, meditación guiada y conexión con terapeutas licenciados. La plataforma utiliza inteligencia artificial para ofrecer un enfoque personalizado para cada usuario, brindando recursos y ejercicios adaptados a sus necesidades específicas. Los usuarios pueden acceder a la plataforma desde cualquier lugar y en cualquier momento, lo que aumenta la accesibilidad y reduce la barrera para buscar ayuda",
+    "descripcion": "SerenaMind es una plataforma de salud mental en línea que busca proporcionar un enfoque integral y accesible para el bienestar emocional. La plataforma combina técnicas de terapia cognitivo conductual con meditación guiada y conexión con terapeutas licenciados. El objetivo es ofrecer un espacio seguro y anonimo donde las personas puedan trabajar en su salud mental sin sentirse estigmatizadas o juzgadas. La plataforma también ofrece recursos educativos y una comunidad de apoyo para conectar a los usuarios con otros que puedan estar pasando por experiencias similares",
+    "propuesta_valor": "Acceso a herramientas de salud mental personalizadas y accesibles desde cualquier lugar, con un enfoque en la privacidad y la anonimidad",
+    "cliente_objetivo": "Individuos de 25-45 años, tanto hombres como mujeres, que buscan mejorar su salud mental y bienestar emocional, pero que pueden enfrentar barreras como el costo, la falta de acceso a recursos o la estigmatización",
+    "mvp": "Desarrollar un prototipo básico de la plataforma que ofrezca herramientas de meditación guiada y conexión con terapeutas licenciados, con un grupo pequeño de usuarios para prueba y feedback",
+    "marketing": "Estrategia de marketing en redes sociales y publicidad en línea dirigida a la demografía objetivo, así como colaboraciones con influencers y organizaciones de salud mental",
+    "metricas": "Tasa de retención de usuarios, satisfacción del cliente, reducción de síntomas de ansiedad y estrés, y crecimiento de la base de usuarios",
+    "modelo_negocio": "Suscripción mensual o anual con un precio aproximado de $20-$50 por mes, con descuentos para suscripciones anuales o para estudiantes y personas de bajos ingresos",
+    "investigacion": "El mercado de salud mental en línea está en constante crecimiento, con un tamaño de mercado estimado de $150 mil millones para 2027. La competencia es moderada, pero hay oportunidad para diferenciarse con un enfoque personalizado y accesible",
+    "score_critico": 68,
+    "viral_score": 55,
+    "score_generador": 70,
+    "puntos_fuertes": [
+      "Problema real identificado",
+      "Mercado existente"
+    ],
+    "puntos_debiles": [
+      "Necesita validacion de demanda",
+      "Analizar competencia"
+    ],
+    "resumen": "Idea viable con potencial moderado. Requiere validacion antes de construir."
+  },
+  {
+    "nombre": "TurboChef",
+    "vertical": "SaaS / App móvil",
+    "problema": "Los cocineros y chefs profesionales y aficionados están cada vez más desbordados por la búsqueda de recetas nuevas, ingredientes frescos y técnicas de cocina innovadoras. El mercado está plagado de recopilaciones de recetas genéricas y aplicaciones de cocina que no satisfacen las necesidades específicas de cada usuario. Por otra parte, la creciente conciencia sobre la salud y la sostenibilidad ha hecho que la cocina sea más compleja, lo que dificulta la búsqueda de recetas saludables y ecológicas.",
+    "solucion": "TurboChef es una plataforma de gestión de recetas y cocina personalizable que utiliza algoritmos de IA para recomendar recetas adaptadas a las preferencias de cocina y estilo de vida de cada usuario. La plataforma incluye una vasta biblioteca de recetas creadas por chefs y cocineros expertos, así como una base de datos de ingredientes y técnicas de cocina exhaustiva.",
+    "descripcion": "TurboChef es una herramienta inigualable para cocineros de todos los niveles, desde principiantes hasta expertos, que buscan inspiración y mejorar sus habilidades culinarias. La plataforma permite a los usuarios crearse un perfil personalizado con sus preferencias de cocina y estilo de vida, lo que les permite recibir recomendaciones de recetas adaptadas a sus necesidades específicas. Además, la plataforma incluye características como la gestión de ingredientes, la planificación de comidas y la compartición de recetas con amigos y familiares.",
+    "propuesta_valor": "TurboChef ofrece una experiencia de cocina personalizada y única, que combina la creatividad y la innovación con la sostenibilidad y la salud.",
+    "cliente_objetivo": "Cocineros y chefs profesionales y aficionados, especialmente aquellos que buscan salud, sostenibilidad y creatividad en la cocina.",
+    "mvp": "Un MVP minimalista con una base de datos de recetas y una interfaz de usuario simple que permite a los usuarios crear un perfil personalizado y recibir recomendaciones de recetas.",
+    "marketing": "Estrategia de marketing enfocada en redes sociales, publicidad en línea y colaboraciones con chefs y cocineros influyentes.",
+    "metricas": "Número de usuarios activos, tasa de recomendaciones de recetas aceptadas, valor medio por usuario.",
+    "modelo_negocio": "Modelo de suscripción mensual con un precio aproximado de 9,99€ por mes, así como opciones de pago a largo plazo y plan de empresa.",
+    "investigacion": "El mercado de aplicaciones de cocina está creciendo a un ritmo del 15% anual, y se espera que el mercado de cocina saludable y sostenible supere los 10 billones de dólares en los próximos 5 años.",
+    "score_critico": 68,
+    "viral_score": 55,
+    "score_generador": 70,
+    "score_money": 60,
+    "puntos_fuertes": [
+      "Problema real identificado",
+      "Mercado existente"
+    ],
+    "puntos_debiles": [
+      "Necesita validacion de demanda",
+      "Analizar competencia"
+    ],
+    "resumen": "Idea viable con potencial moderado. Requiere validacion antes de construir."
+  },
+  {
+    "nombre": "FitVoy",
+    "vertical": "App móvil / SaaS",
+    "problema": "Las personas con restricciones alimentarias específicas (como intolerancias alimentarias o dietas especializadas) enfrentan dificultades para encontrar planes de comidas y recetas adecuadas, lo que les obliga a pasar horas buscando y personalizando sus dietas. Además, la falta de planificación y organización lleva a desórdenes alimentarios y a una vida diaria complicada. Los recursos disponibles actualmente, como blogs y aplicaciones de cocina, no ofrecen suficiente personalización y adaptabilidad para este grupo objetivo.",
+    "solucion": "FitVoy es una aplicación móvil que permite a los usuarios crear planes de comidas personalizados y adaptables a sus necesidades y preferencias. Utilizando una base de datos de recetas y planes de comidas, la aplicación utiliza aprendizaje automático para sugerir opciones que se ajusten a las restricciones alimentarias del usuario. Además, incluye herramientas de planificación y seguimiento para ayudar a los usuarios a mantener sus hábitos alimentarios de manera efectiva.",
+    "descripcion": "FitVoy es una aplicación diseñada específicamente para personas con restricciones alimentarias, que se compromete a ofrecer una experiencia de planificación y seguimiento de comidas flexible, personalizada y eficaz. En su versión gratuita, los usuarios pueden crear planes de comidas para una semana, mientras que la versión de pago premium ofrece acceso ilimitado a planes de comidas, recetas y herramientas de seguimiento. Con una comunidad en línea y recursos educativos en constante actualización, FitVoy se convierte en un aliado confiable para aquellos que buscamos un estilo de vida saludable y equilibrado.",
+    "propuesta_valor": "Flexibilidad, personalización y eficacia en la planificación y seguimiento de comidas",
+    "cliente_objetivo": "Personas con restricciones alimentarias específicas, interesadas en mejorar su estilo de vida saludable",
+    "mvp": "Versión de prueba gratuita de la aplicación con acceso limitado a planes de comidas y recetas",
+    "marketing": "Influencers en la comunidad de salud y bienestar, publicidad en redes sociales y anuncios en plataformas de búsqueda",
+    "metricas": "Tasa de retención de usuarios, número de planes de comidas creados, cantidad de recetas descargadas",
+    "modelo_negocio": "Suscripción mensual premium con opciones de pago anual, con un precio aproximado de $9.99/mes",
+    "investigacion": "Tamaño de mercado estimado para personas con restricciones alimentarias: 10-15 millones de personas en Europa y América del Norte; competencia moderada con plataformas de cocina y planificación de comidas",
+    "score_critico": 68,
+    "viral_score": 55,
+    "score_generador": 70,
+    "score_money": 60,
+    "puntos_fuertes": [
+      "Problema real identificado",
+      "Mercado existente"
+    ],
+    "puntos_debiles": [
+      "Necesita validacion de demanda",
+      "Analizar competencia"
+    ],
+    "resumen": "Idea viable con potencial moderado. Requiere validacion antes de construir."
+  },
+  {
+    "nombre": "TasteGuard",
+    "vertical": "SaaS",
+    "problema": "Muchos productos alimenticios que son ideales para personas con restricciones alimentarias específicas, como intolerancia a gluten, lactosa o frutas, pueden ser peligrosos para aquellos que no tienen estas restricciones. Los productos no etiquetados o con etiquetas engañosas pueden llevar a reacciones adversas, desde dolores estomacales hasta afecciones graves. Además, la búsqueda de productos adecuados puede ser un proceso tedioso y frustrante, incluso en línea. La falta de claridad en las etiquetas y la ausencia de una plataforma de confianza para encontrar opciones seguras y adecuadas, dificultan la vida de estos consumidores.",
+    "solucion": "TasteGuard es una plataforma SaaS que ayuda a los productores alimenticios a etiquetar y certificar sus productos según las necesidades específicas de los consumidores, y ofrece una herramienta de búsqueda y filtro para que los clientes puedan encontrar opciones seguras y adecuadas. La plataforma utiliza un algoritmo de reconocimiento de ingredientes y una base de datos de restricciones alimentarias para garantizar que los productos sean seguros y adecuados.",
+    "descripcion": "TasteGuard es una plataforma integral que combina la tecnología y la certificación para garantizar la seguridad y la adecuación de los productos alimenticios. Los productores pueden registrar sus productos y obtener una etiqueta de certificación que los identifique como seguros y adecuados para las restricciones alimentarias específicas. A su vez, los clientes pueden buscar y filtrar productos según sus necesidades, recibiendo información detallada sobre los ingredientes y las restricciones alimentarias aplicables. La plataforma también ofrece un módulo de educación y consejería para ayudar a los consumidores a entender sus necesidades y a tomar decisiones informadas.",
+    "propuesta_valor": "Proporcionar una plataforma de confianza para encontrar productos alimenticios seguros y adecuados para las restricciones alimentarias específicas, y ofrecer un servicio integral de etiquetado y certificación para los productores.",
+    "cliente_objetivo": "Personas con restricciones alimentarias específicas, como intolerancia a gluten, lactosa o frutas, y productores alimenticios que desean ofrecer opciones seguras y adecuadas a sus clientes.",
+    "mvp": "Crear un prototipo básico de la plataforma de búsqueda y filtro, y establecer acuerdos con algunos productores para etiquetar y certificar sus productos.",
+    "marketing": "Iniciar una campaña de publicidad en línea que dirija a los consumidores a la plataforma, y establecer acuerdos con blogs y redes sociales de salud y bienestar para promocionar la plataforma.",
+    "metricas": "Número de productos etiquetados y certificados, número de clientes que utilizan la plataforma, y satisfacción de los clientes con la plataforma.",
+    "modelo_negocio": "Los productores pagan una tarifa por la certificación y etiquetado de sus productos, mientras que los clientes pagan una suscripción mensual para acceder a la plataforma y a las herramientas de búsqueda y filtro.",
+    "investigacion": "El tamaño de mercado es grande, ya que hay millones de personas con restricciones alimentarias específicas en todo el mundo. La plataforma debe competir con otras soluciones de etiquetado y certificación existentes, pero su enfoque en la tecnología y la certificación integral la hace única y atractiva para los productores y los clientes.",
+    "score_critico": 68,
+    "viral_score": 55,
+    "score_generador": 70,
+    "score_money": 60,
+    "puntos_fuertes": [
+      "Problema real identificado",
+      "Mercado existente"
+    ],
+    "puntos_debiles": [
+      "Necesita validacion de demanda",
+      "Analizar competencia"
+    ],
+    "resumen": "Idea viable con potencial moderado. Requiere validacion antes de construir."
+  },
+  {
+    "nombre": "Turismia",
+    "vertical": "SaaS",
+    "problema": "Los turistas que visitan la zona del Mar Menor a menudo se ven frustrados por la falta de información precisa y actualizada sobre actividades, restaurantes y lugares de interés en la región. A menudo deben recurrir a guías turísticas impresas o a aplicaciones de terceros que pueden no estar actualizadas o ser demasiado completas. Esto puede llevar a malas experiencias y pérdida de tiempo.",
+    "solucion": "Turismia es una plataforma de SaaS que ofrece una solución integral para los turistas que visitan la zona del Mar Menor. La plataforma proporciona recomendaciones personalizadas de actividades, restaurantes y lugares de interés en función de los intereses y preferencias del usuario, así como de la temporada y la disponibilidad. Los usuarios pueden también reservar entradas y hoteles directamente en la plataforma, y recibir recomendaciones de itinerarios personalizados.",
+    "descripcion": "Turismia es una plataforma de SaaS que busca revolucionar la forma en que los turistas descubren y disfrutan de la zona del Mar Menor. La plataforma se basa en un modelo de recomendación inteligente que toma en cuenta las preferencias y los intereses de cada usuario, y ofrece recomendaciones personalizadas de actividades, restaurantes y lugares de interés. Los usuarios pueden también reservar entradas y hoteles directamente en la plataforma, y recibir recomendaciones de itinerarios personalizados.",
+    "propuesta_valor": "Turismia ofrece una experiencia única y personalizada para los turistas que visitan la zona del Mar Menor, a través de recomendaciones precisas y actualizadas, reserva de entradas y hoteles fáciles, y recomendaciones de itinerarios personalizados.",
+    "cliente_objetivo": "Turistas que visitan la zona del Mar Menor, con edad entre 25 y 50 años, que buscan experiencia turística única y personalizada.",
+    "mvp": "Desarrollar una versión mínima viable de la plataforma que ofrezca recomendaciones básicas de actividades y restaurantes, y permita la reserva de entradas y hoteles de manera ficiente.",
+    "marketing": "Publicidad en redes sociales, colaboración con agencias de viaje y hoteles de la región, y promoción en la propia plataforma.",
+    "metricas": "Número de usuarios registrados, número de recomendaciones generadas, y número de reservas efectuadas.",
+    "modelo_negocio": "Modelo de suscripción mensual, con un precio aproximado de 9,99€/mes, y una comisión del 10% sobre las reservas de entradas y hoteles.",
+    "investigacion": "El tamaño de mercado de la zona del Mar Menor es de aproximadamente 5 millones de turistas al año, y el mercado de la plataforma de recomendaciones de viaje es en constante crecimiento con un estimado de 10% en aumento cada año.",
+    "score_critico": 68,
+    "viral_score": 55,
+    "score_generador": 70,
+    "score_money": 60,
+    "puntos_fuertes": [
+      "Problema real identificado",
+      "Mercado existente"
+    ],
+    "puntos_debiles": [
+      "Necesita validacion de demanda",
+      "Analizar competencia"
+    ],
+    "resumen": "Idea viable con potencial moderado. Requiere validacion antes de construir."
+  },
+  {
+    "nombre": "MarMenorPlanner",
+    "vertical": "SaaS / App móvil",
+    "problema": "Los turistas que visitan la zona del Mar Menor a menudo se ven frustrados por la falta de información precisa y actualizada sobre las mejores actividades, lugares de interés y ofertas especiales en la zona. Esto puede llevar a malgastar tiempo y dinero en experiencias no recomendadas. Además, la gran cantidad de opciones puede ser abrumadora y dificultar la planificación de un viaje efectivo.",
+    "solucion": "MarMenorPlanner es una plataforma de planificación de viaje personalizada y exclusiva para la zona del Mar Menor. Ofrece recomendaciones precisas y actualizadas sobre las mejores actividades, lugares de interés y ofertas especiales, basadas en los intereses y preferencias del usuario. La plataforma también permite a los usuarios crear itinerarios personalizados y recibir recomendaciones de expertos locales.",
+    "descripcion": "MarMenorPlanner es una herramienta de planificación de viaje innovadora que utiliza Inteligencia Artificial para ofrecer recomendaciones precisas y personalizadas a los usuarios. La plataforma es accesible través de una app móvil y un sitio web, y ofrece una variedad de funcionalidades como la creación de itinerarios personalizados, la reserva de actividades y alojamiento, y la recepción de recomendaciones de expertos locales. La plataforma también ofrece herramientas de análisis y seguimiento de las actividades y hábitos de viaje de los usuarios, lo que les permite mejorar continuamente su experiencia.",
+    "propuesta_valor": "Ofrecer una experiencia de planificación de viaje personalizada y exclusiva en la zona del Mar Menor, basada en los intereses y preferencias del usuario.",
+    "cliente_objetivo": "Turistas que visitan la zona del Mar Menor, especialmente aquellos que buscan experiencias únicas y recomendaciones precisas.",
+    "mvp": "Crear una versión básica de la app móvil con una selección limitada de actividades y lugares de interés, y ofrecer recomendaciones generales basadas en los intereses y preferencias del usuario.",
+    "marketing": "Realizar campañas de publicidad en redes sociales, colaborar con influencers y agencias de viaje, y ofrecer descuentos y promociones a los primeros clientes.",
+    "metricas": "Número de usuarios registrados, número de itinerarios creados, cantidad de reservas de actividades y alojamiento realizadas.",
+    "modelo_negocio": "Recibir comisiones por las reservas de actividades y alojamiento realizadas a través de la plataforma, y ofrecer servicios de planificación de viaje personalizado a un precio competitivo.",
+    "investigacion": "El tamaño de mercado de la zona del Mar Menor es significativo, con millones de turistas que visitan la zona cada año. La competencia es moderada, pero hay oportunidades para diferentes plataformas de planificación de viaje que se centren en la zona del Mar Menor.",
+    "score_critico": 80,
+    "viral_score": 60,
+    "score_generador": 85,
+    "score_money": 75,
+    "puntos_fuertes": [
+      "La plataforma ofrece una solución personalizada y exclusiva para la zona del Mar Menor, lo que puede atraer a turistas que buscan experiencias únicas",
+      "La monetización a través de comisiones por reservas y servicios de planificación de viaje personalizado puede ser una fuente de ingresos estable"
+    ],
+    "puntos_debiles": [
+      "La plataforma puede requerir una gran cantidad de datos y actualizaciones constantes para mantener la precisión y relevancia de las recomendaciones",
+      "La competencia con otras plataformas de planificación de viaje y guías de turismo puede ser alta, lo que puede dificultar la adquisición de usuarios y la generación de ingresos"
+    ],
+    "resumen": "MarMenorPlanner es una plataforma de planificación de viaje personalizada y exclusiva para la zona del Mar Menor con un potencial de generación de ingresos estable, pero que requiere una gran cantidad de datos y actualizaciones constantes para mantener su relevancia. La plataforma puede ser atractiva para turistas que buscan experiencias únicas, pero debe diferenciarse de la competencia para adquirir usuarios y generar ingresos."
+  },
+  {
+    "nombre": "MarinaMindset",
+    "vertical": "SaaS / App móvil",
+    "problema": "Las personas que viven en la zona del Mar Menor y sufren de estrés, ansiedad o depresión, encuentran difícil acceder a servicios de salud mental especializados y personalizados. La falta de acceso a recursos locales y la necesidad de viajar a grandes ciudades para recibir tratamiento, puede agravar la situación. Además, la pandemia ha agravado la soledad y el aislamiento, lo que ha llevado a un aumento en la demanda de soluciones de salud mental.",
+    "solucion": "MarinaMindset es una plataforma de salud mental en línea diseñada específicamente para las necesidades de las personas que viven en la zona del Mar Menor. Ofrece programas de tratamiento personalizados, sesiones de coaching y accesibilidad a especialistas en salud mental. La plataforma utiliza inteligencia artificial para ofrecer recomendaciones y recursos personalizados a cada usuario, según su perfil y necesidades.",
+    "descripcion": "MarinaMindset es una plataforma innovadora que combina la tecnología con la salud mental para brindar soluciones personalizadas y accesibles a las personas que viven en la zona del Mar Menor. Nuestra misión es reducir la brecha de acceso a servicios de salud mental y mejorar la calidad de vida de nuestros usuarios.",
+    "propuesta_valor": "Nuestra propuesta de valor se centra en ofrecer soluciones personalizadas y accesibles a las personas que viven en la zona del Mar Menor, mediante la tecnología y la inteligencia artificial.",
+    "cliente_objetivo": "Personas mayores de 18 años que viven en la zona del Mar Menor y sufren de estrés, ansiedad, depresión o otro tipo de trastorno mental.",
+    "mvp": "Desarrollar un prototipo de la plataforma que ofrezca un programa de tratamiento personalizado para 10 usuarios, con acceso a especialistas en salud mental y recursos de apoyo.",
+    "marketing": "Realizar un análisis de competencia para determinar la mejor estrategia de marketing y promoción de la plataforma.",
+    "metricas": "Tasa de satisfacción de los usuarios, número de programas de tratamiento completados, número de usuarios que alcanzan un estado de bienestar significativo.",
+    "modelo_negocio": "Ofrecer un modelo de suscripción mensual a la plataforma, con precios competitivos en comparación con otros servicios similares. El precio aproximado será de 20-30€ por mes.",
+    "investigacion": "El tamaño de mercado en la zona del Mar Menor es de aproximadamente 100.000 personas, con una demanda creciente de soluciones de salud mental. La competencia actual es limitada en la zona, lo que ofrece una oportunidad para que MarinaMindset se establezca como líder en el mercado.",
+    "score_critico": 80,
+    "viral_score": 60,
+    "score_generador": 90,
+    "score_money": 70,
+    "puntos_fuertes": [
+      "La plataforma se enfoca en una zona geográfica específica, lo que permite una mayor personalización y adaptación a las necesidades locales.",
+      "La utilización de inteligencia artificial para ofrecer recomendaciones y recursos personalizados es una ventaja tecnológica significativa.",
+      "El modelo de suscripción mensual ofrece una fuente de ingresos estable y predecible."
+    ],
+    "puntos_debiles": [
+      "La competencia en el mercado de plataformas de salud mental en línea es alta, lo que puede dificultar la diferenciación y la captación de usuarios.",
+      "La necesidad de acceso a especialistas en salud mental puede ser un desafío, especialmente si no se cuenta con una red de profesionales locales.",
+      "La pandemia ha agravado la soledad y el aislamiento, pero también ha llevado a un aumento en la demanda de soluciones de salud mental, lo que puede ser un factor de riesgo si no se gestiona adecuadamente."
+    ],
+    "resumen": "La plataforma MarinaMindset tiene un buen potencial de éxito, pero requiere una cuidadosa planificación y ejecución para superar la competencia y garantizar la calidad de los servicios ofrecidos. La utilización de inteligencia artificial y la personalización de los servicios son ventajas significativas, pero también es importante abordar los desafíos de la competencia y la disponibilidad de especialistas en salud mental.",
+    "score_general": 78.0
+  },
+  {
+    "nombre": "EcoCycle",
+    "vertical": "App móvil / IA",
+    "problema": "La mayoría de los consumidores no conocen el significado de sus acciones diarias y su impacto en el medio ambiente. La falta de conciencia y educación sobre la sostenibilidad y el reciclaje adecuado de materiales plásticos y no plásticos, junto con la creciente conciencia sobre el cambio climático, están llevando a que muchas personas sientan desorientación y confusión sobre cómo actuar de manera más sostenible en su vida diaria.",
+    "solucion": "EcoCycle es una app móvil que utiliza inteligencia artificial para analizar los hábitos de consumidor y proporcionar recomendaciones personalizadas para reducir el impacto ambiental. La app utiliza un chatbots para educar a los usuarios sobre la sostenibilidad y el reciclaje adecuado, ofreciendo consejos prácticos para reducir la generación de residuos y mejorar la eficiencia energética.",
+    "descripcion": "EcoCycle es una plataforma intuitiva y fácil de usar que se enfoca en ayudar a los consumidores a desarrollar hábitos sostenibles y a tomar decisiones más informadas. La app se basa en un algoritmo de IA que analiza los hábitos de consumidor y ofrece recomendaciones en tiempo real para reducir el impacto ambiental. También cuenta con un sistema de recompensas y desafíos para fomentar la participación y motivar a los usuarios a continuar hacia un estilo de vida más sostenible.",
+    "propuesta_valor": "EcoCycle ofrece una experiencia única de conciencia y educación sobre la sostenibilidad, acompañada de herramientas prácticas para reducir el impacto ambiental. La app promete mejorar la conciencia y el comportamiento sostenible de los usuarios, haciéndolos más conscientes de sus decisiones y acciones diarias.",
+    "cliente_objetivo": "Personas urbanas con edades entre 25 y 45 años, con acceso a tecnología y un interés creciente en la sostenibilidad y el medio ambiente.",
+    "mvp": "Un prototipo básico de la app móvil con la IA y el sistema de recomendaciones y recompensas.",
+    "marketing": "Publicidad en redes sociales, colaboraciones con influencers de sostenibilidad y marketing de contenido para llegar a nuestro cliente objetivo.",
+    "metricas": "Tasa de retención de usuarios, número de horas dedicadas a la educación y recomendaciones de sostenibilidad, y cantidad de residuos reducidos por usuario.",
+    "modelo_negocio": "La app ofrecerá una versión gratuita con contenido básico y una versión premium con más herramientas de análisis y recomendaciones personalizadas, a un precio aproximado de $9.99 al mes.",
+    "investigacion": "El tamaño de mercado de la sostenibilidad y el reciclaje asciende a millones de usuarios en todo el mundo, con un crecimiento constante gracias a la creciente conciencia sobre el cambio climático y la sostenibilidad.",
+    "score_critico": 80,
+    "viral_score": 60,
+    "score_generador": 90,
+    "score_money": 70,
+    "puntos_fuertes": [
+      "La app utiliza inteligencia artificial para proporcionar recomendaciones personalizadas, lo que puede ser muy efectivo para cambiar los hábitos de los usuarios.",
+      "La monetización a través de una versión premium puede ser una buena estrategia para generar ingresos."
+    ],
+    "puntos_debiles": [
+      "La competencia en el mercado de apps de sostenibilidad y reciclaje puede ser alta, lo que puede hacer que sea difícil destacar.",
+      "La versión gratuita puede no ser suficientemente atractiva para que los usuarios se decidan a pagar por la versión premium."
+    ],
+    "resumen": "EcoCycle es una app con un enfoque innovador en la sostenibilidad y el reciclaje, pero necesita trabajar en su viralidad y competitividad en el mercado. La monetización a través de una versión premium puede ser una buena estrategia, pero necesita ser bien ejecutada.",
+    "score_general": 78.0
+  },
+  {
+    "nombre": "MoodMente",
+    "vertical": "SaaS",
+    "problema": "La gestión del estrés y la ansiedad en las poblaciones urbana y universitaria es cada vez más importante. La mayoría de las personas no tienen acceso a recursos especializados para gestionar estos estados emocionales. La falta de herramientas efectivas para monitorear y manejar el bienestar emocional provoca un impacto negativo en la salud física y mental, la productividad laboral y las relaciones sociales.",
+    "solucion": "MoodMente ofrece una plataforma de seguimiento y gestión del bienestar emocional individualizado, basado en la medicina de precisión. Utiliza inteligencia artificial para analizar datos de comportamiento y biológicos para identificar patrones de estrés y ansiedad en cada usuario. Ofrece recomendaciones personalizadas para reducir el estrés y mejorar la calidad de vida.",
+    "descripcion": "MoodMente es una plataforma SaaS que utiliza tecnología de precisión para ayudar a las personas a gestionar su bienestar emocional. La herramienta utiliza un enfoque científico para analizar los patrones de comportamiento y biológicos de cada usuario y ofrece recomendaciones personalizadas para reducir el estrés y mejorar la calidad de vida. La plataforma es accesible desde cualquier dispositivo y se puede personalizar según las necesidades individuales de cada usuario.",
+    "propuesta_valor": "La propuesta de valor de MoodMente radica en ofrecer una herramienta de precisión para gestionar el bienestar emocional, aprovechando la tecnología de Inteligencia Artificial y Machine Learning para proporcionar recomendaciones personalizadas.",
+    "cliente_objetivo": "Personas urbanas y universitarias, entre 18 y 40 años, que buscan mejorar su bienestar emocional y gestionar el estrés y la ansiedad.",
+    "mvp": "El MVP de MoodMente será una aplicación móvil y web que permitirá a los usuarios registro, configuración y seguimiento de su bienestar emocional. La plataforma ofrecerá una herramienta de seguimiento y análisis de datos, así como recomendaciones personalizadas para reducir el estrés.",
+    "marketing": "El marketing de MoodMente se centrará en las redes sociales y los canales de contenido de influencers y expertos en bienestar emocional. Se realizarán campañas de publicidad en línea para llegar a una audiencia más amplia.",
+    "metricas": [
+      "¿Cuántos usuarios se unen a la plataforma en un mes?",
+      "¿Cuántas recomendaciones se realizan por usuario por mes?",
+      "¿Cuál es la tasa de satisfacción de los usuarios con la plataforma?"
+    ],
+    "modelo_negocio": "MoodMente generará ingresos a través de una suscripción mensual o anual a la plataforma. Se ofrecerán planes gratuitos limitados para atraer a nuevas audiencias y generar tráfico en la plataforma.",
+    "investigacion": "El tamaño de mercado de la plataforma de bienestar emocional es grande y creciente. Según una encuesta reciente, más de 70% de las personas que se identifican como ansiosas o con estrés buscan herramientas y recursos para mejorar su bienestar emocional. La competencia es alta, pero la plataforma de precisión de MoodMente ofrece una ventaja única en el mercado.",
+    "score_critico": 85,
+    "viral_score": 60,
+    "score_generador": 90,
+    "score_money": 80,
+    "puntos_fuertes": [
+      "La plataforma utiliza inteligencia artificial para analizar datos de comportamiento y biológicos, lo que ofrece una solución personalizada y efectiva para gestionar el estrés y la ansiedad.",
+      "La plataforma ofrece planes gratuitos limitados para atraer a nuevas audiencias y generar tráfico en la plataforma, lo que puede ayudar a aumentar la visibilidad y la aceptación de la plataforma."
+    ],
+    "puntos_debiles": [
+      "La competencia en el mercado de la gestión del estrés y la ansiedad puede ser alta, lo que puede hacer que sea difícil para MoodMente destacarse en un mercado ya saturado.",
+      "La plataforma requiere una gran cantidad de datos personales de los usuarios, lo que puede ser un obstáculo para la privacidad y la confianza de los usuarios."
+    ],
+    "resumen": "MoodMente es una plataforma de seguimiento y gestión del bienestar emocional individualizado que utiliza inteligencia artificial para ofrecer recomendaciones personalizadas. Aunque enfrenta competencia y desafíos de privacidad, la plataforma tiene el potencial de ser efectiva y atractiva para los usuarios.",
+    "score_general": 81.0
+  },
+  {
+    "nombre": "DreamSched",
+    "vertical": "App móvil/SaaS",
+    "problema": "Los estudiantes y profesionales de todas las edades enfrentan dificultades para gestionar sus horarios y prioridades, lo que lleva a estrés, pérdida de tiempo y bajo rendimiento. Además, la falta de herramientas efectivas para la planificación y organización de tareas y proyectos afecta negativamente la calidad de vida y el éxito académico o profesional.",
+    "solucion": "DreamSched ofrece una aplicación móvil y una plataforma web que permite a los usuarios crear y gestionar sus horarios de forma personalizada y flexible. Con la tecnología de inteligencia artificial, la aplicación analiza las preferencias y hábitos de cada usuario y recomienda horarios para maximizar su productividad y bienestar.",
+    "descripcion": "La aplicación DreamSched se enfoca en ayudar a los usuarios a encontrar un equilibrio entre el trabajo, la escuela y la vida personal. Utiliza algoritmos de aprendizaje automático para aprender las rutinas y patrones del usuario y adaptar sus recomendaciones en consecuencia. A medida que la aplicación se vuelve más precisa, los usuarios pueden beneficiarse de una mayor productividad y tranquilidad mental, lo que conduce a un mayor éxito en sus objetivos académicos o profesionales.",
+    "propuesta_valor": "DreamSched ofrece una solución integral y personalizada para la planificación y organización de horarios, con la capacidad de adaptarse continuamente a las necesidades y preferencias del usuario.",
+    "cliente_objetivo": "Estudiantes de secundaria y universitaria, profesionales de 25 a 45 años y adultos mayores con necesidades de planificación y organización de horarios.",
+    "mvp": "Versión beta de la aplicación móvil con funcionalidad básica y características para planificar horarios y tareas.",
+    "marketing": "Reconexiones con influencers de productividad y organización, publicidad en redes sociales y marketing a través de correos electrónicos y boletines digitales.",
+    "metricas": "Tasa de adquisición de usuarios, tasa de retención de usuarios y valor de vida promedio de los usuarios.",
+    "modelo_negocio": "Suscripción mensual para acceso a características avanzadas y actualizaciones de la aplicación, con un modelo de pricing que ofrece planes estándar, premium y empresarial.",
+    "investigacion": "El tamaño de mercado para software de planificación de horarios y organización es estimado en $2 mil millones, con una crecimiento en un 15% anual. La competencia principal incluye aplicaciones como Any.do, Todoist y Google Calendar, pero DreamSched se enfoca en ofrecer una experiencia más personalizada y adaptativa.",
+    "score_critico": 80,
+    "viral_score": 60,
+    "score_generador": 90,
+    "score_money": 85,
+    "puntos_fuertes": [
+      "La aplicación utiliza tecnología de inteligencia artificial para ofrecer recomendaciones personalizadas y mejorar la productividad de los usuarios.",
+      "El modelo de pricing ofrece planes estándar, premium y empresarial, lo que permite a los usuarios elegir el plan que mejor se adapte a sus necesidades.",
+      "La aplicación móvil y la plataforma web permiten a los usuarios acceder a la herramienta desde cualquier dispositivo y en cualquier momento."
+    ],
+    "puntos_debiles": [
+      "La competencia en el mercado de las herramientas de planificación y organización de tareas y proyectos es alta, lo que puede hacer que sea difícil destacar en el mercado.",
+      "La dependencia de la tecnología de inteligencia artificial puede ser un riesgo si no se implementa correctamente, lo que puede afectar la experiencia del usuario y la confiabilidad de la aplicación."
+    ],
+    "resumen": "DreamSched es una aplicación de planificación y organización de tareas y proyectos que utiliza tecnología de inteligencia artificial para ofrecer recomendaciones personalizadas y mejorar la productividad de los usuarios. Aunque enfrenta competencia en el mercado y depende de la tecnología de inteligencia artificial, la aplicación ofrece un modelo de pricing flexible y una experiencia de usuario intuitiva.",
+    "score_general": 79.5
+  },
+  {
+    "nombre": "FitConnect",
+    "vertical": "App móvil / Salud",
+    "problema": "Miles de personas sufrimos de aislamiento social durante la pandemia, lo que llevó a una disminución de la salud mental y física. Además, la falta de motivación y la presión del entorno físico hacen que sea difícil mantener un estilo de vida saludable. La mayoría de las aplicaciones de seguimiento de la salud existentes ofrecen soluciones genéricas y no personalizadas, lo que dificulta el mantenimiento de hábitos saludables.",
+    "solucion": "FitConnect es una aplicación móvil que integra tecnología de inteligencia artificial con herramientas de seguimiento de la salud para ofrecer una experiencia de usuario personalizada y motivadora. La aplicación analiza el historial de actividad física, dietas y objetivos del usuario para proporcionar recomendaciones y desafíos personalizados. Además, conecta a los usuarios con entrenadores virtuales y comunidades de apoyo para fomentar el compromiso y la motivación.",
+    "descripcion": "FitConnect es una aplicación móvil que utiliza inteligencia artificial para proporcionar una experiencia de usuario personalizada y motivadora. La aplicación se centra en ayudar a los usuarios a mantener un estilo de vida saludable de manera sostenible y disfrutable. Al integrar la tecnología de IA con herramientas de seguimiento de la salud, FitConnect ofrece una solución única y diferenciada para los usuarios que desean alcanzar sus objetivos de salud.",
+    "propuesta_valor": "Proporcionar una experiencia de usuario personalizada y motivadora a través de la integración de tecnología de inteligencia artificial con herramientas de seguimiento de la salud.",
+    "cliente_objetivo": "Adultos jovenes y adultos que buscan mantener un estilo de vida saludable y están dispuestos a invertir en soluciones tecnológicas para apoyar sus objetivos.",
+    "mvp": "Desarrollar una versión minimalista de la app que incluya la capacidad de registrar actividad física, dietas y objetivos, con una pequeña base de datos de entrenadores virtuales y una comunidad de apoyo limitada.",
+    "marketing": "Implementar publicidad en redes sociales, anuncios en aplicaciones de salud y colaboraciones con entrenadores virtuales y expertos en bienestar para promocionar la aplicación.",
+    "metricas": "Tasa de retención de usuarios, número de objetivos alcanzados y nivel de satisfacción del usuario.",
+    "modelo_negocio": " Modelo SaaS con un precio mensual de $9.99 por usuario, con descuentos para usuarios que suscriben a un año o más.",
+    "investigacion": "El tamaño de mercado de la salud y el bienestar es de $1,4 billones, con una tasa de crecimiento anual de 7%. La competencia en la industria es intensa, pero las soluciones que ofrecen experiencias de usuario personalizadas y motivadoras tienen un potencial de crecimiento significativo.",
+    "score_critico": 80,
+    "viral_score": 60,
+    "score_generador": 90,
+    "score_money": 85,
+    "puntos_fuertes": [
+      "La aplicación ofrece una experiencia de usuario personalizada y motivadora gracias a la integración de tecnología de inteligencia artificial",
+      "El modelo SaaS con un precio mensual de $9.99 ofrece una buena oportunidad de monetización",
+      "La conexión con entrenadores virtuales y comunidades de apoyo puede fomentar el compromiso y la motivación de los usuarios"
+    ],
+    "puntos_debiles": [
+      "La competencia en el mercado de aplicaciones de seguimiento de la salud es alta y puede ser difícil destacar",
+      "La dependencia de la tecnología de inteligencia artificial puede ser un riesgo si no se implementa correctamente",
+      "El precio mensual de $9.99 puede ser demasiado alto para algunos usuarios"
+    ],
+    "resumen": "FitConnect es una aplicación de salud que ofrece una experiencia de usuario personalizada y motivadora, pero enfrenta una competencia alta y dependencia de la tecnología de inteligencia artificial. La monetización a través del modelo SaaS es una oportunidad, pero el precio mensual puede ser un obstáculo para algunos usuarios.",
+    "score_general": 79.5
+  },
+  {
+    "nombre": "SmartNido",
+    "vertical": "SaaS",
+    "problema": "Las familias con hijos pequeños a menudo enfrentan la difícil tarea de encontrar y contratar a cuidadores confiables y cualificados. Esto puede generar estrés y preocupación por la seguridad y el bienestar de los niños. Además, la falta de opciones de cuidado infantil flexible y accessibles puede afectar la capacidad de las madres y padres para trabajar en horarios regulares, lo que puede tener impactos en la economía familiar y la carrera profesional.",
+    "solucion": "SmartNido es una plataforma de SaaS que conecta a familias con necesidades de cuidado infantil con cuidadores calificados y disponibles en horarios flexibles. La plataforma utiliza algoritmos de recomendación para sugerir a los usuarios cuidadores que mejor se ajusten a sus necesidades y preferencias, y ofrece herramientas de comunicación y gestión de la relación entre cuidadores y familias.",
+    "descripcion": "SmartNido es una plataforma de SaaS que aprovecha el poder de las tecnologías de conexión en línea para facilitar la búsqueda de cuidadores infantiles de alta calidad y confiables. La plataforma ofrece una variedad de herramientas y recursos para que las familias puedan encontrar los cuidadores perfectos para sus hijos, y para que los cuidadores puedan encontrar oportunidades de empleo en horarios flexibles.",
+    "propuesta_valor": "SmartNido ofrece una solución integral para las familias que requieren cuidado infantil, con una experiencia de usuario fácil y segura, y un acceso a una amplia red de cuidadores calificados y disponibles.",
+    "cliente_objetivo": "Familias con hijos pequeños, madres y padres que buscan cuidado infantil flexible y accesible, y cuidadores calificados y cualificados",
+    "mvp": "Versión básica de la plataforma que permite a las familias registrar sus necesidades de cuidado infantil y a los cuidadores registrarse y ofrecer sus servicios",
+    "marketing": "Marketing en redes sociales, publicidad en línea y promoción de la plataforma a través de redes de contactos en la industria del cuidado infantil",
+    "metricas": "Tasa de satisfacción de los usuarios, número de usuarios registrados y nivel de empleo de los cuidadores",
+    "modelo_negocio": "Membresía mensual para las familias y los cuidadores, con una tarifa reducida para las familias que contratan a cuidadores a través de la plataforma",
+    "investigacion": "El tamaño de mercado del cuidado infantil en Estados Unidos es de aproximadamente $100 mil millones anuales, con una creciente demanda de cuidado infantil flexible y accesible. La plataforma de SmartNido puede aprovechar esta tendencia y ofrecer una solución integral a las necesidades de las familias con hijos pequeños.",
+    "score_critico": 80,
+    "viral_score": 60,
+    "score_generador": 90,
+    "score_money": 85,
+    "puntos_fuertes": [
+      "La plataforma tiene un enfoque claro y resuelve un problema real para las familias con hijos pequeños.",
+      "La monetización a través de membresía mensual ofrece una fuente estable de ingresos.",
+      "La plataforma puede ofrecer herramientas de comunicación y gestión de la relación entre cuidadores y familias, lo que puede mejorar la experiencia del usuario."
+    ],
+    "puntos_debiles": [
+      "La competencia en el mercado de plataformas de cuidado infantil puede ser alta, lo que puede hacer que sea difícil diferenciarse.",
+      "La plataforma puede requerir una gran cantidad de datos y validación para asegurarse de que los cuidadores son calificados y confiables.",
+      "La tarifa reducida para las familias que contratan a cuidadores a través de la plataforma puede ser difícil de implementar y mantener."
+    ],
+    "resumen": "SmartNido es una plataforma de SaaS que conecta a familias con necesidades de cuidado infantil con cuidadores calificados y disponibles en horarios flexibles. La plataforma tiene un enfoque claro y resuelve un problema real, pero enfrenta desafíos en la competencia y la implementación de la monetización.",
+    "score_general": 79.5
   }
 ]

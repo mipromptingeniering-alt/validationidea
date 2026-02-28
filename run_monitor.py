@@ -1,117 +1,56 @@
 import os
+import sys
 import time
-import requests
-from dotenv import load_dotenv
+from datetime import datetime
 
-load_dotenv()
+os.environ["PYTHONUTF8"] = "1"
 
-from agents.analyzer_agent import generate_complete_report
-from agents.notion_updater_agent import write_report_to_notion
+MINUTOS_ENTRE_IDEAS = 30  # Genera una idea cada 30 minutos
 
-NOTION_API_KEY     = os.environ.get("NOTION_TOKEN") or os.environ.get("NOTION_API_KEY")
-NOTION_DATABASE_ID = os.environ.get("NOTION_DATABASE_ID")
-NOTION_VERSION     = "2022-06-28"
+def log(mensaje):
+    hora = datetime.now().strftime("%H:%M:%S")
+    print(f"[{hora}] {mensaje}", flush=True)
 
-
-def _h():
-    return {
-        "Authorization": f"Bearer {NOTION_API_KEY}",
-        "Content-Type": "application/json",
-        "Notion-Version": NOTION_VERSION,
-    }
-
-
-def get_ideas_sin_informe() -> list:
-    url = f"https://api.notion.com/v1/databases/{NOTION_DATABASE_ID}/query"
-    ideas, cursor = [], None
-    while True:
-        body = {
-            "page_size": 100,
-            "filter": {
-                "property": "Informe Completo",
-                "rich_text": {"is_empty": True}
-            }
-        }
-        if cursor:
-            body["start_cursor"] = cursor
-        try:
-            r = requests.post(url, headers=_h(), json=body, timeout=30)
-            data = r.json()
-            ideas.extend(data.get("results", []))
-            if not data.get("has_more"):
-                break
-            cursor = data.get("next_cursor")
-        except Exception as e:
-            print(f"[Monitor] Error consultando Notion: {e}")
-            break
-    return ideas
-
-
-def extraer_idea(page: dict) -> dict:
-    props = page.get("properties", {})
-
-    def txt(k):
-        p = props.get(k, {})
-        rt = p.get("rich_text") or p.get("title") or []
-        return " ".join(t.get("plain_text", "") for t in rt).strip()
-
-    def num(k):
-        return props.get(k, {}).get("number")
-
-    return {
-        "nombre":          txt("Name"),
-        "problema":        txt("Problem"),
-        "solucion":        txt("Solution"),
-        "propuesta_valor": txt("Value"),
-        "target":          txt("Target"),
-        "mvp":             txt("MVP"),
-        "marketing":       txt("Marketing"),
-        "negocio":         txt("Business"),
-        "fortalezas":      txt("Strengths"),
-        "debilidades":     txt("Weaknesses"),
-        "riesgos":         txt("Risks"),
-        "score_gen":       num("ScoreGen"),
-        "score_viral":     num("ScoreViral"),
-        "score_critico":   num("ScoreCritic"),
-    }
-
+def ejecutar_una_idea():
+    try:
+        from run_batch import ejecutar_batch
+        resultado = ejecutar_batch()
+        if resultado:
+            log("✅ Idea TOP generada y sincronizada")
+        else:
+            log("⚠️ Batch completado sin idea TOP (normal, se reintentará)")
+        return True
+    except Exception as e:
+        log(f"❌ Error en batch: {e}")
+        return False
 
 def main():
-    print("=" * 50)
-    print("run_monitor.py — Generador de informes completos")
-    print("=" * 50)
+    log("=" * 60)
+    log("🚀 MONITOR AUTOMÁTICO - validationidea")
+    log(f"⏰ Genera ideas cada {MINUTOS_ENTRE_IDEAS} minutos")
+    log("=" * 60)
 
-    ideas = get_ideas_sin_informe()
-    total = len(ideas)
-    print(f"Ideas sin informe: {total}")
-
-    if not total:
-        print("✅ Nada que procesar.")
-        return
-
-    exito = 0
-    for i, page in enumerate(ideas, 1):
-        idea = extraer_idea(page)
-        nombre = idea["nombre"] or "Sin nombre"
-        print(f"\n[{i}/{total}] ➜ {nombre}")
-
-        try:
-            informe = generate_complete_report(idea)
-            if informe:
-                write_report_to_notion(page["id"], informe)
-                exito += 1
-                print(f"  ✅ Informe listo")
-            else:
-                print(f"  ⚠️  LLM no respondió para '{nombre}'")
-        except Exception as e:
-            print(f"  ❌ Error: {e}")
-
-        if i < total:
-            time.sleep(5)
-
-    print(f"\n{'='*50}")
-    print(f"✅ {exito}/{total} informes generados")
-
+    ciclo = 1
+    while True:
+        log(f"\n🔄 CICLO #{ciclo} - {datetime.now().strftime('%d/%m/%Y %H:%M')}")
+        
+        ejecutar_una_idea()
+        
+        proxima = MINUTOS_ENTRE_IDEAS * 60
+        log(f"😴 Esperando {MINUTOS_ENTRE_IDEAS} minutos... (Ctrl+C para parar)")
+        
+        # Espera en trozos de 60s para que no parezca colgado
+        for i in range(MINUTOS_ENTRE_IDEAS):
+            time.sleep(60)
+            restantes = MINUTOS_ENTRE_IDEAS - i - 1
+            if restantes > 0 and restantes % 5 == 0:
+                log(f"⏳ {restantes} minutos para próxima idea...")
+        
+        ciclo += 1
 
 if __name__ == "__main__":
-    main()
+    try:
+        main()
+    except KeyboardInterrupt:
+        log("🛑 Monitor parado por el usuario")
+        sys.exit(0)
