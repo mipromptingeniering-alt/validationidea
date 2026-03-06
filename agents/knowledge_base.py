@@ -1,6 +1,7 @@
 import os
 import json
 from datetime import datetime
+from collections import Counter
 
 class KnowledgeBase:
     def __init__(self):
@@ -18,6 +19,7 @@ class KnowledgeBase:
                     data.setdefault("scores_lista", [])
                     data.setdefault("verticales", {})
                     data.setdefault("tipos", {})
+                    data.setdefault("patrones_ganadores", [])
                     return data
             except:
                 pass
@@ -27,77 +29,118 @@ class KnowledgeBase:
             "mejor_score": 0,
             "scores_lista": [],
             "verticales": {},
-            "tipos": {}
+            "tipos": {},
+            "patrones_ganadores": []
         }
 
     def aprender(self, idea, score_generador):
         score_general = idea.get("score_general", 0)
-        vertical = idea.get("vertical", "Desconocido")
-        tipo = idea.get("tipo", "Desconocido")
+        nombre   = idea.get("nombre", "?")
+        vertical = idea.get("vertical", "").strip() or "Desconocido"
+        tipo     = idea.get("tipo", "").strip() or "Desconocido"
+
+        # Limpiar tipo genérico
+        if tipo.lower() in ["desconocido", "", "none", "null"]:
+            # Inferir del vertical
+            v = vertical.lower()
+            if "app" in v:      tipo = "App móvil"
+            elif "saas" in v:   tipo = "SaaS"
+            elif "market" in v: tipo = "Marketplace"
+            elif "web" in v:    tipo = "Web"
+            elif "local" in v:  tipo = "Negocio local"
+            else:               tipo = "SaaS"
+            idea["tipo"] = tipo
 
         self.kb["total_ideas"] += 1
-        self.kb["scores_lista"].append(score_general)
-        self.kb["scores_lista"] = self.kb["scores_lista"][-50:]
+        self.kb["scores_lista"].append(round(score_general, 1))
+        self.kb["scores_lista"] = self.kb["scores_lista"][-100:]
 
         if score_general > self.kb["mejor_score"]:
-            self.kb["mejor_score"] = score_general
+            self.kb["mejor_score"] = round(score_general, 1)
 
-        # Contar verticales y tipos ganadores
-        if score_general >= 75:
+        # Contar verticales y tipos (solo ideas buenas)
+        if score_general >= 72:
             self.kb["verticales"][vertical] = self.kb["verticales"].get(vertical, 0) + 1
-            self.kb["tipos"][tipo] = self.kb["tipos"].get(tipo, 0) + 1
+            self.kb["tipos"][tipo]          = self.kb["tipos"].get(tipo, 0) + 1
 
+        # Top 15 ideas
         if score_general >= 75:
             self.kb["top_ideas"].append({
-                "nombre": idea.get("nombre"),
+                "nombre":   nombre,
                 "vertical": vertical,
-                "tipo": tipo,
-                "score": score_general
+                "tipo":     tipo,
+                "score":    round(score_general, 1),
+                "fecha":    datetime.now().strftime("%d/%m/%Y")
             })
-            self.kb["top_ideas"] = self.kb["top_ideas"][-10:]
+            # Ordenar por score y quedarse top 15
+            self.kb["top_ideas"] = sorted(
+                self.kb["top_ideas"], key=lambda x: x["score"], reverse=True
+            )[:15]
+
+        # Patrones ganadores (ideas >82)
+        if score_general >= 82:
+            self.kb["patrones_ganadores"].append({
+                "vertical": vertical,
+                "tipo":     tipo,
+                "score":    round(score_general, 1)
+            })
+            self.kb["patrones_ganadores"] = self.kb["patrones_ganadores"][-20:]
 
         self._guardar()
-        print(f"[KB] ✅ {idea.get('nombre')} | score={score_general:.1f} | total={self.kb['total_ideas']}")
+        print(f"[KB] ✅ {nombre} | tipo={tipo} | vertical={vertical} | score={score_general:.1f} | total={self.kb['total_ideas']}")
 
     def get_contexto_para_generador(self):
         try:
-            top3 = self.kb.get("top_ideas", [])[-3:]
-            if not top3:
-                return "KB iniciando — genera libremente"
-            return "🏆 TOP ideas:\n" + "\n".join([
-                f"- {i['nombre']} ({i['vertical']}, {i['score']:.0f}pts)"
-                for i in top3
-            ])
+            top5   = self.kb.get("top_ideas", [])[:5]
+            patron = self.kb.get("patrones_ganadores", [])[:3]
+
+            contexto = ""
+            if top5:
+                contexto += "🏆 MEJORES IDEAS (evitar repetir):\n"
+                contexto += "\n".join([f"- {i['nombre']} ({i['tipo']}, {i['score']}pts)" for i in top5])
+
+            if patron:
+                contexto += "\n\n🔥 PATRONES GANADORES:\n"
+                contexto += "\n".join([f"- {p['vertical']}/{p['tipo']} → {p['score']}pts" for p in patron])
+
+            return contexto[:800] if contexto else "KB iniciando"
         except:
             return "KB disponible"
 
     def get_stats(self):
-        """Stats para resumen diario de Telegram"""
         scores = self.kb.get("scores_lista", [])
-        score_prom = sum(scores) / len(scores) if scores else 0
+        score_prom = round(sum(scores) / len(scores), 1) if scores else 0.0
 
         verticales = self.kb.get("verticales", {})
-        mejor_vertical = max(verticales, key=verticales.get) if verticales else "N/A"
+        mejor_v = max(verticales, key=verticales.get) if verticales else "N/A"
 
         tipos = self.kb.get("tipos", {})
-        mejor_tipo = max(tipos, key=tipos.get) if tipos else "N/A"
+        mejor_t = max(tipos, key=tipos.get) if tipos else "N/A"
+
+        top = self.kb.get("top_ideas", [])
+        mejor_idea = top[0]["nombre"] if top else "N/A"
 
         return {
-            "total_ideas": self.kb.get("total_ideas", 0),
-            "score_promedio": round(score_prom, 1),
-            "mejor_score": self.kb.get("mejor_score", 0),
-            "mejor_vertical": mejor_vertical,
-            "mejor_tipo": mejor_tipo
+            "total_ideas":    self.kb.get("total_ideas", 0),
+            "score_promedio": score_prom,
+            "mejor_score":    self.kb.get("mejor_score", 0),
+            "mejor_vertical": mejor_v,
+            "mejor_tipo":     mejor_t,
+            "mejor_idea":     mejor_idea
         }
+
+    def get_top_ideas(self, n=5):
+        return self.kb.get("top_ideas", [])[:n]
 
     def _guardar(self):
         os.makedirs("data", exist_ok=True)
         try:
             with open(self.ruta_kb, "w", encoding="utf-8") as f:
                 json.dump(self.kb, f, ensure_ascii=False, indent=2)
-        except:
-            pass
+        except Exception as e:
+            print(f"⚠️ Error guardando KB: {e}")
 
+# ── Instancia global ──────────────────────────────────────
 kb_global = KnowledgeBase()
 
 def aprender(idea, score_generador):
@@ -108,3 +151,7 @@ def get_contexto_para_generador():
 
 def get_stats():
     return kb_global.get_stats()
+
+def get_top_ideas(n=5):
+    return kb_global.get_top_ideas(n)
+# FIN COMPLETO knowledge_base.py
