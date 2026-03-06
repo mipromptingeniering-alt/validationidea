@@ -1,4 +1,4 @@
-import os
+﻿import os
 import sys
 import json
 import time
@@ -51,17 +51,30 @@ def enviar_telegram(mensaje: str):
             log(f"⚠️ Telegram HTTP {resp.status_code}")
     except Exception as e:
         log(f"❌ Error Telegram: {e}")
-
 def ejecutar_script(nombre: str):
     log(f"▶️  {nombre}...")
     try:
-        resultado = subprocess.run([sys.executable, nombre], capture_output=True, timeout=300)
-        salida  = resultado.stdout.decode("utf-8", errors="replace")
-        errores = resultado.stderr.decode("utf-8", errors="replace")
-        exito   = resultado.returncode == 0
-        if not exito and errores:
-            log(f"STDERR {nombre}: {errores[:300]}")
-        return exito, salida
+        resultado = subprocess.run(
+            [sys.executable, nombre],
+            capture_output=True,
+            timeout=240
+        )
+        salida  = resultado.stdout.decode("utf-8", errors="replace").strip()
+        errores = resultado.stderr.decode("utf-8", errors="replace").strip()
+
+        # Mostrar TODA la salida en logs de Railway
+        if salida:
+            for linea in salida.split("\n"):
+                if linea.strip():
+                    log(f"  │ {linea.strip()}")
+
+        if resultado.returncode != 0 and errores:
+            for linea in errores.split("\n")[:5]:
+                if linea.strip():
+                    log(f"  ⚠️ {linea.strip()}")
+
+        return resultado.returncode == 0, salida
+
     except subprocess.TimeoutExpired:
         log(f"⏰ Timeout en {nombre}")
         return False, "Timeout"
