@@ -5,131 +5,114 @@ import random
 from groq import Groq
 from agents.encoding_helper import fix_llm_encoding
 
-def _groq_chat_robusto(client, model_primary, model_fallback, messages, max_intentos=3):
-    """Llamada robusta a Groq: respeta retry-after + fallback automático"""
-    model = model_primary
-    
+def _groq_chat(messages, max_intentos=3):
+    client = Groq(api_key=os.environ.get("GROQ_API_KEY"))
+    model = "llama-3.3-70b-versatile"
     for intento in range(max_intentos):
         try:
-            response = client.chat.completions.create(
+            return client.chat.completions.create(
                 model=model,
                 messages=messages,
                 temperature=0.3,
                 max_tokens=600,
             )
-            return response
-        
         except Exception as e:
-            error_msg = str(e).lower()
-            es_rate_limit = "429" in error_msg or "rate limit" in error_msg
-            
-            if not es_rate_limit:
-                raise
-            
-            print(f"⏳ Rate limit detectado (intento {intento+1}/{max_intentos})")
-            
-            # Buscar tiempo de espera en el error
-            retry_after = None
-            if "try again in" in error_msg:
-                # Extrae minutos/segundos del mensaje de Groq
-                parts = error_msg.split("try again in")
-                if len(parts) > 1:
-                    time_part = parts[1].split(".")[0]  # "6m47.808s" → "6m47"
-                    if "m" in time_part and "s" in time_part:
-                        mins = int(time_part.split("m")[0])
-                        secs = int(time_part.split("s")[0].split("m")[-1])
-                        retry_after = mins * 60 + secs
-            
-            if retry_after:
-                print(f"⏰ Esperando {retry_after}s (según Groq)...")
-                time.sleep(retry_after)
-            else:
-                # Backoff exponencial + jitter
-                espera = min(2 ** intento * 2 + random.uniform(0, 2), 30)
+            if "429" in str(e) or "rate" in str(e).lower():
+                espera = min(4 * (2 ** intento) + random.uniform(0, 2), 30)
+                print(f"⏳ Rate limit detectado (intento {intento+1}/{max_intentos})")
                 print(f"⏰ Esperando {espera:.1f}s (backoff)...")
                 time.sleep(espera)
-            
-            # Cambiar a modelo ligero en intento 2+
-            if intento >= 1 and model_fallback:
-                model = model_fallback
-                print(f"🔄 Cambiando a modelo ligero: {model_fallback}")
-    
-    raise Exception("Todos los reintentos fallaron")
+                if intento >= 1:
+                    model = "llama-3.1-8b-instant"
+                    print("🔄 Cambiando a modelo ligero: llama-3.1-8b-instant")
+            else:
+                raise
+    return None
 
 def critique(idea):
-    """Evalúa la idea con scoring completo: critico, viral, generador y money (P5)"""
     nombre      = idea.get("nombre", "")
     problema    = idea.get("problema", "")
     solucion    = idea.get("solucion", "")
     tipo        = idea.get("tipo", "")
     vertical    = idea.get("vertical", "")
     monetizacion = idea.get("monetizacion", idea.get("modelo_negocio", ""))
+    propuesta   = idea.get("propuesta_valor", "")
 
-    prompt = f"""Eres un critico de negocios experto y estricto. Evalua esta idea de negocio digital.
+    prompt = f"""Eres un inversor experto y crítico ESTRICTO de startups. Evalúa esta idea con RIGOR MÁXIMO.
 
 IDEA: {nombre}
 PROBLEMA: {problema}
-SOLUCION: {solucion}
+SOLUCIÓN: {solucion}
 TIPO: {tipo}
 MERCADO: {vertical}
-MONETIZACION: {monetizacion}
+MONETIZACIÓN: {monetizacion}
+PROPUESTA VALOR: {propuesta}
 
-Evalua con CRITERIOS ESTRICTOS y devuelve 4 scores:
+CRITERIOS DE EVALUACIÓN ESTRICTOS:
 
-score_critico (0-100): Viabilidad real del negocio
-score_generador (0-100): Calidad tecnica y ejecutabilidad  
-viral_score (0-100): Potencial de difusion organica
-score_money (0-100): Potencial real de generar ingresos
+score_critico (0-100): Viabilidad real
+- ¿El problema es REAL y frecuente?
+- ¿La solución es 10x mejor que alternativas?
+- ¿El mercado tiene dinero suficiente?
+- Sé ESTRICTO: la mayoría de ideas merecen 60-75
 
-Da fortalezas y debilidades ESPECIFICAS.
+viral_score (0-100): Difusión orgánica
+- ¿La gente lo compartirá espontáneamente?
+- ¿Se explica en 5 segundos?
+- La mayoría de SaaS tienen viral bajo (40-55)
 
-Responde SOLO JSON valido sin markdown:
+score_generador (0-100): Ejecutabilidad técnica
+- ¿Se puede construir en 30 días con menos de 500€?
+- ¿El stack es moderno?
+
+score_money (0-100): Potencial de ingresos REALES
+- ¿Cuánto puede ganar al año 1 realistamente?
+- ¿Hay competencia que valide el mercado?
+- Sé REALISTA: la mayoría tardan en monetizar
+
+IMPORTANTE: Da scores VARIADOS y REALISTAS, no siempre 80. 
+Si algo es mediocre, pon 55. Si es excepcional, pon 90.
+
+Responde SOLO JSON válido sin markdown:
 {{
   "score_critico": <numero 0-100>,
   "viral_score": <numero 0-100>,
   "score_generador": <numero 0-100>,
   "score_money": <numero 0-100>,
-  "puntos_fuertes": ["fortaleza 1", "fortaleza 2"],
-  "puntos_debiles": ["debilidad 1"],
-  "resumen": "2 frases concretas"
+  "puntos_fuertes": ["fortaleza concreta 1", "fortaleza concreta 2", "fortaleza concreta 3"],
+  "puntos_debiles": ["debilidad concreta 1", "debilidad concreta 2"],
+  "resumen": "Evaluación ejecutiva en 2 frases MUY concretas sobre ESTA idea específica"
 }}"""
 
-    client = Groq(api_key=os.environ.get("GROQ_API_KEY"))
-    
     try:
-        # Modelo grande → fallback automático a ligero
-        response = _groq_chat_robusto(
-            client=client,
-            model_primary="llama-3.3-70b-versatile",
-            model_fallback="llama-3.1-8b-instant",
-            messages=[{"role": "user", "content": prompt}]
-        )
-        
+        response = _groq_chat([{"role": "user", "content": prompt}])
+        if not response:
+            raise Exception("Sin respuesta de Groq")
+
         content = response.choices[0].message.content.strip()
         content = fix_llm_encoding(content)
 
-        # Limpiar markdown si existe
-        if "```json" in content:
-            parts = content.split("```json")
-            if len(parts) > 1:
-                content = parts[1].split("```").strip()
-        
-        # Extraer JSON
+        if "```" in content:
+            parts = content.split("```")
+            for part in parts:
+                if "{" in part:
+                    content = part.replace("json", "").strip()
+                    break
+
         inicio = content.find("{")
         fin = content.rfind("}") + 1
         if inicio >= 0 and fin > inicio:
             content = content[inicio:fin]
-        
+
         result = json.loads(content)
 
-        # Validar campos obligatorios
-        result.setdefault("score_critico", 70)
-        result.setdefault("viral_score", 55)
+        result.setdefault("score_critico", 68)
+        result.setdefault("viral_score", 50)
         result.setdefault("score_generador", 70)
-        result.setdefault("score_money", 60)
-        result.setdefault("puntos_fuertes", ["Default fuerte"])
-        result.setdefault("puntos_debiles", ["Default débil"])
-        result.setdefault("resumen", "Idea evaluada.")
+        result.setdefault("score_money", 58)
+        result.setdefault("puntos_fuertes", ["Problema identificado"])
+        result.setdefault("puntos_debiles", ["Validar demanda real"])
+        result.setdefault("resumen", "Idea con potencial. Requiere validación.")
 
         sc = result["score_critico"]
         sv = result["viral_score"]
@@ -140,13 +123,13 @@ Responde SOLO JSON valido sin markdown:
 
     except Exception as e:
         print(f"❌ Error final en critique: {e}")
-        # Fallback conservador
         return {
-            "score_critico": 68,
-            "viral_score": 55,
-            "score_generador": 70,
-            "score_money": 60,
-            "puntos_fuertes": ["Problema real", "Mercado existente"],
-            "puntos_debiles": ["Validar demanda", "Competencia"],
-            "resumen": "Idea viable. Requiere validación."
+            "score_critico": 65,
+            "viral_score": 48,
+            "score_generador": 68,
+            "score_money": 55,
+            "puntos_fuertes": ["Problema real identificado", "Mercado existente"],
+            "puntos_debiles": ["Necesita validación de demanda", "Analizar competencia"],
+            "resumen": "Idea con potencial moderado. Requiere validación antes de construir."
         }
+# FIN COMPLETO critic_agent.py

@@ -680,5 +680,35 @@
     ],
     "resumen": "SmartNido es una plataforma de SaaS que conecta a familias con necesidades de cuidado infantil con cuidadores calificados y disponibles en horarios flexibles. La plataforma tiene un enfoque claro y resuelve un problema real, pero enfrenta desafíos en la competencia y la implementación de la monetización.",
     "score_general": 79.5
+  },
+  {
+    "nombre": "EcoVaya",
+    "vertical": "SaaS",
+    "problema": "Las empresas de logística y transporte suelen experimentar dificultades al optimizar la ruta de sus vehículos, lo que lleva a un aumento de gastos y un impacto negativo en el medio ambiente. Esto se debe a que muchos de estos sistemas de planificación tienen problemas de escalabilidad y no pueden adaptarse a las necesidades cambiantes de las empresas.",
+    "solucion": "EcoVaya es una plataforma de planificación de rutas de vehículos que utiliza algoritmos de inteligencia artificial para optimizar la ruta de los vehículos y reducir los costos de combustible y emisión de gases de efecto invernadero. La plataforma también ofrece herramientas de análisis y visualización para que las empresas puedan monitorear y mejorar su eficiencia.",
+    "descripcion": "EcoVaya es una plataforma en la nube que utiliza la tecnología de inteligencia artificial para optimizar la planificación de rutas de vehículos. La plataforma es escalable y puede adaptarse a las necesidades cambiantes de las empresas. También ofrece herramientas de análisis y visualización para que las empresas puedan monitorear y mejorar su eficiencia. Ecovaya se enfoca en la logística y el transporte sostenible, lo que la hace una plataforma única en el mercado.",
+    "propuesta_valor": "La propuesta de valor de EcoVaya radica en su capacidad para reducir los costos de combustible y emisión de gases de efecto invernadero, lo que lo hace una solución atractiva para empresas que buscan reducir su huella de carbono.",
+    "cliente_objetivo": "El cliente objetivo de EcoVaya son empresas de logística y transporte que buscan reducir sus gastos y mejorar su eficiencia. Estos pueden ser distribuidores de productos, transportistas, logísticos y empresas de servicios.",
+    "mvp": "La MVP de EcoVaya es una plataforma en la nube que permite a las empresas planificar y optimizar sus rutas de vehículos. La plataforma incluye herramientas de análisis y visualización para que las empresas puedan monitorear y mejorar su eficiencia.",
+    "marketing": "La estrategia de marketing de EcoVaya se enfocará en destacar la capacidad de la plataforma para reducir los costos de combustible y emisión de gases de efecto invernadero. También se enfocará en llegar a las empresas de logística y transporte que buscan reducir sus gastos y mejorar su eficiencia.",
+    "metricas": "Las métricas clave de éxito de EcoVaya son la reducción de costos de combustible y emisión de gases de efecto invernadero, el aumento de la eficiencia de la planificación de rutas y la satisfacción del cliente.",
+    "modelo_negocio": "EcoVaya se genera ingresos a través de una suscripción mensual a la plataforma. El precio aproximado de la suscripción es de $500-$1000 al mes, dependiendo del tamaño de la empresa y la cantidad de vehículos que tiene.",
+    "investigacion": "El tamaño de mercado de EcoVaya es significativo, ya que hay miles de empresas de logística y transporte en todo el mundo que podrían beneficiarse de la plataforma. El contexto competitivo de EcoVaya es moderado, ya que hay otras plataformas de planificación de rutas de vehículos disponibles, pero ninguna de ellas utiliza la tecnología de inteligencia artificial para optimizar la ruta de los vehículos de la manera en que EcoVaya lo hace.",
+    "score_critico": 80,
+    "viral_score": 60,
+    "score_generador": 90,
+    "score_money": 85,
+    "puntos_fuertes": [
+      "Uso de algoritmos de inteligencia artificial para optimizar la ruta de los vehículos",
+      "Ofrece herramientas de análisis y visualización para mejorar la eficiencia",
+      "Modelo de negocio de SaaS con un precio competitivo"
+    ],
+    "puntos_debiles": [
+      "El mercado de la planificación de rutas de vehículos es competitivo y puede ser difícil diferenciarse",
+      "La plataforma puede requerir una gran cantidad de datos y análisis para funcionar de manera óptima",
+      "El precio de la suscripción puede ser prohibitivo para algunas empresas pequeñas o medianas"
+    ],
+    "resumen": "EcoVaya tiene un buen potencial de éxito gracias a su tecnología innovadora y modelo de negocio sólido, pero debe enfrentar la competencia en el mercado y asegurarse de que su plataforma sea accesible para empresas de todos los tamaños.",
+    "score_general": 79.5
   }
 ]

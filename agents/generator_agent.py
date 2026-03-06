@@ -1,186 +1,146 @@
-import os
-import re
+﻿import os
 import json
 import time
+import random
+from groq import Groq
+from agents.encoding_helper import fix_llm_encoding
+from agents.knowledge_base import get_contexto_para_generador
 
-
-def _similitud_semantica(idea_nueva: dict, ideas_existentes: list) -> tuple:
-    """P10: Jaccard sobre palabras clave 4+ letras."""
-    def palabras_clave(idea):
-        texto = " ".join([
-            str(idea.get("nombre",   "")),
-            str(idea.get("vertical", "")),
-            str(idea.get("problema", ""))[:150],
-        ]).lower()
-        return set(re.findall(r"\w{4,}", texto))
-
-    nuevas = palabras_clave(idea_nueva)
-    if not nuevas:
-        return 0.0, ""
-
-    max_sim    = 0.0
-    nombre_sim = ""
-    for idea_vieja in ideas_existentes[-50:]:
-        if not isinstance(idea_vieja, dict):
-            continue
-        viejas = palabras_clave(idea_vieja)
-        if not viejas:
-            continue
-        union = nuevas | viejas
-        sim   = len(nuevas & viejas) / len(union) if union else 0.0
-        if sim > max_sim:
-            max_sim    = sim
-            nombre_sim = idea_vieja.get("nombre", "?")
-
-    return max_sim, nombre_sim
-
-
-def generar_idea(ideas_existentes=None):
-    """Genera 1 idea de negocio única con contexto KB (P1) + detector semántico (P10)."""
-    try:
-        import groq
-        from agents.knowledge_base import get_contexto_para_generador
-    except ImportError as e:
-        print(f"❌ Error importando dependencias en generator_agent: {e}")
-        return None
-
-    client = groq.Groq(api_key=os.environ.get("GROQ_API_KEY"))
-
-    # P1: Contexto de Knowledge Base
-    kb_contexto = ""
-    try:
-        kb_raw = get_contexto_para_generador()
-        if kb_raw:
-            kb_contexto = (
-                "\n\nCONTEXTO DE APRENDIZAJE — usa esto para mejorar la calidad:\n"
-                + str(kb_raw)
+def _groq_chat(messages, max_intentos=3):
+    client = Groq(api_key=os.environ.get("GROQ_API_KEY"))
+    model = "llama-3.3-70b-versatile"
+    for intento in range(max_intentos):
+        try:
+            return client.chat.completions.create(
+                model=model,
+                messages=messages,
+                temperature=0.85,
+                max_tokens=900,
             )
-            print("📚 Contexto KB inyectado en el prompt")
+        except Exception as e:
+            if "429" in str(e) or "rate" in str(e).lower():
+                espera = min(4 * (2 ** intento) + random.uniform(0, 2), 30)
+                print(f"⏳ Rate limit (intento {intento+1}) → esperando {espera:.0f}s...")
+                time.sleep(espera)
+                if intento >= 1:
+                    model = "llama-3.1-8b-instant"
+                    print("🔄 Cambiando a modelo ligero")
+            else:
+                print(f"❌ Error Groq: {e}")
+                return None
+    return None
+
+def es_repetida(nombre, ideas_existentes):
+    n = nombre.lower().strip()
+    for idea in ideas_existentes:
+        v = idea.get("nombre", "").lower().strip()
+        if n == v or n in v or v in n:
+            return True
+        if len(n) >= 5 and len(v) >= 5 and n[:5] == v[:5]:
+            return True
+    return False
+
+def generar_idea(ideas_existentes):
+    try:
+        contexto_kb = get_contexto_para_generador()
+        print("📚 Contexto KB inyectado en el prompt")
     except Exception as e:
         print(f"⚠️ No se pudo obtener contexto KB: {e}")
+        contexto_kb = "Sin contexto previo"
 
-    # Exclusiones: últimas 20 ideas por nombre
-    exclusiones = ""
-    if ideas_existentes:
-        nombres = [
-            i.get("nombre") or i.get("name") or ""
-            for i in ideas_existentes[-20:]
-            if isinstance(i, dict)
-        ]
-        nombres = [n for n in nombres if n]
-        if nombres:
-            exclusiones = (
-                "\n\nIDEAS YA GENERADAS (no repetir ni hacer variaciones):\n"
-                + "\n".join(f"- {n}" for n in nombres)
-            )
+    nombres_existentes = [i.get("nombre", "") for i in ideas_existentes[-30:]]
+    
+    sectores = ["salud mental", "turismo rural", "educación online", "finanzas personales",
+                "productividad", "comercio local Murcia", "deporte", "gastronomía",
+                "mascotas", "sostenibilidad", "inmobiliario", "servicios freelance"]
+    sector_sugerido = random.choice(sectores)
 
-    system_prompt = (
-        "Eres un experto en startups, validación de ideas de negocio y emprendimiento digital. "
-        "Tu misión es generar ideas CONCRETAS, INNOVADORAS y con ALTO POTENCIAL de monetización. "
-        "Prioriza: modelo de negocio claro, problema urgente y solución diferenciada."
-        + kb_contexto
-    )
+    prompt = f"""Eres el mejor experto mundial en startups y negocios digitales.
 
-    user_prompt = (
-        "Genera exactamente 1 idea de negocio nueva y viable.\n"
-        "Responde ÚNICAMENTE con JSON válido, sin texto antes ni después:\n"
-        "{\n"
-        '  "nombre": "Nombre memorable (máx 3 palabras)",\n'
-        '  "vertical": "SaaS / App móvil / Marketplace / IA / Hardware / Servicio / E-commerce / Educación / Salud / Fintech",\n'
-        '  "problema": "Descripción clara del problema (mínimo 50 palabras)",\n'
-        '  "solucion": "Cómo lo resuelve de forma concreta (mínimo 50 palabras)",\n'
-        '  "descripcion": "Descripción completa del negocio (mínimo 100 palabras)",\n'
-        '  "propuesta_valor": "Propuesta única y diferenciada",\n'
-        '  "cliente_objetivo": "Cliente ideal con demografía y comportamiento",\n'
-        '  "mvp": "Producto mínimo viable para validar en 30 días",\n'
-        '  "marketing": "Estrategia de adquisición de primeros clientes",\n'
-        '  "metricas": "3-5 métricas clave de éxito",\n'
-        '  "modelo_negocio": "Cómo genera ingresos con precio aproximado",\n'
-        '  "investigacion": "Tamaño de mercado y contexto competitivo"\n'
-        "}"
-        + exclusiones
-    )
+Crea UNA idea de negocio digital ORIGINAL y NUNCA ANTES VISTA.
 
-    MAX_INTENTOS_LLM       = 3
-    MAX_REINTENTOS_SIMILAR = 2
-    reintentos_similitud   = 0
+SECTOR SUGERIDO: {sector_sugerido}
 
-    for intento in range(MAX_INTENTOS_LLM):
+IDEAS YA EXISTENTES (NO REPETIR NINGUNA):
+{json.dumps(nombres_existentes, ensure_ascii=False)}
+
+CONTEXTO KB - PATRONES GANADORES:
+{contexto_kb}
+
+REQUISITOS OBLIGATORIOS:
+- Nombre DIFERENTE a todos los existentes
+- Problema REAL y CONCRETO (no genérico)
+- Solución SIMPLE ejecutable en 30 días con menos de 500€
+- Modelo de negocio con ingresos recurrentes
+- Score potencial >80/100
+
+Responde ÚNICAMENTE con JSON válido, sin markdown, sin explicaciones:
+{{
+  "nombre": "NombreUnico",
+  "descripcion": "Qué hace en 2 frases concretas",
+  "problema": "Dolor específico que sufre el usuario",
+  "solucion": "Cómo lo resuelve exactamente",
+  "vertical": "Categoría: SaaS / App móvil / Marketplace / Web / Local",
+  "tipo": "SaaS / App móvil / Marketplace / Web / Consultoría / Comunidad",
+  "monetizacion": "Modelo exacto: Suscripción 9.99€/mes / Comisión 5% / etc",
+  "propuesta_valor": "Por qué un usuario pagaría por esto",
+  "mvp": "3 pasos concretos para el MVP en 30 días",
+  "marketing": "Cómo conseguir los primeros 100 usuarios gratis"
+}}"""
+
+    for intento in range(3):
+        response = _groq_chat([{"role": "user", "content": prompt}])
+        if not response:
+            print(f"⚠️ JSON inválido intento {intento+1}: No response")
+            continue
+
         try:
-            response = client.chat.completions.create(
-                model="llama-3.1-8b-instant",
-                messages=[
-                    {"role": "system", "content": system_prompt},
-                    {"role": "user",   "content": user_prompt}
-                ],
-                temperature=0.9,
-                max_tokens=800
-            )
+            content = response.choices[0].message.content.strip()
+            content = fix_llm_encoding(content)
 
-            contenido = response.choices[0].message.content.strip()
+            if "```" in content:
+                parts = content.split("```")
+                for part in parts:
+                    if "{" in part:
+                        content = part.replace("json", "").strip()
+                        break
 
-            if "```json" in contenido:
-                contenido = contenido.split("```json").split("```").strip()[1]
-            elif "```" in contenido:
-                contenido = contenido.split("```")[1].split("```")[0].strip()
-
-            inicio = contenido.find("{")
-            fin    = contenido.rfind("}") + 1
+            inicio = content.find("{")
+            fin = content.rfind("}") + 1
             if inicio >= 0 and fin > inicio:
-                contenido = contenido[inicio:fin]
+                content = content[inicio:fin]
 
-            idea = json.loads(contenido)
+            idea = json.loads(content)
 
-            # P10: verificar similitud semántica
-            if ideas_existentes:
-                similitud, nombre_similar = _similitud_semantica(idea, ideas_existentes)
-                if similitud > 0.70 and reintentos_similitud < MAX_REINTENTOS_SIMILAR:
-                    reintentos_similitud += 1
-                    print(
-                        f"⚠️ P10: '{idea.get('nombre')}' similar a "
-                        f"'{nombre_similar}' ({similitud:.0%}) — regenerando ({reintentos_similitud}/2)..."
-                    )
-                    user_prompt_extra = (
-                        user_prompt +
-                        f"\n- ESPECIALMENTE evitar cualquier idea similar a: {nombre_similar}"
-                    )
-                    response2 = client.chat.completions.create(
-                        model="llama-3.1-8b-instant",
-                        messages=[
-                            {"role": "system", "content": system_prompt},
-                            {"role": "user",   "content": user_prompt_extra}
-                        ],
-                        temperature=min(0.9 + reintentos_similitud * 0.05, 1.0),
-                        max_tokens=800
-                    )
-                    c2 = response2.choices[0].message.content.strip()
-                    if "```json" in c2:
-                        c2 = c2.split("```json").split("```").strip()[1]
-                    elif "```" in c2:
-                        c2 = c2.split("```")[1].split("```")[0].strip()
-                    i2, f2 = c2.find("{"), c2.rfind("}") + 1
-                    if i2 >= 0 and f2 > i2:
-                        c2 = c2[i2:f2]
-                    try:
-                        idea = json.loads(c2)
-                    except Exception:
-                        pass
+            campos = ["nombre", "descripcion", "problema", "solucion", "vertical", "tipo"]
+            for campo in campos:
+                idea.setdefault(campo, "Desconocido")
 
-            print(f"✅ Idea generada (KB+P10): {idea.get('nombre', 'Sin nombre')}")
+            nombre = idea.get("nombre", "")
+            if not nombre or nombre == "Desconocido":
+                print(f"⚠️ Nombre vacío intento {intento+1}")
+                continue
+
+            if es_repetida(nombre, ideas_existentes):
+                print(f"⚠️ Idea repetida: {nombre} — regenerando...")
+                continue
+
+            idea.setdefault("monetizacion", "Suscripción mensual")
+            idea.setdefault("propuesta_valor", "Ahorra tiempo y dinero")
+            idea.setdefault("mvp", "Landing + formulario + core básico")
+            idea.setdefault("marketing", "SEO + comunidades + redes sociales")
+            idea.setdefault("fecha", __import__("datetime").datetime.now().isoformat())
+
+            print(f"✅ Idea generada (KB+P10): {nombre}")
             return idea
 
         except json.JSONDecodeError as e:
-            print(f"⚠️ JSON inválido intento {intento + 1}: {e}")
-            time.sleep(5)
+            print(f"⚠️ JSON inválido intento {intento+1}: {e}")
+            continue
         except Exception as e:
-            error_str = str(e)
-            if "429" in error_str or "rate_limit" in error_str.lower():
-                espera = 5 * (2 ** min(intento, 1))
-                print(f"⚠️ Rate limit Groq (intento {intento + 1}), esperando {espera}s...")
-                time.sleep(espera)
-            else:
-                print(f"❌ Error Groq intento {intento + 1}: {e}")
-                time.sleep(5)
+            print(f"⚠️ Error intento {intento+1}: {e}")
+            continue
 
-    print("❌ Todos los intentos fallaron en generator_agent")
+    print("❌ No se pudo generar idea válida")
     return None
+# FIN COMPLETO generator_agent.py
