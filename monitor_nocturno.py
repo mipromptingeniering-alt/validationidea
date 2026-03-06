@@ -36,7 +36,6 @@ def enviar_telegram(mensaje: str):
     token   = os.environ.get("TELEGRAM_BOT_TOKEN", "")
     chat_id = os.environ.get("TELEGRAM_CHAT_ID", "")
     if not token or not chat_id:
-        log("⚠️ Variables Telegram no configuradas (normal en local)")
         return
     try:
         import requests
@@ -51,6 +50,7 @@ def enviar_telegram(mensaje: str):
             log(f"⚠️ Telegram HTTP {resp.status_code}")
     except Exception as e:
         log(f"❌ Error Telegram: {e}")
+
 def ejecutar_script(nombre: str):
     log(f"▶️  {nombre}...")
     try:
@@ -62,7 +62,6 @@ def ejecutar_script(nombre: str):
         salida  = resultado.stdout.decode("utf-8", errors="replace").strip()
         errores = resultado.stderr.decode("utf-8", errors="replace").strip()
 
-        # Mostrar TODA la salida en logs de Railway
         if salida:
             for linea in salida.split("\n"):
                 if linea.strip():
@@ -120,9 +119,6 @@ def hc_notion():
 
 def ejecutar_health_check():
     log("🏥 Health check iniciado...")
-    ahora_str = datetime.now(ZONA).strftime("%d/%m/%Y %H:%M:%S")
-
-    # Gemini opcional — no bloquea el health check si falla
     try:
         ok_g, msg_g = hc_gemini()
         if not ok_g:
@@ -136,8 +132,9 @@ def ejecutar_health_check():
     if fallos:
         lineas = "\n".join(f"❌ <b>{srv}</b>: {msg}" for srv, msg in fallos)
         enviar_telegram(
-            f"🚨 <b>HEALTH CHECK — FALLO</b>\n🕐 {ahora_str}\n\n{lineas}\n\n"
-            f"⚙️ Revisa Railway logs para detalles."
+            f"🚨 <b>HEALTH CHECK — FALLO</b>\n"
+            f"🕐 {datetime.now(ZONA).strftime('%d/%m/%Y %H:%M')}\n\n"
+            f"{lineas}\n\n⚙️ Revisa Railway logs."
         )
         log(f"🚨 Servicios fallidos: {[s for s, _ in fallos]}")
     else:
@@ -157,7 +154,10 @@ def procesar_cola_csv():
             ts       = fila.get("timestamp", "")
             nombre   = fila.get("nombre_idea", "?")
             intentos = int(fila.get("intentos", 1))
-            log(f"🔄 Reintento {intentos}/3 — '{nombre}'")
+            if intentos > 3:
+                log(f"⏭️ Descartando '{nombre}' (>3 intentos)")
+                eliminar_de_cola(ts)
+                continue
             try:
                 datos = json.loads(fila.get("datos_json", "{}"))
                 resultado = sync_idea_to_notion(datos)
@@ -165,21 +165,45 @@ def procesar_cola_csv():
                     log(f"✅ Reintento exitoso: '{nombre}'")
                     eliminar_de_cola(ts)
                 else:
-                    raise Exception("sync devolvió None/False")
+                    raise Exception("sync devolvió None")
             except json.JSONDecodeError:
-                log(f"❌ JSON corrupto para '{nombre}', eliminando")
+                log(f"❌ JSON corrupto '{nombre}', eliminando")
                 eliminar_de_cola(ts)
             except Exception as e:
-                log(f"❌ Reintento fallido para '{nombre}': {e}")
+                log(f"❌ Reintento fallido '{nombre}': {e}")
                 incrementar_intentos(ts)
     except Exception as e:
-        log(f"❌ Error procesando cola CSV: {e}")
+        log(f"❌ Error cola CSV: {e}")
 
 def generar_nueva_idea():
     log("🧠 Generando nueva idea...")
-    exito, _ = ejecutar_script("run_batch.py")
-    if not exito:
+    exito, salida = ejecutar_script("run_batch.py")
+
+    # 🆕 Notificar Telegram si idea fue generada
+    if exito and "✅ Sincronizada:" in salida:
+        try:
+            nombre = ""
+            score  = ""
+            url    = ""
+            for linea in salida.split("\n"):
+                if "✅ Sincronizada:" in linea:
+                    nombre = linea.split("✅ Sincronizada:")[-1].strip()
+                if "📊 Score:" in linea:
+                    score = linea.split("📊 Score:")[-1].strip().split("|")[0].strip()
+                if "notion.so" in linea:
+                    url = linea.strip()
+
+            enviar_telegram(
+                f"💡 <b>Nueva idea generada</b>\n\n"
+                f"🚀 <b>{nombre}</b>\n"
+                f"📊 Score: <b>{score}</b>\n"
+                f"🔗 {url}"
+            )
+        except Exception as e:
+            log(f"⚠️ Error notificando Telegram idea: {e}")
+    elif not exito:
         log("❌ Error generando idea")
+
     return exito
 
 def procesar_informes():
@@ -196,38 +220,44 @@ def mantenimiento_nocturno():
 def enviar_resumen_diario():
     log("☀️ Resumen diario (08:00)...")
     try:
-        from agents.knowledge_base import get_stats
+        from agents.knowledge_base import get_stats, get_top_ideas
         stats      = get_stats()
         total      = stats.get("total_ideas", 0)
         score_prom = stats.get("score_promedio", 0)
         mejor_v    = stats.get("mejor_vertical", "N/A")
         mejor_t    = stats.get("mejor_tipo", "N/A")
+        mejor_idea = stats.get("mejor_idea", "N/A")
+
+        # Top 3 ideas
+        top3 = get_top_ideas(3)
+        top_txt = ""
+        for i, idea in enumerate(top3, 1):
+            top_txt += f"\n{i}. <b>{idea['nombre']}</b> → {idea['score']}pts ({idea['tipo']})"
 
         cola_txt = ""
         try:
             from agents.cola_csv import contar_pendientes
             n = contar_pendientes()
             if n > 0:
-                cola_txt = f"\n⏳ Ideas en cola CSV: <b>{n}</b>"
-        except Exception:
+                cola_txt = f"\n⏳ Cola CSV: <b>{n}</b> pendiente(s)"
+        except:
             pass
-
-        log_hoy = os.path.join("data", "logs", datetime.now(ZONA).strftime("%Y-%m-%d") + ".log")
-        log_txt = f"\n📋 Log hoy: <code>{log_hoy}</code>" if os.path.exists(log_hoy) else ""
 
         enviar_telegram(
             f"☀️ <b>Resumen diario — ValidationIdea</b>\n"
             f"📅 {datetime.now(ZONA).strftime('%d/%m/%Y')}\n\n"
-            f"💡 Ideas en KB: <b>{total}</b>\n"
-            f"📊 Score promedio: <b>{score_prom:.1f}/100</b>\n"
+            f"💡 Ideas generadas: <b>{total}</b>\n"
+            f"📊 Score promedio: <b>{score_prom}/100</b>\n"
             f"🏆 Mejor vertical: <b>{mejor_v}</b>\n"
-            f"🚀 Mejor tipo: <b>{mejor_t}</b>"
-            f"{cola_txt}{log_txt}\n\n"
-            f"Sistema operativo 24/7 ✅"
+            f"🚀 Mejor tipo: <b>{mejor_t}</b>\n"
+            f"⭐ Mejor idea: <b>{mejor_idea}</b>"
+            f"\n\n🏅 <b>TOP 3 IDEAS:</b>{top_txt}"
+            f"{cola_txt}\n\n"
+            f"✅ Sistema operativo 24/7"
         )
     except Exception as e:
         log(f"❌ Error resumen diario: {e}")
-        enviar_telegram(f"☀️ Sistema activo — error generando resumen: {e}")
+        enviar_telegram(f"☀️ Sistema activo — error en resumen: {e}")
 
 def main():
     log("🚀 monitor_nocturno.py iniciado — P1→P10 activos")
@@ -235,14 +265,14 @@ def main():
         "🟢 <b>Monitor ValidationIdea arrancado</b>\n\n"
         "✅ P1–P10 activos\n"
         "✅ Gemini: modo opcional (no bloquea)\n"
-        "✅ Groq + Notion: críticos"
+        "✅ Groq + Notion: críticos\n"
+        "💡 Genera ideas cada 30 min automáticamente"
     )
 
     ahora_utc      = datetime.now(timezone.utc)
     ultimo_batch   = ahora_utc - timedelta(minutes=31)
     ultimo_informe = ahora_utc - timedelta(minutes=6)
     ultimo_health  = ahora_utc - timedelta(hours=1, minutes=1)
-
     dia_resumen       = -1
     dia_mantenimiento = -1
 
@@ -281,3 +311,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+# FIN COMPLETO monitor_nocturno.py
