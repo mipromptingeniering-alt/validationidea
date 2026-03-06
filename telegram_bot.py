@@ -1,11 +1,15 @@
 import os
 import json
+import time
 import logging
+import subprocess
+import sys
 from datetime import datetime
 from telegram import Update
 from telegram.ext import Application, CommandHandler, ContextTypes
+from telegram.error import Conflict, NetworkError
 
-logging.basicConfig(level=logging.INFO)
+logging.basicConfig(level=logging.WARNING)
 log = logging.getLogger(__name__)
 
 TOKEN   = os.environ.get("TELEGRAM_BOT_TOKEN", "")
@@ -28,7 +32,6 @@ async def cmd_status(update: Update, ctx: ContextTypes.DEFAULT_TYPE):
         from agents.knowledge_base import get_stats
         stats = get_stats()
 
-        # Comprobar cola CSV
         cola_n = 0
         try:
             from agents.cola_csv import contar_pendientes
@@ -36,7 +39,6 @@ async def cmd_status(update: Update, ctx: ContextTypes.DEFAULT_TYPE):
         except:
             pass
 
-        # Comprobar ideas.json
         total_local = 0
         try:
             with open("data/ideas.json", "r", encoding="utf-8") as f:
@@ -66,19 +68,22 @@ async def cmd_top(update: Update, ctx: ContextTypes.DEFAULT_TYPE):
         top = get_top_ideas(5)
 
         if not top:
-            await update.message.reply_text("📭 Aún no hay ideas en el TOP. Espera a que el sistema genere más ideas.")
+            await update.message.reply_text(
+                "📭 Aún no hay ideas en el TOP.\n"
+                "El sistema genera 1 idea cada 30 min automáticamente."
+            )
             return
 
         texto = "🏆 <b>TOP 5 MEJORES IDEAS</b>\n\n"
         for i, idea in enumerate(top, 1):
-            emoji = "💎" if idea["score"] >= 90 else "⭐" if idea["score"] >= 85 else "🔥" if idea["score"] >= 80 else "💡"
+            s = idea["score"]
+            emoji = "💎" if s >= 90 else "⭐" if s >= 85 else "🔥" if s >= 80 else "💡"
             texto += (
                 f"{emoji} <b>{i}. {idea['nombre']}</b>\n"
-                f"   📊 Score: <b>{idea['score']}/100</b>\n"
-                f"   🏷️ {idea['tipo']} | {idea['vertical']}\n"
+                f"   📊 Score: <b>{s}/100</b>\n"
+                f"   🏷️ {idea.get('tipo','?')} | {idea.get('vertical','?')}\n"
                 f"   📅 {idea.get('fecha', 'N/A')}\n\n"
             )
-
         await update.message.reply_text(texto, parse_mode="HTML")
     except Exception as e:
         await update.message.reply_text(f"❌ Error: {e}")
@@ -87,7 +92,6 @@ async def cmd_stats(update: Update, ctx: ContextTypes.DEFAULT_TYPE):
     try:
         from agents.knowledge_base import get_stats
         stats = get_stats()
-
         await update.message.reply_text(
             f"📈 <b>Estadísticas KB</b>\n\n"
             f"💡 Ideas analizadas: <b>{stats.get('total_ideas', 0)}</b>\n"
@@ -102,9 +106,12 @@ async def cmd_stats(update: Update, ctx: ContextTypes.DEFAULT_TYPE):
         await update.message.reply_text(f"❌ Error: {e}")
 
 async def cmd_idea(update: Update, ctx: ContextTypes.DEFAULT_TYPE):
-    await update.message.reply_text("⏳ Generando idea TOP ahora mismo... (30-60 segundos)")
+    await update.message.reply_text(
+        "⏳ <b>Generando idea TOP...</b>\n"
+        "Espera 30-60 segundos ☕",
+        parse_mode="HTML"
+    )
     try:
-        import subprocess, sys
         resultado = subprocess.run(
             [sys.executable, "run_batch.py"],
             capture_output=True, timeout=120
@@ -113,12 +120,13 @@ async def cmd_idea(update: Update, ctx: ContextTypes.DEFAULT_TYPE):
 
         nombre = score = url = ""
         for linea in salida.split("\n"):
-            if "✅ Sincronizada:" in linea:
-                nombre = linea.split("✅ Sincronizada:")[-1].strip()
-            if "📊 Score:" in linea:
-                score = linea.split("📊 Score:")[-1].strip().split("|")[0].strip()
-            if "notion.so" in linea and "http" in linea:
-                url = linea.strip().replace("│", "").strip()
+            l = linea.strip().replace("│", "").strip()
+            if "✅ Sincronizada:" in l:
+                nombre = l.split("✅ Sincronizada:")[-1].strip()
+            if "📊 Score:" in l and "Score:" in l:
+                score = l.split("📊 Score:")[-1].strip().split("|")[0].strip()
+            if "notion.so" in l and "http" in l:
+                url = l
 
         if nombre:
             await update.message.reply_text(
@@ -130,22 +138,24 @@ async def cmd_idea(update: Update, ctx: ContextTypes.DEFAULT_TYPE):
             )
         else:
             await update.message.reply_text(
-                f"⚠️ Idea generada pero sin confirmar Notion.\n"
-                f"Revisa Railway logs para detalles."
+                "⚠️ Idea generada pero sin confirmar.\n"
+                "Revisa Notion en 1 minuto."
             )
     except subprocess.TimeoutExpired:
-        await update.message.reply_text("⏰ Timeout — la idea se está generando en background.")
+        await update.message.reply_text(
+            "⏰ La idea se está generando en background.\n"
+            "Revisa Notion en 2 minutos."
+        )
     except Exception as e:
-        await update.message.reply_text(f"❌ Error generando idea: {e}")
+        await update.message.reply_text(f"❌ Error: {e}")
 
 async def cmd_cola(update: Update, ctx: ContextTypes.DEFAULT_TYPE):
     try:
         from agents.cola_csv import obtener_pendientes
         pendientes = obtener_pendientes()
         if not pendientes:
-            await update.message.reply_text("✅ Cola vacía — todas las ideas sincronizadas en Notion.")
+            await update.message.reply_text("✅ Cola vacía — todo sincronizado en Notion.")
             return
-
         texto = f"📋 <b>Cola CSV: {len(pendientes)} pendiente(s)</b>\n\n"
         for p in pendientes[:5]:
             texto += f"• {p.get('nombre_idea','?')} (intento {p.get('intentos',1)}/3)\n"
@@ -158,18 +168,31 @@ def main():
         print("❌ TELEGRAM_BOT_TOKEN no configurado")
         return
 
-    print("[Bot] Iniciando IdeaValidator Bot...")
-    app = Application.builder().token(TOKEN).build()
-
-    app.add_handler(CommandHandler("start",  cmd_start))
-    app.add_handler(CommandHandler("status", cmd_status))
-    app.add_handler(CommandHandler("top",    cmd_top))
-    app.add_handler(CommandHandler("stats",  cmd_stats))
-    app.add_handler(CommandHandler("idea",   cmd_idea))
-    app.add_handler(CommandHandler("cola",   cmd_cola))
-
-    print("[Bot] ✅ Escuchando comandos...")
-    app.run_polling(drop_pending_updates=True)
+    while True:
+        try:
+            print("[Bot] Iniciando IdeaValidator Bot...")
+            app = Application.builder().token(TOKEN).build()
+            app.add_handler(CommandHandler("start",  cmd_start))
+            app.add_handler(CommandHandler("status", cmd_status))
+            app.add_handler(CommandHandler("top",    cmd_top))
+            app.add_handler(CommandHandler("stats",  cmd_stats))
+            app.add_handler(CommandHandler("idea",   cmd_idea))
+            app.add_handler(CommandHandler("cola",   cmd_cola))
+            print("[Bot] ✅ Escuchando comandos...")
+            app.run_polling(
+                drop_pending_updates=True,
+                allowed_updates=["message"],
+                timeout=30
+            )
+        except Conflict:
+            print("⚠️ Conflict detectado — esperando 30s y reintentando...")
+            time.sleep(30)
+        except NetworkError as e:
+            print(f"⚠️ NetworkError: {e} — reintentando en 15s...")
+            time.sleep(15)
+        except Exception as e:
+            print(f"❌ Error bot: {e} — reintentando en 15s...")
+            time.sleep(15)
 
 if __name__ == "__main__":
     main()
