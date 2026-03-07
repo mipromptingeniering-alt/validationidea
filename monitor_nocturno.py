@@ -5,7 +5,6 @@ import time
 import logging
 import subprocess
 import threading
-import asyncio
 from datetime import datetime, timedelta, timezone
 from logging.handlers import TimedRotatingFileHandler
 
@@ -125,30 +124,45 @@ def ejecutar_health_check():
 
 def procesar_cola_csv():
     try:
-        from agents.cola_csv import obtener_pendientes, eliminar_de_cola, incrementar_intentos
+        ruta = "data/cola_pendientes.csv"
+        if not os.path.exists(ruta):
+            return
+        import csv
         from agents.notion_sync_agent import sync_idea_to_notion
-        pendientes = obtener_pendientes()
+        pendientes = []
+        with open(ruta, newline="", encoding="utf-8") as f:
+            pendientes = list(csv.DictReader(f))
         if not pendientes:
             return
         log(f"📋 Cola CSV: {len(pendientes)} pendiente(s)")
+        eliminados = []
         for fila in pendientes:
-            ts       = fila.get("timestamp", "")
             nombre   = fila.get("nombre_idea", "?")
             intentos = int(fila.get("intentos", 1))
+            ts       = fila.get("timestamp", "")
             if intentos > 3:
-                eliminar_de_cola(ts)
+                eliminados.append(ts)
                 continue
             try:
                 datos = json.loads(fila.get("datos_json", "{}"))
-                resultado = sync_idea_to_notion(datos)
-                if resultado:
+                url   = sync_idea_to_notion(datos)
+                if url:
                     log(f"✅ Reintento exitoso: '{nombre}'")
-                    eliminar_de_cola(ts)
+                    eliminados.append(ts)
                 else:
-                    incrementar_intentos(ts)
+                    fila["intentos"] = str(intentos + 1)
             except Exception as e:
                 log(f"❌ Reintento fallido '{nombre}': {e}")
-                incrementar_intentos(ts)
+                fila["intentos"] = str(intentos + 1)
+        # Reescribir CSV sin los eliminados
+        restantes = [f for f in pendientes if f.get("timestamp") not in eliminados]
+        with open(ruta, "w", newline="", encoding="utf-8") as f:
+            if restantes:
+                writer = csv.DictWriter(f, fieldnames=restantes[0].keys())
+                writer.writeheader()
+                writer.writerows(restantes)
+            else:
+                f.write("")
     except Exception as e:
         log(f"❌ Error cola CSV: {e}")
 
@@ -184,11 +198,11 @@ def enviar_resumen_diario():
         top3  = get_top_ideas(3)
         top_txt = ""
         for i, idea in enumerate(top3, 1):
-            top_txt += f"\n{i}. <b>{idea['nombre']}</b> → {idea['score']}pts"
+            top_txt += f"\n{i}. <b>{idea.get('nombre','?')}</b> → {idea.get('score_total',0)}pts"
 
         cola_txt = ""
         try:
-            from agents.cola_csv import contar_pendientes
+            from agents.knowledge_base import contar_pendientes
             n = contar_pendientes()
             if n > 0:
                 cola_txt = f"\n⏳ Cola pendiente: <b>{n}</b>"
@@ -210,7 +224,9 @@ def enviar_resumen_diario():
         log(f"❌ Error resumen: {e}")
         enviar_telegram(f"☀️ Sistema activo — error en resumen: {e}")
 
-# ─── BOT TELEGRAM ────────────────────────────────────────────
+# ════════════════════════════════════════════════════════
+#   BOT TELEGRAM — todos los comandos
+# ════════════════════════════════════════════════════════
 def iniciar_bot():
     token = os.environ.get("TELEGRAM_BOT_TOKEN", "")
     if not token:
@@ -222,36 +238,36 @@ def iniciar_bot():
         from telegram.ext import Application, CommandHandler, ContextTypes
         from telegram.error import Conflict, NetworkError
 
+        # ── /start ──────────────────────────────────────
         async def cmd_start(update: Update, ctx: ContextTypes.DEFAULT_TYPE):
             await update.message.reply_text(
-                "🤖 <b>ValidationIdea Bot</b>\n\n"
+                "🤖 <b>ValidationIdea Bot v2</b>\n\n"
                 "💡 /idea — Genera 1 idea ahora\n"
                 "📊 /status — Estado del sistema\n"
                 "🏆 /top — Top 5 mejores ideas\n"
                 "📋 /stats — Estadísticas KB\n"
-                "🔄 /cola — Ideas pendientes",
+                "🚀 /ranking — Top 5 más ejecutables HOY\n"
+                "🛠️ /ejecutar — Prompt MVP lista para usar\n"
+                "🌐 /tendencias — Tendencias tech ahora\n"
+                "🔄 /cola — Ideas pendientes Notion",
                 parse_mode="HTML"
             )
 
+        # ── /status ─────────────────────────────────────
         async def cmd_status(update: Update, ctx: ContextTypes.DEFAULT_TYPE):
             try:
-                from agents.knowledge_base import get_stats
-                stats = get_stats()
+                from agents.knowledge_base import get_stats, contar_pendientes
+                stats  = get_stats()
+                cola_n = contar_pendientes()
                 total_local = 0
                 try:
                     with open("data/ideas.json", "r", encoding="utf-8") as f:
                         total_local = len(json.load(f))
                 except:
                     pass
-                cola_n = 0
-                try:
-                    from agents.cola_csv import contar_pendientes
-                    cola_n = contar_pendientes()
-                except:
-                    pass
                 await update.message.reply_text(
                     f"📊 <b>Estado del sistema</b>\n"
-                    f"🕐 {datetime.now().strftime('%d/%m/%Y %H:%M')}\n\n"
+                    f"🕐 {datetime.now(ZONA).strftime('%d/%m/%Y %H:%M')}\n\n"
                     f"✅ Monitor: <b>Activo 24/7</b>\n"
                     f"✅ Groq: <b>Activo</b>\n"
                     f"✅ Notion: <b>Activo</b>\n\n"
@@ -259,12 +275,14 @@ def iniciar_bot():
                     f"📚 Ideas en KB: <b>{stats.get('total_ideas', 0)}</b>\n"
                     f"📊 Score promedio: <b>{stats.get('score_promedio', 0)}/100</b>\n"
                     f"🏆 Mejor score: <b>{stats.get('mejor_score', 0)}/100</b>\n"
+                    f"🎯 Tasa de éxito: <b>{stats.get('tasa_exito', 'N/A')}</b>\n"
                     f"⏳ Cola pendiente: <b>{cola_n}</b>",
                     parse_mode="HTML"
                 )
             except Exception as e:
                 await update.message.reply_text(f"❌ Error: {e}")
 
+        # ── /top ────────────────────────────────────────
         async def cmd_top(update: Update, ctx: ContextTypes.DEFAULT_TYPE):
             try:
                 from agents.knowledge_base import get_top_ideas
@@ -274,13 +292,18 @@ def iniciar_bot():
                     return
                 texto = "🏆 <b>TOP 5 MEJORES IDEAS</b>\n\n"
                 for i, idea in enumerate(top, 1):
-                    s = idea["score"]
+                    s = idea.get("score_total", 0)
                     e = "💎" if s >= 90 else "⭐" if s >= 85 else "🔥" if s >= 80 else "💡"
-                    texto += f"{e} <b>{i}. {idea['nombre']}</b>\n   📊 {s}/100 | {idea.get('tipo','?')}\n   📅 {idea.get('fecha','N/A')}\n\n"
+                    texto += (
+                        f"{e} <b>{i}. {idea.get('nombre','?')}</b>\n"
+                        f"   📊 {s}/100 | {idea.get('tipo','?')} | {idea.get('vertical','?')}\n"
+                        f"   📅 {idea.get('fecha','N/A')}\n\n"
+                    )
                 await update.message.reply_text(texto, parse_mode="HTML")
             except Exception as e:
                 await update.message.reply_text(f"❌ Error: {e}")
 
+        # ── /stats ──────────────────────────────────────
         async def cmd_stats(update: Update, ctx: ContextTypes.DEFAULT_TYPE):
             try:
                 from agents.knowledge_base import get_stats
@@ -292,18 +315,25 @@ def iniciar_bot():
                     f"🏆 Mejor score: <b>{stats.get('mejor_score', 0)}/100</b>\n"
                     f"🌐 Vertical ganadora: <b>{stats.get('mejor_vertical', 'N/A')}</b>\n"
                     f"🚀 Tipo ganador: <b>{stats.get('mejor_tipo', 'N/A')}</b>\n"
-                    f"⭐ Mejor idea: <b>{stats.get('mejor_idea', 'N/A')}</b>",
+                    f"⭐ Mejor idea: <b>{stats.get('mejor_idea', 'N/A')}</b>\n"
+                    f"🎯 Tasa de éxito: <b>{stats.get('tasa_exito', 'N/A')}</b>",
                     parse_mode="HTML"
                 )
             except Exception as e:
                 await update.message.reply_text(f"❌ Error: {e}")
 
+        # ── /idea ───────────────────────────────────────
         async def cmd_idea(update: Update, ctx: ContextTypes.DEFAULT_TYPE):
-            await update.message.reply_text("⏳ <b>Generando idea TOP...</b>\nEspera 30-60 segundos ☕", parse_mode="HTML")
+            await update.message.reply_text(
+                "⏳ <b>Generando idea con informe completo...</b>\n"
+                "Espera 45-90 segundos ☕\n"
+                "(DAFO + estudio económico + prompt MVP incluidos)",
+                parse_mode="HTML"
+            )
             try:
                 resultado = subprocess.run(
                     [sys.executable, "run_batch.py"],
-                    capture_output=True, timeout=120
+                    capture_output=True, timeout=150
                 )
                 salida = resultado.stdout.decode("utf-8", errors="replace")
                 nombre = score = url = ""
@@ -317,20 +347,33 @@ def iniciar_bot():
                         url = l
                 if nombre:
                     await update.message.reply_text(
-                        f"✅ <b>¡Idea generada!</b>\n\n🚀 <b>{nombre}</b>\n📊 Score: <b>{score}</b>\n🔗 {url}",
+                        f"✅ <b>¡Idea generada!</b>\n\n"
+                        f"🚀 <b>{nombre}</b>\n"
+                        f"📊 Score: <b>{score}</b>\n"
+                        f"📋 Informe completo en Notion:\n{url}",
                         parse_mode="HTML"
                     )
                 else:
-                    await update.message.reply_text("⚠️ Generada — revisa Notion en 1 minuto.")
+                    await update.message.reply_text(
+                        "⚠️ Generada en background — revisa Notion en 1 minuto."
+                    )
             except subprocess.TimeoutExpired:
-                await update.message.reply_text("⏰ Generando en background — revisa Notion en 2 min.")
+                await update.message.reply_text(
+                    "⏰ Generando en background — revisa Notion en 2 min."
+                )
             except Exception as e:
                 await update.message.reply_text(f"❌ Error: {e}")
 
+        # ── /cola ───────────────────────────────────────
         async def cmd_cola(update: Update, ctx: ContextTypes.DEFAULT_TYPE):
             try:
-                from agents.cola_csv import obtener_pendientes
-                pendientes = obtener_pendientes()
+                ruta = "data/cola_pendientes.csv"
+                if not os.path.exists(ruta):
+                    await update.message.reply_text("✅ Cola vacía — todo sincronizado.")
+                    return
+                import csv
+                with open(ruta, newline="", encoding="utf-8") as f:
+                    pendientes = list(csv.DictReader(f))
                 if not pendientes:
                     await update.message.reply_text("✅ Cola vacía — todo sincronizado.")
                     return
@@ -341,23 +384,128 @@ def iniciar_bot():
             except Exception as e:
                 await update.message.reply_text(f"❌ Error: {e}")
 
+        # ── /ranking ────────────────────────────────────
+        async def cmd_ranking(update: Update, ctx: ContextTypes.DEFAULT_TYPE):
+            try:
+                from agents.knowledge_base import _cargar
+                kb    = _cargar()
+                ideas = kb.get("ideas", [])
+                if not ideas:
+                    await update.message.reply_text("📭 Aún no hay ideas suficientes.")
+                    return
+                def score_ejecutable(idea):
+                    s = idea.get("scores", {})
+                    return (
+                        s.get("ejecutabilidad", 0) * 0.40 +
+                        s.get("generador",      0) * 0.35 +
+                        s.get("timing",         0) * 0.25
+                    )
+                top = sorted(ideas, key=score_ejecutable, reverse=True)[:5]
+                texto = "🚀 <b>TOP 5 IDEAS MÁS EJECUTABLES AHORA</b>\n\n"
+                for i, idea in enumerate(top, 1):
+                    s = idea.get("scores", {})
+                    texto += (
+                        f"<b>{i}. {idea.get('nombre','?')}</b>\n"
+                        f"   ⚡ Ejecutabilidad: {s.get('ejecutabilidad',0)}/100\n"
+                        f"   💰 Revenue rápido: {s.get('generador',0)}/100\n"
+                        f"   ⏰ Timing mercado: {s.get('timing',0)}/100\n"
+                        f"   📊 Score total: {idea.get('score_total',0)}/100\n\n"
+                    )
+                texto += "💡 Usa /ejecutar para obtener el prompt MVP de la mejor."
+                await update.message.reply_text(texto, parse_mode="HTML")
+            except Exception as e:
+                await update.message.reply_text(f"❌ Error: {e}")
+
+        # ── /ejecutar ───────────────────────────────────
+        async def cmd_ejecutar(update: Update, ctx: ContextTypes.DEFAULT_TYPE):
+            try:
+                from agents.knowledge_base import _cargar
+                kb    = _cargar()
+                ideas = kb.get("ideas", [])
+                if not ideas:
+                    await update.message.reply_text("📭 Sin ideas todavía. Usa /idea primero.")
+                    return
+                def score_ejecutable(idea):
+                    s = idea.get("scores", {})
+                    return (
+                        s.get("ejecutabilidad", 0) * 0.40 +
+                        s.get("generador",      0) * 0.35 +
+                        s.get("timing",         0) * 0.25
+                    )
+                top1 = sorted(ideas, key=score_ejecutable, reverse=True)[0]
+                nombre_top = top1.get("nombre", "")
+
+                # Buscar prompt completo en ideas.json
+                prompt_texto = ""
+                ia_rec = "Claude 3.5 Sonnet en Cursor IDE"
+                try:
+                    with open("data/ideas.json", "r", encoding="utf-8") as f:
+                        todas = json.load(f)
+                    for idea in reversed(todas):
+                        if idea.get("nombre") == nombre_top:
+                            pm = idea.get("prompt_mvp", {})
+                            prompt_texto = pm.get("prompt_completo", "")
+                            ia_rec = pm.get("ia_recomendada", ia_rec)
+                            break
+                except:
+                    pass
+
+                if not prompt_texto:
+                    await update.message.reply_text(
+                        f"⚠️ Prompt de <b>{nombre_top}</b> no encontrado.\n"
+                        f"Usa /idea para generar una nueva idea con el sistema v2.",
+                        parse_mode="HTML"
+                    )
+                    return
+
+                await update.message.reply_text(
+                    f"🛠️ <b>EJECUTA HOY: {nombre_top}</b>\n\n"
+                    f"🤖 <b>Usa:</b> {ia_rec}\n\n"
+                    f"📋 <b>Copia este prompt en Cursor/Claude:</b>\n\n"
+                    f"{prompt_texto[:3500]}",
+                    parse_mode="HTML"
+                )
+            except Exception as e:
+                await update.message.reply_text(f"❌ Error: {e}")
+
+        # ── /tendencias ─────────────────────────────────
+        async def cmd_tendencias(update: Update, ctx: ContextTypes.DEFAULT_TYPE):
+            try:
+                from agents.trend_scout import actualizar_tendencias
+                await update.message.reply_text("🔄 Consultando HackerNews...")
+                tendencias = actualizar_tendencias()
+                if not tendencias:
+                    await update.message.reply_text("⚠️ No se pudieron obtener tendencias ahora.")
+                    return
+                texto = "🌐 <b>TENDENCIAS TECH AHORA</b>\n(fuente: HackerNews)\n\n"
+                for i, t in enumerate(tendencias, 1):
+                    texto += f"{i}. {t}\n"
+                texto += "\n💡 La próxima idea generada usará estas tendencias automáticamente."
+                await update.message.reply_text(texto, parse_mode="HTML")
+            except Exception as e:
+                await update.message.reply_text(f"❌ Error: {e}")
+
+        # ── Loop del bot ────────────────────────────────
         while True:
             try:
                 log("🤖 Bot Telegram iniciando...")
                 app = Application.builder().token(token).build()
-                app.add_handler(CommandHandler("start",  cmd_start))
-                app.add_handler(CommandHandler("status", cmd_status))
-                app.add_handler(CommandHandler("top",    cmd_top))
-                app.add_handler(CommandHandler("stats",  cmd_stats))
-                app.add_handler(CommandHandler("idea",   cmd_idea))
-                app.add_handler(CommandHandler("cola",   cmd_cola))
-                log("🤖 ✅ Bot Telegram escuchando comandos")
+                app.add_handler(CommandHandler("start",      cmd_start))
+                app.add_handler(CommandHandler("status",     cmd_status))
+                app.add_handler(CommandHandler("top",        cmd_top))
+                app.add_handler(CommandHandler("stats",      cmd_stats))
+                app.add_handler(CommandHandler("idea",       cmd_idea))
+                app.add_handler(CommandHandler("cola",       cmd_cola))
+                app.add_handler(CommandHandler("ranking",    cmd_ranking))
+                app.add_handler(CommandHandler("ejecutar",   cmd_ejecutar))
+                app.add_handler(CommandHandler("tendencias", cmd_tendencias))
+                log("🤖 ✅ Bot Telegram escuchando — 9 comandos activos")
                 app.run_polling(drop_pending_updates=True, allowed_updates=["message"])
             except Conflict:
                 log("⚠️ Bot Conflict — esperando 30s...")
                 time.sleep(30)
-            except NetworkError as e:
-                log(f"⚠️ Bot NetworkError: {e} — reintentando 15s...")
+            except NetworkError as ne:
+                log(f"⚠️ Bot NetworkError: {ne} — reintentando 15s...")
                 time.sleep(15)
             except Exception as e:
                 log(f"❌ Bot error: {e} — reintentando 15s...")
@@ -366,17 +514,23 @@ def iniciar_bot():
     except ImportError:
         log("⚠️ python-telegram-bot no instalado — bot desactivado")
 
-# ─── LOOP PRINCIPAL ──────────────────────────────────────────
+
+# ════════════════════════════════════════════════════════
+#   LOOP PRINCIPAL
+# ════════════════════════════════════════════════════════
 def main():
     log("🚀 monitor_nocturno.py iniciado — P1→P10 activos")
     enviar_telegram(
-        "🟢 <b>Monitor ValidationIdea arrancado</b>\n\n"
+        "🟢 <b>Monitor ValidationIdea v2 arrancado</b>\n\n"
         "✅ P1–P10 activos\n"
-        "✅ Bot Telegram: /idea /status /top /stats /cola\n"
-        "💡 Genera ideas cada 30 min automáticamente"
+        "✅ Informes: DAFO + economía + prompt MVP\n"
+        "✅ Autoaprendizaje KB activo\n"
+        "✅ Tendencias HackerNews en tiempo real\n\n"
+        "📱 Comandos:\n"
+        "/idea /status /top /stats\n"
+        "/ranking /ejecutar /tendencias /cola"
     )
 
-    # Arrancar bot en hilo separado
     bot_thread = threading.Thread(target=iniciar_bot, daemon=True)
     bot_thread.start()
     log("🤖 Bot Telegram arrancado en hilo paralelo")
@@ -385,6 +539,7 @@ def main():
     ultimo_batch      = ahora_utc - timedelta(minutes=31)
     ultimo_informe    = ahora_utc - timedelta(minutes=6)
     ultimo_health     = ahora_utc - timedelta(hours=1, minutes=1)
+    ultima_tendencia  = ahora_utc - timedelta(hours=3)
     dia_resumen       = -1
     dia_mantenimiento = -1
 
@@ -395,23 +550,38 @@ def main():
             hora = ahora_local.hour
             dia  = ahora_local.day
 
+            # Generar idea cada 30 min
             if (ahora_utc - ultimo_batch).total_seconds() >= 30 * 60:
                 generar_nueva_idea()
                 ultimo_batch = ahora_utc
 
+            # Procesar cola y pendientes cada 5 min
             if (ahora_utc - ultimo_informe).total_seconds() >= 5 * 60:
                 ejecutar_script("run_monitor.py")
                 procesar_cola_csv()
                 ultimo_informe = ahora_utc
 
+            # Health check cada hora
             if (ahora_utc - ultimo_health).total_seconds() >= 60 * 60:
                 ejecutar_health_check()
                 ultimo_health = ahora_utc
 
+            # Actualizar tendencias cada 3 horas
+            if (ahora_utc - ultima_tendencia).total_seconds() >= 3 * 60 * 60:
+                try:
+                    from agents.trend_scout import actualizar_tendencias
+                    actualizar_tendencias()
+                    log("🌐 Tendencias actualizadas")
+                except Exception as e:
+                    log(f"⚠️ Error tendencias: {e}")
+                ultima_tendencia = ahora_utc
+
+            # Resumen diario a las 8:00
             if hora == 8 and dia != dia_resumen:
                 enviar_resumen_diario()
                 dia_resumen = dia
 
+            # Mantenimiento nocturno a las 3:00
             if hora == 3 and dia != dia_mantenimiento:
                 ejecutar_script("run_monitor.py")
                 dia_mantenimiento = dia
@@ -423,4 +593,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-# FIN COMPLETO monitor_nocturno.py
