@@ -21,7 +21,6 @@ def _configurar_logger():
     logger = logging.getLogger("validationidea")
     logger.setLevel(logging.INFO)
     if not logger.handlers:
-        from logging.handlers import TimedRotatingFileHandler
         fh = TimedRotatingFileHandler(log_path, when="W0", interval=1, backupCount=4, encoding="utf-8")
         fh.setFormatter(logging.Formatter("%(asctime)s %(message)s", "%Y-%m-%d %H:%M:%S"))
         logger.addHandler(fh)
@@ -35,9 +34,6 @@ _logger = _configurar_logger()
 def log(msg):
     _logger.info(msg)
 
-# ════════════════════════════════════════════════════════
-#  TELEGRAM — requests puro, sin librerías externas
-# ════════════════════════════════════════════════════════
 TELEGRAM_TOKEN   = ""
 TELEGRAM_CHAT_ID = ""
 
@@ -56,7 +52,7 @@ def enviar_telegram(mensaje):
         if resp.status_code == 200:
             log("📱 Telegram enviado")
         else:
-            log(f"⚠️ Telegram HTTP {resp.status_code}: {resp.text[:100]}")
+            log(f"⚠️ Telegram HTTP {resp.status_code}")
     except Exception as e:
         log(f"❌ Error Telegram: {e}")
 
@@ -64,29 +60,52 @@ def responder(chat_id, mensaje):
     try:
         requests.post(
             f"{_base()}/sendMessage",
-            json={"chat_id": chat_id, "text": mensaje, "parse_mode": "HTML"},
+            json={"chat_id": str(chat_id), "text": mensaje, "parse_mode": "HTML"},
             timeout=15
         )
     except Exception as e:
         log(f"❌ Error responder: {e}")
 
 # ════════════════════════════════════════════════════════
+#  EXTRACTOR DE SALIDA DE run_batch.py
+# ════════════════════════════════════════════════════════
+def extraer_resultado_batch(salida: str):
+    nombre = score = url = ""
+    for linea in salida.split("\n"):
+        l = linea.strip()
+        if l.startswith("NOTION_URL:"):
+            url = l.replace("NOTION_URL:", "").strip()
+        elif "✅ Sincronizada:" in l:
+            nombre = l.split("✅ Sincronizada:")[-1].strip().replace("│","").strip()
+        elif l.startswith("SCORE_FINAL:"):
+            score = l.replace("SCORE_FINAL:", "").strip()
+        elif "📊 Score:" in l and not score:
+            score = l.split("📊 Score:")[-1].strip().split("|")[0].strip().replace("│","").strip()
+    return nombre, score, url
+
+# ════════════════════════════════════════════════════════
 #  COMANDOS DEL BOT
 # ════════════════════════════════════════════════════════
-def handle_start(chat_id):
+def handle_start(chat_id, _=""):
     responder(chat_id,
         "🤖 <b>ValidationIdea Bot v2</b>\n\n"
-        "💡 /idea — Genera 1 idea ahora\n"
+        "<b>Comandos:</b>\n"
+        "💡 /idea [tema] — Genera idea (ej: /idea salud)\n"
         "📊 /status — Estado del sistema\n"
         "🏆 /top — Top 5 mejores ideas\n"
         "📋 /stats — Estadísticas KB\n"
         "🚀 /ranking — Top 5 más ejecutables HOY\n"
-        "🛠️ /ejecutar — Prompt MVP listo para usar\n"
+        "🛠️ /ejecutar [nombre] — Prompt MVP (ej: /ejecutar CodeGenius)\n"
+        "🔍 /buscar [palabra] — Buscar idea por nombre\n"
         "🌐 /tendencias — Tendencias tech ahora\n"
-        "🔄 /cola — Ideas pendientes Notion"
+        "🔄 /cola — Ideas pendientes Notion\n\n"
+        "<b>O escríbeme directamente:</b>\n"
+        "\"genera una idea de fitness\"\n"
+        "\"muéstrame el top\"\n"
+        "\"ejecuta CodeGenius\""
     )
 
-def handle_status(chat_id):
+def handle_status(chat_id, _=""):
     try:
         from agents.knowledge_base import get_stats, contar_pendientes
         stats  = get_stats()
@@ -108,17 +127,18 @@ def handle_status(chat_id):
             f"📊 Score promedio: <b>{stats.get('score_promedio', 0)}/100</b>\n"
             f"🏆 Mejor score: <b>{stats.get('mejor_score', 0)}/100</b>\n"
             f"🎯 Tasa de éxito: <b>{stats.get('tasa_exito', 'N/A')}</b>\n"
-            f"⏳ Cola pendiente: <b>{cola_n}</b>"
+            f"⏳ Cola pendiente: <b>{cola_n}</b>\n\n"
+            f"⏱️ Próxima idea automática: cada 30 min"
         )
     except Exception as e:
         responder(chat_id, f"❌ Error: {e}")
 
-def handle_top(chat_id):
+def handle_top(chat_id, _=""):
     try:
         from agents.knowledge_base import get_top_ideas
         top = get_top_ideas(5)
         if not top:
-            responder(chat_id, "📭 Aún no hay ideas en el TOP.")
+            responder(chat_id, "📭 Aún no hay ideas en el TOP.\nUsa /idea para generar la primera.")
             return
         texto = "🏆 <b>TOP 5 MEJORES IDEAS</b>\n\n"
         for i, idea in enumerate(top, 1):
@@ -129,11 +149,12 @@ def handle_top(chat_id):
                 f"   📊 {s}/100 | {idea.get('tipo','?')} | {idea.get('vertical','?')}\n"
                 f"   📅 {idea.get('fecha','N/A')}\n\n"
             )
+        texto += "Usa /ejecutar [nombre] para obtener el prompt MVP."
         responder(chat_id, texto)
     except Exception as e:
         responder(chat_id, f"❌ Error: {e}")
 
-def handle_stats(chat_id):
+def handle_stats(chat_id, _=""):
     try:
         from agents.knowledge_base import get_stats
         stats = get_stats()
@@ -150,51 +171,61 @@ def handle_stats(chat_id):
     except Exception as e:
         responder(chat_id, f"❌ Error: {e}")
 
-def handle_idea(chat_id):
-    responder(chat_id,
-        "⏳ <b>Generando idea con informe completo...</b>\n"
-        "Espera 45-90 segundos ☕\n"
-        "(DAFO + estudio económico + prompt MVP incluidos)"
-    )
+def handle_idea(chat_id, tema=""):
+    if tema:
+        responder(chat_id,
+            f"⏳ <b>Generando idea sobre: {tema}...</b>\n"
+            f"Espera 45-90 segundos ☕"
+        )
+    else:
+        responder(chat_id,
+            "⏳ <b>Generando idea con informe completo...</b>\n"
+            "Espera 45-90 segundos ☕\n"
+            "(DAFO + estudio económico + prompt MVP)"
+        )
     try:
+        env = os.environ.copy()
+        if tema:
+            env["IDEA_TOPIC"] = tema
         resultado = subprocess.run(
             [sys.executable, "run_batch.py"],
-            capture_output=True, timeout=150
+            capture_output=True, timeout=150, env=env
         )
         salida = resultado.stdout.decode("utf-8", errors="replace")
-        nombre = score = url = ""
-        for linea in salida.split("\n"):
-            l = linea.strip().replace("│", "").strip()
-            if "✅ Sincronizada:" in l:
-                nombre = l.split("✅ Sincronizada:")[-1].strip()
-            if "📊 Score:" in l:
-                score = l.split("📊 Score:")[-1].strip().split("|")[0].strip()
-            if "notion.so" in l and "http" in l:
-                url = l
+        nombre, score, url = extraer_resultado_batch(salida)
+
         if nombre:
-            responder(chat_id,
-                f"✅ <b>¡Idea generada!</b>\n\n"
+            emoji = "⭐" if url else "💡"
+            msg = (
+                f"{emoji} <b>¡Idea generada!</b>\n\n"
                 f"🚀 <b>{nombre}</b>\n"
                 f"📊 Score: <b>{score}</b>\n"
-                f"📋 Informe completo en Notion:\n{url}"
             )
+            if url:
+                msg += f"📋 <b>Ver informe completo:</b>\n{url}"
+            else:
+                msg += "📋 Revisa Notion — informe completo disponible."
+            responder(chat_id, msg)
         else:
-            responder(chat_id, "⚠️ Generada — revisa Notion en 1 minuto.")
+            responder(chat_id,
+                "⚠️ Hubo un problema generando la idea.\n"
+                "El sistema lo reintentará en 30 minutos automáticamente."
+            )
     except subprocess.TimeoutExpired:
         responder(chat_id, "⏰ Generando en background — revisa Notion en 2 min.")
     except Exception as e:
         responder(chat_id, f"❌ Error: {e}")
 
-def handle_cola(chat_id):
+def handle_cola(chat_id, _=""):
     try:
         ruta = "data/cola_pendientes.csv"
         if not os.path.exists(ruta):
-            responder(chat_id, "✅ Cola vacía — todo sincronizado.")
+            responder(chat_id, "✅ Cola vacía — todo sincronizado con Notion.")
             return
         with open(ruta, newline="", encoding="utf-8") as f:
             pendientes = list(csv.DictReader(f))
         if not pendientes:
-            responder(chat_id, "✅ Cola vacía — todo sincronizado.")
+            responder(chat_id, "✅ Cola vacía — todo sincronizado con Notion.")
             return
         texto = f"📋 <b>Cola: {len(pendientes)} pendiente(s)</b>\n\n"
         for p in pendientes[:5]:
@@ -203,7 +234,7 @@ def handle_cola(chat_id):
     except Exception as e:
         responder(chat_id, f"❌ Error: {e}")
 
-def handle_ranking(chat_id):
+def handle_ranking(chat_id, _=""):
     try:
         from agents.knowledge_base import _cargar
         kb    = _cargar()
@@ -229,57 +260,127 @@ def handle_ranking(chat_id):
                 f"   ⏰ Timing: {s.get('timing',0)}/100\n"
                 f"   📊 Score total: {idea.get('score_total',0)}/100\n\n"
             )
-        texto += "💡 Usa /ejecutar para el prompt MVP de la mejor."
+        texto += "Usa /ejecutar [nombre] para el prompt MVP de cualquiera."
         responder(chat_id, texto)
     except Exception as e:
         responder(chat_id, f"❌ Error: {e}")
 
-def handle_ejecutar(chat_id):
+def _buscar_idea_por_nombre(nombre_buscado: str):
+    """Busca idea en ideas.json por nombre parcial (case insensitive)"""
     try:
-        from agents.knowledge_base import _cargar
-        kb    = _cargar()
-        ideas = kb.get("ideas", [])
-        if not ideas:
-            responder(chat_id, "📭 Sin ideas. Usa /idea primero.")
+        with open("data/ideas.json", "r", encoding="utf-8") as f:
+            todas = json.load(f)
+        nombre_lower = nombre_buscado.lower()
+        # Primero busca exacta, luego parcial
+        for idea in reversed(todas):
+            if idea.get("nombre", "").lower() == nombre_lower:
+                return idea
+        for idea in reversed(todas):
+            if nombre_lower in idea.get("nombre", "").lower():
+                return idea
+    except:
+        pass
+    return None
+
+def handle_ejecutar(chat_id, nombre_arg=""):
+    try:
+        idea_target = None
+
+        if nombre_arg:
+            idea_target = _buscar_idea_por_nombre(nombre_arg)
+            if not idea_target:
+                # Buscar también en KB
+                from agents.knowledge_base import _cargar
+                kb = _cargar()
+                for idea in kb.get("ideas", []):
+                    if nombre_arg.lower() in idea.get("nombre", "").lower():
+                        # Cargar datos completos de ideas.json
+                        idea_target = _buscar_idea_por_nombre(idea.get("nombre", ""))
+                        break
+            if not idea_target:
+                responder(chat_id,
+                    f"❌ No encontré ninguna idea con el nombre '<b>{nombre_arg}</b>'.\n\n"
+                    f"Usa /top o /ranking para ver los nombres disponibles."
+                )
+                return
+        else:
+            # Sin argumento: la más ejecutable
+            from agents.knowledge_base import _cargar
+            kb    = _cargar()
+            ideas = kb.get("ideas", [])
+            if not ideas:
+                responder(chat_id, "📭 Sin ideas. Usa /idea primero.")
+                return
+            def score_ejecutable(idea):
+                s = idea.get("scores", {})
+                return (
+                    s.get("ejecutabilidad", 0) * 0.40 +
+                    s.get("generador",      0) * 0.35 +
+                    s.get("timing",         0) * 0.25
+                )
+            top1       = sorted(ideas, key=score_ejecutable, reverse=True)[0]
+            nombre_top = top1.get("nombre", "")
+            idea_target = _buscar_idea_por_nombre(nombre_top)
+
+        if not idea_target:
+            responder(chat_id, "⚠️ Datos de la idea no encontrados. Genera nuevas ideas con /idea.")
             return
-        def score_ejecutable(idea):
-            s = idea.get("scores", {})
-            return (
-                s.get("ejecutabilidad", 0) * 0.40 +
-                s.get("generador",      0) * 0.35 +
-                s.get("timing",         0) * 0.25
-            )
-        top1       = sorted(ideas, key=score_ejecutable, reverse=True)[0]
-        nombre_top = top1.get("nombre", "")
-        prompt_texto = ""
-        ia_rec = "Claude 3.5 Sonnet en Cursor IDE"
-        try:
-            with open("data/ideas.json", "r", encoding="utf-8") as f:
-                todas = json.load(f)
-            for idea in reversed(todas):
-                if idea.get("nombre") == nombre_top:
-                    pm = idea.get("prompt_mvp", {})
-                    prompt_texto = pm.get("prompt_completo", "")
-                    ia_rec = pm.get("ia_recomendada", ia_rec)
-                    break
-        except:
-            pass
+
+        nombre_final = idea_target.get("nombre", "?")
+        pm           = idea_target.get("prompt_mvp", {})
+        prompt_texto = pm.get("prompt_completo", "")
+        ia_rec       = pm.get("ia_recomendada", "Claude 3.5 Sonnet en Cursor IDE")
+        score        = idea_target.get("scores", {}).get("score_total", "?")
+
         if not prompt_texto:
             responder(chat_id,
-                f"⚠️ Prompt de <b>{nombre_top}</b> no encontrado.\n"
-                f"Usa /idea para generar ideas con el sistema v2."
+                f"⚠️ <b>{nombre_final}</b> fue generada con el sistema antiguo y no tiene prompt MVP.\n"
+                f"Usa /idea para generar nuevas ideas con el sistema v2."
             )
             return
+
         responder(chat_id,
-            f"🛠️ <b>EJECUTA HOY: {nombre_top}</b>\n\n"
-            f"🤖 <b>Usa:</b> {ia_rec}\n\n"
+            f"🛠️ <b>EJECUTA HOY: {nombre_final}</b>\n"
+            f"📊 Score: {score}/100\n\n"
+            f"🤖 <b>IA recomendada:</b>\n{ia_rec}\n\n"
             f"📋 <b>Copia este prompt en Cursor/Claude:</b>\n\n"
             f"{prompt_texto[:3500]}"
         )
     except Exception as e:
         responder(chat_id, f"❌ Error: {e}")
 
-def handle_tendencias(chat_id):
+def handle_buscar(chat_id, palabra=""):
+    if not palabra:
+        responder(chat_id, "❓ Escribe qué buscar. Ejemplo: /buscar fintech")
+        return
+    try:
+        with open("data/ideas.json", "r", encoding="utf-8") as f:
+            todas = json.load(f)
+        palabra_lower = palabra.lower()
+        encontradas = [
+            i for i in todas
+            if palabra_lower in i.get("nombre","").lower()
+            or palabra_lower in i.get("vertical","").lower()
+            or palabra_lower in str(i.get("tags",[])).lower()
+            or palabra_lower in i.get("tagline","").lower()
+        ]
+        if not encontradas:
+            responder(chat_id, f"🔍 No encontré ideas relacionadas con '<b>{palabra}</b>'.")
+            return
+        texto = f"🔍 <b>Ideas relacionadas con '{palabra}'</b>\n\n"
+        for i, idea in enumerate(encontradas[-5:], 1):
+            s = idea.get("scores", {}).get("score_total", 0)
+            texto += (
+                f"<b>{i}. {idea.get('nombre','?')}</b>\n"
+                f"   {idea.get('tagline','')}\n"
+                f"   📊 Score: {s}/100\n\n"
+            )
+        texto += "Usa /ejecutar [nombre] para el prompt MVP de cualquiera."
+        responder(chat_id, texto)
+    except Exception as e:
+        responder(chat_id, f"❌ Error: {e}")
+
+def handle_tendencias(chat_id, _=""):
     try:
         from agents.trend_scout import actualizar_tendencias
         responder(chat_id, "🔄 Consultando HackerNews...")
@@ -290,11 +391,82 @@ def handle_tendencias(chat_id):
         texto = "🌐 <b>TENDENCIAS TECH AHORA</b>\n(fuente: HackerNews)\n\n"
         for i, t in enumerate(tendencias, 1):
             texto += f"{i}. {t}\n"
-        texto += "\n💡 La próxima idea usará estas tendencias automáticamente."
+        texto += "\n💡 La próxima idea generada usará estas tendencias.\nUsa /idea [tema] para generar sobre una de ellas."
         responder(chat_id, texto)
     except Exception as e:
         responder(chat_id, f"❌ Error: {e}")
 
+# ════════════════════════════════════════════════════════
+#  LENGUAJE NATURAL — keyword matching
+# ════════════════════════════════════════════════════════
+def procesar_lenguaje_natural(chat_id, texto: str):
+    t = texto.lower()
+
+    # Genera idea sobre tema
+    if any(p in t for p in ["genera", "crea", "nueva idea", "idea sobre", "idea de"]):
+        # Extraer tema si lo hay
+        for kw in ["sobre ", "de ", "idea "]:
+            if kw in t:
+                tema = t.split(kw)[-1].strip()
+                if len(tema) > 2:
+                    handle_idea(chat_id, tema)
+                    return
+        handle_idea(chat_id, "")
+        return
+
+    if any(p in t for p in ["estado", "cómo va", "como va", "funciona", "activo"]):
+        handle_status(chat_id)
+        return
+
+    if any(p in t for p in ["top", "mejores", "mejor idea"]):
+        handle_top(chat_id)
+        return
+
+    if any(p in t for p in ["ranking", "ejecutable", "ejecutar ahora", "cuál ejecuto", "cual ejecuto"]):
+        handle_ranking(chat_id)
+        return
+
+    if any(p in t for p in ["ejecuta", "construye", "hacer", "prompt"]):
+        # Buscar nombre de idea en el texto
+        partes = texto.split()
+        if len(partes) > 1:
+            posible_nombre = " ".join(partes[1:])
+            handle_ejecutar(chat_id, posible_nombre)
+        else:
+            handle_ejecutar(chat_id, "")
+        return
+
+    if any(p in t for p in ["busca", "buscar", "encuentra", "tengo"]):
+        partes = texto.split()
+        if len(partes) > 1:
+            handle_buscar(chat_id, " ".join(partes[1:]))
+        return
+
+    if any(p in t for p in ["tendencia", "trend", "qué está pasando", "novedades"]):
+        handle_tendencias(chat_id)
+        return
+
+    if any(p in t for p in ["stats", "estadística", "estadisticas", "cuántas", "cuantas"]):
+        handle_stats(chat_id)
+        return
+
+    if any(p in t for p in ["cola", "pendiente", "notion"]):
+        handle_cola(chat_id)
+        return
+
+    # Respuesta genérica
+    responder(chat_id,
+        "🤖 No entendí bien. Prueba con:\n\n"
+        "• \"genera una idea de [tema]\"\n"
+        "• \"muéstrame el ranking\"\n"
+        "• \"ejecuta [nombre de idea]\"\n"
+        "• \"busca [palabra]\"\n\n"
+        "O usa /start para ver todos los comandos."
+    )
+
+# ════════════════════════════════════════════════════════
+#  MAPA DE COMANDOS
+# ════════════════════════════════════════════════════════
 COMANDOS = {
     "/start":      handle_start,
     "/status":     handle_status,
@@ -304,6 +476,7 @@ COMANDOS = {
     "/cola":       handle_cola,
     "/ranking":    handle_ranking,
     "/ejecutar":   handle_ejecutar,
+    "/buscar":     handle_buscar,
     "/tendencias": handle_tendencias,
 }
 
@@ -319,14 +492,13 @@ def iniciar_bot():
         log("⚠️ TELEGRAM_BOT_TOKEN no configurado — bot desactivado")
         return
 
-    # Eliminar webhook si existe (evita conflictos)
     try:
         requests.get(f"{_base()}/deleteWebhook?drop_pending_updates=true", timeout=10)
         log("🧹 Webhook eliminado")
     except:
         pass
 
-    log("🤖 ✅ Bot iniciado — polling directo (sin librería externa)")
+    log("🤖 ✅ Bot iniciado — polling directo + lenguaje natural")
     offset = 0
 
     while True:
@@ -337,7 +509,7 @@ def iniciar_bot():
                 timeout=40
             )
             if resp.status_code != 200:
-                log(f"⚠️ Bot getUpdates HTTP {resp.status_code}")
+                log(f"⚠️ getUpdates HTTP {resp.status_code}")
                 time.sleep(5)
                 continue
 
@@ -350,24 +522,35 @@ def iniciar_bot():
                     chat_id = msg.get("chat", {}).get("id")
                     if not text or not chat_id:
                         continue
-                    # Extraer comando (ignorar @username si existe)
-                    cmd = text.split()[0].lower().split("@")[0]
-                    log(f"📩 Comando recibido: {cmd} de chat {chat_id}")
-                    if cmd in COMANDOS:
+
+                    log(f"📩 Mensaje: '{text[:50]}' de chat {chat_id}")
+
+                    if text.startswith("/"):
+                        # Comando con argumento opcional
+                        partes  = text.split(maxsplit=1)
+                        cmd     = partes[0].lower().split("@")[0]
+                        arg     = partes[1].strip() if len(partes) > 1 else ""
+                        if cmd in COMANDOS:
+                            threading.Thread(
+                                target=COMANDOS[cmd],
+                                args=(chat_id, arg),
+                                daemon=True
+                            ).start()
+                        else:
+                            responder(chat_id, "❓ Comando no reconocido. Escribe /start para ver los comandos.")
+                    else:
+                        # Lenguaje natural
                         threading.Thread(
-                            target=COMANDOS[cmd],
-                            args=(chat_id,),
+                            target=procesar_lenguaje_natural,
+                            args=(chat_id, text),
                             daemon=True
                         ).start()
-                    else:
-                        responder(chat_id,
-                            "❓ Comando no reconocido.\nEscribe /start para ver los comandos disponibles."
-                        )
+
                 except Exception as e:
                     log(f"❌ Error procesando update: {e}")
 
         except requests.exceptions.Timeout:
-            pass  # Normal en long polling
+            pass
         except Exception as e:
             log(f"❌ Bot loop error: {e}")
             time.sleep(10)
@@ -480,39 +663,33 @@ def procesar_cola_csv():
         log(f"❌ Error cola CSV: {e}")
 
 def generar_nueva_idea():
-    log("🧠 Generando nueva idea...")
+    log("🧠 Generando nueva idea automática...")
     exito, salida = ejecutar_script("run_batch.py")
-    if exito and "✅ Sincronizada:" in salida:
-        try:
-            nombre = score = url = ""
-            for linea in salida.split("\n"):
-                l = linea.strip().replace("│", "").strip()
-                if "✅ Sincronizada:" in l:
-                    nombre = l.split("✅ Sincronizada:")[-1].strip()
-                if "📊 Score:" in l:
-                    score = l.split("📊 Score:")[-1].strip().split("|")[0].strip()
-                if "notion.so" in l and "http" in l:
-                    url = l
+    if exito:
+        nombre, score, url = extraer_resultado_batch(salida)
+        if nombre:
             try:
                 score_num = float(str(score).split("/")[0].strip())
             except:
                 score_num = 0
+
             if score_num >= 75:
-                enviar_telegram(
-                    f"⭐ <b>IDEA DESTACADA — score {score}</b>\n\n"
+                msg = (
+                    f"⭐ <b>IDEA DESTACADA — score {score}/100</b>\n\n"
                     f"🚀 <b>{nombre}</b>\n"
-                    f"🔗 {url}\n\n"
-                    f"Usa /ejecutar para el prompt MVP."
                 )
             else:
-                enviar_telegram(
+                msg = (
                     f"💡 <b>Nueva idea generada</b>\n\n"
                     f"🚀 <b>{nombre}</b>\n"
-                    f"📊 Score: <b>{score}</b>\n"
-                    f"🔗 {url}"
+                    f"📊 Score: <b>{score}/100</b>\n"
                 )
-        except Exception as e:
-            log(f"⚠️ Error notificando idea: {e}")
+            if url:
+                msg += f"📋 <b>Informe completo:</b>\n{url}"
+            else:
+                msg += "📋 Informe disponible en Notion."
+
+            enviar_telegram(msg)
     return exito
 
 def enviar_resumen_diario():
@@ -556,10 +733,14 @@ def main():
     enviar_telegram(
         "🟢 <b>Monitor ValidationIdea v2 arrancado</b>\n\n"
         "✅ P1–P10 activos\n"
+        "✅ Ideas cada 30 min automáticamente\n"
         "✅ Informes: DAFO + economía + prompt MVP\n"
-        "✅ Autoaprendizaje KB activo\n"
-        "✅ Bot: polling directo — sin conflictos\n\n"
-        "📱 Escribe /start para ver los comandos"
+        "✅ Bot con lenguaje natural activado\n\n"
+        "💬 Puedes escribirme directamente:\n"
+        "\"genera una idea de [tema]\"\n"
+        "\"ejecuta [nombre]\"\n"
+        "\"muéstrame el ranking\"\n\n"
+        "📱 O usa /start para ver todos los comandos"
     )
 
     bot_thread = threading.Thread(target=iniciar_bot, daemon=True)

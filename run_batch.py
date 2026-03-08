@@ -5,18 +5,20 @@ os.environ["PYTHONUTF8"] = "1"
 print("=" * 50)
 print(f"🚀 run_batch iniciado: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
 
-GROQ_API_KEY = os.environ.get("GROQ_API_KEY", "")
+GROQ_API_KEY  = os.environ.get("GROQ_API_KEY", "")
+TEMA_FORZADO  = os.environ.get("IDEA_TOPIC", "")  # tema específico desde Telegram
 
 PROMPT_SISTEMA = """Eres un analista de startups de clase mundial con 20 años de experiencia.
 Tu misión: generar ideas de startup con potencial REAL de monetización rápida.
 Basas tus análisis en datos reales del mercado, no en suposiciones optimistas.
 Respondes SIEMPRE con JSON válido y nada más."""
 
-def get_prompt_idea(contexto: dict, tendencias: list) -> str:
+def get_prompt_idea(contexto: dict, tendencias: list, tema: str = "") -> str:
     tendencias_str = "\n".join(f"- {t}" for t in tendencias[:6]) if tendencias else "- No disponibles"
+    tema_str = f"\nTEMA ESPECÍFICO SOLICITADO: Genera una idea relacionada con '{tema}'\n" if tema else ""
     return f"""
 Genera UNA idea de startup original y con potencial real de monetización.
-
+{tema_str}
 CONTEXTO DE APRENDIZAJE DEL SISTEMA:
 - Ideas ya generadas (NO repetir): {contexto.get('ideas_previas', 'ninguna')}
 - Verticales con mejor rendimiento histórico: {contexto.get('mejores_verticales', 'N/A')}
@@ -100,7 +102,7 @@ Responde ÚNICAMENTE con este JSON (sin texto antes ni después, sin markdown):
     "precio_optimo_justificado": "Por qué este precio maximiza revenue sin frenar adopción"
   }},
 
-  "opinion_profesional": "Análisis honesto en 4-5 frases: qué hace especial esta idea ahora mismo, cuál es el riesgo principal real, por qué AHORA es el momento óptimo (o no), y qué haría primero si tuvieras que ejecutarla mañana.",
+  "opinion_profesional": "Análisis honesto en 4-5 frases: qué hace especial esta idea ahora mismo, cuál es el riesgo principal real, por qué AHORA es el momento óptimo, y qué haría primero si tuvieras que ejecutarla mañana.",
 
   "scores": {{
     "critico":        75,
@@ -127,8 +129,7 @@ def calcular_score_ponderado(scores: dict) -> float:
         "timing":         0.10,
         "viral":          0.05,
     }
-    total = sum(scores.get(k, 0) * v for k, v in pesos.items())
-    return round(total, 1)
+    return round(sum(scores.get(k, 0) * v for k, v in pesos.items()), 1)
 
 def llamar_groq(prompt: str, modelo: str = "llama-3.3-70b-versatile") -> str:
     import groq
@@ -172,12 +173,12 @@ def limpiar_json(texto: str) -> str:
 
 def ejecutar_batch():
     try:
-        from agents.knowledge_base import get_contexto_para_prompt, registrar_idea
-        from agents.trend_scout    import get_tendencias, actualizar_tendencias
+        from agents.knowledge_base    import get_contexto_para_prompt, registrar_idea
+        from agents.trend_scout       import get_tendencias, actualizar_tendencias
         from agents.notion_sync_agent import sync_idea_to_notion
     except ImportError as e:
         print(f"❌ Error de importación: {e}")
-        return False
+        return False, "", ""
 
     print("🌐 Obteniendo tendencias...")
     try:
@@ -189,21 +190,25 @@ def ejecutar_batch():
     print("📚 Cargando contexto KB...")
     contexto = get_contexto_para_prompt()
 
+    tema = TEMA_FORZADO
+    if tema:
+        print(f"🎯 Tema forzado: {tema}")
+
     print("🧠 Generando idea...")
-    prompt = get_prompt_idea(contexto, tendencias)
+    prompt = get_prompt_idea(contexto, tendencias, tema)
     try:
         respuesta = llamar_groq(prompt)
     except Exception as e:
         print(f"❌ Error Groq: {e}")
-        return False
+        return False, "", ""
 
     try:
         json_limpio = limpiar_json(respuesta)
         idea = json.loads(json_limpio)
     except Exception as e:
         print(f"❌ JSON inválido: {e}")
-        print(f"Respuesta raw: {respuesta[:300]}")
-        return False
+        print(f"Raw: {respuesta[:300]}")
+        return False, "", ""
 
     nombre = idea.get("nombre", "SinNombre")
     print(f"💡 Idea: {nombre}")
@@ -228,22 +233,26 @@ def ejecutar_batch():
         with open(ruta, "w", encoding="utf-8") as f:
             json.dump(ideas_local, f, ensure_ascii=False, indent=2)
     except Exception as e:
-        print(f"⚠️ Error guardando ideas.json: {e}")
+        print(f"⚠️ Error ideas.json: {e}")
 
     print("🔗 Sincronizando Notion...")
     try:
         url = sync_idea_to_notion(idea)
         if url:
+            print(f"NOTION_URL:{url}")  # línea especial para extracción
             print(f"✅ Sincronizado: {url}")
             print(f"✅ Sincronizada: {nombre}")
-            return True
+            print(f"SCORE_FINAL:{score}")
+            return True, nombre, url
         else:
             print(f"⚠️ Notion falló — guardada localmente")
-            return True
+            print(f"✅ Sincronizada: {nombre}")
+            return True, nombre, ""
     except Exception as e:
         print(f"❌ Error Notion: {e}")
-        return False
+        print(f"✅ Sincronizada: {nombre}")
+        return True, nombre, ""
 
 if __name__ == "__main__":
-    exito = ejecutar_batch()
+    exito, nombre, url = ejecutar_batch()
     sys.exit(0 if exito else 1)
