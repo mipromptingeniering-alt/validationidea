@@ -46,7 +46,7 @@ def enviar_telegram(mensaje):
     try:
         resp = requests.post(
             f"{_base()}/sendMessage",
-            json={"chat_id": TELEGRAM_CHAT_ID, "text": mensaje, "parse_mode": "HTML"},
+            json={"chat_id": TELEGRAM_CHAT_ID, "text": str(mensaje)[:4000], "parse_mode": "HTML"},
             timeout=15
         )
         if resp.status_code == 200:
@@ -58,28 +58,37 @@ def enviar_telegram(mensaje):
 
 def responder(chat_id, mensaje):
     try:
-        # Telegram límite 4096 chars
-        mensaje = str(mensaje)[:4000]
         requests.post(
             f"{_base()}/sendMessage",
-            json={"chat_id": str(chat_id), "text": mensaje, "parse_mode": "HTML"},
+            json={"chat_id": str(chat_id), "text": str(mensaje)[:4000], "parse_mode": "HTML"},
             timeout=15
         )
     except Exception as e:
         log(f"❌ Error responder: {e}")
 
 def extraer_resultado_batch(salida: str):
+    """Extrae nombre, score y URL de Notion del output de run_batch.py"""
     nombre = score = url = ""
     for linea in salida.split("\n"):
         l = linea.strip()
+        # URL de Notion — línea especial
         if l.startswith("NOTION_URL:"):
             url = l.replace("NOTION_URL:", "").strip()
-        elif "✅ Sincronizada:" in l:
-            nombre = l.split("✅ Sincronizada:")[-1].strip().replace("│","").strip()
+        # Score final
         elif l.startswith("SCORE_FINAL:"):
             score = l.replace("SCORE_FINAL:", "").strip()
+        # Nombre de la idea
+        elif "✅ Sincronizada:" in l:
+            nombre = l.split("✅ Sincronizada:")[-1].strip().replace("│","").strip()
+        # Score fallback
         elif "📊 Score:" in l and not score:
-            score = l.split("📊 Score:")[-1].strip().split("|")[0].strip().replace("│","").strip()
+            parte = l.split("📊 Score:")[-1].strip()
+            score = parte.split("|")[0].strip().replace("│","").strip()
+        # URL fallback directo de Notion
+        elif "notion.so" in l and "http" in l and not url:
+            for word in l.split():
+                if word.startswith("http") and "notion.so" in word:
+                    url = word.strip()
     return nombre, score, url
 
 # ════════════════════════════════════════════════════════
@@ -92,42 +101,29 @@ def migrar_kb_si_necesario():
         if stats.get("total_ideas", 0) > 0:
             log(f"✅ KB ya tiene {stats['total_ideas']} ideas — no necesita migración")
             return
-
         ruta = "data/ideas.json"
         if not os.path.exists(ruta):
             log("📭 No hay ideas.json que migrar")
             return
-
         with open(ruta, "r", encoding="utf-8") as f:
             ideas = json.load(f)
-
         if not ideas:
             return
-
         log(f"🔄 Migrando {len(ideas)} ideas a KB...")
         migradas = 0
         for idea in ideas:
             try:
                 if "scores" not in idea:
-                    idea["scores"] = {
-                        "critico": 70, "viral": 50, "generador": 70,
-                        "monetizacion": 65, "ejecutabilidad": 70, "timing": 65,
-                        "score_total": 68.0
-                    }
+                    idea["scores"] = {"critico":70,"viral":50,"generador":70,"monetizacion":65,"ejecutabilidad":70,"timing":65,"score_total":68.0}
                 elif "score_total" not in idea.get("scores", {}):
                     s = idea["scores"]
-                    s["score_total"] = round(
-                        s.get("critico",70)*0.25 + s.get("generador",70)*0.25 +
-                        s.get("ejecutabilidad",70)*0.20 + s.get("monetizacion",65)*0.15 +
-                        s.get("timing",65)*0.10 + s.get("viral",50)*0.05, 1
-                    )
+                    s["score_total"] = round(s.get("critico",70)*0.25+s.get("generador",70)*0.25+s.get("ejecutabilidad",70)*0.20+s.get("monetizacion",65)*0.15+s.get("timing",65)*0.10+s.get("viral",50)*0.05,1)
                 registrar_idea(idea)
                 migradas += 1
             except Exception as e:
                 log(f"⚠️ Error migrando '{idea.get('nombre','?')}': {e}")
-
         stats2 = get_stats()
-        log(f"✅ Migración completada: {migradas} ideas | Score promedio: {stats2['score_promedio']}")
+        log(f"✅ Migración: {migradas} ideas | Promedio: {stats2['score_promedio']}")
         enviar_telegram(
             f"🔄 <b>KB migrada automáticamente</b>\n"
             f"✅ {migradas} ideas cargadas\n"
@@ -153,7 +149,7 @@ def handle_start(chat_id, _=""):
         "🔍 /buscar [palabra] — Buscar ideas\n"
         "🌐 /tendencias — Tendencias tech ahora\n"
         "🔄 /cola — Ideas pendientes Notion\n"
-        "🐛 /debug — Ver último error del sistema\n\n"
+        "🐛 /debug — Diagnóstico del sistema\n\n"
         "<b>O escríbeme directamente:</b>\n"
         "\"genera una idea de fitness\"\n"
         "\"ejecuta CodeGenius\"\n"
@@ -181,8 +177,9 @@ def handle_status(chat_id, _=""):
             f"📚 Ideas en KB: <b>{stats.get('total_ideas', 0)}</b>\n"
             f"📊 Score promedio: <b>{stats.get('score_promedio', 0)}/100</b>\n"
             f"🏆 Mejor score: <b>{stats.get('mejor_score', 0)}/100</b>\n"
-            f"🎯 Tasa de éxito: <b>{stats.get('tasa_exito', 'N/A')}</b>\n"
-            f"⏳ Cola pendiente: <b>{cola_n}</b>"
+            f"🎯 Tasa de éxito (>75): <b>{stats.get('tasa_exito', 'N/A')}</b>\n"
+            f"⏳ Cola pendiente: <b>{cola_n}</b>\n\n"
+            f"⏱️ Nueva idea automática: cada 20 min"
         )
     except Exception as e:
         responder(chat_id, f"❌ Error: {e}")
@@ -248,61 +245,64 @@ def handle_idea(chat_id, tema=""):
             except:
                 score_num = 0
             emoji = "⭐" if score_num >= 75 else "💡"
-            msg = f"{emoji} <b>¡Idea generada!</b>\n\n🚀 <b>{nombre}</b>\n📊 Score: <b>{score}/100</b>\n"
+            msg = f"{emoji} <b>¡Idea generada!</b>\n\n🚀 <b>{nombre}</b>\n📊 Score: <b>{score}/100</b>"
             if url:
-                msg += f"\n📋 <b>Informe completo en Notion:</b>\n{url}"
+                msg += f"\n\n📋 <b>Informe completo en Notion:</b>\n{url}"
             else:
-                msg += "\n📋 Informe disponible en Notion."
+                msg += "\n\n📋 Informe disponible en Notion en 1 minuto."
             responder(chat_id, msg)
         else:
-            # Mostrar error real para diagnóstico
-            error_info = ""
+            # Mostrar error real
+            error_lines = []
             for linea in (salida + errores).split("\n"):
-                if any(p in linea for p in ["❌", "Error", "error", "Traceback", "Exception"]):
-                    error_info += linea.strip() + "\n"
-            error_info = error_info[:600] if error_info else (salida[-400:] if salida else "Sin output")
+                if any(p in linea for p in ["❌", "Error", "error", "Traceback", "Exception", "⚠️"]):
+                    error_lines.append(linea.strip())
+            error_info = "\n".join(error_lines[:8]) if error_lines else salida[-500:]
             responder(chat_id,
                 f"❌ <b>Error generando idea</b>\n\n"
-                f"<code>{error_info}</code>\n\n"
-                f"Usa /debug para ver el log completo."
+                f"<code>{error_info[:800]}</code>\n\n"
+                f"Usa /debug para diagnóstico completo."
             )
-            # Guardar último error
             try:
                 os.makedirs("data", exist_ok=True)
                 with open("data/ultimo_error.txt", "w", encoding="utf-8") as f:
-                    f.write(f"=== {datetime.now()} ===\n{salida}\n{errores}")
+                    f.write(f"=== {datetime.now()} ===\nSTDOUT:\n{salida}\nSTDERR:\n{errores}")
             except:
                 pass
     except subprocess.TimeoutExpired:
-        responder(chat_id, "⏰ Timeout (>150s) — el sistema lo reintentará en 30 min.")
+        responder(chat_id, "⏰ Timeout (>150s) — el sistema lo reintentará automáticamente.")
     except Exception as e:
         responder(chat_id, f"❌ Error inesperado: {e}")
 
 def handle_debug(chat_id, _=""):
-    """Muestra el último error del sistema"""
-    responder(chat_id, "🔍 Ejecutando diagnóstico completo...")
+    responder(chat_id, "🔍 Ejecutando diagnóstico — espera 30s...")
     try:
         resultado = subprocess.run(
             [sys.executable, "run_batch.py"],
-            capture_output=True, timeout=60, env=os.environ.copy()
+            capture_output=True, timeout=90, env=os.environ.copy()
         )
-        salida  = resultado.stdout.decode("utf-8", errors="replace")[-1500:]
-        errores = resultado.stderr.decode("utf-8", errors="replace")[-500:]
+        salida  = resultado.stdout.decode("utf-8", errors="replace")
+        errores = resultado.stderr.decode("utf-8", errors="replace")
         codigo  = resultado.returncode
-        responder(chat_id,
+        nombre, score, url = extraer_resultado_batch(salida)
+        resumen = (
             f"🐛 <b>Debug run_batch.py</b>\n"
-            f"Return code: {codigo}\n\n"
-            f"<b>stdout:</b>\n<code>{salida}</code>\n\n"
-            f"<b>stderr:</b>\n<code>{errores[:300]}</code>"
+            f"Código salida: {'✅ OK' if codigo==0 else f'❌ {codigo}'}\n"
+            f"Idea extraída: {nombre or '❌ No encontrada'}\n"
+            f"Score: {score or '❌ No encontrado'}\n"
+            f"URL Notion: {'✅ ' + url[:60] if url else '❌ No encontrada'}\n\n"
+            f"<b>Output completo:</b>\n<code>{salida[-1200:]}</code>"
         )
+        if errores.strip():
+            resumen += f"\n\n<b>Errores:</b>\n<code>{errores[-400:]}</code>"
+        responder(chat_id, resumen)
     except subprocess.TimeoutExpired:
-        # Si hay último error guardado
         try:
             with open("data/ultimo_error.txt", "r", encoding="utf-8") as f:
                 contenido = f.read()[-1500:]
-            responder(chat_id, f"📋 <b>Último error guardado:</b>\n<code>{contenido}</code>")
+            responder(chat_id, f"⏰ Timeout en debug.\n<b>Último error guardado:</b>\n<code>{contenido}</code>")
         except:
-            responder(chat_id, "⏰ Timeout en diagnóstico — revisa logs de Railway.")
+            responder(chat_id, "⏰ Timeout — revisa Railway → Deploy Logs.")
     except Exception as e:
         responder(chat_id, f"❌ Error en debug: {e}")
 
@@ -334,7 +334,7 @@ def handle_ranking(chat_id, _=""):
             return
         def score_ejecutable(idea):
             s = idea.get("scores", {})
-            return (s.get("ejecutabilidad",0)*0.40 + s.get("generador",0)*0.35 + s.get("timing",0)*0.25)
+            return s.get("ejecutabilidad",0)*0.40 + s.get("generador",0)*0.35 + s.get("timing",0)*0.25
         top = sorted(ideas, key=score_ejecutable, reverse=True)[:5]
         texto = "🚀 <b>TOP 5 IDEAS MÁS EJECUTABLES AHORA</b>\n\n"
         for i, idea in enumerate(top, 1):
@@ -386,8 +386,8 @@ def handle_ejecutar(chat_id, nombre_arg=""):
                 return
             def score_ejecutable(idea):
                 s = idea.get("scores", {})
-                return (s.get("ejecutabilidad",0)*0.40 + s.get("generador",0)*0.35 + s.get("timing",0)*0.25)
-            top1       = sorted(ideas, key=score_ejecutable, reverse=True)[0]
+                return s.get("ejecutabilidad",0)*0.40 + s.get("generador",0)*0.35 + s.get("timing",0)*0.25
+            top1        = sorted(ideas, key=score_ejecutable, reverse=True)[0]
             idea_target = _buscar_idea_por_nombre(top1.get("nombre", ""))
 
         if not idea_target:
@@ -402,7 +402,7 @@ def handle_ejecutar(chat_id, nombre_arg=""):
 
         if not prompt_texto:
             responder(chat_id,
-                f"⚠️ <b>{nombre_final}</b> fue generada con el sistema antiguo y no tiene prompt MVP.\n"
+                f"⚠️ <b>{nombre_final}</b> fue generada con el sistema antiguo.\n"
                 f"Usa /idea para generar ideas nuevas con el sistema v2."
             )
             return
@@ -455,7 +455,7 @@ def handle_tendencias(chat_id, _=""):
         texto = "🌐 <b>TENDENCIAS TECH AHORA</b>\n(fuente: HackerNews)\n\n"
         for i, t in enumerate(tendencias, 1):
             texto += f"{i}. {t}\n"
-        texto += "\n💡 La próxima idea usará estas tendencias.\nUsa /idea [tema] para generar sobre alguna."
+        texto += "\n💡 La próxima idea generada usará estas tendencias.\nUsa /idea [tema] para generar sobre alguna."
         responder(chat_id, texto)
     except Exception as e:
         responder(chat_id, f"❌ Error: {e}")
@@ -485,17 +485,14 @@ def procesar_lenguaje_natural(chat_id, texto: str):
         return
     if any(p in t for p in ["ejecuta", "construye", "prompt de", "cómo hacer", "como hacer"]):
         partes = texto.split()
-        if len(partes) > 1:
-            handle_ejecutar(chat_id, " ".join(partes[1:]))
-        else:
-            handle_ejecutar(chat_id, "")
+        handle_ejecutar(chat_id, " ".join(partes[1:]) if len(partes) > 1 else "")
         return
     if any(p in t for p in ["busca", "buscar", "encuentra"]):
         partes = texto.split()
         if len(partes) > 1:
             handle_buscar(chat_id, " ".join(partes[1:]))
         return
-    if any(p in t for p in ["tendencia", "trend", "qué está pasando", "novedades"]):
+    if any(p in t for p in ["tendencia", "trend", "novedades"]):
         handle_tendencias(chat_id)
         return
     if any(p in t for p in ["stats", "estadística", "cuántas", "cuantas"]):
@@ -528,7 +525,7 @@ COMANDOS = {
 }
 
 # ════════════════════════════════════════════════════════
-#  LOOP DEL BOT
+#  LOOP DEL BOT — polling directo
 # ════════════════════════════════════════════════════════
 def iniciar_bot():
     global TELEGRAM_TOKEN, TELEGRAM_CHAT_ID
@@ -700,14 +697,18 @@ def generar_nueva_idea():
                 score_num = float(str(score).split("/")[0].strip())
             except:
                 score_num = 0
-            msg = (f"⭐ <b>IDEA DESTACADA — score {score}/100</b>\n\n🚀 <b>{nombre}</b>\n"
-                   if score_num >= 75 else
-                   f"💡 <b>Nueva idea generada</b>\n\n🚀 <b>{nombre}</b>\n📊 Score: <b>{score}/100</b>\n")
+            if score_num >= 75:
+                msg = f"⭐ <b>IDEA DESTACADA — score {score}/100</b>\n\n🚀 <b>{nombre}</b>"
+            else:
+                msg = f"💡 <b>Nueva idea generada</b>\n\n🚀 <b>{nombre}</b>\n📊 Score: <b>{score}/100</b>"
             if url:
-                msg += f"📋 <b>Informe en Notion:</b>\n{url}"
+                msg += f"\n\n📋 <b>Informe completo en Notion:</b>\n{url}"
+            else:
+                msg += "\n\n📋 Informe disponible en Notion."
             enviar_telegram(msg)
+            log(f"✅ Notificación enviada: {nombre} | Score: {score} | URL: {url or 'N/A'}")
     else:
-        log("⚠️ run_batch.py falló — se reintentará en 30 min")
+        log("⚠️ run_batch.py falló — se reintentará en 20 min")
     return exito
 
 def enviar_resumen_diario():
@@ -743,19 +744,18 @@ def main():
     TELEGRAM_TOKEN   = os.environ.get("TELEGRAM_BOT_TOKEN", "")
     TELEGRAM_CHAT_ID = os.environ.get("TELEGRAM_CHAT_ID", "")
 
-    log("🚀 monitor_nocturno.py iniciado — P1→P10 activos")
+    log("🚀 monitor_nocturno.py iniciado — ideas cada 20 min")
 
-    # Migrar KB automáticamente si está vacía
     migrar_kb_si_necesario()
 
     enviar_telegram(
         "🟢 <b>Monitor ValidationIdea v2 arrancado</b>\n\n"
-        "✅ P1–P10 activos\n"
-        "✅ Ideas cada 30 min automáticamente\n"
+        "✅ Ideas automáticas cada 20 minutos\n"
         "✅ Informes: DAFO + economía + prompt MVP\n"
-        "✅ Bot con lenguaje natural activado\n\n"
-        "📱 Escribe /start para ver comandos\n"
-        "🐛 Escribe /debug si algo falla"
+        "✅ Link Notion en cada notificación\n"
+        "✅ Aprendizaje automático activo\n\n"
+        "📱 /start para ver comandos\n"
+        "🐛 /debug si algo falla"
     )
 
     bot_thread = threading.Thread(target=iniciar_bot, daemon=True)
@@ -763,7 +763,7 @@ def main():
     log("🤖 Bot arrancado en hilo paralelo")
 
     ahora_utc        = datetime.now(timezone.utc)
-    ultimo_batch     = ahora_utc - timedelta(minutes=31)
+    ultimo_batch     = ahora_utc - timedelta(minutes=21)   # ← 20 min
     ultimo_informe   = ahora_utc - timedelta(minutes=6)
     ultimo_health    = ahora_utc - timedelta(hours=1, minutes=1)
     ultima_tendencia = ahora_utc - timedelta(hours=3)
@@ -777,7 +777,8 @@ def main():
             hora = ahora_local.hour
             dia  = ahora_local.day
 
-            if (ahora_utc - ultimo_batch).total_seconds() >= 30 * 60:
+            # ← cada 20 minutos
+            if (ahora_utc - ultimo_batch).total_seconds() >= 20 * 60:
                 generar_nueva_idea()
                 ultimo_batch = ahora_utc
 
@@ -814,3 +815,5 @@ def main():
 
 if __name__ == "__main__":
     main()
+
+# aqui finaliza el codigo de monitor_nocturno.py

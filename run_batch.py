@@ -5,8 +5,7 @@ os.environ["PYTHONUTF8"] = "1"
 print("=" * 50)
 print(f"🚀 run_batch iniciado: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
 
-GROQ_API_KEY  = os.environ.get("GROQ_API_KEY", "")
-TEMA_FORZADO  = os.environ.get("IDEA_TOPIC", "")  # tema específico desde Telegram
+GROQ_API_KEY = os.environ.get("GROQ_API_KEY", "")
 
 PROMPT_SISTEMA = """Eres un analista de startups de clase mundial con 20 años de experiencia.
 Tu misión: generar ideas de startup con potencial REAL de monetización rápida.
@@ -16,17 +15,25 @@ Respondes SIEMPRE con JSON válido y nada más."""
 def get_prompt_idea(contexto: dict, tendencias: list, tema: str = "") -> str:
     tendencias_str = "\n".join(f"- {t}" for t in tendencias[:6]) if tendencias else "- No disponibles"
     tema_str = f"\nTEMA ESPECÍFICO SOLICITADO: Genera una idea relacionada con '{tema}'\n" if tema else ""
+
+    # Instrucción de mejora basada en historial
+    mejora_str = ""
+    if contexto.get("total_analizadas", 0) > 5:
+        mejora_str = (
+            f"\nAPRENDIZAJE ACUMULADO — usa esto para generar una idea MEJOR que las anteriores:\n"
+            f"- Verticales que han funcionado bien: {contexto.get('mejores_verticales','N/A')}\n"
+            f"- Tags que correlacionan con éxito: {contexto.get('tags_exitosos','N/A')}\n"
+            f"- Score promedio actual: {contexto.get('score_promedio','N/A')} — supéralo\n"
+            f"- Tasa de éxito actual: {contexto.get('tasa_exito','N/A')} — mejórala\n"
+        )
+
     return f"""
 Genera UNA idea de startup original y con potencial real de monetización.
-{tema_str}
-CONTEXTO DE APRENDIZAJE DEL SISTEMA:
-- Ideas ya generadas (NO repetir): {contexto.get('ideas_previas', 'ninguna')}
-- Verticales con mejor rendimiento histórico: {contexto.get('mejores_verticales', 'N/A')}
-- Tags exitosos históricos: {contexto.get('tags_exitosos', 'N/A')}
-- Total ideas analizadas: {contexto.get('total_analizadas', 0)}
-- Tasa de éxito actual: {contexto.get('tasa_exito', 'N/A')}
+{tema_str}{mejora_str}
+IDEAS YA GENERADAS (NO repetir ni hacer variaciones de estas):
+{contexto.get('ideas_previas', 'ninguna aún')}
 
-TENDENCIAS ACTUALES DEL MERCADO TECH:
+TENDENCIAS ACTUALES DEL MERCADO TECH (úsalas como inspiración):
 {tendencias_str}
 
 Responde ÚNICAMENTE con este JSON (sin texto antes ni después, sin markdown):
@@ -90,7 +97,7 @@ Responde ÚNICAMENTE con este JSON (sin texto antes ni después, sin markdown):
 
   "prompt_mvp": {{
     "ia_recomendada": "Claude 3.5 Sonnet en Cursor IDE — porque tiene mejor razonamiento de arquitectura y es el más eficaz construyendo productos completos desde un prompt",
-    "prompt_completo": "Construye [NOMBRE] desde cero. Es una aplicación [tipo] que [solución]. Stack: [tecnologías]. Funcionalidades MVP: 1) [feature1 con detalle técnico completo], 2) [feature2 con detalle], 3) [feature3 con detalle]. Base de datos: [estructura de tablas]. Flujo principal del usuario: [pasos detallados]. Autenticación: [método]. Monetización integrada: [cómo cobrar técnicamente]. Deploy en: [plataforma]. Genera el proyecto completo con estructura de carpetas, todos los archivos necesarios, package.json o requirements.txt, y README de instalación paso a paso."
+    "prompt_completo": "Construye [NOMBRE] desde cero. Es una aplicación [tipo] que [solución]. Stack: [tecnologías concretas]. Funcionalidades MVP: 1) [feature1 con detalle técnico completo], 2) [feature2 con detalle], 3) [feature3 con detalle]. Base de datos: [estructura de tablas exacta]. Flujo principal del usuario: [pasos detallados paso a paso]. Autenticación: [método exacto]. Monetización integrada: [cómo cobrar técnicamente con Stripe o similar]. Deploy en: [plataforma concreta]. Genera el proyecto completo con estructura de carpetas, todos los archivos necesarios, package.json o requirements.txt, y README de instalación paso a paso."
   }},
 
   "estrategia_monetizacion": {{
@@ -98,11 +105,11 @@ Responde ÚNICAMENTE con este JSON (sin texto antes ni después, sin markdown):
     "semana4":  "Cómo conseguir la primera venta de pago",
     "mes3":     "Estrategia para escalar a 50 clientes",
     "mes6":     "Estrategia de crecimiento sostenido",
-    "canales":  ["Canal con ROI más alto y cómo usarlo", "Canal secundario"],
+    "canales":  ["Canal con ROI más alto y cómo usarlo exactamente", "Canal secundario"],
     "precio_optimo_justificado": "Por qué este precio maximiza revenue sin frenar adopción"
   }},
 
-  "opinion_profesional": "Análisis honesto en 4-5 frases: qué hace especial esta idea ahora mismo, cuál es el riesgo principal real, por qué AHORA es el momento óptimo, y qué haría primero si tuvieras que ejecutarla mañana.",
+  "opinion_profesional": "Análisis honesto en 4-5 frases: qué hace especial esta idea ahora mismo, cuál es el riesgo principal real, por qué AHORA es el momento óptimo, y qué harías primero si tuvieras que ejecutarla mañana.",
 
   "scores": {{
     "critico":        75,
@@ -173,7 +180,7 @@ def limpiar_json(texto: str) -> str:
 
 def ejecutar_batch():
     try:
-        from agents.knowledge_base    import get_contexto_para_prompt, registrar_idea
+        from agents.knowledge_base    import get_contexto_para_prompt, registrar_idea, get_stats
         from agents.trend_scout       import get_tendencias, actualizar_tendencias
         from agents.notion_sync_agent import sync_idea_to_notion
     except ImportError as e:
@@ -184,20 +191,29 @@ def ejecutar_batch():
     try:
         actualizar_tendencias()
         tendencias = get_tendencias()
-    except:
+        print(f"✅ {len(tendencias)} tendencias cargadas")
+    except Exception as e:
+        print(f"⚠️ Tendencias no disponibles: {e}")
         tendencias = []
 
     print("📚 Cargando contexto KB...")
-    contexto = get_contexto_para_prompt()
+    try:
+        contexto = get_contexto_para_prompt()
+        stats    = get_stats()
+        print(f"📊 KB: {stats.get('total_ideas',0)} ideas | Score promedio: {stats.get('score_promedio',0)}")
+    except Exception as e:
+        print(f"⚠️ Error KB: {e}")
+        contexto = {"ideas_previas": "", "mejores_verticales": "", "tags_exitosos": "", "total_analizadas": 0, "tasa_exito": "N/A", "score_promedio": 0}
 
-    tema = TEMA_FORZADO
+    tema = os.environ.get("IDEA_TOPIC", "")
     if tema:
-        print(f"🎯 Tema forzado: {tema}")
+        print(f"🎯 Tema forzado: '{tema}'")
 
-    print("🧠 Generando idea...")
+    print("🧠 Generando idea con IA...")
     prompt = get_prompt_idea(contexto, tendencias, tema)
     try:
         respuesta = llamar_groq(prompt)
+        print(f"✅ Respuesta recibida ({len(respuesta)} chars)")
     except Exception as e:
         print(f"❌ Error Groq: {e}")
         return False, "", ""
@@ -205,13 +221,14 @@ def ejecutar_batch():
     try:
         json_limpio = limpiar_json(respuesta)
         idea = json.loads(json_limpio)
+        print(f"✅ JSON parseado correctamente")
     except Exception as e:
         print(f"❌ JSON inválido: {e}")
-        print(f"Raw: {respuesta[:300]}")
+        print(f"Raw (primeros 500 chars): {respuesta[:500]}")
         return False, "", ""
 
     nombre = idea.get("nombre", "SinNombre")
-    print(f"💡 Idea: {nombre}")
+    print(f"💡 Idea generada: {nombre}")
 
     scores = idea.get("scores", {})
     scores["score_total"] = calcular_score_ponderado(scores)
@@ -219,8 +236,11 @@ def ejecutar_batch():
     score = scores["score_total"]
     print(f"📊 Score: {score}/100 | C:{scores.get('critico',0)} V:{scores.get('viral',0)} G:{scores.get('generador',0)} M:{scores.get('monetizacion',0)} E:{scores.get('ejecutabilidad',0)} T:{scores.get('timing',0)}")
 
-    registrar_idea(idea)
-    print(f"💾 Guardada en KB")
+    try:
+        registrar_idea(idea)
+        print(f"💾 Guardada en KB")
+    except Exception as e:
+        print(f"⚠️ Error guardando en KB: {e}")
 
     os.makedirs("data", exist_ok=True)
     try:
@@ -232,27 +252,33 @@ def ejecutar_batch():
         ideas_local.append(idea)
         with open(ruta, "w", encoding="utf-8") as f:
             json.dump(ideas_local, f, ensure_ascii=False, indent=2)
+        print(f"💾 Guardada en ideas.json (total: {len(ideas_local)})")
     except Exception as e:
         print(f"⚠️ Error ideas.json: {e}")
 
-    print("🔗 Sincronizando Notion...")
+    print("🔗 Sincronizando con Notion...")
     try:
         url = sync_idea_to_notion(idea)
         if url:
-            print(f"NOTION_URL:{url}")  # línea especial para extracción
-            print(f"✅ Sincronizado: {url}")
-            print(f"✅ Sincronizada: {nombre}")
+            # Líneas especiales para extracción por monitor_nocturno.py
+            print(f"NOTION_URL:{url}")
             print(f"SCORE_FINAL:{score}")
+            print(f"✅ Sincronizada: {nombre}")
+            print(f"✅ Notion OK: {url}")
             return True, nombre, url
         else:
-            print(f"⚠️ Notion falló — guardada localmente")
+            print(f"⚠️ Notion devolvió None — guardada localmente")
+            print(f"SCORE_FINAL:{score}")
             print(f"✅ Sincronizada: {nombre}")
             return True, nombre, ""
     except Exception as e:
         print(f"❌ Error Notion: {e}")
+        print(f"SCORE_FINAL:{score}")
         print(f"✅ Sincronizada: {nombre}")
         return True, nombre, ""
 
 if __name__ == "__main__":
     exito, nombre, url = ejecutar_batch()
     sys.exit(0 if exito else 1)
+
+# aqui finaliza el codigo de run_batch.py
