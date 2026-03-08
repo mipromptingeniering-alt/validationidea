@@ -67,24 +67,22 @@ def responder(chat_id, mensaje):
         log(f"❌ Error responder: {e}")
 
 def extraer_resultado_batch(salida: str):
-    """Extrae nombre, score y URL de Notion del output de run_batch.py"""
+    """Extrae nombre, score (solo número) y URL de Notion del output de run_batch.py"""
     nombre = score = url = ""
     for linea in salida.split("\n"):
         l = linea.strip()
-        # URL de Notion — línea especial
         if l.startswith("NOTION_URL:"):
             url = l.replace("NOTION_URL:", "").strip()
-        # Score final
         elif l.startswith("SCORE_FINAL:"):
-            score = l.replace("SCORE_FINAL:", "").strip()
-        # Nombre de la idea
+            # Solo el número, sin /100
+            raw = l.replace("SCORE_FINAL:", "").strip()
+            score = raw.split("/")[0].strip()
         elif "✅ Sincronizada:" in l:
             nombre = l.split("✅ Sincronizada:")[-1].strip().replace("│","").strip()
-        # Score fallback
         elif "📊 Score:" in l and not score:
             parte = l.split("📊 Score:")[-1].strip()
-            score = parte.split("|")[0].strip().replace("│","").strip()
-        # URL fallback directo de Notion
+            # Solo el número antes de /100 o |
+            score = parte.split("/")[0].split("|")[0].strip().replace("│","").strip()
         elif "notion.so" in l and "http" in l and not url:
             for word in l.split():
                 if word.startswith("http") and "notion.so" in word:
@@ -114,10 +112,15 @@ def migrar_kb_si_necesario():
         for idea in ideas:
             try:
                 if "scores" not in idea:
-                    idea["scores"] = {"critico":70,"viral":50,"generador":70,"monetizacion":65,"ejecutabilidad":70,"timing":65,"score_total":68.0}
+                    idea["scores"] = {"critico":70,"viral":50,"generador":70,
+                                      "monetizacion":65,"ejecutabilidad":70,"timing":65,"score_total":68.0}
                 elif "score_total" not in idea.get("scores", {}):
                     s = idea["scores"]
-                    s["score_total"] = round(s.get("critico",70)*0.25+s.get("generador",70)*0.25+s.get("ejecutabilidad",70)*0.20+s.get("monetizacion",65)*0.15+s.get("timing",65)*0.10+s.get("viral",50)*0.05,1)
+                    s["score_total"] = round(
+                        s.get("critico",70)*0.25 + s.get("generador",70)*0.25 +
+                        s.get("ejecutabilidad",70)*0.20 + s.get("monetizacion",65)*0.15 +
+                        s.get("timing",65)*0.10 + s.get("viral",50)*0.05, 1
+                    )
                 registrar_idea(idea)
                 migradas += 1
             except Exception as e:
@@ -252,7 +255,6 @@ def handle_idea(chat_id, tema=""):
                 msg += "\n\n📋 Informe disponible en Notion en 1 minuto."
             responder(chat_id, msg)
         else:
-            # Mostrar error real
             error_lines = []
             for linea in (salida + errores).split("\n"):
                 if any(p in linea for p in ["❌", "Error", "error", "Traceback", "Exception", "⚠️"]):
@@ -291,7 +293,7 @@ def handle_debug(chat_id, _=""):
             f"Idea extraída: {nombre or '❌ No encontrada'}\n"
             f"Score: {score or '❌ No encontrado'}\n"
             f"URL Notion: {'✅ ' + url[:60] if url else '❌ No encontrada'}\n\n"
-            f"<b>Output completo:</b>\n<code>{salida[-1200:]}</code>"
+            f"<b>Output:</b>\n<code>{salida[-1200:]}</code>"
         )
         if errores.strip():
             resumen += f"\n\n<b>Errores:</b>\n<code>{errores[-400:]}</code>"
@@ -300,7 +302,7 @@ def handle_debug(chat_id, _=""):
         try:
             with open("data/ultimo_error.txt", "r", encoding="utf-8") as f:
                 contenido = f.read()[-1500:]
-            responder(chat_id, f"⏰ Timeout en debug.\n<b>Último error guardado:</b>\n<code>{contenido}</code>")
+            responder(chat_id, f"⏰ Timeout.\n<b>Último error:</b>\n<code>{contenido}</code>")
         except:
             responder(chat_id, "⏰ Timeout — revisa Railway → Deploy Logs.")
     except Exception as e:
@@ -455,7 +457,7 @@ def handle_tendencias(chat_id, _=""):
         texto = "🌐 <b>TENDENCIAS TECH AHORA</b>\n(fuente: HackerNews)\n\n"
         for i, t in enumerate(tendencias, 1):
             texto += f"{i}. {t}\n"
-        texto += "\n💡 La próxima idea generada usará estas tendencias.\nUsa /idea [tema] para generar sobre alguna."
+        texto += "\n💡 La próxima idea usará estas tendencias.\nUsa /idea [tema] para generar sobre alguna."
         responder(chat_id, texto)
     except Exception as e:
         responder(chat_id, f"❌ Error: {e}")
@@ -763,7 +765,7 @@ def main():
     log("🤖 Bot arrancado en hilo paralelo")
 
     ahora_utc        = datetime.now(timezone.utc)
-    ultimo_batch     = ahora_utc - timedelta(minutes=21)   # ← 20 min
+    ultimo_batch     = ahora_utc - timedelta(minutes=21)
     ultimo_informe   = ahora_utc - timedelta(minutes=6)
     ultimo_health    = ahora_utc - timedelta(hours=1, minutes=1)
     ultima_tendencia = ahora_utc - timedelta(hours=3)
@@ -777,7 +779,6 @@ def main():
             hora = ahora_local.hour
             dia  = ahora_local.day
 
-            # ← cada 20 minutos
             if (ahora_utc - ultimo_batch).total_seconds() >= 20 * 60:
                 generar_nueva_idea()
                 ultimo_batch = ahora_utc

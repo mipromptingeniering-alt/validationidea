@@ -1,246 +1,303 @@
-﻿import os, json, requests
+﻿import os
+import json
+import csv
+import requests
 from datetime import datetime
 
-NOTION_TOKEN = os.environ.get("NOTION_TOKEN", "")
-DATABASE_ID  = os.environ.get("NOTION_DATABASE_ID", "308313aca133800981cfc48f32c52146")
+NOTION_TOKEN       = os.environ.get("NOTION_TOKEN", "")
+NOTION_DATABASE_ID = os.environ.get("NOTION_DATABASE_ID", "308313aca133800981cfc48f32c52146")
+NOTION_VERSION     = "2022-06-28"
 
-HEADERS = {
-    "Authorization":  f"Bearer {NOTION_TOKEN}",
-    "Content-Type":   "application/json",
-    "Notion-Version": "2022-06-28",
-}
-
-def _bloque_titulo(texto: str) -> dict:
+def _headers():
     return {
-        "object": "block", "type": "heading_2",
-        "heading_2": {"rich_text": [{"type": "text", "text": {"content": str(texto)[:2000]}}]}
+        "Authorization": f"Bearer {NOTION_TOKEN}",
+        "Notion-Version": NOTION_VERSION,
+        "Content-Type": "application/json",
     }
 
-def _bloque_parrafo(texto: str) -> dict:
+def _get_title_property_name() -> str:
+    """Consulta el esquema real de la BD y devuelve el nombre del campo título."""
+    try:
+        resp = requests.get(
+            f"https://api.notion.com/v1/databases/{NOTION_DATABASE_ID}",
+            headers=_headers(), timeout=10
+        )
+        if resp.status_code == 200:
+            props = resp.json().get("properties", {})
+            for name, prop in props.items():
+                if prop.get("type") == "title":
+                    return name
+    except Exception as e:
+        print(f"⚠️ Error consultando esquema Notion: {e}")
+    return "Name"  # fallback universal
+
+def _bloque_texto(texto: str, tipo: str = "paragraph") -> dict:
     return {
-        "object": "block", "type": "paragraph",
-        "paragraph": {"rich_text": [{"type": "text", "text": {"content": str(texto)[:2000]}}]}
+        "object": "block",
+        "type": tipo,
+        tipo: {
+            "rich_text": [{"type": "text", "text": {"content": str(texto)[:2000]}}]
+        }
+    }
+
+def _bloque_heading(texto: str, nivel: int = 2) -> dict:
+    tipo = f"heading_{nivel}"
+    return {
+        "object": "block",
+        "type": tipo,
+        tipo: {
+            "rich_text": [{"type": "text", "text": {"content": str(texto)[:2000]}}]
+        }
     }
 
 def _bloque_separador() -> dict:
     return {"object": "block", "type": "divider", "divider": {}}
 
-def _bloque_callout(texto: str, emoji: str = "💡") -> dict:
+def _bullet(texto: str) -> dict:
     return {
-        "object": "block", "type": "callout",
-        "callout": {
-            "icon": {"type": "emoji", "emoji": emoji},
+        "object": "block",
+        "type": "bulleted_list_item",
+        "bulleted_list_item": {
             "rich_text": [{"type": "text", "text": {"content": str(texto)[:2000]}}]
         }
     }
 
-def _bloque_bullet(items: list) -> list:
-    bloques = []
-    for item in items:
-        bloques.append({
-            "object": "block", "type": "bulleted_list_item",
-            "bulleted_list_item": {"rich_text": [{"type": "text", "text": {"content": str(item)[:2000]}}]}
-        })
-    return bloques
+def _codigo(texto: str) -> dict:
+    return {
+        "object": "block",
+        "type": "code",
+        "code": {
+            "rich_text": [{"type": "text", "text": {"content": str(texto)[:2000]}}],
+            "language": "plain text"
+        }
+    }
 
-def construir_bloques(idea: dict) -> list:
+def _construir_bloques(idea: dict) -> list:
     bloques = []
-    scores = idea.get("scores", {})
+    scores  = idea.get("scores", {})
+    score_t = scores.get("score_total", 0)
+
+    # — Resumen ejecutivo
+    bloques.append(_bloque_heading("📊 RESUMEN EJECUTIVO", 1))
+    bloques.append(_bloque_texto(
+        f"Vertical: {idea.get('vertical','N/A')}  |  Tipo: {idea.get('tipo','N/A')}  |  Score total: {score_t}/100\n"
+        f"Tagline: {idea.get('tagline','')}"
+    ))
+    bloques.append(_bloque_texto(
+        f"Scores detalle — "
+        f"Crítico: {scores.get('critico',0)} | "
+        f"Viral: {scores.get('viral',0)} | "
+        f"Generador: {scores.get('generador',0)} | "
+        f"Monetización: {scores.get('monetizacion',0)} | "
+        f"Ejecutabilidad: {scores.get('ejecutabilidad',0)} | "
+        f"Timing: {scores.get('timing',0)}"
+    ))
+    bloques.append(_bloque_separador())
+
+    # — Problema y solución
+    bloques.append(_bloque_heading("❓ Problema & Solución", 2))
+    bloques.append(_bloque_texto(f"PROBLEMA: {idea.get('problema','')}"))
+    bloques.append(_bloque_texto(f"SOLUCIÓN: {idea.get('solucion','')}"))
+    bloques.append(_bloque_texto(f"CLIENTE: {idea.get('cliente_objetivo','')}"))
+    bloques.append(_bloque_texto(f"PROPUESTA DE VALOR ÚNICA: {idea.get('propuesta_valor_unica','')}"))
+    bloques.append(_bloque_separador())
+
+    # — Mercado
     mercado = idea.get("mercado", {})
-    modelo  = idea.get("modelo_negocio", {})
-    eco     = idea.get("estudio_economico", {})
-    dafo    = idea.get("dafo", {})
-    mvp     = idea.get("mvp", {})
-    prompt_mvp    = idea.get("prompt_mvp", {})
-    monetizacion  = idea.get("estrategia_monetizacion", {})
-    opinion       = idea.get("opinion_profesional", "")
+    if mercado:
+        bloques.append(_bloque_heading("🌍 Mercado", 2))
+        bloques.append(_bloque_texto(f"TAM: {mercado.get('TAM','')}"))
+        bloques.append(_bloque_texto(f"SAM: {mercado.get('SAM','')}"))
+        bloques.append(_bloque_texto(f"SOM: {mercado.get('SOM','')}"))
+        bloques.append(_bloque_texto(f"Ventaja competitiva: {mercado.get('ventaja_competitiva','')}"))
+        for c in mercado.get("competidores", []):
+            bloques.append(_bullet(f"Competidor: {c}"))
+        bloques.append(_bloque_separador())
 
-    # ── RESUMEN EJECUTIVO ────────────────────────────
-    bloques.append(_bloque_titulo("📋 RESUMEN EJECUTIVO"))
-    bloques.append(_bloque_callout(f"🎯 {idea.get('tagline', '')}", "🎯"))
-    bloques.append(_bloque_parrafo(f"🔴 Problema: {idea.get('problema', '')}"))
-    bloques.append(_bloque_parrafo(f"✅ Solución: {idea.get('solucion', '')}"))
-    bloques.append(_bloque_parrafo(f"👤 Cliente: {idea.get('cliente_objetivo', '')}"))
-    bloques.append(_bloque_parrafo(f"⚡ Ventaja única: {idea.get('propuesta_valor_unica', '')}"))
-    bloques.append(_bloque_separador())
+    # — Modelo de negocio
+    mn = idea.get("modelo_negocio", {})
+    if mn:
+        bloques.append(_bloque_heading("💰 Modelo de Negocio", 2))
+        bloques.append(_bloque_texto(f"Tipo: {mn.get('tipo','')}  |  Time to revenue: {mn.get('time_to_revenue','')}"))
+        bloques.append(_bloque_texto(f"Pricing: {mn.get('pricing','')}"))
+        for canal in mn.get("canales_adquisicion", []):
+            bloques.append(_bullet(canal))
+        bloques.append(_bloque_separador())
 
-    # ── SCORING ──────────────────────────────────────
-    bloques.append(_bloque_titulo("📊 SCORING DETALLADO"))
-    bloques.append(_bloque_parrafo(
-        f"TOTAL: {scores.get('score_total', 0)}/100\n"
-        f"🔴 Crítico (dolor real): {scores.get('critico', 0)}/100\n"
-        f"💰 Generador de revenue: {scores.get('generador', 0)}/100\n"
-        f"⚡ Ejecutabilidad solo: {scores.get('ejecutabilidad', 0)}/100\n"
-        f"💎 Monetización: {scores.get('monetizacion', 0)}/100\n"
-        f"⏰ Timing de mercado: {scores.get('timing', 0)}/100\n"
-        f"📣 Potencial viral: {scores.get('viral', 0)}/100"
-    ))
-    bloques.append(_bloque_separador())
+    # — Estudio económico
+    eco = idea.get("estudio_economico", {})
+    if eco:
+        bloques.append(_bloque_heading("📈 Estudio Económico", 2))
+        for escenario in ["conservador", "realista", "optimista"]:
+            datos = eco.get(escenario, {})
+            if datos:
+                emoji = {"conservador": "🟡", "realista": "🟢", "optimista": "🚀"}.get(escenario, "")
+                bloques.append(_bloque_heading(f"{emoji} Escenario {escenario.capitalize()}", 3))
+                bloques.append(_bloque_texto(f"Supuestos: {datos.get('supuestos','')}"))
+                mes6  = datos.get("mes6",  {})
+                mes12 = datos.get("mes12", {})
+                mes24 = datos.get("mes24", {})
+                if mes6:
+                    bloques.append(_bloque_texto(
+                        f"Mes 6 → MRR: {mes6.get('mrr_eur','?')}€ | "
+                        f"Usuarios: {mes6.get('usuarios','?')} | "
+                        f"CAC: {mes6.get('cac_eur','?')}€ | "
+                        f"LTV: {mes6.get('ltv_eur','?')}€"
+                    ))
+                if mes12:
+                    bloques.append(_bloque_texto(
+                        f"Mes 12 → MRR: {mes12.get('mrr_eur','?')}€ | "
+                        f"Usuarios: {mes12.get('usuarios','?')} | "
+                        f"Margen: {mes12.get('margen_pct','?')}%"
+                    ))
+                if mes24:
+                    bloques.append(_bloque_texto(
+                        f"Mes 24 → MRR: {mes24.get('mrr_eur','?')}€ | "
+                        f"ARR: {mes24.get('arr_eur','?')}€ | "
+                        f"Breakeven: {mes24.get('breakeven','?')}"
+                    ))
+        bloques.append(_bloque_separador())
 
-    # ── MERCADO ──────────────────────────────────────
-    bloques.append(_bloque_titulo("🌍 ANÁLISIS DE MERCADO"))
-    bloques.append(_bloque_parrafo(
-        f"TAM: {mercado.get('TAM', 'N/A')}\n"
-        f"SAM: {mercado.get('SAM', 'N/A')}\n"
-        f"SOM (año 1): {mercado.get('SOM', 'N/A')}"
-    ))
-    bloques.append(_bloque_parrafo(f"🏆 Ventaja competitiva: {mercado.get('ventaja_competitiva', '')}"))
-    competidores = mercado.get("competidores", [])
-    if competidores:
-        bloques.append(_bloque_parrafo("Competidores principales:"))
-        bloques += _bloque_bullet(competidores)
-    bloques.append(_bloque_separador())
+    # — DAFO
+    dafo = idea.get("dafo", {})
+    if dafo:
+        bloques.append(_bloque_heading("⚡ DAFO", 2))
+        bloques.append(_bloque_texto("FORTALEZAS:"))
+        for f in dafo.get("fortalezas", []):
+            bloques.append(_bullet(f"✅ {f}"))
+        bloques.append(_bloque_texto("DEBILIDADES:"))
+        for d in dafo.get("debilidades", []):
+            bloques.append(_bullet(f"⚠️ {d}"))
+        bloques.append(_bloque_texto("OPORTUNIDADES:"))
+        for o in dafo.get("oportunidades", []):
+            bloques.append(_bullet(f"🚀 {o}"))
+        bloques.append(_bloque_texto("AMENAZAS:"))
+        for a in dafo.get("amenazas", []):
+            bloques.append(_bullet(f"🔴 {a}"))
+        bloques.append(_bloque_separador())
 
-    # ── MODELO DE NEGOCIO ────────────────────────────
-    bloques.append(_bloque_titulo("💼 MODELO DE NEGOCIO"))
-    bloques.append(_bloque_parrafo(
-        f"Tipo: {modelo.get('tipo', 'N/A')}\n"
-        f"💰 Pricing: {modelo.get('pricing', 'N/A')}\n"
-        f"⚡ Time to revenue: {modelo.get('time_to_revenue', 'N/A')}"
-    ))
-    canales = modelo.get("canales_adquisicion", [])
-    if canales:
-        bloques.append(_bloque_parrafo("Canales de adquisición:"))
-        bloques += _bloque_bullet(canales)
-    bloques.append(_bloque_separador())
+    # — MVP
+    mvp = idea.get("mvp", {})
+    if mvp:
+        bloques.append(_bloque_heading("🛠️ MVP", 2))
+        bloques.append(_bloque_texto(f"Stack: {mvp.get('stack_recomendado','')}"))
+        bloques.append(_bloque_texto(f"Tiempo: {mvp.get('tiempo_semanas','?')} semanas  |  Coste: {mvp.get('coste_estimado_eur','?')}€"))
+        for feat in mvp.get("features_minimas", []):
+            bloques.append(_bullet(feat))
+        bloques.append(_bloque_separador())
 
-    # ── ESTUDIO ECONÓMICO ────────────────────────────
-    bloques.append(_bloque_titulo("📈 ESTUDIO ECONÓMICO — 3 ESCENARIOS"))
-    for escenario, emoji in [("conservador", "🐢"), ("realista", "📊"), ("optimista", "🚀")]:
-        datos = eco.get(escenario, {})
-        if datos:
-            m6  = datos.get("mes6", {})
-            m12 = datos.get("mes12", {})
-            m24 = datos.get("mes24", {})
-            bloques.append(_bloque_parrafo(
-                f"{emoji} ESCENARIO {escenario.upper()}\n"
-                f"Supuestos: {datos.get('supuestos', '')}\n"
-                f"Mes 6:  MRR {m6.get('mrr_eur', 0)}€ | Usuarios {m6.get('usuarios', 0)} | CAC {m6.get('cac_eur', 0)}€ | LTV {m6.get('ltv_eur', 0)}€\n"
-                f"Mes 12: MRR {m12.get('mrr_eur', 0)}€ | Usuarios {m12.get('usuarios', 0)} | Margen {m12.get('margen_pct', 0)}%\n"
-                f"Mes 24: MRR {m24.get('mrr_eur', 0)}€ | ARR {m24.get('arr_eur', 0)}€ | Break-even: {m24.get('breakeven', 'N/A')}"
-            ))
-    bloques.append(_bloque_separador())
+    # — Estrategia de monetización
+    em = idea.get("estrategia_monetizacion", {})
+    if em:
+        bloques.append(_bloque_heading("💵 Estrategia de Monetización", 2))
+        for key, label in [("semana1","Semana 1"),("semana4","Semana 4"),("mes3","Mes 3"),("mes6","Mes 6")]:
+            if em.get(key):
+                bloques.append(_bullet(f"{label}: {em[key]}"))
+        if em.get("precio_optimo_justificado"):
+            bloques.append(_bloque_texto(f"Precio óptimo: {em['precio_optimo_justificado']}"))
+        bloques.append(_bloque_separador())
 
-    # ── DAFO ─────────────────────────────────────────
-    bloques.append(_bloque_titulo("🔲 ANÁLISIS DAFO"))
-    for seccion, emoji in [("fortalezas","💪"),("debilidades","⚠️"),("oportunidades","🌟"),("amenazas","🚨")]:
-        items = dafo.get(seccion, [])
-        if items:
-            bloques.append(_bloque_parrafo(f"{emoji} {seccion.upper()}:"))
-            bloques += _bloque_bullet(items)
-    bloques.append(_bloque_separador())
+    # — Prompt MVP (el más importante para ejecutar)
+    pm = idea.get("prompt_mvp", {})
+    if pm:
+        bloques.append(_bloque_heading("🤖 PROMPT MVP — Copia en Cursor/Claude", 2))
+        bloques.append(_bloque_texto(f"IA recomendada: {pm.get('ia_recomendada','')}"))
+        prompt_txt = pm.get("prompt_completo", "")
+        if prompt_txt:
+            # Dividir en chunks de 2000 chars para respetar el límite de Notion
+            chunks = [prompt_txt[i:i+1900] for i in range(0, len(prompt_txt), 1900)]
+            for chunk in chunks:
+                bloques.append(_codigo(chunk))
+        bloques.append(_bloque_separador())
 
-    # ── MVP ──────────────────────────────────────────
-    bloques.append(_bloque_titulo("🛠️ PLAN MVP"))
-    features = mvp.get("features_minimas", [])
-    if features:
-        bloques.append(_bloque_parrafo("Features mínimas indispensables:"))
-        bloques += _bloque_bullet(features)
-    bloques.append(_bloque_parrafo(
-        f"Stack: {mvp.get('stack_recomendado', 'N/A')}\n"
-        f"Tiempo: {mvp.get('tiempo_semanas', 'N/A')} semanas\n"
-        f"Coste estimado: {mvp.get('coste_estimado_eur', 0)}€"
-    ))
-    bloques.append(_bloque_separador())
-
-    # ── ESTRATEGIA MONETIZACIÓN ──────────────────────
-    bloques.append(_bloque_titulo("💰 ESTRATEGIA DE MONETIZACIÓN RÁPIDA"))
-    bloques.append(_bloque_parrafo(
-        f"Semana 1: {monetizacion.get('semana1', '')}\n"
-        f"Semana 4: {monetizacion.get('semana4', '')}\n"
-        f"Mes 3: {monetizacion.get('mes3', '')}\n"
-        f"Mes 6: {monetizacion.get('mes6', '')}"
-    ))
-    bloques.append(_bloque_parrafo(f"💲 Precio óptimo: {monetizacion.get('precio_optimo_justificado', '')}"))
-    canales_m = monetizacion.get("canales", [])
-    if canales_m:
-        bloques.append(_bloque_parrafo("Canales con mayor ROI:"))
-        bloques += _bloque_bullet(canales_m)
-    bloques.append(_bloque_separador())
-
-    # ── PROMPT MVP ───────────────────────────────────
-    bloques.append(_bloque_titulo("🤖 PROMPT PARA CONSTRUIR EL MVP CON IA"))
-    bloques.append(_bloque_callout(
-        f"IA recomendada: {prompt_mvp.get('ia_recomendada', 'Claude 3.5 Sonnet en Cursor IDE')}",
-        "🤖"
-    ))
-    prompt_texto = prompt_mvp.get("prompt_completo", "")
-    if prompt_texto:
-        # Dividir en chunks de 2000 chars para Notion
-        for i in range(0, len(prompt_texto), 1900):
-            bloques.append(_bloque_parrafo(prompt_texto[i:i+1900]))
-    bloques.append(_bloque_separador())
-
-    # ── OPINIÓN PROFESIONAL ──────────────────────────
-    if opinion:
-        bloques.append(_bloque_titulo("🎯 OPINIÓN PROFESIONAL"))
-        bloques.append(_bloque_callout(str(opinion)[:2000], "🎯"))
+    # — Opinión profesional
+    op = idea.get("opinion_profesional", "")
+    if op:
+        bloques.append(_bloque_heading("🎯 Opinión Profesional", 2))
+        bloques.append(_bloque_texto(op))
 
     return bloques
+
+def _guardar_en_cola(idea: dict, error: str):
+    """Guarda en CSV local si Notion falla para reintentar después."""
+    try:
+        os.makedirs("data", exist_ok=True)
+        ruta  = "data/cola_pendientes.csv"
+        nuevo = {
+            "timestamp":    datetime.now().isoformat(),
+            "nombre_idea":  idea.get("nombre", "?"),
+            "intentos":     "1",
+            "ultimo_error": error[:200],
+            "datos_json":   json.dumps(idea, ensure_ascii=False)[:5000],
+        }
+        existe = os.path.exists(ruta)
+        with open(ruta, "a", newline="", encoding="utf-8") as f:
+            writer = csv.DictWriter(f, fieldnames=nuevo.keys())
+            if not existe:
+                writer.writeheader()
+            writer.writerow(nuevo)
+        print(f"📋 Guardado en cola CSV: {idea.get('nombre','?')}")
+    except Exception as e:
+        print(f"❌ Error guardando cola CSV: {e}")
 
 def sync_idea_to_notion(idea: dict) -> str:
-    """Sincroniza idea completa a Notion. Devuelve URL o None."""
-    global HEADERS
-    HEADERS["Authorization"] = f"Bearer {os.environ.get('NOTION_TOKEN', NOTION_TOKEN)}"
-
-    nombre    = idea.get("nombre", "Sin nombre")
-    scores    = idea.get("scores", {})
-    score     = scores.get("score_total", 0)
-    vertical  = idea.get("vertical", "General")
-    tipo      = idea.get("tipo", "B2B")
-    modelo    = idea.get("modelo_negocio", {})
-    ttr       = modelo.get("time_to_revenue", "N/A")
-    mercado   = idea.get("mercado", {})
-    sam       = mercado.get("SOM", "N/A")
-
+    """Crea una página en Notion con todo el contenido. Devuelve la URL o '' si falla."""
+    nombre = idea.get("nombre", "SinNombre")
     print(f"📤 Sincronizando '{nombre}'...")
 
-    # Propiedades de la página
-    propiedades = {
-        "Nombre": {"title": [{"text": {"content": nombre}}]},
-        "Score":  {"number": float(score)},
-    }
+    if not NOTION_TOKEN:
+        print("⚠️ NOTION_TOKEN no configurado")
+        return ""
 
-    # Propiedades opcionales (si existen en la BD)
-    try:
-        propiedades["Vertical"] = {"select": {"name": str(vertical)[:100]}}
-    except: pass
-    try:
-        propiedades["Tipo"] = {"select": {"name": str(tipo)[:100]}}
-    except: pass
+    # 1. Obtener nombre real del campo título en esta BD
+    title_prop = _get_title_property_name()
+    print(f"   Campo título detectado: '{title_prop}'")
 
-    # Crear página
+    # 2. Construir los bloques del cuerpo
+    try:
+        bloques = _construir_bloques(idea)
+    except Exception as e:
+        print(f"⚠️ Error construyendo bloques: {e}")
+        bloques = [_bloque_texto(f"Error generando contenido: {e}")]
+
+    # Notion permite máx 100 bloques por request
+    bloques_trunc = bloques[:100]
+
+    # 3. Crear la página
+    scores  = idea.get("scores", {})
+    score_t = scores.get("score_total", 0)
+    titulo  = f"[{score_t}] {nombre} — {idea.get('tagline', '')}"
+
     payload = {
-        "parent": {"database_id": DATABASE_ID},
-        "icon":   {"type": "emoji", "emoji": "💡"},
-        "properties": propiedades,
+        "parent":     {"database_id": NOTION_DATABASE_ID},
+        "properties": {
+            title_prop: {
+                "title": [{"type": "text", "text": {"content": titulo[:200]}}]
+            }
+        },
+        "children": bloques_trunc
     }
 
-    resp = requests.post(
-        "https://api.notion.com/v1/pages",
-        headers=HEADERS, json=payload, timeout=20
-    )
-
-    if resp.status_code not in (200, 201):
-        print(f"❌ Error {resp.status_code}: {resp.text[:200]}")
-        return None
-
-    page_id  = resp.json().get("id", "")
-    page_url = resp.json().get("url", "")
-    print(f"✅ Sincronizado: {page_url}")
-
-    # Añadir bloques de contenido
-    bloques = construir_bloques(idea)
-    for i in range(0, len(bloques), 90):  # Notion límite 100 bloques/request
-        chunk = bloques[i:i+90]
-        r2 = requests.patch(
-            f"https://api.notion.com/v1/blocks/{page_id}/children",
-            headers=HEADERS,
-            json={"children": chunk},
+    try:
+        resp = requests.post(
+            "https://api.notion.com/v1/pages",
+            headers=_headers(),
+            json=payload,
             timeout=30
         )
-        if r2.status_code not in (200, 201):
-            print(f"⚠️ Error bloques chunk {i}: {r2.status_code}")
+        if resp.status_code == 200:
+            page_id = resp.json().get("id", "").replace("-", "")
+            url     = f"https://notion.so/{page_id}"
+            print(f"✅ Notion OK: {url}")
+            return url
+        else:
+            error_msg = resp.text[:300]
+            print(f"❌ Error {resp.status_code}: {error_msg}")
+            _guardar_en_cola(idea, error_msg)
+            return ""
+    except Exception as e:
+        print(f"❌ Excepción Notion: {e}")
+        _guardar_en_cola(idea, str(e))
+        return ""
 
-    print(f"📄 Informe COMPLETO escrito en la página")
-    return page_url
+# aqui finaliza el codigo de agents/notion_sync_agent.py

@@ -16,7 +16,6 @@ def get_prompt_idea(contexto: dict, tendencias: list, tema: str = "") -> str:
     tendencias_str = "\n".join(f"- {t}" for t in tendencias[:6]) if tendencias else "- No disponibles"
     tema_str = f"\nTEMA ESPECÍFICO SOLICITADO: Genera una idea relacionada con '{tema}'\n" if tema else ""
 
-    # Instrucción de mejora basada en historial
     mejora_str = ""
     if contexto.get("total_analizadas", 0) > 5:
         mejora_str = (
@@ -97,7 +96,7 @@ Responde ÚNICAMENTE con este JSON (sin texto antes ni después, sin markdown):
 
   "prompt_mvp": {{
     "ia_recomendada": "Claude 3.5 Sonnet en Cursor IDE — porque tiene mejor razonamiento de arquitectura y es el más eficaz construyendo productos completos desde un prompt",
-    "prompt_completo": "Construye [NOMBRE] desde cero. Es una aplicación [tipo] que [solución]. Stack: [tecnologías concretas]. Funcionalidades MVP: 1) [feature1 con detalle técnico completo], 2) [feature2 con detalle], 3) [feature3 con detalle]. Base de datos: [estructura de tablas exacta]. Flujo principal del usuario: [pasos detallados paso a paso]. Autenticación: [método exacto]. Monetización integrada: [cómo cobrar técnicamente con Stripe o similar]. Deploy en: [plataforma concreta]. Genera el proyecto completo con estructura de carpetas, todos los archivos necesarios, package.json o requirements.txt, y README de instalación paso a paso."
+    "prompt_completo": "Construye [NOMBRE] desde cero. Es una aplicación [tipo] que [solución]. Stack: [tecnologías concretas]. Funcionalidades MVP: 1) [feature1 con detalle técnico completo], 2) [feature2 con detalle], 3) [feature3 con detalle]. Base de datos: [estructura de tablas exacta]. Flujo principal del usuario: [pasos detallados]. Autenticación: [método exacto]. Monetización integrada: [cómo cobrar con Stripe]. Deploy en: [plataforma]. Genera el proyecto completo con estructura de carpetas, todos los archivos, package.json o requirements.txt, y README de instalación paso a paso."
   }},
 
   "estrategia_monetizacion": {{
@@ -105,11 +104,11 @@ Responde ÚNICAMENTE con este JSON (sin texto antes ni después, sin markdown):
     "semana4":  "Cómo conseguir la primera venta de pago",
     "mes3":     "Estrategia para escalar a 50 clientes",
     "mes6":     "Estrategia de crecimiento sostenido",
-    "canales":  ["Canal con ROI más alto y cómo usarlo exactamente", "Canal secundario"],
+    "canales":  ["Canal con ROI más alto y cómo usarlo", "Canal secundario"],
     "precio_optimo_justificado": "Por qué este precio maximiza revenue sin frenar adopción"
   }},
 
-  "opinion_profesional": "Análisis honesto en 4-5 frases: qué hace especial esta idea ahora mismo, cuál es el riesgo principal real, por qué AHORA es el momento óptimo, y qué harías primero si tuvieras que ejecutarla mañana.",
+  "opinion_profesional": "Análisis honesto en 4-5 frases: qué hace especial esta idea ahora, cuál es el riesgo principal, por qué AHORA es el momento, y qué harías primero si la ejecutaras mañana.",
 
   "scores": {{
     "critico":        75,
@@ -166,7 +165,10 @@ def llamar_groq(prompt: str, modelo: str = "llama-3.3-70b-versatile") -> str:
                 raise
     raise RuntimeError("Groq no disponible tras 3 intentos")
 
-def limpiar_json(texto: str) -> str:
+def limpiar_json(texto) -> str:
+    # Protección: si Groq devuelve lista u otro tipo, convertir a string
+    if not isinstance(texto, str):
+        texto = json.dumps(texto, ensure_ascii=False)
     texto = texto.strip()
     if "```json" in texto:
         texto = texto.split("```json").split("```").strip()[1]
@@ -203,7 +205,8 @@ def ejecutar_batch():
         print(f"📊 KB: {stats.get('total_ideas',0)} ideas | Score promedio: {stats.get('score_promedio',0)}")
     except Exception as e:
         print(f"⚠️ Error KB: {e}")
-        contexto = {"ideas_previas": "", "mejores_verticales": "", "tags_exitosos": "", "total_analizadas": 0, "tasa_exito": "N/A", "score_promedio": 0}
+        contexto = {"ideas_previas": "", "mejores_verticales": "", "tags_exitosos": "",
+                    "total_analizadas": 0, "tasa_exito": "N/A", "score_promedio": 0}
 
     tema = os.environ.get("IDEA_TOPIC", "")
     if tema:
@@ -224,7 +227,7 @@ def ejecutar_batch():
         print(f"✅ JSON parseado correctamente")
     except Exception as e:
         print(f"❌ JSON inválido: {e}")
-        print(f"Raw (primeros 500 chars): {respuesta[:500]}")
+        print(f"Raw (primeros 500 chars): {str(respuesta)[:500]}")
         return False, "", ""
 
     nombre = idea.get("nombre", "SinNombre")
@@ -260,7 +263,6 @@ def ejecutar_batch():
     try:
         url = sync_idea_to_notion(idea)
         if url:
-            # Líneas especiales para extracción por monitor_nocturno.py
             print(f"NOTION_URL:{url}")
             print(f"SCORE_FINAL:{score}")
             print(f"✅ Sincronizada: {nombre}")
