@@ -752,7 +752,7 @@ def main():
 
     enviar_telegram(
         "🟢 <b>Monitor ValidationIdea v2 arrancado</b>\n\n"
-        "✅ Ideas automáticas cada 20 minutos\n"
+        "✅ Ideas automáticas cada 30 minutos\n"
         "✅ Informes: DAFO + economía + prompt MVP\n"
         "✅ Link Notion en cada notificación\n"
         "✅ Aprendizaje automático activo\n\n"
@@ -765,7 +765,7 @@ def main():
     log("🤖 Bot arrancado en hilo paralelo")
 
     ahora_utc        = datetime.now(timezone.utc)
-    ultimo_batch     = ahora_utc - timedelta(minutes=21)
+    ultimo_batch     = ahora_utc - timedelta(minutes=31)
     ultimo_informe   = ahora_utc - timedelta(minutes=6)
     ultimo_health    = ahora_utc - timedelta(hours=1, minutes=1)
     ultima_tendencia = ahora_utc - timedelta(hours=3)
@@ -779,7 +779,7 @@ def main():
             hora = ahora_local.hour
             dia  = ahora_local.day
 
-            if (ahora_utc - ultimo_batch).total_seconds() >= 20 * 60:
+            if (ahora_utc - ultimo_batch).total_seconds() >= 30 * 60:
                 generar_nueva_idea()
                 ultimo_batch = ahora_utc
 
