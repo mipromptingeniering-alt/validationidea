@@ -8,6 +8,15 @@ NOTION_TOKEN       = os.environ.get("NOTION_TOKEN", "")
 NOTION_DATABASE_ID = os.environ.get("NOTION_DATABASE_ID", "308313aca133800981cfc48f32c52146")
 NOTION_VERSION     = "2022-06-28"
 
+# ── Campos EXACTOS de tu BD Notion (detectados automáticamente)
+# Name, ScoreViral, Date, Tags, Description, Target
+CAMPO_TITULO      = "Name"
+CAMPO_SCORE       = "ScoreViral"
+CAMPO_FECHA       = "Date"
+CAMPO_TAGS        = "Tags"
+CAMPO_DESCRIPCION = "Description"
+CAMPO_TARGET      = "Target"
+
 def _headers():
     return {
         "Authorization": f"Bearer {NOTION_TOKEN}",
@@ -15,113 +24,57 @@ def _headers():
         "Content-Type": "application/json",
     }
 
-def _get_schema() -> dict:
-    """Devuelve el esquema completo de la BD: {nombre_prop: tipo}"""
-    try:
-        resp = requests.get(
-            f"https://api.notion.com/v1/databases/{NOTION_DATABASE_ID}",
-            headers=_headers(), timeout=10
-        )
-        if resp.status_code == 200:
-            return resp.json().get("properties", {})
-    except Exception as e:
-        print(f"⚠️ Error consultando esquema: {e}")
-    return {}
+def _safe_dict(valor, fallback=None) -> dict:
+    """Convierte a dict si es string u otro tipo — protección para ideas antiguas."""
+    if isinstance(valor, dict):
+        return valor
+    return fallback or {}
 
-def _find_prop(schema: dict, candidatos: list, tipo: str = None) -> str:
-    """
-    Busca en el esquema el primer nombre de propiedad que coincida
-    con alguno de los candidatos (case-insensitive) y opcionalmente del tipo indicado.
-    """
-    schema_lower = {k.lower(): (k, v) for k, v in schema.items()}
-    for candidato in candidatos:
-        key, data = schema_lower.get(candidato.lower(), (None, None))
-        if key:
-            if tipo is None or data.get("type") == tipo:
-                return key
-    # Si no hay coincidencia exacta, buscar por tipo
-    if tipo:
-        for name, data in schema.items():
-            if data.get("type") == tipo:
-                return name
-    return ""
+def _safe_list(valor) -> list:
+    """Convierte a list si no lo es."""
+    if isinstance(valor, list):
+        return valor
+    if isinstance(valor, str) and valor:
+        return [valor]
+    return []
 
-def _build_properties(idea: dict, schema: dict) -> dict:
-    """
-    Construye el dict de propiedades Notion rellenando
-    todos los campos que existan en el esquema de la BD.
-    """
-    scores  = idea.get("scores", {})
+def _build_properties(idea: dict) -> dict:
+    """Mapea la idea a los campos EXACTOS de tu BD Notion."""
+    scores  = _safe_dict(idea.get("scores", {}))
     score_t = scores.get("score_total", 0)
-    props   = {}
+    titulo  = f"[{score_t}] {idea.get('nombre','SinNombre')} — {idea.get('tagline','')}"
+    tags    = _safe_list(idea.get("tags", []))
 
-    # ── TÍTULO (obligatorio)
-    title_prop = _find_prop(schema, ["Name","Nombre","Title","Título","name","nombre"], "title")
-    if not title_prop:
-        for k, v in schema.items():
-            if v.get("type") == "title":
-                title_prop = k
-                break
-    if title_prop:
-        titulo = f"[{score_t}] {idea.get('nombre','SinNombre')} — {idea.get('tagline','')}"
-        props[title_prop] = {"title": [{"type": "text", "text": {"content": titulo[:200]}}]}
-
-    # ── SCORE (number)
-    score_prop = _find_prop(schema, ["Score","Puntuación","Puntuacion","score","Rating"], "number")
-    if score_prop:
-        props[score_prop] = {"number": float(score_t)}
-
-    # ── VERTICAL (select)
-    vertical_prop = _find_prop(schema, ["Vertical","vertical","Sector","sector","Categoría","Categoria"], "select")
-    if vertical_prop:
-        props[vertical_prop] = {"select": {"name": idea.get("vertical", "SaaS")[:100]}}
-
-    # ── TIPO (select)
-    tipo_prop = _find_prop(schema, ["Tipo","tipo","Type","type","Modelo","modelo"], "select")
-    if tipo_prop:
-        props[tipo_prop] = {"select": {"name": idea.get("tipo", "B2B")[:100]}}
-
-    # ── FECHA (date)
-    fecha_prop = _find_prop(schema, ["Fecha","fecha","Date","date","Created","Creado"], "date")
-    if fecha_prop:
-        props[fecha_prop] = {"date": {"start": datetime.now().strftime("%Y-%m-%d")}}
-
-    # ── TAGS (multi_select)
-    tags_prop = _find_prop(schema, ["Tags","tags","Etiquetas","etiquetas","Labels"], "multi_select")
-    if tags_prop:
-        tags = idea.get("tags", [])[:5]  # Notion limita multi_select
-        props[tags_prop] = {"multi_select": [{"name": str(t)[:100]} for t in tags]}
-
-    # ── TAGLINE / DESCRIPCIÓN (rich_text)
-    desc_prop = _find_prop(schema, ["Tagline","tagline","Descripción","Descripcion",
-                                     "Description","Resumen","resumen","Summary"], "rich_text")
-    if desc_prop:
-        props[desc_prop] = {"rich_text": [{"type": "text", "text": {
-            "content": idea.get("tagline", "")[:2000]
-        }}]}
-
-    # ── EJECUTABILIDAD (number)
-    ejec_prop = _find_prop(schema, ["Ejecutabilidad","ejecutabilidad","Ejecutable"], "number")
-    if ejec_prop:
-        props[ejec_prop] = {"number": float(scores.get("ejecutabilidad", 0))}
-
-    # ── CLIENTE (rich_text)
-    cliente_prop = _find_prop(schema, ["Cliente","cliente","Customer","Target"], "rich_text")
-    if cliente_prop:
-        props[cliente_prop] = {"rich_text": [{"type": "text", "text": {
-            "content": idea.get("cliente_objetivo", "")[:2000]
-        }}]}
-
-    # ── STATUS (select) — marcar como "Generada"
-    status_prop = _find_prop(schema, ["Status","status","Estado","estado","Stage"], "select")
-    if status_prop:
-        props[status_prop] = {"select": {"name": "Generada"}}
+    props = {
+        CAMPO_TITULO: {
+            "title": [{"type": "text", "text": {"content": titulo[:200]}}]
+        },
+        CAMPO_SCORE: {
+            "number": float(score_t)
+        },
+        CAMPO_FECHA: {
+            "date": {"start": datetime.now().strftime("%Y-%m-%d")}
+        },
+        CAMPO_TAGS: {
+            "multi_select": [{"name": str(t)[:100]} for t in tags[:5]]
+        },
+        CAMPO_DESCRIPCION: {
+            "rich_text": [{"type": "text", "text": {
+                "content": idea.get("tagline", "")[:2000]
+            }}]
+        },
+        CAMPO_TARGET: {
+            "rich_text": [{"type": "text", "text": {
+                "content": idea.get("cliente_objetivo", "")[:2000]
+            }}]
+        },
+    }
 
     print(f"   Propiedades mapeadas: {list(props.keys())}")
     return props
 
 # ════════════════════════════════════════════════════════
-#  BLOQUES DEL CUERPO DE LA PÁGINA
+#  BLOQUES DEL CUERPO — con protección total de tipos
 # ════════════════════════════════════════════════════════
 def _b_text(texto: str, tipo: str = "paragraph") -> dict:
     return {
@@ -156,10 +109,10 @@ def _b_code(texto: str) -> dict:
 
 def _construir_bloques(idea: dict) -> list:
     b      = []
-    scores = idea.get("scores", {})
+    scores = _safe_dict(idea.get("scores", {}))
     s_t    = scores.get("score_total", 0)
 
-    # Resumen
+    # ── Resumen ejecutivo
     b.append(_b_h("📊 RESUMEN EJECUTIVO", 1))
     b.append(_b_text(
         f"Vertical: {idea.get('vertical','N/A')}  |  Tipo: {idea.get('tipo','N/A')}  |  Score total: {s_t}/100\n"
@@ -172,7 +125,7 @@ def _construir_bloques(idea: dict) -> list:
     ))
     b.append(_b_sep())
 
-    # Problema y solución
+    # ── Problema & Solución
     b.append(_b_h("❓ Problema & Solución", 2))
     b.append(_b_text(f"PROBLEMA: {idea.get('problema','')}"))
     b.append(_b_text(f"SOLUCIÓN: {idea.get('solucion','')}"))
@@ -180,42 +133,42 @@ def _construir_bloques(idea: dict) -> list:
     b.append(_b_text(f"PROPUESTA DE VALOR ÚNICA: {idea.get('propuesta_valor_unica','')}"))
     b.append(_b_sep())
 
-    # Mercado
-    mercado = idea.get("mercado", {})
+    # ── Mercado
+    mercado = _safe_dict(idea.get("mercado", {}))
     if mercado:
         b.append(_b_h("🌍 Mercado", 2))
         b.append(_b_text(f"TAM: {mercado.get('TAM','')}"))
         b.append(_b_text(f"SAM: {mercado.get('SAM','')}"))
         b.append(_b_text(f"SOM: {mercado.get('SOM','')}"))
         b.append(_b_text(f"Ventaja competitiva: {mercado.get('ventaja_competitiva','')}"))
-        for c in mercado.get("competidores", []):
+        for c in _safe_list(mercado.get("competidores", [])):
             b.append(_b_bullet(f"Competidor: {c}"))
         b.append(_b_sep())
 
-    # Modelo de negocio
-    mn = idea.get("modelo_negocio", {})
+    # ── Modelo de negocio
+    mn = _safe_dict(idea.get("modelo_negocio", {}))
     if mn:
         b.append(_b_h("💰 Modelo de Negocio", 2))
         b.append(_b_text(f"Tipo: {mn.get('tipo','')}  |  Time to revenue: {mn.get('time_to_revenue','')}"))
         b.append(_b_text(f"Pricing: {mn.get('pricing','')}"))
-        for canal in mn.get("canales_adquisicion", []):
-            b.append(_b_bullet(canal))
+        for canal in _safe_list(mn.get("canales_adquisicion", [])):
+            b.append(_b_bullet(str(canal)))
         b.append(_b_sep())
 
-    # Estudio económico
-    eco = idea.get("estudio_economico", {})
+    # ── Estudio económico
+    eco = _safe_dict(idea.get("estudio_economico", {}))
     if eco:
         b.append(_b_h("📈 Estudio Económico", 2))
         for esc in ["conservador", "realista", "optimista"]:
-            datos = eco.get(esc, {})
+            datos = _safe_dict(eco.get(esc, {}))
             if not datos:
                 continue
             emoji = {"conservador": "🟡", "realista": "🟢", "optimista": "🚀"}.get(esc, "")
             b.append(_b_h(f"{emoji} Escenario {esc.capitalize()}", 3))
             b.append(_b_text(f"Supuestos: {datos.get('supuestos','')}"))
-            m6  = datos.get("mes6",  {})
-            m12 = datos.get("mes12", {})
-            m24 = datos.get("mes24", {})
+            m6  = _safe_dict(datos.get("mes6",  {}))
+            m12 = _safe_dict(datos.get("mes12", {}))
+            m24 = _safe_dict(datos.get("mes24", {}))
             if m6:
                 b.append(_b_text(
                     f"Mes 6 → MRR: {m6.get('mrr_eur','?')}€ | "
@@ -234,39 +187,43 @@ def _construir_bloques(idea: dict) -> list:
                 ))
         b.append(_b_sep())
 
-    # DAFO
-    dafo = idea.get("dafo", {})
+    # ── DAFO
+    dafo = _safe_dict(idea.get("dafo", {}))
     if dafo:
         b.append(_b_h("⚡ DAFO", 2))
         b.append(_b_text("FORTALEZAS:"))
-        for f in dafo.get("fortalezas", []):
+        for f in _safe_list(dafo.get("fortalezas", [])):
             b.append(_b_bullet(f"✅ {f}"))
         b.append(_b_text("DEBILIDADES:"))
-        for d in dafo.get("debilidades", []):
+        for d in _safe_list(dafo.get("debilidades", [])):
             b.append(_b_bullet(f"⚠️ {d}"))
         b.append(_b_text("OPORTUNIDADES:"))
-        for o in dafo.get("oportunidades", []):
+        for o in _safe_list(dafo.get("oportunidades", [])):
             b.append(_b_bullet(f"🚀 {o}"))
         b.append(_b_text("AMENAZAS:"))
-        for a in dafo.get("amenazas", []):
+        for a in _safe_list(dafo.get("amenazas", [])):
             b.append(_b_bullet(f"🔴 {a}"))
         b.append(_b_sep())
 
-    # MVP — forzar coste a 0 si la IA puso algo absurdo
-    mvp = idea.get("mvp", {})
+    # ── MVP
+    mvp = _safe_dict(idea.get("mvp", {}))
     if mvp:
         coste = mvp.get("coste_estimado_eur", 0)
-        if isinstance(coste, (int, float)) and coste > 10000:
-            coste = 0  # la IA a veces inventa costes, forzamos 0
+        try:
+            coste = float(coste)
+            if coste > 10000:
+                coste = 0
+        except:
+            coste = 0
         b.append(_b_h("🛠️ MVP", 2))
         b.append(_b_text(f"Stack: {mvp.get('stack_recomendado','')}"))
         b.append(_b_text(f"Tiempo: {mvp.get('tiempo_semanas','?')} semanas  |  Coste estimado: {coste}€"))
-        for feat in mvp.get("features_minimas", []):
-            b.append(_b_bullet(feat))
+        for feat in _safe_list(mvp.get("features_minimas", [])):
+            b.append(_b_bullet(str(feat)))
         b.append(_b_sep())
 
-    # Estrategia de monetización
-    em = idea.get("estrategia_monetizacion", {})
+    # ── Estrategia de monetización
+    em = _safe_dict(idea.get("estrategia_monetizacion", {}))
     if em:
         b.append(_b_h("💵 Estrategia de Monetización", 2))
         for key, label in [("semana1","Semana 1"),("semana4","Semana 4"),("mes3","Mes 3"),("mes6","Mes 6")]:
@@ -276,22 +233,22 @@ def _construir_bloques(idea: dict) -> list:
             b.append(_b_text(f"Precio óptimo: {em['precio_optimo_justificado']}"))
         b.append(_b_sep())
 
-    # Prompt MVP
-    pm = idea.get("prompt_mvp", {})
+    # ── Prompt MVP
+    pm = _safe_dict(idea.get("prompt_mvp", {}))
     if pm:
         b.append(_b_h("🤖 PROMPT MVP — Copia en Cursor/Claude", 2))
         b.append(_b_text(f"IA recomendada: {pm.get('ia_recomendada','')}"))
-        prompt_txt = pm.get("prompt_completo", "")
+        prompt_txt = str(pm.get("prompt_completo", ""))
         if prompt_txt:
             for chunk in [prompt_txt[i:i+1900] for i in range(0, len(prompt_txt), 1900)]:
                 b.append(_b_code(chunk))
         b.append(_b_sep())
 
-    # Opinión profesional
+    # ── Opinión profesional
     op = idea.get("opinion_profesional", "")
     if op:
         b.append(_b_h("🎯 Opinión Profesional", 2))
-        b.append(_b_text(op))
+        b.append(_b_text(str(op)))
 
     return b
 
@@ -323,6 +280,7 @@ def _guardar_en_cola(idea: dict, error: str):
 #  SYNC PRINCIPAL
 # ════════════════════════════════════════════════════════
 def sync_idea_to_notion(idea: dict) -> str:
+    """Crea una página en Notion. Devuelve la URL o '' si falla."""
     nombre = idea.get("nombre", "SinNombre")
     print(f"📤 Sincronizando '{nombre}'...")
 
@@ -330,36 +288,27 @@ def sync_idea_to_notion(idea: dict) -> str:
         print("⚠️ NOTION_TOKEN no configurado")
         return ""
 
-    # 1. Obtener esquema real de la BD
-    schema = _get_schema()
-    if not schema:
-        print("⚠️ No se pudo obtener el esquema de Notion")
-
-    # 2. Construir propiedades dinámicamente según el esquema
+    # 1. Construir propiedades con los campos exactos de la BD
     try:
-        properties = _build_properties(idea, schema)
+        properties = _build_properties(idea)
     except Exception as e:
         print(f"⚠️ Error construyendo propiedades: {e}")
-        # Fallback mínimo: solo título
-        title_prop = "Name"
-        for k, v in schema.items():
-            if v.get("type") == "title":
-                title_prop = k
-                break
+        scores  = _safe_dict(idea.get("scores", {}))
+        score_t = scores.get("score_total", 0)
         properties = {
-            title_prop: {"title": [{"type": "text", "text": {
-                "content": f"{idea.get('nombre','?')} — {idea.get('tagline','')}"
+            CAMPO_TITULO: {"title": [{"type": "text", "text": {
+                "content": f"[{score_t}] {nombre}"
             }}]}
         }
 
-    # 3. Construir bloques del cuerpo
+    # 2. Construir bloques del cuerpo
     try:
-        bloques = _construir_bloques(idea)[:100]  # Notion limita a 100 bloques por request
+        bloques = _construir_bloques(idea)[:100]
     except Exception as e:
         print(f"⚠️ Error construyendo bloques: {e}")
-        bloques = [_b_text(f"Error generando contenido: {e}")]
+        bloques = [_b_text(f"Idea: {nombre} — Error generando contenido detallado: {e}")]
 
-    # 4. Crear la página
+    # 3. Crear la página en Notion
     payload = {
         "parent":     {"database_id": NOTION_DATABASE_ID},
         "properties": properties,
@@ -382,19 +331,16 @@ def sync_idea_to_notion(idea: dict) -> str:
             error_msg = resp.text[:400]
             print(f"❌ Error {resp.status_code}: {error_msg}")
 
-            # Si el error es de propiedades, reintentar solo con título
-            if "not a property" in error_msg.lower() or "validation_error" in error_msg.lower():
-                print("🔄 Reintentando solo con título...")
-                title_prop = "Name"
-                for k, v in schema.items():
-                    if v.get("type") == "title":
-                        title_prop = k
-                        break
+            # Reintento solo con título si hay error de propiedades
+            if resp.status_code == 400:
+                print("🔄 Reintentando solo con título + cuerpo...")
+                scores  = _safe_dict(idea.get("scores", {}))
+                score_t = scores.get("score_total", 0)
                 payload_min = {
                     "parent":     {"database_id": NOTION_DATABASE_ID},
                     "properties": {
-                        title_prop: {"title": [{"type": "text", "text": {
-                            "content": f"[{idea.get('scores',{}).get('score_total',0)}] {nombre} — {idea.get('tagline','')}",
+                        CAMPO_TITULO: {"title": [{"type": "text", "text": {
+                            "content": f"[{score_t}] {nombre} — {idea.get('tagline','')}"
                         }}]}
                     },
                     "children": bloques
@@ -409,7 +355,6 @@ def sync_idea_to_notion(idea: dict) -> str:
                     page_id = resp2.json().get("id", "").replace("-", "")
                     url     = f"https://notion.so/{page_id}"
                     print(f"✅ Notion OK (solo título): {url}")
-                    print("⚠️ Tu BD de Notion no tiene columnas Score/Vertical/Tipo — añádelas para ver datos en la tabla")
                     return url
                 else:
                     print(f"❌ Reintento fallido: {resp2.text[:200]}")
