@@ -88,7 +88,7 @@ Responde ÚNICAMENTE con este JSON (sin texto antes ni después, sin markdown):
 
   "prompt_mvp": {{
     "ia_recomendada": "Claude 3.5 Sonnet en Cursor IDE — porque tiene mejor razonamiento de arquitectura y es el más eficaz construyendo productos completos desde un prompt",
-    "prompt_completo": "Construye [NOMBRE] desde cero. Es una aplicación [tipo] que [solución]. Stack: [tecnologías]. Funcionalidades MVP: 1) [feature1 con detalle], 2) [feature2 con detalle], 3) [feature3 con detalle]. Base de datos: [estructura]. Flujo principal del usuario: [pasos]. Autenticación: [método]. Monetización integrada: [cómo cobrar]. Deploy en: [dónde]. Empieza por [primer archivo] y genera el proyecto completo con estructura de carpetas, todos los archivos necesarios y README de instalación."
+    "prompt_completo": "Construye [NOMBRE] desde cero. Es una aplicación [tipo] que [solución]. Stack: [tecnologías]. Funcionalidades MVP: 1) [feature1 con detalle técnico completo], 2) [feature2 con detalle], 3) [feature3 con detalle]. Base de datos: [estructura de tablas]. Flujo principal del usuario: [pasos detallados]. Autenticación: [método]. Monetización integrada: [cómo cobrar técnicamente]. Deploy en: [plataforma]. Genera el proyecto completo con estructura de carpetas, todos los archivos necesarios, package.json o requirements.txt, y README de instalación paso a paso."
   }},
 
   "estrategia_monetizacion": {{
@@ -96,11 +96,11 @@ Responde ÚNICAMENTE con este JSON (sin texto antes ni después, sin markdown):
     "semana4":  "Cómo conseguir la primera venta de pago",
     "mes3":     "Estrategia para escalar a 50 clientes",
     "mes6":     "Estrategia de crecimiento sostenido",
-    "canales":  ["Canal con ROI más alto", "Canal secundario"],
+    "canales":  ["Canal con ROI más alto y cómo usarlo", "Canal secundario"],
     "precio_optimo_justificado": "Por qué este precio maximiza revenue sin frenar adopción"
   }},
 
-  "opinion_profesional": "Análisis honesto en 4-5 frases: qué hace especial esta idea en el mercado actual, cuál es el riesgo principal real, por qué AHORA es el momento óptimo (o no), y qué haría primero si tuvieras que ejecutarla mañana.",
+  "opinion_profesional": "Análisis honesto en 4-5 frases: qué hace especial esta idea ahora mismo, cuál es el riesgo principal real, por qué AHORA es el momento óptimo (o no), y qué haría primero si tuvieras que ejecutarla mañana.",
 
   "scores": {{
     "critico":        75,
@@ -119,7 +119,6 @@ Responde ÚNICAMENTE con este JSON (sin texto antes ni después, sin markdown):
 """
 
 def calcular_score_ponderado(scores: dict) -> float:
-    """Scoring ponderado — prioriza dolor real y velocidad a revenue"""
     pesos = {
         "critico":        0.25,
         "generador":      0.25,
@@ -180,7 +179,6 @@ def ejecutar_batch():
         print(f"❌ Error de importación: {e}")
         return False
 
-    # 1. Actualizar tendencias (cada llamada)
     print("🌐 Obteniendo tendencias...")
     try:
         actualizar_tendencias()
@@ -188,11 +186,9 @@ def ejecutar_batch():
     except:
         tendencias = []
 
-    # 2. Contexto KB
     print("📚 Cargando contexto KB...")
     contexto = get_contexto_para_prompt()
 
-    # 3. Generar idea
     print("🧠 Generando idea...")
     prompt = get_prompt_idea(contexto, tendencias)
     try:
@@ -201,7 +197,6 @@ def ejecutar_batch():
         print(f"❌ Error Groq: {e}")
         return False
 
-    # 4. Parsear JSON
     try:
         json_limpio = limpiar_json(respuesta)
         idea = json.loads(json_limpio)
@@ -213,18 +208,15 @@ def ejecutar_batch():
     nombre = idea.get("nombre", "SinNombre")
     print(f"💡 Idea: {nombre}")
 
-    # 5. Calcular score ponderado
     scores = idea.get("scores", {})
     scores["score_total"] = calcular_score_ponderado(scores)
     idea["scores"] = scores
     score = scores["score_total"]
     print(f"📊 Score: {score}/100 | C:{scores.get('critico',0)} V:{scores.get('viral',0)} G:{scores.get('generador',0)} M:{scores.get('monetizacion',0)} E:{scores.get('ejecutabilidad',0)} T:{scores.get('timing',0)}")
 
-    # 6. Guardar en KB local
     registrar_idea(idea)
     print(f"💾 Guardada en KB")
 
-    # 7. Guardar JSON local
     os.makedirs("data", exist_ok=True)
     try:
         ruta = "data/ideas.json"
@@ -238,7 +230,6 @@ def ejecutar_batch():
     except Exception as e:
         print(f"⚠️ Error guardando ideas.json: {e}")
 
-    # 8. Sincronizar Notion
     print("🔗 Sincronizando Notion...")
     try:
         url = sync_idea_to_notion(idea)
