@@ -145,7 +145,7 @@ def _construir_bloques(idea: dict) -> list:
         f"{datetime.now().strftime('%d/%m/%Y')}",
         emoji_rating
     ))
-    b.append(_b(f""{idea.get('tagline','')}"\n\n{idea.get('propuesta_valor_unica','')}"))
+    b.append(_b(f"\"{idea.get('tagline','')}\"\\n\\n{idea.get('propuesta_valor_unica','')}"))
 
     # Herramienta IA clave
     herramienta = idea.get("herramienta_ia_clave", "")
