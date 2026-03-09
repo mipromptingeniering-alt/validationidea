@@ -8,54 +8,71 @@ print(f"🚀 run_batch iniciado: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}"
 GROQ_API_KEY = os.environ.get("GROQ_API_KEY", "")
 
 PROMPT_SISTEMA = """Eres un analista de startups de clase mundial con 20 años de experiencia.
-Tu misión: generar ideas de startup con potencial REAL de monetización rápida.
-Basas tus análisis en datos reales del mercado, no en suposiciones optimistas.
-Respondes SIEMPRE con JSON válido y nada más."""
+Tu misión: generar ideas de startup ORIGINALES, disruptivas y monetizables RÁPIDO.
+Reglas absolutas:
+1. NUNCA repitas ni hagas variaciones de ideas ya generadas
+2. Prioriza ideas que se puedan construir GRATIS con herramientas IA actuales
+3. Busca nichos donde la IA actual crea una ventaja injusta y nueva
+4. Respondes SIEMPRE con JSON válido y nada más — sin texto, sin markdown"""
 
 def get_prompt_idea(contexto: dict, tendencias: list, tema: str = "") -> str:
-    tendencias_str = "\n".join(f"- {t}" for t in tendencias[:6]) if tendencias else "- No disponibles"
-    tema_str = f"\nTEMA ESPECÍFICO SOLICITADO: Genera una idea relacionada con '{tema}'\n" if tema else ""
+    tendencias_str = "\n".join(f"- {t}" for t in tendencias[:18]) if tendencias else "- No disponibles"
+    tema_str = f"\nTEMA ESPECÍFICO SOLICITADO: '{tema}'\n" if tema else ""
 
     mejora_str = ""
     if contexto.get("total_analizadas", 0) > 5:
         mejora_str = (
-            f"\nAPRENDIZAJE ACUMULADO — usa esto para generar una idea MEJOR que las anteriores:\n"
-            f"- Verticales que han funcionado bien: {contexto.get('mejores_verticales','N/A')}\n"
-            f"- Tags que correlacionan con éxito: {contexto.get('tags_exitosos','N/A')}\n"
-            f"- Score promedio actual: {contexto.get('score_promedio','N/A')} — supéralo\n"
-            f"- Tasa de éxito actual: {contexto.get('tasa_exito','N/A')} — mejórala\n"
+            f"\n🎯 APRENDIZAJE ACUMULADO — SUPERA ESTO:\n"
+            f"- Verticales con mejor score: {contexto.get('mejores_verticales','N/A')}\n"
+            f"- Tags exitosos: {contexto.get('tags_exitosos','N/A')}\n"
+            f"- Score promedio actual: {contexto.get('score_promedio','N/A')} — debes superarlo\n"
+            f"- Tasa de éxito >75pts: {contexto.get('tasa_exito','N/A')} — mejórala\n"
+            f"- IDEAS YA GENERADAS (prohibido repetir o hacer variaciones):\n"
+            f"{contexto.get('ideas_previas', 'ninguna aún')}\n"
+        )
+    else:
+        mejora_str = (
+            f"\nIDEAS YA GENERADAS (NO repetir ni hacer variaciones):\n"
+            f"{contexto.get('ideas_previas', 'ninguna aún')}\n"
         )
 
     return f"""
-Genera UNA idea de startup original y con potencial real de monetización.
-{tema_str}{mejora_str}
-IDEAS YA GENERADAS (NO repetir ni hacer variaciones de estas):
-{contexto.get('ideas_previas', 'ninguna aún')}
-
-TENDENCIAS ACTUALES DEL MERCADO TECH (úsalas como inspiración):
+Genera UNA idea de startup COMPLETAMENTE ORIGINAL, disruptiva y diferente a todo lo anterior.
+{tema_str}
+{mejora_str}
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+SEÑALES DEL MERCADO AHORA MISMO (úsalas como inspiración directa):
 {tendencias_str}
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-Responde ÚNICAMENTE con este JSON (sin texto antes ni después, sin markdown):
+CRITERIOS OBLIGATORIOS para la idea:
+✅ Construible GRATIS o casi gratis usando herramientas IA actuales (Cursor, Claude, n8n, Bolt.new, Ollama, etc.)
+✅ Monetizable en menos de 4 semanas desde el MVP
+✅ Nicho ESPECÍFICO — no ideas genéricas de "gestión" o "productividad"
+✅ Aprovecha alguna herramienta o tendencia IA de la lista de señales de mercado
+✅ Diferente en vertical, tipo y enfoque a todas las ideas ya generadas
+
+Responde ÚNICAMENTE con este JSON (sin texto antes ni después, sin markdown, sin bloques ```):
 {{
   "nombre": "NombreProducto",
   "tagline": "Propuesta de valor en menos de 10 palabras",
-  "problema": "Problema concreto y urgente que resuelve. Quién lo sufre y por qué importa ahora.",
-  "solucion": "Cómo lo resuelve de forma única y mejor que las alternativas.",
+  "problema": "Problema concreto y urgente. Quién lo sufre exactamente y por qué importa AHORA.",
+  "solucion": "Cómo lo resuelve de forma única usando IA/tecnología actual.",
   "cliente_objetivo": "Perfil exacto: empresa/persona, sector, tamaño, dolor específico.",
-  "propuesta_valor_unica": "Ventaja real y defendible frente a competidores.",
+  "propuesta_valor_unica": "Ventaja real y defendible. Por qué gana frente a alternativas existentes.",
 
   "mercado": {{
-    "TAM": "Mercado total estimado en $ con justificación",
+    "TAM": "Mercado total en $ con justificación real",
     "SAM": "Mercado alcanzable en $ con justificación",
     "SOM": "Objetivo realista año 1 en $",
-    "competidores": ["Competidor1 — su debilidad", "Competidor2 — su debilidad"],
-    "ventaja_competitiva": "Moat real y por qué es difícil de copiar"
+    "competidores": ["Competidor1 — su debilidad concreta", "Competidor2 — su debilidad concreta"],
+    "ventaja_competitiva": "Moat real, específico y difícil de copiar"
   }},
 
   "modelo_negocio": {{
-    "tipo": "SaaS / Marketplace / B2B / B2C / Freemium / etc.",
-    "pricing": "Precio concreto con justificación basada en valor",
-    "canales_adquisicion": ["Canal1 con táctica específica", "Canal2 con táctica específica"],
+    "tipo": "SaaS / Marketplace / B2B / B2C / Freemium / API / etc.",
+    "pricing": "Precio concreto con justificación basada en valor entregado",
+    "canales_adquisicion": ["Canal1 con táctica específica y gratuita", "Canal2"],
     "time_to_revenue": "X semanas desde lanzamiento MVP"
   }},
 
@@ -81,34 +98,36 @@ Responde ÚNICAMENTE con este JSON (sin texto antes ni después, sin markdown):
   }},
 
   "dafo": {{
-    "fortalezas":    ["F1 concreta", "F2 concreta", "F3 concreta"],
-    "debilidades":   ["D1 concreta", "D2 concreta"],
-    "oportunidades": ["O1 concreta", "O2 concreta", "O3 concreta"],
-    "amenazas":      ["A1 concreta", "A2 concreta"]
+    "fortalezas":    ["F1 concreta y específica", "F2", "F3"],
+    "debilidades":   ["D1 honesta y real", "D2"],
+    "oportunidades": ["O1 basada en tendencia real", "O2", "O3"],
+    "amenazas":      ["A1 realista", "A2"]
   }},
 
   "mvp": {{
-    "features_minimas": ["Feature 1 imprescindible", "Feature 2", "Feature 3"],
-    "stack_recomendado": "Tecnologías específicas y por qué para este caso",
-    "tiempo_semanas": 8,
+    "features_minimas": ["Feature 1 esencial — descripción técnica", "Feature 2", "Feature 3"],
+    "stack_recomendado": "Herramientas IA gratuitas específicas: cuáles y por qué (ej: Cursor+Claude para código, n8n para automatización, Supabase para DB)",
+    "tiempo_semanas": 4,
     "coste_estimado_eur": 0
   }},
 
   "prompt_mvp": {{
-    "ia_recomendada": "Claude 3.5 Sonnet en Cursor IDE — porque tiene mejor razonamiento de arquitectura y es el más eficaz construyendo productos completos desde un prompt",
-    "prompt_completo": "Construye [NOMBRE] desde cero. Es una aplicación [tipo] que [solución]. Stack: [tecnologías concretas]. Funcionalidades MVP: 1) [feature1 con detalle técnico completo], 2) [feature2 con detalle], 3) [feature3 con detalle]. Base de datos: [estructura de tablas exacta]. Flujo principal del usuario: [pasos detallados]. Autenticación: [método exacto]. Monetización integrada: [cómo cobrar con Stripe]. Deploy en: [plataforma]. Genera el proyecto completo con estructura de carpetas, todos los archivos, package.json o requirements.txt, y README de instalación paso a paso."
+    "ia_recomendada": "Claude 3.5 Sonnet en Cursor IDE — mejor razonamiento de arquitectura para construir productos completos",
+    "prompt_completo": "Construye [NOMBRE] desde cero. Es una aplicación [tipo] que [solución concreta]. Stack GRATUITO: [tecnologías específicas]. Funcionalidades MVP: 1) [feature1 con detalle técnico completo], 2) [feature2 con detalle], 3) [feature3 con detalle]. Base de datos: [estructura exacta de tablas/colecciones]. Flujo principal del usuario paso a paso: [pasos detallados]. Autenticación: [método exacto]. Monetización con Stripe: [implementación técnica]. Deploy gratuito en: [plataforma]. Genera proyecto completo: estructura de carpetas, todos los archivos, package.json o requirements.txt, variables de entorno necesarias, y README de instalación paso a paso."
   }},
 
   "estrategia_monetizacion": {{
-    "semana1":  "Acción concreta para conseguir primeros 5 usuarios",
-    "semana4":  "Cómo conseguir la primera venta de pago",
-    "mes3":     "Estrategia para escalar a 50 clientes",
-    "mes6":     "Estrategia de crecimiento sostenido",
-    "canales":  ["Canal con ROI más alto y cómo usarlo", "Canal secundario"],
-    "precio_optimo_justificado": "Por qué este precio maximiza revenue sin frenar adopción"
+    "semana1":  "Acción específica y gratuita para conseguir primeros 5 usuarios",
+    "semana4":  "Cómo conseguir la primera venta real de pago",
+    "mes3":     "Estrategia concreta para escalar a 50 clientes de pago",
+    "mes6":     "Estrategia de crecimiento sostenido con métricas objetivo",
+    "canales":  ["Canal gratuito con mayor ROI y cómo ejecutarlo exactamente", "Canal secundario gratuito"],
+    "precio_optimo_justificado": "Precio exacto y por qué maximiza revenue sin frenar adopción"
   }},
 
-  "opinion_profesional": "Análisis honesto en 4-5 frases: qué hace especial esta idea ahora, cuál es el riesgo principal, por qué AHORA es el momento, y qué harías primero si la ejecutaras mañana.",
+  "herramienta_ia_clave": "Qué herramienta IA específica de las tendencias actuales hace posible esta idea ahora y no hace 2 años",
+
+  "opinion_profesional": "Análisis honesto 4-5 frases: qué hace especial esta idea AHORA, riesgo principal real, por qué el timing es correcto, primera acción concreta si la ejecutaras mañana.",
 
   "scores": {{
     "critico":        75,
@@ -149,9 +168,9 @@ def llamar_groq(prompt: str, modelo: str = "llama-3.3-70b-versatile") -> str:
                     {"role": "user",   "content": prompt},
                 ],
                 max_tokens=4000,
-                temperature=0.8,
+                temperature=0.9,
             )
-            return resp.choices[0].message.content.strip()
+            return resp.choices.message.content.strip()
         except Exception as e:
             err = str(e).lower()
             if "rate" in err or "429" in err:
@@ -171,9 +190,9 @@ def limpiar_json(texto) -> str:
         texto = json.dumps(texto, ensure_ascii=False)
     texto = texto.strip()
     if "```json" in texto:
-        texto = texto.split("```json").split("```").strip()[1]
+        texto = texto.split("```json")[1].split("```")[0].strip()
     elif "```" in texto:
-        texto = texto.split("```").split("```")[0].strip()
+        texto = texto.split("```").split("```").strip()[1]
     inicio = texto.find("{")
     fin    = texto.rfind("}")
     if inicio != -1 and fin != -1:
