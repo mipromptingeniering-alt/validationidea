@@ -1,4 +1,4 @@
-﻿import os, sys, json, time
+﻿import os, sys, json, time, re
 from datetime import datetime
 
 os.environ["PYTHONUTF8"] = "1"
@@ -39,20 +39,20 @@ def get_prompt_idea(contexto: dict, tendencias: list, tema: str = "") -> str:
 
     preferencias = ""
     if pesos.get("verticales_preferidas"):
-        preferencias += f"\n✅ VERTICALES QUE FUNCIONAN (priorizarlas): {', '.join(pesos['verticales_preferidas'][:4])}"
+        preferencias += f"\n- VERTICALES QUE FUNCIONAN (priorizarlas): {', '.join(pesos['verticales_preferidas'][:4])}"
     if pesos.get("verticales_penalizadas"):
-        preferencias += f"\n❌ VERTICALES PENALIZADAS (evitar): {', '.join(pesos['verticales_penalizadas'][:4])}"
+        preferencias += f"\n- VERTICALES PENALIZADAS (evitar): {', '.join(pesos['verticales_penalizadas'][:4])}"
     if pesos.get("patrones_exitosos"):
-        preferencias += f"\n🏆 PATRONES EXITOSOS: {', '.join(pesos['patrones_exitosos'][:3])}"
+        preferencias += f"\n- PATRONES EXITOSOS: {', '.join(pesos['patrones_exitosos'][:3])}"
     if pesos.get("tags_exitosos"):
-        preferencias += f"\n🏷️ TAGS EXITOSOS: {', '.join(pesos['tags_exitosos'][:5])}"
+        preferencias += f"\n- TAGS EXITOSOS: {', '.join(pesos['tags_exitosos'][:5])}"
     if pesos.get("ia_tools_top"):
-        preferencias += f"\n🤖 IA TOOLS TOP: {', '.join(pesos['ia_tools_top'][:3])}"
+        preferencias += f"\n- IA TOOLS TOP: {', '.join(pesos['ia_tools_top'][:3])}"
 
     aprendizaje = ""
     if contexto.get("total_analizadas", 0) > 5:
         aprendizaje = (
-            f"\n📊 CONTEXTO DEL SISTEMA:\n"
+            f"\nCONTEXTO DEL SISTEMA:\n"
             f"- Score promedio: {contexto.get('score_promedio', 0)} — genera ideas con score >= {score_obj}\n"
             f"- Tasa de exito: {contexto.get('tasa_exito', 'N/A')}\n"
             f"- Verticales saturadas: {contexto.get('verticales_saturadas', 'ninguna')}\n"
@@ -75,7 +75,7 @@ CRITERIOS OBLIGATORIOS:
 - Nicho MUY especifico
 - Score objetivo >= {score_obj}/100
 
-Responde UNICAMENTE con JSON puro (sin nada antes ni despues):
+Responde UNICAMENTE con JSON puro (sin nada antes ni despues, sin markdown):
 {{
   "nombre": "NombreProducto",
   "tagline": "Que hace en menos de 10 palabras",
@@ -189,7 +189,7 @@ def llamar_groq(prompt: str) -> str:
     client = groq.Groq(api_key=GROQ_API_KEY, timeout=60)
     for intento in range(3):
         try:
-            resp = client.chat.completions.create(
+            resp    = client.chat.completions.create(
                 model=modelo,
                 messages=[
                     {"role": "system", "content": PROMPT_SISTEMA},
@@ -198,14 +198,10 @@ def llamar_groq(prompt: str) -> str:
                 max_tokens=4000,
                 temperature=temp,
             )
-            choice = resp.choices
-            if isinstance(choice, list):
-                choice = choice
-            if hasattr(choice, "message"):
-                return choice.message.content.strip()
-            elif isinstance(choice, dict):
-                return choice.get("message", {}).get("content", "").strip()
-            return str(choice)
+            content = resp.choices.message.content
+            if content:
+                return content.strip()
+            raise ValueError("Respuesta vacia de Groq")
         except Exception as e:
             err = str(e).lower()
             if "rate" in err or "429" in err:
@@ -223,6 +219,11 @@ def limpiar_json(texto) -> str:
     if not isinstance(texto, str):
         texto = json.dumps(texto, ensure_ascii=False)
     texto = texto.strip()
+    # Extraer si viene envuelto en objeto Choice
+    if "content='" in texto:
+        match = re.search(r"content='(.*?)'(?:,|\))", texto, re.DOTALL)
+        if match:
+            texto = match.group(1).replace("\\n", "\n").replace("\\'", "'")
     if "```json" in texto:
         texto = texto.split("```json")[1].split("```")[0].strip()
     elif "```" in texto:
@@ -242,12 +243,11 @@ def ejecutar_batch():
         print(f"❌ Import error: {e}")
         return False, "", ""
 
-    # Importaciones opcionales — no bloquean si fallan
-    validar_idea   = None
-    generar_landing = None
+    validar_idea_fn  = None
+    generar_landing_fn = None
     try:
-        from agents.market_validator  import validar_idea
-        from agents.landing_generator import generar_landing
+        from agents.market_validator  import validar_idea   as validar_idea_fn
+        from agents.landing_generator import generar_landing as generar_landing_fn
     except ImportError as e:
         print(f"⚠️ Modulos opcionales no disponibles: {e}")
 
@@ -279,13 +279,13 @@ def ejecutar_batch():
     if tema:
         print(f"🎯 Tema: '{tema}'")
 
-    # Generar con hasta 3 reintentos anti-duplicado
     idea = None
     for intento_gen in range(3):
         print(f"🧠 Generando idea (intento {intento_gen + 1}/3)...")
         prompt = get_prompt_idea(contexto, tendencias, tema)
         try:
             respuesta = llamar_groq(prompt)
+            print(f"✅ Respuesta recibida ({len(respuesta)} chars)")
         except Exception as e:
             print(f"❌ Error Groq: {e}")
             return False, "", ""
@@ -315,23 +315,20 @@ def ejecutar_batch():
     nombre = idea.get("nombre", "SinNombre")
     print(f"💡 Idea: {nombre}")
 
-    # Score IA
     scores = idea.get("scores", {})
     if not isinstance(scores, dict):
         scores = {}
     scores["score_total"] = calcular_score_ponderado(scores)
     idea["scores"] = scores
 
-    # Validacion real de mercado (opcional)
-    if validar_idea:
+    if validar_idea_fn:
         try:
-            evidencias = validar_idea(idea)
-            idea["validacion_mercado"] = evidencias
-            score_ajustado = evidencias.get("score_final_ajustado", scores["score_total"])
-            scores["score_total"]          = score_ajustado
-            scores["score_mercado_real"]   = evidencias.get("score_mercado_real", 0)
+            evidencias = validar_idea_fn(idea)
+            idea["validacion_mercado"]   = evidencias
+            scores["score_total"]        = evidencias.get("score_final_ajustado", scores["score_total"])
+            scores["score_mercado_real"] = evidencias.get("score_mercado_real", 0)
             idea["scores"] = scores
-            print(f"   ✅ Score ajustado con datos reales: {score_ajustado}")
+            print(f"   ✅ Score ajustado: {scores['score_total']}")
         except Exception as e:
             print(f"   ⚠️ Validacion real omitida: {e}")
 
@@ -343,14 +340,12 @@ def ejecutar_batch():
         f"E:{scores.get('ejecutabilidad',0)} T:{scores.get('timing',0)}"
     )
 
-    # Guardar en KB
     try:
         registrar_idea(idea)
         print("💾 KB actualizada")
     except Exception as e:
         print(f"⚠️ Error KB: {e}")
 
-    # Guardar en ideas.json
     os.makedirs("data", exist_ok=True)
     try:
         ruta  = "data/ideas.json"
@@ -365,11 +360,10 @@ def ejecutar_batch():
     except Exception as e:
         print(f"⚠️ ideas.json: {e}")
 
-    # Landing page (opcional)
     landing_url = ""
-    if generar_landing:
+    if generar_landing_fn:
         try:
-            landing = generar_landing(idea)
+            landing     = generar_landing_fn(idea)
             landing_url = landing.get("url_publica", "")
             if landing_url:
                 idea["landing_url"] = landing_url
@@ -377,7 +371,6 @@ def ejecutar_batch():
         except Exception as e:
             print(f"⚠️ Landing: {e}")
 
-    # Sync Notion
     print("🔗 Sincronizando Notion...")
     url = ""
     try:
