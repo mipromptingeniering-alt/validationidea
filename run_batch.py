@@ -154,8 +154,11 @@ def calcular_score_ponderado(scores: dict) -> float:
     }
     return round(sum(scores.get(k, 0) * v for k, v in pesos.items()), 1)
 
-def llamar_groq(prompt: str, modelo: str = "llama-3.3-70b-versatile") -> str:
+def llamar_groq(prompt: str) -> str:
     import groq
+    pesos  = _cargar_pesos()
+    temp   = pesos.get("temperatura_groq", 0.9)
+    modelo = "llama-3.3-70b-versatile"
     client = groq.Groq(api_key=GROQ_API_KEY, timeout=60)
     for intento in range(3):
         try:
@@ -166,14 +169,22 @@ def llamar_groq(prompt: str, modelo: str = "llama-3.3-70b-versatile") -> str:
                     {"role": "user",   "content": prompt},
                 ],
                 max_tokens=4000,
-                temperature=0.9,
+                temperature=temp,
             )
-            return resp.choices.message.content.strip()
+            # Protección: choices puede venir como lista o como objeto
+            choice = resp.choices[0]
+            if isinstance(choice, list):
+                choice = choice[0]
+            if hasattr(choice, "message"):
+                return choice.message.content.strip()
+            elif isinstance(choice, dict):
+                return choice.get("message", {}).get("content", "").strip()
+            return str(choice)
         except Exception as e:
             err = str(e).lower()
             if "rate" in err or "429" in err:
-                espera = (intento + 1) * 5
-                print(f"⏳ Rate limit (intento {intento+1}) → {espera}s...")
+                espera = (intento + 1) * 8
+                print(f"⏳ Rate limit (intento {intento+1}) → esperando {espera}s...")
                 time.sleep(espera)
                 if intento == 1:
                     modelo = "llama-3.1-8b-instant"
