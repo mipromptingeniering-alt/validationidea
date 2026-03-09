@@ -7,7 +7,14 @@ print(f"🚀 run_batch iniciado: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}"
 
 GROQ_API_KEY = os.environ.get("GROQ_API_KEY", "")
 
-# ── Pesos del sistema de aprendizaje
+PROMPT_SISTEMA = """Eres un analista de startups de clase mundial con 20 años de experiencia.
+Tu misión: generar ideas de startup ORIGINALES, disruptivas y monetizables RÁPIDO.
+Reglas absolutas:
+1. NUNCA repitas ni hagas variaciones de ideas ya generadas
+2. Prioriza ideas construibles GRATIS con herramientas IA actuales
+3. Busca nichos donde la IA crea ventaja injusta y nueva HOY
+4. Respondes SIEMPRE con JSON válido puro — sin texto, sin markdown, sin bloques ```"""
+
 def _cargar_pesos() -> dict:
     try:
         with open("config/prompt_weights.json", "r", encoding="utf-8") as f:
@@ -23,127 +30,133 @@ def _cargar_pesos() -> dict:
             "score_objetivo":         75,
             "patrones_exitosos":      [],
         }
- os.environ.get("GROQ_API_KEY", "")
-
-PROMPT_SISTEMA = """Eres un analista de startups de clase mundial con 20 años de experiencia.
-Tu misión: generar ideas de startup ORIGINALES, disruptivas y monetizables RÁPIDO.
-Reglas absolutas:
-1. NUNCA repitas ni hagas variaciones de ideas ya generadas — ni en nombre, ni en problema, ni en vertical+tipo
-2. Prioriza ideas construibles GRATIS con herramientas IA actuales
-3. Busca nichos donde la IA crea ventaja injusta y nueva HOY
-4. Respondes SIEMPRE con JSON válido puro — sin texto, sin markdown, sin bloques ```"""
 
 def get_prompt_idea(contexto: dict, tendencias: list, tema: str = "") -> str:
+    pesos          = _cargar_pesos()
     tendencias_str = "\n".join(f"- {t}" for t in tendencias[:20]) if tendencias else "- No disponibles"
     tema_str       = f"\n🎯 TEMA SOLICITADO: '{tema}'\n" if tema else ""
+    score_obj      = pesos.get("score_objetivo", 75)
+
+    preferencias = ""
+    if pesos.get("verticales_preferidas"):
+        preferencias += f"\n✅ VERTICALES QUE FUNCIONAN (priorizarlas): {', '.join(pesos['verticales_preferidas'][:4])}"
+    if pesos.get("verticales_penalizadas"):
+        preferencias += f"\n❌ VERTICALES PENALIZADAS (evitar): {', '.join(pesos['verticales_penalizadas'][:4])}"
+    if pesos.get("patrones_exitosos"):
+        preferencias += f"\n🏆 PATRONES EXITOSOS: {', '.join(pesos['patrones_exitosos'][:3])}"
+    if pesos.get("tags_exitosos"):
+        preferencias += f"\n🏷️ TAGS EXITOSOS: {', '.join(pesos['tags_exitosos'][:5])}"
+    if pesos.get("ia_tools_top"):
+        preferencias += f"\n🤖 IA TOOLS TOP: {', '.join(pesos['ia_tools_top'][:3])}"
 
     aprendizaje = ""
     if contexto.get("total_analizadas", 0) > 5:
         aprendizaje = (
-            f"\n📊 APRENDIZAJE DEL SISTEMA:\n"
-            f"- Verticales con mejor score: {contexto.get('mejores_verticales','N/A')}\n"
-            f"- Tags exitosos: {contexto.get('tags_exitosos','N/A')}\n"
-            f"- Herramientas IA que funcionan: {contexto.get('ia_tools_top','N/A')}\n"
-            f"- Score promedio actual: {contexto.get('score_promedio',0)} — SUPÉRALO\n"
-            f"- Tasa de éxito: {contexto.get('tasa_exito','N/A')} — MEJÓRALA\n"
-            f"- Verticales SATURADAS (evitar): {contexto.get('verticales_saturadas','ninguna')}\n"
-            f"- Verticales DESCARTADAS por feedback: {contexto.get('verticales_disliked','ninguna')}\n"
+            f"\n📊 CONTEXTO DEL SISTEMA:\n"
+            f"- Score promedio: {contexto.get('score_promedio', 0)} — genera ideas con score >= {score_obj}\n"
+            f"- Tasa de exito: {contexto.get('tasa_exito', 'N/A')}\n"
+            f"- Verticales saturadas: {contexto.get('verticales_saturadas', 'ninguna')}\n"
+            f"- Verticales descartadas: {contexto.get('verticales_disliked', 'ninguna')}\n"
+            f"{preferencias}\n"
         )
 
     return f"""
-Genera UNA idea de startup COMPLETAMENTE ORIGINAL y diferente.
+Genera UNA idea de startup COMPLETAMENTE ORIGINAL.
 {tema_str}{aprendizaje}
-━━━━━━━━━━━━━━━━━━━
-IDEAS YA GENERADAS — PROHIBIDO repetir nombre, problema similar, o vertical+tipo igual:
-{contexto.get('ideas_previas','ninguna aún')}
-━━━━━━━━━━━━━━━━━━━
-SEÑALES DE MERCADO AHORA (úsalas como inspiración directa):
+IDEAS YA GENERADAS — NO repetir nombre, problema similar, ni vertical+tipo igual:
+{contexto.get('ideas_previas', 'ninguna aun')}
+
+SEÑALES DE MERCADO EN TIEMPO REAL:
 {tendencias_str}
-━━━━━━━━━━━━━━━━━━━
 
 CRITERIOS OBLIGATORIOS:
-✅ Construible GRATIS con herramientas IA actuales (Cursor, Claude, n8n, Bolt.new, Supabase free, etc.)
-✅ Monetizable en menos de 4 semanas desde MVP
-✅ Nicho MUY específico — no ideas genéricas de "gestión" o "productividad"
-✅ Aprovecha alguna herramienta IA de las señales de mercado
-✅ Vertical, tipo y problema completamente diferente a las ideas ya generadas
+- Construible GRATIS con IA actual (Cursor, Claude, n8n, Supabase free, Vercel free)
+- Monetizable en menos de 4 semanas desde MVP
+- Nicho MUY especifico
+- Score objetivo >= {score_obj}/100
 
-Responde ÚNICAMENTE con JSON puro (sin nada antes ni después):
+Responde UNICAMENTE con JSON puro (sin nada antes ni despues):
 {{
   "nombre": "NombreProducto",
-  "tagline": "Qué hace en menos de 10 palabras",
-  "problema": "Problema concreto, urgente, con persona real que lo sufre ahora mismo.",
-  "solucion": "Solución específica usando IA actual. Por qué es mejor que lo existente.",
-  "cliente_objetivo": "Persona exacta: cargo, sector, empresa de X empleados, dolor concreto.",
-  "propuesta_valor_unica": "Ventaja defendible. Por qué gana vs alternativas. Qué no pueden copiar fácil.",
-
-  "herramienta_ia_clave": "Herramienta IA específica de las tendencias que hace posible esto HOY y no hace 2 años. Ej: 'n8n + GPT-4o permite automatizar X sin código por primera vez'",
+  "tagline": "Que hace en menos de 10 palabras",
+  "problema": "Problema concreto y urgente con persona real.",
+  "solucion": "Solucion especifica usando IA actual.",
+  "cliente_objetivo": "Persona exacta: cargo, sector, empresa, dolor concreto.",
+  "propuesta_valor_unica": "Ventaja defendible y dificil de copiar.",
+  "herramienta_ia_clave": "Herramienta IA especifica que hace esto posible HOY",
 
   "mercado": {{
-    "TAM": "Mercado total $ con fuente o lógica",
-    "SAM": "Mercado alcanzable $ con lógica",
-    "SOM": "Objetivo año 1 $ realista",
-    "competidores": ["Competidor1 — debilidad específica y explotable", "Competidor2 — debilidad"],
-    "ventaja_competitiva": "Moat concreto y difícil de copiar en <12 meses"
+    "TAM": "$ con logica",
+    "SAM": "$ con logica",
+    "SOM": "Objetivo año 1 $",
+    "competidores": ["Competidor1 — debilidad explotable", "Competidor2 — debilidad"],
+    "ventaja_competitiva": "Moat real y dificil de copiar"
   }},
 
   "modelo_negocio": {{
     "tipo": "SaaS/Marketplace/B2B/B2C/API/etc.",
-    "pricing": "Precio exacto con justificación basada en valor real entregado",
-    "canales_adquisicion": ["Canal 1 gratuito con táctica concreta paso a paso", "Canal 2 gratuito"],
+    "pricing": "Precio exacto con justificacion",
+    "canales_adquisicion": ["Canal 1 gratuito — tactica concreta", "Canal 2"],
     "time_to_revenue": "X semanas"
   }},
 
   "estudio_economico": {{
     "conservador": {{
-      "supuestos": "Crecimiento lento, competencia fuerte, 1 fundador solo",
+      "supuestos": "1 fundador, crecimiento lento",
       "mes6":  {{"mrr_eur": 800,   "usuarios": 15,  "cac_eur": 60,  "ltv_eur": 450}},
       "mes12": {{"mrr_eur": 3000,  "usuarios": 55,  "margen_pct": 62}},
-      "mes24": {{"mrr_eur": 8000,  "arr_eur": 96000,   "breakeven": "mes 16"}}
+      "mes24": {{"mrr_eur": 8000,  "arr_eur": 96000,  "breakeven": "mes 16"}}
     }},
     "realista": {{
-      "supuestos": "Crecimiento normal, product-market fit en mes 3",
+      "supuestos": "Product-market fit mes 3",
       "mes6":  {{"mrr_eur": 4000,  "usuarios": 70,  "cac_eur": 45,  "ltv_eur": 700}},
       "mes12": {{"mrr_eur": 14000, "usuarios": 200, "margen_pct": 67}},
-      "mes24": {{"mrr_eur": 40000, "arr_eur": 480000,  "breakeven": "mes 9"}}
+      "mes24": {{"mrr_eur": 40000, "arr_eur": 480000, "breakeven": "mes 9"}}
     }},
     "optimista": {{
-      "supuestos": "Viral en nicho, partnerships tempranos, equipo de 2",
+      "supuestos": "Viral en nicho, equipo 2",
       "mes6":  {{"mrr_eur": 12000, "usuarios": 180, "cac_eur": 30,  "ltv_eur": 1100}},
       "mes12": {{"mrr_eur": 50000, "usuarios": 600, "margen_pct": 72}},
-      "mes24": {{"mrr_eur": 150000,"arr_eur": 1800000, "breakeven": "mes 5"}}
+      "mes24": {{"mrr_eur": 150000,"arr_eur": 1800000,"breakeven": "mes 5"}}
     }}
   }},
 
   "dafo": {{
-    "fortalezas":    ["F1 específica y real", "F2", "F3"],
+    "fortalezas":    ["F1 especifica", "F2", "F3"],
     "debilidades":   ["D1 honesta", "D2"],
-    "oportunidades": ["O1 basada en tendencia real ahora", "O2", "O3"],
-    "amenazas":      ["A1 realista con nombre concreto", "A2"]
+    "oportunidades": ["O1 basada en tendencia real", "O2", "O3"],
+    "amenazas":      ["A1 con nombre concreto", "A2"]
   }},
 
   "mvp": {{
-    "features_minimas": ["Feature 1 — qué hace exactamente + por qué es la más importante", "Feature 2", "Feature 3"],
-    "stack_recomendado": "Herramientas GRATUITAS específicas: ej 'Cursor+Claude para código, Supabase free para DB, n8n self-hosted para automatización, Vercel free para deploy'",
+    "features_minimas": ["Feature 1 — detalle tecnico", "Feature 2", "Feature 3"],
+    "stack_recomendado": "Stack GRATUITO: Cursor+Claude, Supabase free, Vercel free, n8n self-hosted",
     "tiempo_semanas": 3,
     "coste_estimado_eur": 0
   }},
 
   "prompt_mvp": {{
     "ia_recomendada": "Claude 3.5 Sonnet en Cursor IDE",
-    "prompt_completo": "Construye [NOMBRE] desde cero. Es [tipo de app] que [solución en 1 frase]. Stack COMPLETAMENTE GRATUITO: [lista tecnologías con versiones free]. Base de datos: [estructura exacta de tablas con campos]. Funcionalidades MVP: 1) [feature con lógica técnica detallada], 2) [feature], 3) [feature]. Flujo del usuario paso a paso: [cada paso]. Autenticación: [método]. Stripe para cobros: [implementación técnica]. Deploy gratuito: [plataforma + pasos]. Genera proyecto completo: estructura de carpetas, todos los archivos con código real, variables de entorno (.env.example), README con instalación paso a paso."
+    "prompt_completo": "Construye [NOMBRE] desde cero. Stack gratuito: [tecnologias]. Base de datos: [tablas]. Funcionalidades: 1) [feature], 2) [feature], 3) [feature]. Flujo usuario: [pasos]. Auth: [metodo]. Stripe: [implementacion]. Deploy: [plataforma]. Genera carpetas, archivos completos, .env.example y README."
   }},
 
   "estrategia_monetizacion": {{
-    "semana1":  "Acción gratuita y concreta para 5 primeros usuarios — canal exacto y mensaje",
-    "semana4":  "Primera venta de pago — cómo cerrarla, a quién, con qué argumento",
-    "mes3":     "Escalar a 50 clientes — estrategia con métricas concretas",
-    "mes6":     "Crecimiento sostenido — palanca principal y objetivo MRR",
-    "canales":  ["Canal 1 gratuito: táctica completa paso a paso", "Canal 2 gratuito"],
-    "precio_optimo_justificado": "Precio exacto y por qué este número específico maximiza conversión y revenue"
+    "semana1":  "5 primeros usuarios — canal y mensaje exacto",
+    "semana4":  "Primera venta — como cerrarla",
+    "mes3":     "50 clientes — estrategia con metricas",
+    "mes6":     "Crecimiento sostenido — palanca principal",
+    "canales":  ["Canal gratuito 1 paso a paso", "Canal gratuito 2"],
+    "precio_optimo_justificado": "Precio y por que maximiza conversion"
   }},
 
-  "opinion_profesional": "5 frases honestas: (1) qué hace única esta idea HOY, (2) riesgo principal real con nombre, (3) por qué el timing es ahora y no en 6 meses, (4) qué haría el día 1 si la ejecutara, (5) en qué podría fallar aunque todo salga bien.",
+  "hipotesis_testeable": {{
+    "hipotesis_principal": "Si [cliente] usa [producto] entonces [resultado medible] en [tiempo]",
+    "metrica_exito":       "Numero concreto que confirma que funciona",
+    "experimento_48h":     "Test mas barato posible para validar en 48h sin codigo",
+    "senal_de_alarma":     "Que señal indicaria que no tiene mercado"
+  }},
+
+  "opinion_profesional": "5 frases: (1) que la hace unica HOY, (2) riesgo principal, (3) por que el timing es ahora, (4) dia 1 si la ejecutaras, (5) en que podria fallar.",
 
   "scores": {{
     "critico":        75,
@@ -163,12 +176,8 @@ Responde ÚNICAMENTE con JSON puro (sin nada antes ni después):
 
 def calcular_score_ponderado(scores: dict) -> float:
     pesos = {
-        "critico":        0.25,
-        "generador":      0.25,
-        "ejecutabilidad": 0.20,
-        "monetizacion":   0.15,
-        "timing":         0.10,
-        "viral":          0.05,
+        "critico": 0.25, "generador": 0.25, "ejecutabilidad": 0.20,
+        "monetizacion": 0.15, "timing": 0.10, "viral": 0.05
     }
     return round(sum(scores.get(k, 0) * v for k, v in pesos.items()), 1)
 
@@ -189,10 +198,9 @@ def llamar_groq(prompt: str) -> str:
                 max_tokens=4000,
                 temperature=temp,
             )
-            # Protección: choices puede venir como lista o como objeto
-            choice = resp.choices[0]
+            choice = resp.choices
             if isinstance(choice, list):
-                choice = choice[0]
+                choice = choice
             if hasattr(choice, "message"):
                 return choice.message.content.strip()
             elif isinstance(choice, dict):
@@ -202,7 +210,7 @@ def llamar_groq(prompt: str) -> str:
             err = str(e).lower()
             if "rate" in err or "429" in err:
                 espera = (intento + 1) * 8
-                print(f"⏳ Rate limit (intento {intento+1}) → esperando {espera}s...")
+                print(f"⏳ Rate limit (intento {intento+1}) → {espera}s...")
                 time.sleep(espera)
                 if intento == 1:
                     modelo = "llama-3.1-8b-instant"
@@ -231,121 +239,165 @@ def ejecutar_batch():
         from agents.trend_scout       import get_tendencias, actualizar_tendencias
         from agents.notion_sync_agent import sync_idea_to_notion
     except ImportError as e:
-        print(f"❌ Error de importación: {e}")
+        print(f"❌ Import error: {e}")
         return False, "", ""
+
+    # Importaciones opcionales — no bloquean si fallan
+    validar_idea   = None
+    generar_landing = None
+    try:
+        from agents.market_validator  import validar_idea
+        from agents.landing_generator import generar_landing
+    except ImportError as e:
+        print(f"⚠️ Modulos opcionales no disponibles: {e}")
 
     print("🌐 Obteniendo tendencias...")
     try:
         actualizar_tendencias()
         tendencias = get_tendencias()
-        print(f"✅ {len(tendencias)} tendencias cargadas")
+        print(f"✅ {len(tendencias)} tendencias")
     except Exception as e:
-        print(f"⚠️ Tendencias no disponibles: {e}")
+        print(f"⚠️ Tendencias: {e}")
         tendencias = []
 
     print("📚 Cargando contexto KB...")
     try:
         contexto = get_contexto_para_prompt()
         stats    = get_stats()
-        print(f"📊 KB: {stats.get('total_ideas',0)} ideas | Score promedio: {stats.get('score_promedio',0)}")
+        print(f"📊 KB: {stats.get('total_ideas', 0)} ideas | Promedio: {stats.get('score_promedio', 0)}")
     except Exception as e:
-        print(f"⚠️ Error KB: {e}")
-        contexto = {"ideas_previas":"","mejores_verticales":"","tags_exitosos":"",
-                    "ia_tools_top":"","total_analizadas":0,"tasa_exito":"N/A",
-                    "score_promedio":0,"verticales_saturadas":"","verticales_disliked":""}
+        print(f"⚠️ KB: {e}")
+        contexto = {
+            "ideas_previas": "", "mejores_verticales": "", "tags_exitosos": "",
+            "ia_tools_top": "", "total_analizadas": 0, "tasa_exito": "N/A",
+            "score_promedio": 0, "verticales_saturadas": "", "verticales_disliked": ""
+        }
 
-    tema = os.environ.get("IDEA_TOPIC", "")
+    pesos      = _cargar_pesos()
+    umbral_dup = pesos.get("umbral_duplicado", 0.42)
+    tema       = os.environ.get("IDEA_TOPIC", "")
     if tema:
-        print(f"🎯 Tema forzado: '{tema}'")
+        print(f"🎯 Tema: '{tema}'")
 
-    # Intentar hasta 3 veces si sale duplicado
+    # Generar con hasta 3 reintentos anti-duplicado
     idea = None
     for intento_gen in range(3):
-        print(f"🧠 Generando idea con IA (intento {intento_gen+1}/3)...")
+        print(f"🧠 Generando idea (intento {intento_gen + 1}/3)...")
         prompt = get_prompt_idea(contexto, tendencias, tema)
         try:
             respuesta = llamar_groq(prompt)
-            print(f"✅ Respuesta recibida ({len(respuesta)} chars)")
         except Exception as e:
             print(f"❌ Error Groq: {e}")
             return False, "", ""
 
         try:
-            json_limpio = limpiar_json(respuesta)
-            idea_candidata = json.loads(json_limpio)
-            print(f"✅ JSON parseado: {idea_candidata.get('nombre','?')}")
+            idea_candidata = json.loads(limpiar_json(respuesta))
         except Exception as e:
-            print(f"❌ JSON inválido: {e}")
-            print(f"Raw (500 chars): {str(respuesta)[:500]}")
+            print(f"❌ JSON invalido: {e} | Raw: {str(respuesta)[:500]}")
             return False, "", ""
 
-        # ── Verificar duplicado semántico
         try:
-            dup, dup_nombre = es_duplicado(idea_candidata)
+            dup, dup_nombre = es_duplicado(idea_candidata, umbral=umbral_dup)
             if dup:
-                print(f"⚠️ Duplicado detectado: '{idea_candidata.get('nombre','?')}' ≈ '{dup_nombre}' — regenerando...")
-                # Añadir al contexto para que no lo repita
-                contexto["ideas_previas"] += f"\n- {idea_candidata.get('nombre','?')} (DESCARTADA POR SIMILAR A {dup_nombre})"
+                print(f"⚠️ Duplicado: '{idea_candidata.get('nombre','?')}' similar a '{dup_nombre}' — regenerando...")
+                contexto["ideas_previas"] += f"\n- {idea_candidata.get('nombre','?')} (DESCARTADA, similar a {dup_nombre})"
                 continue
         except Exception as e:
-            print(f"⚠️ Error verificando duplicado: {e}")
+            print(f"⚠️ Anti-dup error: {e}")
 
         idea = idea_candidata
         break
 
-    if idea is None:
-        print("❌ No se pudo generar una idea única tras 3 intentos")
+    if not idea:
+        print("❌ No se pudo generar idea unica en 3 intentos")
         return False, "", ""
 
     nombre = idea.get("nombre", "SinNombre")
-    print(f"💡 Idea aprobada: {nombre}")
+    print(f"💡 Idea: {nombre}")
 
+    # Score IA
     scores = idea.get("scores", {})
     if not isinstance(scores, dict):
         scores = {}
     scores["score_total"] = calcular_score_ponderado(scores)
     idea["scores"] = scores
-    score = scores["score_total"]
-    print(f"📊 Score: {score}/100 | C:{scores.get('critico',0)} V:{scores.get('viral',0)} G:{scores.get('generador',0)} M:{scores.get('monetizacion',0)} E:{scores.get('ejecutabilidad',0)} T:{scores.get('timing',0)}")
 
+    # Validacion real de mercado (opcional)
+    if validar_idea:
+        try:
+            evidencias = validar_idea(idea)
+            idea["validacion_mercado"] = evidencias
+            score_ajustado = evidencias.get("score_final_ajustado", scores["score_total"])
+            scores["score_total"]          = score_ajustado
+            scores["score_mercado_real"]   = evidencias.get("score_mercado_real", 0)
+            idea["scores"] = scores
+            print(f"   ✅ Score ajustado con datos reales: {score_ajustado}")
+        except Exception as e:
+            print(f"   ⚠️ Validacion real omitida: {e}")
+
+    score = scores["score_total"]
+    print(
+        f"📊 Score FINAL: {score}/100 | "
+        f"C:{scores.get('critico',0)} V:{scores.get('viral',0)} "
+        f"G:{scores.get('generador',0)} M:{scores.get('monetizacion',0)} "
+        f"E:{scores.get('ejecutabilidad',0)} T:{scores.get('timing',0)}"
+    )
+
+    # Guardar en KB
     try:
         registrar_idea(idea)
-        print(f"💾 Guardada en KB")
+        print("💾 KB actualizada")
     except Exception as e:
         print(f"⚠️ Error KB: {e}")
 
+    # Guardar en ideas.json
     os.makedirs("data", exist_ok=True)
     try:
-        ruta = "data/ideas.json"
-        ideas_local = []
+        ruta  = "data/ideas.json"
+        todas = []
         if os.path.exists(ruta):
             with open(ruta, "r", encoding="utf-8") as f:
-                ideas_local = json.load(f)
-        ideas_local.append(idea)
+                todas = json.load(f)
+        todas.append(idea)
         with open(ruta, "w", encoding="utf-8") as f:
-            json.dump(ideas_local, f, ensure_ascii=False, indent=2)
-        print(f"💾 ideas.json: total {len(ideas_local)}")
+            json.dump(todas, f, ensure_ascii=False, indent=2)
+        print(f"💾 ideas.json: {len(todas)} total")
     except Exception as e:
-        print(f"⚠️ Error ideas.json: {e}")
+        print(f"⚠️ ideas.json: {e}")
 
-    print("🔗 Sincronizando con Notion...")
+    # Landing page (opcional)
+    landing_url = ""
+    if generar_landing:
+        try:
+            landing = generar_landing(idea)
+            landing_url = landing.get("url_publica", "")
+            if landing_url:
+                idea["landing_url"] = landing_url
+                print(f"🌐 Landing: {landing_url}")
+        except Exception as e:
+            print(f"⚠️ Landing: {e}")
+
+    # Sync Notion
+    print("🔗 Sincronizando Notion...")
+    url = ""
     try:
         url = sync_idea_to_notion(idea)
         if url:
             print(f"NOTION_URL:{url}")
-            print(f"SCORE_FINAL:{score}")
-            print(f"HERRAMIENTA_IA:{idea.get('herramienta_ia_clave','')[:80]}")
-            print(f"✅ Sincronizada: {nombre}")
-            return True, nombre, url
-        else:
-            print(f"SCORE_FINAL:{score}")
-            print(f"✅ Sincronizada: {nombre}")
-            return True, nombre, ""
     except Exception as e:
-        print(f"❌ Error Notion: {e}")
-        print(f"SCORE_FINAL:{score}")
-        print(f"✅ Sincronizada: {nombre}")
-        return True, nombre, ""
+        print(f"❌ Notion: {e}")
+
+    herramienta = idea.get("herramienta_ia_clave", "")
+    hipotesis   = ""
+    if isinstance(idea.get("hipotesis_testeable"), dict):
+        hipotesis = idea["hipotesis_testeable"].get("experimento_48h", "")
+
+    print(f"SCORE_FINAL:{score}")
+    print(f"HERRAMIENTA_IA:{herramienta[:80]}")
+    print(f"HIPOTESIS:{hipotesis[:120]}")
+    print(f"LANDING_URL:{landing_url}")
+    print(f"✅ Sincronizada: {nombre}")
+    return True, nombre, url
 
 if __name__ == "__main__":
     exito, nombre, url = ejecutar_batch()
