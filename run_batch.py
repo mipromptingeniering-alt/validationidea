@@ -7,6 +7,24 @@ print(f"🚀 run_batch iniciado: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}"
 
 GROQ_API_KEY = os.environ.get("GROQ_API_KEY", "")
 
+# ── Pesos del sistema de aprendizaje
+def _cargar_pesos() -> dict:
+    try:
+        with open("config/prompt_weights.json", "r", encoding="utf-8") as f:
+            return json.load(f)
+    except:
+        return {
+            "temperatura_groq":       0.9,
+            "umbral_duplicado":       0.42,
+            "verticales_preferidas":  [],
+            "verticales_penalizadas": [],
+            "tags_exitosos":          [],
+            "ia_tools_top":           [],
+            "score_objetivo":         75,
+            "patrones_exitosos":      [],
+        }
+ os.environ.get("GROQ_API_KEY", "")
+
 PROMPT_SISTEMA = """Eres un analista de startups de clase mundial con 20 años de experiencia.
 Tu misión: generar ideas de startup ORIGINALES, disruptivas y monetizables RÁPIDO.
 Reglas absolutas:
