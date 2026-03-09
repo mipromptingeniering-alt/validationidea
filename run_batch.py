@@ -8,10 +8,9 @@ print(f"🚀 run_batch iniciado: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}"
 GROQ_API_KEY = os.environ.get("GROQ_API_KEY", "")
 
 PROMPT_SISTEMA = (
-    "Eres un analista de startups de clase mundial. "
-    "Generas ideas originales y monetizables. "
-    "REGLA ABSOLUTA: tu respuesta es UNICAMENTE un objeto JSON valido. "
-    "Sin texto antes. Sin texto despues. Sin markdown. Sin explicaciones. Solo JSON."
+    "Eres un analista de startups experto. "
+    "REGLA ABSOLUTA: responde UNICAMENTE con un objeto JSON valido. "
+    "Sin texto antes. Sin texto despues. Sin markdown. Solo JSON puro."
 )
 
 def _cargar_pesos() -> dict:
@@ -32,19 +31,17 @@ def _cargar_pesos() -> dict:
 
 def get_prompt_idea(contexto: dict, tendencias: list, tema: str = "") -> str:
     pesos          = _cargar_pesos()
-    tendencias_str = "\n".join(f"- {t}" for t in tendencias[:15]) if tendencias else "- No disponibles"
-    tema_str       = f"TEMA REQUERIDO: '{tema}'. " if tema else ""
+    tendencias_str = "\n".join(f"- {t}" for t in tendencias[:12]) if tendencias else "- No disponibles"
+    tema_str       = f"TEMA: '{tema}'. " if tema else ""
     score_obj      = pesos.get("score_objetivo", 75)
-
-    ideas_previas = contexto.get("ideas_previas", "ninguna aun")
+    ideas_previas  = contexto.get("ideas_previas", "ninguna aun")[:1500]
 
     return (
-        f"{tema_str}Genera UNA idea de startup original para el año 2026. "
-        f"Score minimo requerido: {score_obj}/100. "
-        f"Construible gratis con IA. Monetizable en menos de 4 semanas.\n\n"
-        f"IDEAS YA EXISTENTES (NO repetir):\n{ideas_previas}\n\n"
-        f"TENDENCIAS ACTUALES:\n{tendencias_str}\n\n"
-        f"Devuelve SOLO este JSON con los campos reales (sin comentarios, sin markdown):\n"
+        f"{tema_str}Genera UNA idea de startup original 2026. "
+        f"Score minimo {score_obj}/100. Gratis con IA. Monetizable en 4 semanas.\n\n"
+        f"NO repetir estas ideas:\n{ideas_previas}\n\n"
+        f"TENDENCIAS:\n{tendencias_str}\n\n"
+        f"Devuelve SOLO este JSON (sin comentarios ni markdown):\n"
         '{"nombre":"X","tagline":"X","problema":"X","solucion":"X",'
         '"cliente_objetivo":"X","propuesta_valor_unica":"X","herramienta_ia_clave":"X",'
         '"mercado":{"TAM":"X","SAM":"X","SOM":"X","competidores":["X"],"ventaja_competitiva":"X"},'
@@ -77,8 +74,12 @@ def llamar_groq(prompt: str) -> str:
     modelos = ["llama-3.3-70b-versatile", "llama3-70b-8192", "mixtral-8x7b-32768"]
     client  = groq.Groq(api_key=GROQ_API_KEY, timeout=90)
 
+    if len(prompt) > 7000:
+        prompt = prompt[:7000]
+        print("⚠️ Prompt truncado a 7000 chars")
+
     for modelo in modelos:
-        print(f"   Probando modelo: {modelo}")
+        print(f"   Modelo: {modelo}")
         for intento in range(3):
             try:
                 resp = client.chat.completions.create(
@@ -87,30 +88,31 @@ def llamar_groq(prompt: str) -> str:
                         {"role": "system", "content": PROMPT_SISTEMA},
                         {"role": "user",   "content": prompt},
                     ],
-                    max_tokens=4000,
+                    max_tokens=3000,
                     temperature=temp,
                 )
-                # Verificar que choices no este vacio
-                if not resp.choices:
-                    print(f"   ⚠️ {modelo}: choices vacio")
+                n_choices = len(resp.choices) if resp.choices else 0
+                print(f"   choices: {n_choices}")
+                if n_choices == 0:
+                    print(f"   ⚠️ choices vacio en {modelo}")
                     break
                 content = resp.choices[0].message.content
                 if content and content.strip():
-                    print(f"✅ Respuesta de {modelo} ({len(content)} chars)")
+                    print(f"✅ OK {modelo} ({len(content)} chars)")
                     return content.strip()
-                print(f"   ⚠️ {modelo}: content vacio")
+                print(f"   ⚠️ content vacio en {modelo}")
                 break
             except Exception as e:
                 err = str(e).lower()
                 if "rate" in err or "429" in err or "limit" in err:
                     espera = (intento + 1) * 20
-                    print(f"   ⏳ Rate limit {modelo} intento {intento+1} → {espera}s...")
+                    print(f"   ⏳ Rate limit → {espera}s...")
                     time.sleep(espera)
-                elif "model" in err and ("not found" in err or "decommission" in err or "exist" in err):
-                    print(f"   ⚠️ Modelo {modelo} no disponible — probando siguiente")
+                elif any(x in err for x in ["not found", "decommission", "does not exist", "invalid model"]):
+                    print(f"   ⚠️ {modelo} no disponible")
                     break
                 else:
-                    print(f"   ❌ {modelo} error: {e}")
+                    print(f"   ❌ {modelo}: {e}")
                     break
 
     raise RuntimeError("Ningun modelo Groq disponible")
@@ -194,7 +196,7 @@ def ejecutar_batch():
             dup, dup_nombre = es_duplicado(idea_candidata, umbral=umbral_dup)
             if dup:
                 print(f"⚠️ Duplicado de '{dup_nombre}' — regenerando...")
-                contexto["ideas_previas"] += f"\n- {idea_candidata.get('nombre','?')} (ya existe, similar a {dup_nombre})"
+                contexto["ideas_previas"] += f"\n- {idea_candidata.get('nombre','?')} (similar a {dup_nombre})"
                 continue
         except Exception as e:
             print(f"⚠️ Anti-dup: {e}")
