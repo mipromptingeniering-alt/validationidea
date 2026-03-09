@@ -2,32 +2,60 @@ import os
 import json
 import time
 import requests
-from datetime import datetime
+from datetime import datetime, timedelta
 
 RUTA_TENDENCIAS = "data/tendencias.json"
 os.makedirs("data", exist_ok=True)
 
-# ════════════════════════════════════════════════════════
-#  FUENTES DE INSPIRACIÓN
-# ════════════════════════════════════════════════════════
+# TTL por fuente (horas)
+TTL = {
+    "hackernews":  2,
+    "github":      6,
+    "reddit":      4,
+    "producthunt": 12,
+    "curada":      24,
+}
 
+def _cache_valida(datos: dict, fuente: str) -> bool:
+    ts = datos.get("timestamps", {}).get(fuente)
+    if not ts:
+        return False
+    limite = datetime.fromisoformat(ts) + timedelta(hours=TTL.get(fuente, 6))
+    return datetime.now() < limite
+
+def _cargar_cache() -> dict:
+    if os.path.exists(RUTA_TENDENCIAS):
+        try:
+            with open(RUTA_TENDENCIAS, "r", encoding="utf-8") as f:
+                return json.load(f)
+        except:
+            pass
+    return {"tendencias_por_fuente": {}, "timestamps": {}, "tendencias": []}
+
+def _guardar_cache(datos: dict):
+    try:
+        with open(RUTA_TENDENCIAS, "w", encoding="utf-8") as f:
+            json.dump(datos, f, ensure_ascii=False, indent=2)
+    except Exception as e:
+        print(f"⚠️ Error guardando tendencias: {e}")
+
+# ════════════════════════════════════════════════════════
+#  SCRAPERS
+# ════════════════════════════════════════════════════════
 def _scrape_hackernews() -> list:
-    """Top stories de HackerNews — lo que leen los devs ahora."""
     try:
         ids = requests.get(
-            "https://hacker-news.firebaseio.com/v0/topstories.json",
-            timeout=8
+            "https://hacker-news.firebaseio.com/v0/topstories.json", timeout=8
         ).json()[:20]
         titulos = []
         for item_id in ids[:12]:
             try:
                 item = requests.get(
-                    f"https://hacker-news.firebaseio.com/v0/item/{item_id}.json",
-                    timeout=5
+                    f"https://hacker-news.firebaseio.com/v0/item/{item_id}.json", timeout=5
                 ).json()
-                titulo = item.get("title", "")
-                if titulo and len(titulo) > 10:
-                    titulos.append(f"[HN] {titulo}")
+                t = item.get("title", "")
+                if t and len(t) > 10:
+                    titulos.append(f"[HN] {t}")
             except:
                 pass
             time.sleep(0.1)
@@ -37,116 +65,57 @@ def _scrape_hackernews() -> list:
         print(f"  ⚠️ HackerNews: {e}")
         return []
 
-def _scrape_github_trending() -> list:
-    """Repositorios trending en GitHub — lo que la gente construye."""
+def _scrape_github() -> list:
     try:
         resp = requests.get(
             "https://api.github.com/search/repositories",
-            params={
-                "q": "created:>2026-02-01",
-                "sort": "stars",
-                "order": "desc",
-                "per_page": 15
-            },
+            params={"q": "created:>2026-01-01", "sort": "stars", "order": "desc", "per_page": 15},
             headers={"Accept": "application/vnd.github.v3+json"},
             timeout=10
         )
         if resp.status_code != 200:
             raise Exception(f"HTTP {resp.status_code}")
-        repos = resp.json().get("items", [])
-        resultados = []
-        for r in repos:
-            nombre      = r.get("full_name", "")
-            descripcion = r.get("description", "") or ""
-            estrellas   = r.get("stargazers_count", 0)
-            temas       = r.get("topics", [])
-            if descripcion and len(descripcion) > 10:
-                resultados.append(
-                    f"[GitHub⭐{estrellas}] {nombre}: {descripcion[:120]}"
-                    + (f" [{', '.join(temas[:3])}]" if temas else "")
+        resultado = []
+        for r in resp.json().get("items", []):
+            desc     = r.get("description", "") or ""
+            estrellas = r.get("stargazers_count", 0)
+            temas    = r.get("topics", [])
+            if desc and len(desc) > 10:
+                resultado.append(
+                    f"[GitHub⭐{estrellas}] {r.get('full_name','')}: {desc[:120]}"
+                    + (f" [{','.join(temas[:3])}]" if temas else "")
                 )
-        print(f"  ✅ GitHub Trending: {len(resultados)} repos")
-        return resultados[:10]
+        print(f"  ✅ GitHub: {len(resultado)} repos")
+        return resultado[:10]
     except Exception as e:
-        print(f"  ⚠️ GitHub Trending: {e}")
+        print(f"  ⚠️ GitHub: {e}")
         return []
 
-def _scrape_reddit_sideproject() -> list:
-    """Posts recientes de r/SideProject y r/entrepreneur — ideas reales que la gente construye."""
+def _scrape_reddit() -> list:
     resultados = []
-    subreddits = ["SideProject", "entrepreneur", "indiehackers"]
-    headers    = {"User-Agent": "ValidationIdea/2.0 (trend scout)"}
-    for sub in subreddits:
+    headers    = {"User-Agent": "ValidationIdea/2.0"}
+    for sub in ["SideProject", "entrepreneur", "artificial"]:
         try:
             resp = requests.get(
                 f"https://www.reddit.com/r/{sub}/hot.json?limit=10",
-                headers=headers,
-                timeout=8
+                headers=headers, timeout=8
             )
             if resp.status_code != 200:
                 continue
-            posts = resp.json().get("data", {}).get("children", [])
-            for post in posts:
-                data   = post.get("data", {})
-                titulo = data.get("title", "")
-                score  = data.get("score", 0)
-                if titulo and len(titulo) > 15 and score > 10:
-                    resultados.append(f"[r/{sub} 🔥{score}] {titulo[:140]}")
-            print(f"  ✅ r/{sub}: {len(posts)} posts")
+            for post in resp.json().get("data", {}).get("children", []):
+                d = post.get("data", {})
+                t = d.get("title", "")
+                s = d.get("score", 0)
+                if t and len(t) > 15 and s > 10:
+                    resultados.append(f"[r/{sub} 🔥{s}] {t[:140]}")
             time.sleep(0.5)
         except Exception as e:
             print(f"  ⚠️ r/{sub}: {e}")
+    print(f"  ✅ Reddit: {len(resultados)} posts")
     return resultados[:12]
 
 def _scrape_producthunt() -> list:
-    """Productos trending en ProductHunt — herramientas de IA que la gente lanza."""
-    try:
-        # Usamos la API pública sin autenticación (posts recientes)
-        resp = requests.get(
-            "https://www.producthunt.com/frontend/graphql",
-            json={
-                "query": """
-                {
-                  posts(order: RANKING, first: 20) {
-                    edges {
-                      node {
-                        name
-                        tagline
-                        votesCount
-                        topics { edges { node { name } } }
-                      }
-                    }
-                  }
-                }
-                """
-            },
-            headers={
-                "Content-Type": "application/json",
-                "User-Agent": "Mozilla/5.0"
-            },
-            timeout=10
-        )
-        if resp.status_code == 200:
-            edges = resp.json().get("data", {}).get("posts", {}).get("edges", [])
-            resultados = []
-            for e in edges:
-                node    = e.get("node", {})
-                nombre  = node.get("name", "")
-                tagline = node.get("tagline", "")
-                votos   = node.get("votesCount", 0)
-                topics  = [t["node"]["name"] for t in node.get("topics", {}).get("edges", [])]
-                if nombre and tagline:
-                    resultados.append(
-                        f"[PH 👍{votos}] {nombre}: {tagline[:100]}"
-                        + (f" [{', '.join(topics[:2])}]" if topics else "")
-                    )
-            if resultados:
-                print(f"  ✅ ProductHunt GraphQL: {len(resultados)} productos")
-                return resultados[:10]
-    except Exception as e:
-        print(f"  ⚠️ ProductHunt GraphQL: {e}")
-
-    # Fallback: RSS de ProductHunt
+    # Intento via RSS
     try:
         resp = requests.get(
             "https://www.producthunt.com/feed",
@@ -156,97 +125,109 @@ def _scrape_producthunt() -> list:
         if resp.status_code == 200:
             import re
             titulos = re.findall(r"<title><!\[CDATA\[(.*?)\]\]></title>", resp.text)
-            resultados = [f"[PH] {t[:140]}" for t in titulos[1:12] if len(t) > 10]
-            print(f"  ✅ ProductHunt RSS: {len(resultados)} productos")
-            return resultados
+            resultado = [f"[PH] {t[:140]}" for t in titulos[1:12] if len(t) > 10]
+            print(f"  ✅ ProductHunt RSS: {len(resultado)} productos")
+            return resultado
     except Exception as e:
-        print(f"  ⚠️ ProductHunt RSS: {e}")
+        print(f"  ⚠️ ProductHunt: {e}")
     return []
 
-def _scrape_ai_tools_curados() -> list:
-    """Lista curada de herramientas y tendencias IA de marzo 2026 — siempre fresca."""
-    # Fuentes verificadas de búsqueda web — actualiza esta lista mensualmente
+def _curada_ia() -> list:
+    """Lista curada de herramientas y tendencias IA — actualizada a marzo 2026."""
     return [
-        "[AI Trend] Agentes IA autónomos que ejecutan tareas largas sin intervención humana (LangGraph, CrewAI)",
-        "[AI Trend] Generación de vídeo a partir de texto: Sora, Runway Gen-3, Kling AI — mercado explotando",
-        "[AI Trend] Voice cloning + text-to-speech hiperrealista: ElevenLabs, Cartesia — coste cayendo a 0",
-        "[AI Trend] Bolt.new y Lovable: apps completas generadas desde un prompt — no-code IA masivo",
-        "[AI Trend] Modelos locales en laptop (Ollama, LM Studio) — privacidad sin coste de API",
-        "[AI Trend] n8n + IA: automatización de workflows empresariales sin código — explosión en PYMES",
-        "[AI Trend] NotebookLM: análisis de documentos y podcasts IA — educación y consultoría",
-        "[AI Trend] Dify: plataforma open source para crear apps con RAG y agentes IA",
-        "[AI Trend] Cursor + Claude: desarrollo de software por IA — devs 3x más rápidos",
-        "[AI Trend] MCP (Model Context Protocol) de Anthropic — integración universal de herramientas con IA",
-        "[AI Trend] Accent Conversion de Krisp — eliminación de acento en llamadas de trabajo",
-        "[AI Trend] Browser agents (Notte, Browserbase) — automatización web a escala con IA",
+        "[AI Trend] Agentes IA autónomos (LangGraph, CrewAI) ejecutan tareas largas sin intervención",
+        "[AI Trend] Vídeo generativo: Sora, Runway Gen-3, Kling AI — coste bajando agresivamente",
+        "[AI Trend] Voice cloning hiperrealista: ElevenLabs, Cartesia — coste casi 0",
+        "[AI Trend] Bolt.new / Lovable: apps completas desde un prompt — no-code IA masivo",
+        "[AI Trend] Modelos locales (Ollama, LM Studio) en laptop — privacidad sin API",
+        "[AI Trend] n8n + IA: automatización de workflows empresariales sin código",
+        "[AI Trend] NotebookLM: análisis de documentos y podcasts con IA",
+        "[AI Trend] Dify: plataforma open-source para apps RAG + agentes IA",
+        "[AI Trend] Cursor + Claude: devs 3x más rápidos construyendo productos",
+        "[AI Trend] MCP (Model Context Protocol) Anthropic — integración universal de herramientas",
+        "[AI Trend] Browser agents (Notte, Browserbase) — automatización web a escala",
         "[AI Trend] Vibe coding: no-code + IA para construir SaaS por no programadores",
-        "[AI Trend] AI wrappers rentables: interfaces simples sobre APIs de IA con nicho muy específico",
-        "[AI Trend] TestSprite: testing automático de apps generado por IA — QA sin equipo",
-        "[GitHub] microsoft/markitdown — convierte cualquier archivo a Markdown con IA (50k⭐)",
-        "[GitHub] browser-use — controla el navegador con IA de forma autónoma (35k⭐)",
-        "[GitHub] OpenHands — agente IA que escribe y ejecuta código solo (28k⭐)",
-        "[GitHub] Qwen3.5 Small — LLM potente que corre en local en cualquier máquina",
-        "[PH Viral] Gojiberry AI — targeting de compradores en modo compra con IA",
-        "[PH Viral] Aident AI — automatizaciones en lenguaje natural sin workflows",
-        "[PH Viral] Voicr — clonación de voz profesional para creadores de contenido",
+        "[AI Trend] AI wrappers rentables: interfaces simples sobre APIs con nicho muy específico",
+        "[AI Trend] TestSprite: QA automático generado por IA sin equipo de testing",
+        "[AI Trend] Accent Conversion (Krisp) — eliminación de acento en llamadas",
+        "[AI Trend] OpenHands: agente que escribe y ejecuta código solo (28k⭐ GitHub)",
+        "[AI Trend] microsoft/markitdown: convierte cualquier archivo a Markdown (50k⭐)",
+        "[AI Trend] browser-use: controla el navegador con IA (35k⭐)",
+        "[AI Trend] Qwen3.5 Small — LLM potente que corre en local en cualquier máquina",
+        "[Mercado] Empresas PYME buscan reemplazar SaaS caro con alternativas IA propias",
+        "[Mercado] Creadores de contenido necesitan herramientas de personalización masiva",
+        "[Mercado] Consultores y freelancers buscan automatizar reportes y propuestas",
+        "[Mercado] E-commerce pequeño necesita IA de atención al cliente sin coste de Intercom",
     ]
 
 # ════════════════════════════════════════════════════════
-#  FUNCIÓN PRINCIPAL
+#  FUNCIÓN PRINCIPAL CON TTL
 # ════════════════════════════════════════════════════════
 def actualizar_tendencias() -> list:
-    """Recopila tendencias de todas las fuentes y las guarda."""
-    print("🌐 Actualizando tendencias desde múltiples fuentes...")
-    todas = []
+    datos = _cargar_cache()
+    por_fuente = datos.get("tendencias_por_fuente", {})
+    timestamps = datos.get("timestamps", {})
+    ahora      = datetime.now().isoformat()
 
-    # 1. HackerNews
-    todas += _scrape_hackernews()
+    # Solo actualizar fuentes cuyo TTL ha expirado
+    if not _cache_valida(datos, "hackernews"):
+        por_fuente["hackernews"] = _scrape_hackernews()
+        timestamps["hackernews"] = ahora
+        print(f"  🔄 HackerNews actualizado")
+    else:
+        print(f"  ⏭️ HackerNews en cache ({len(por_fuente.get('hackernews',[]))} items)")
 
-    # 2. GitHub Trending
-    todas += _scrape_github_trending()
+    if not _cache_valida(datos, "github"):
+        por_fuente["github"] = _scrape_github()
+        timestamps["github"] = ahora
+        print(f"  🔄 GitHub actualizado")
+    else:
+        print(f"  ⏭️ GitHub en cache")
 
-    # 3. Reddit
-    todas += _scrape_reddit_sideproject()
+    if not _cache_valida(datos, "reddit"):
+        por_fuente["reddit"] = _scrape_reddit()
+        timestamps["reddit"] = ahora
+        print(f"  🔄 Reddit actualizado")
+    else:
+        print(f"  ⏭️ Reddit en cache")
 
-    # 4. ProductHunt
-    todas += _scrape_producthunt()
+    if not _cache_valida(datos, "producthunt"):
+        por_fuente["producthunt"] = _scrape_producthunt()
+        timestamps["producthunt"] = ahora
+        print(f"  🔄 ProductHunt actualizado")
+    else:
+        print(f"  ⏭️ ProductHunt en cache")
 
-    # 5. Lista curada IA 2026
-    todas += _scrape_ai_tools_curados()
+    if not _cache_valida(datos, "curada"):
+        por_fuente["curada"] = _curada_ia()
+        timestamps["curada"] = ahora
+        print(f"  🔄 Lista curada IA actualizada")
+    else:
+        print(f"  ⏭️ Lista curada en cache")
 
-    # Eliminar duplicados manteniendo orden
-    vistas    = set()
-    unicas    = []
-    for t in todas:
-        clave = t[:60].lower()
-        if clave not in vistas:
-            vistas.add(clave)
-            unicas.append(t)
+    # Unir todas sin duplicados
+    todas  = []
+    vistas = set()
+    for fuente in ["hackernews", "github", "reddit", "producthunt", "curada"]:
+        for t in por_fuente.get(fuente, []):
+            clave = t[:60].lower()
+            if clave not in vistas:
+                vistas.add(clave)
+                todas.append(t)
 
-    print(f"✅ {len(unicas)} tendencias únicas recopiladas")
-
-    try:
-        with open(RUTA_TENDENCIAS, "w", encoding="utf-8") as f:
-            json.dump({
-                "timestamp":   datetime.now().isoformat(),
-                "tendencias":  unicas,
-                "fuentes":     ["HackerNews", "GitHub", "Reddit", "ProductHunt", "CuradaIA2026"],
-                "total":       len(unicas)
-            }, f, ensure_ascii=False, indent=2)
-    except Exception as e:
-        print(f"⚠️ Error guardando tendencias: {e}")
-
-    return unicas
+    datos = {
+        "tendencias_por_fuente": por_fuente,
+        "timestamps":            timestamps,
+        "tendencias":            todas,
+        "total":                 len(todas),
+        "ultima_actualizacion":  ahora,
+    }
+    _guardar_cache(datos)
+    print(f"✅ {len(todas)} tendencias disponibles (con TTL cache)")
+    return todas
 
 def get_tendencias() -> list:
-    """Devuelve las tendencias guardadas, o las actualiza si no existen."""
-    try:
-        if os.path.exists(RUTA_TENDENCIAS):
-            with open(RUTA_TENDENCIAS, "r", encoding="utf-8") as f:
-                datos = json.load(f)
-            return datos.get("tendencias", [])
-    except Exception as e:
-        print(f"⚠️ Error leyendo tendencias: {e}")
-    return actualizar_tendencias()
+    datos = _cargar_cache()
+    return datos.get("tendencias", []) or actualizar_tendencias()
 
 # aqui finaliza el codigo de agents/trend_scout.py
