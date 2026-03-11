@@ -1,11 +1,12 @@
-﻿import os, sys, json, time, re
+﻿import os, sys, json, time, re, urllib.request, urllib.error
 from datetime import datetime
 
 os.environ["PYTHONUTF8"] = "1"
 print("=" * 50)
-print(f"🚀 run_batch iniciado: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
+print(f"🚀 run_batch v8 iniciado: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
 
-GROQ_API_KEY = os.environ.get("GROQ_API_KEY", "")
+GROQ_API_KEY  = os.environ.get("GROQ_API_KEY", "")
+GROQ_API_URL  = "https://api.groq.com/openai/v1/chat/completions"
 
 MODELOS_GROQ = [
     "llama-3.3-70b-versatile",
@@ -33,39 +34,113 @@ PLACEHOLDERS_PROHIBIDOS = [
     "f1 detalle tecnico", "tag1", "tag2", "rival1", "rival2",
 ]
 
-# ── Conversion segura a string ───────────────────────────────────────────────
+# ── HTTP directo a Groq — sin SDK ────────────────────────────────────────────
 
-def _a_str(valor):
-    """Convierte CUALQUIER tipo a string. Nunca falla."""
-    if valor is None:
-        return ""
-    if isinstance(valor, str):
-        return valor
-    if isinstance(valor, (list, tuple)):
-        partes = []
-        for item in valor:
-            if isinstance(item, dict):
-                partes.append(str(item.get("text", item.get("content", str(item)))))
-            elif hasattr(item, "text"):
-                partes.append(str(item.text))
-            elif hasattr(item, "content"):
-                partes.append(str(item.content))
-            else:
-                partes.append(str(item))
-        return "".join(partes)
-    if isinstance(valor, dict):
-        return str(valor.get("text", valor.get("content", str(valor))))
-    if hasattr(valor, "text"):
-        return str(valor.text)
-    if hasattr(valor, "content"):
-        return str(valor.content)
-    return str(valor)
+def _groq_http(modelo, messages, max_tokens=3000, temperature=0.85, timeout=90):
+    """
+    Llama a Groq via HTTP REST directamente.
+    Devuelve el texto de la respuesta o None si falla.
+    Sin dependencia del SDK — inmune a cambios de version.
+    """
+    payload = json.dumps({
+        "model":       modelo,
+        "messages":    messages,
+        "max_tokens":  max_tokens,
+        "temperature": temperature,
+    }).encode("utf-8")
+
+    req = urllib.request.Request(
+        GROQ_API_URL,
+        data    = payload,
+        headers = {
+            "Authorization": f"Bearer {GROQ_API_KEY}",
+            "Content-Type":  "application/json",
+        },
+        method = "POST",
+    )
+
+    try:
+        with urllib.request.urlopen(req, timeout=timeout) as r:
+            data = json.loads(r.read().decode("utf-8"))
+            # Estructura estandar OpenAI/Groq REST:
+            # data["choices"][0]["message"]["content"]
+            choices = data.get("choices", [])
+            if not choices:
+                print(f"   ⚠️ {modelo}: respuesta sin choices")
+                return None
+            content = choices[0].get("message", {}).get("content", "")
+            if not isinstance(content, str):
+                content = str(content) if content else ""
+            content = content.strip()
+            return content if content else None
+
+    except urllib.error.HTTPError as e:
+        body = e.read().decode("utf-8", errors="replace")
+        err  = body.lower()
+        if e.code == 429 or "rate" in err or "limit" in err:
+            wait = 15
+            try:
+                bd   = json.loads(body)
+                wait = int(bd.get("error",{}).get("retry_after", 15))
+            except: pass
+            print(f"   ⏳ Rate limit {modelo} → {wait}s...")
+            time.sleep(wait)
+            return "RATE_LIMIT"
+        elif e.code in (404, 422):
+            print(f"   ⚠️ {modelo} no disponible (HTTP {e.code})")
+            return None
+        else:
+            print(f"   ❌ {modelo} HTTP {e.code}: {body[:150]}")
+            return None
+
+    except Exception as e:
+        print(f"   ❌ {modelo}: {str(e)[:150]}")
+        return None
+
+def llamar_groq(prompt, max_tokens=3000, sistema=None):
+    pesos    = _cargar_pesos()
+    temp     = pesos.get("temperatura_groq", 0.85)
+    sistema  = sistema or PROMPT_SISTEMA
+    messages = [
+        {"role": "system", "content": sistema},
+        {"role": "user",   "content": prompt},
+    ]
+    for modelo in MODELOS_GROQ:
+        print(f"   Modelo: {modelo}")
+        for intento in range(2):
+            result = _groq_http(modelo, messages, max_tokens, temp)
+            if result == "RATE_LIMIT":
+                if intento == 0:
+                    time.sleep(20)
+                    continue
+                else:
+                    print(f"   → siguiente modelo...")
+                    break
+            if result:
+                print(f"   ✅ OK {modelo} ({len(result)} chars)")
+                return result
+            print(f"   → siguiente modelo...")
+            break
+    raise RuntimeError("Ningun modelo Groq disponible")
+
+def llamar_groq_critico(prompt):
+    messages = [
+        {"role": "system", "content": PROMPT_CRITICO_SISTEMA},
+        {"role": "user",   "content": prompt},
+    ]
+    for modelo in ["meta-llama/llama-4-scout-17b-16e-instruct", "llama-3.1-8b-instant"]:
+        result = _groq_http(modelo, messages, max_tokens=500, temperature=0.6)
+        if result and result != "RATE_LIMIT":
+            return result
+    return ""
+
+# ── Utilidades ───────────────────────────────────────────────────────────────
 
 def limpiar_json(texto):
-    """Extrae JSON valido de cualquier tipo de entrada."""
-    texto = _a_str(texto).strip()
-    if not texto:
-        return "{}"
+    """Extrae JSON valido de un string. Siempre devuelve string."""
+    if not isinstance(texto, str):
+        texto = str(texto) if texto else "{}"
+    texto = texto.strip()
     if "```json" in texto:
         partes = texto.split("```json")
         if len(partes) > 1:
@@ -82,8 +157,6 @@ def limpiar_json(texto):
         return texto[inicio:fin+1]
     return texto
 
-# ── Config ───────────────────────────────────────────────────────────────────
-
 def _cargar_pesos():
     try:
         with open("config/prompt_weights.json", "r", encoding="utf-8") as f:
@@ -97,8 +170,6 @@ def _cargar_pesos():
             "tags_exitosos": [],
             "score_objetivo": 75,
         }
-
-# ── Validacion ───────────────────────────────────────────────────────────────
 
 def _validar_calidad(idea):
     try:
@@ -114,15 +185,15 @@ def _validar_calidad(idea):
     for campo in ["nombre", "problema", "solucion", "cliente_objetivo", "tagline"]:
         val = str(idea.get(campo, "")).strip()
         if not val or len(val) < 15:
-            return False, f"Campo '{campo}' vacio"
+            return False, f"Campo '{campo}' vacio o muy corto"
     em = idea.get("estrategia_monetizacion", {})
     if isinstance(em, dict):
-        sem1 = str(em.get("semana1", "")).strip().lower()
+        sem1 = str(em.get("semana1","")).strip().lower()
         if len(sem1) < 20 or "accion concreta" in sem1:
             return False, "semana1 no especifica"
     ht = idea.get("hipotesis_testeable", {})
     if isinstance(ht, dict):
-        exp = str(ht.get("experimento_48h", "")).strip().lower()
+        exp = str(ht.get("experimento_48h","")).strip().lower()
         if len(exp) < 20 or "plataforma concreta" in exp:
             return False, "experimento_48h no especifico"
     return True, ""
@@ -140,12 +211,19 @@ def _get_instruccion_diversidad():
     if lineas:   lineas.append("Elige un vertical COMPLETAMENTE DIFERENTE.")
     return "\n".join(lineas)
 
+def calcular_score_ponderado(scores):
+    pesos = {
+        "critico":0.25,"generador":0.25,"ejecutabilidad":0.20,
+        "monetizacion":0.15,"timing":0.10,"viral":0.05
+    }
+    return round(sum(scores.get(k,0)*v for k,v in pesos.items()), 1)
+
 # ── Prompts ──────────────────────────────────────────────────────────────────
 
 def get_prompt_idea(contexto, tendencias, tema="", modo_emergencia=False):
     pesos         = _cargar_pesos()
     score_obj     = pesos.get("score_objetivo", 75)
-    ideas_previas = str(contexto.get("ideas_previas", "ninguna"))[:600]
+    ideas_previas = str(contexto.get("ideas_previas","ninguna"))[:600]
     tema_str      = f"TEMA OBLIGATORIO: '{tema}'\n\n" if tema else ""
     diversidad    = _get_instruccion_diversidad()
     trends_str    = "\n".join(f"- {str(t)[:100]}" for t in tendencias[:6]) or "- No disponibles"
@@ -250,145 +328,9 @@ def get_prompt_critico(idea):
         '"pivote_sugerido":"hacia donde o null"}'
     )
 
-def calcular_score_ponderado(scores):
-    pesos = {
-        "critico":0.25,"generador":0.25,"ejecutabilidad":0.20,
-        "monetizacion":0.15,"timing":0.10,"viral":0.05
-    }
-    return round(sum(scores.get(k,0)*v for k,v in pesos.items()), 1)
-
-# ── Cliente Groq — COMPLETAMENTE BLINDADO ────────────────────────────────────
-
-def _groq_client():
-    import groq
-    return groq.Groq(api_key=GROQ_API_KEY, timeout=90)
-
-def _extraer_content_respuesta(resp):
-    """
-    Extrae el texto de una respuesta Groq sea cual sea su estructura.
-    Maneja: objeto normal, lista, dict, atributos directos.
-    """
-    # Caso 1: resp tiene .choices (SDK estandar)
-    if hasattr(resp, "choices"):
-        choices = resp.choices
-        if not choices:
-            return ""
-        choice = choices
-
-        # choice puede ser objeto con .message, lista, o dict
-        if isinstance(choice, list):
-            # choices es una lista — extraer contenido
-            return _a_str(choice)
-
-        if isinstance(choice, dict):
-            msg = choice.get("message", {})
-            if isinstance(msg, dict):
-                return _a_str(msg.get("content", ""))
-            return _a_str(msg)
-
-        # Objeto normal: choice.message.content
-        if hasattr(choice, "message"):
-            msg = choice.message
-            if isinstance(msg, list):
-                return _a_str(msg)
-            if isinstance(msg, dict):
-                return _a_str(msg.get("content",""))
-            if hasattr(msg, "content"):
-                return _a_str(msg.content)
-            return _a_str(msg)
-
-        # choice tiene .text o .content directo
-        if hasattr(choice, "text"):
-            return _a_str(choice.text)
-        if hasattr(choice, "content"):
-            return _a_str(choice.content)
-
-        return _a_str(choice)
-
-    # Caso 2: resp es una lista
-    if isinstance(resp, list):
-        return _a_str(resp)
-
-    # Caso 3: resp es dict
-    if isinstance(resp, dict):
-        for key in ["content", "text", "message"]:
-            if key in resp:
-                return _a_str(resp[key])
-        return _a_str(resp)
-
-    # Caso 4: resp tiene .content o .text directo
-    if hasattr(resp, "content"):
-        return _a_str(resp.content)
-    if hasattr(resp, "text"):
-        return _a_str(resp.text)
-
-    return _a_str(resp)
-
-def _llamar_con_retry(client, modelo, messages, max_tokens, temperature):
-    for intento in range(2):
-        try:
-            resp    = client.chat.completions.create(
-                model=modelo, messages=messages,
-                max_tokens=max_tokens, temperature=temperature,
-            )
-            content = _extraer_content_respuesta(resp).strip()
-            if content:
-                return content
-            print(f"   ⚠️ {modelo} devolvio respuesta vacia")
-            return None
-        except Exception as e:
-            err = str(e).lower()
-            if "rate" in err or "429" in err or "limit" in err:
-                wait = 12 + (intento * 3)
-                try:
-                    raw = getattr(e, "response", None)
-                    if raw:
-                        ra = raw.headers.get("retry-after","")
-                        if ra:
-                            wait = min(int(float(str(ra))) + 2, 20)
-                except: pass
-                print(f"   ⏳ Rate limit {modelo} → {wait}s...")
-                time.sleep(wait)
-            elif any(x in err for x in ["not found","decommission","does not exist","invalid model","404"]):
-                print(f"   ⚠️ {modelo} no disponible")
-                return None
-            else:
-                print(f"   ❌ {modelo}: {str(e)[:120]}")
-                return None
-    return None
-
-def llamar_groq(prompt, max_tokens=3000):
-    pesos    = _cargar_pesos()
-    temp     = pesos.get("temperatura_groq", 0.85)
-    client   = _groq_client()
-    messages = [
-        {"role": "system", "content": PROMPT_SISTEMA},
-        {"role": "user",   "content": prompt},
-    ]
-    for modelo in MODELOS_GROQ:
-        print(f"   Modelo: {modelo}")
-        result = _llamar_con_retry(client, modelo, messages, max_tokens, temp)
-        if result:
-            print(f"   ✅ OK {modelo} ({len(result)} chars)")
-            return result
-        print(f"   → siguiente modelo...")
-    raise RuntimeError("Ningun modelo Groq disponible")
-
-def llamar_groq_critico(prompt):
-    client   = _groq_client()
-    messages = [
-        {"role": "system", "content": PROMPT_CRITICO_SISTEMA},
-        {"role": "user",   "content": prompt},
-    ]
-    for modelo in ["meta-llama/llama-4-scout-17b-16e-instruct", "llama-3.1-8b-instant"]:
-        result = _llamar_con_retry(client, modelo, messages, 500, 0.6)
-        if result:
-            return result
-    return ""
-
 def _aplicar_scoring_critico(idea):
     print("🔍 Scoring critico YC...")
-    time.sleep(4)
+    time.sleep(3)
     try:
         respuesta = llamar_groq_critico(get_prompt_critico(idea))
         if not respuesta:
@@ -415,8 +357,7 @@ def ejecutar_batch():
         from agents.trend_scout       import get_tendencias, actualizar_tendencias
         from agents.notion_sync_agent import sync_idea_to_notion
     except ImportError as e:
-        print(f"❌ Import critico: {e}")
-        return False, "", ""
+        print(f"❌ Import critico: {e}"); return False, "", ""
 
     try:
         from agents.watchdog import (
@@ -443,8 +384,7 @@ def ejecutar_batch():
         tendencias = get_tendencias()
         print(f"✅ {len(tendencias)} tendencias")
     except Exception as e:
-        print(f"⚠️ Tendencias: {e}")
-        tendencias = []
+        print(f"⚠️ Tendencias: {e}"); tendencias = []
 
     print("📚 Cargando contexto KB...")
     try:
@@ -452,8 +392,7 @@ def ejecutar_batch():
         stats    = get_stats()
         print(f"📊 KB: {stats.get('total_ideas',0)} ideas | Promedio: {stats.get('score_promedio',0)}")
     except Exception as e:
-        print(f"⚠️ KB: {e}")
-        contexto = {"ideas_previas": "", "score_promedio": 0}
+        print(f"⚠️ KB: {e}"); contexto = {"ideas_previas":"","score_promedio":0}
 
     pesos      = _cargar_pesos()
     umbral_dup = pesos.get("umbral_duplicado", 0.38)
@@ -478,14 +417,15 @@ def ejecutar_batch():
             if watchdog_ok: registrar_fallo(str(e))
             return False, "", ""
 
-        print(f"   Tipo respuesta: {type(respuesta).__name__} | {len(str(respuesta))} chars")
+        # respuesta es SIEMPRE str aqui gracias a _groq_http
+        print(f"   Respuesta: {len(respuesta)} chars")
 
         json_limpio = limpiar_json(respuesta)
         try:
             idea_candidata = json.loads(json_limpio)
         except Exception as e:
             print(f"❌ JSON invalido (intento {intento_gen+1}): {e}")
-            print(f"   Raw: {str(respuesta)[:300]}")
+            print(f"   Raw: {respuesta[:300]}")
             emergencia = True
             continue
 
@@ -498,8 +438,7 @@ def ejecutar_batch():
         nombre_cand = idea_candidata.get("nombre","").lower()
         if any(nombre_cand in n.lower() or n.lower() in nombre_cand
                for n in nombres_bloqueados if n):
-            print(f"⚠️ Nombre bloqueado — regenerando...")
-            continue
+            print(f"⚠️ Nombre bloqueado — regenerando..."); continue
 
         try:
             dup, dup_nombre = es_duplicado(idea_candidata, umbral=umbral_dup)
@@ -607,8 +546,7 @@ def ejecutar_batch():
                 json.dump(todas, f, ensure_ascii=False, indent=2)
         except: pass
 
-    if watchdog_ok:
-        registrar_exito(idea)
+    if watchdog_ok: registrar_exito(idea)
 
     try:
         from agents.verticales_rotacion import registrar_vertical_usado
@@ -622,19 +560,14 @@ def ejecutar_batch():
     except Exception as e:
         print(f"⚠️ Aprendizaje: {e}")
 
-    herramienta   = _a_str(idea.get("herramienta_ia_clave",""))[:80]
-    tagline       = _a_str(idea.get("tagline",""))[:100]
-    problema      = _a_str(idea.get("problema",""))[:150]
-    monetiz       = ""
-    if isinstance(idea.get("estrategia_monetizacion"),dict):
-        monetiz   = _a_str(idea["estrategia_monetizacion"].get("semana1",""))[:150]
-    hipotesis     = ""
-    if isinstance(idea.get("hipotesis_testeable"),dict):
-        hipotesis = _a_str(idea["hipotesis_testeable"].get("experimento_48h",""))[:150]
-    veredicto = recomendacion = ""
-    if isinstance(idea.get("scoring_critico"),dict):
-        veredicto     = _a_str(idea["scoring_critico"].get("veredicto",""))[:150]
-        recomendacion = _a_str(idea["scoring_critico"].get("recomendacion",""))
+    def _s(v, n=150): return str(v)[:n] if v else ""
+    herramienta   = _s(idea.get("herramienta_ia_clave",""), 80)
+    tagline       = _s(idea.get("tagline",""), 100)
+    problema      = _s(idea.get("problema",""), 150)
+    monetiz       = _s(idea.get("estrategia_monetizacion",{}).get("semana1","") if isinstance(idea.get("estrategia_monetizacion"),dict) else "")
+    hipotesis     = _s(idea.get("hipotesis_testeable",{}).get("experimento_48h","") if isinstance(idea.get("hipotesis_testeable"),dict) else "")
+    veredicto     = _s(idea.get("scoring_critico",{}).get("veredicto","") if isinstance(idea.get("scoring_critico"),dict) else "")
+    recomendacion = _s(idea.get("scoring_critico",{}).get("recomendacion","") if isinstance(idea.get("scoring_critico"),dict) else "")
 
     print(f"SCORE_FINAL:{score}")
     print(f"HERRAMIENTA_IA:{herramienta}")
@@ -652,4 +585,4 @@ if __name__ == "__main__":
     exito, nombre, url = ejecutar_batch()
     sys.exit(0 if exito else 1)
 
-# fin run_batch.py v7
+# fin run_batch.py v8
