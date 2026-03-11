@@ -3,7 +3,7 @@ from datetime import datetime
 
 os.environ["PYTHONUTF8"] = "1"
 print("=" * 50)
-print(f"🚀 run_batch v9 iniciado: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
+print(f"🚀 run_batch v10 iniciado: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
 
 GROQ_API_KEY = os.environ.get("GROQ_API_KEY", "")
 
@@ -33,14 +33,9 @@ PLACEHOLDERS_PROHIBIDOS = [
     "f1 detalle tecnico", "tag1", "tag2", "rival1", "rival2",
 ]
 
-# ── Extraccion de contenido — blindada contra cualquier tipo ─────────────────
+# ── Conversion segura ─────────────────────────────────────────────────────────
 
 def _content_to_str(content):
-    """
-    Convierte content de Groq SDK a string puro.
-    Maneja: str, list, list de objetos TextBlock, dict, None.
-    NUNCA llama .strip() sobre algo que no sea string.
-    """
     if content is None:
         return ""
     if isinstance(content, str):
@@ -89,80 +84,142 @@ def limpiar_json(texto):
         return texto[inicio:fin+1]
     return texto
 
-# ── Config ───────────────────────────────────────────────────────────────────
+# ── Extraccion exhaustiva del choice ─────────────────────────────────────────
 
-def _cargar_pesos():
+def _extraer_content_de_choice(choice, modelo=""):
+    """
+    Intenta extraer content de UN choice usando TODOS los metodos posibles.
+    Imprime debug para saber que estructura tiene.
+    Nunca lanza excepciones.
+    """
+    # --- DEBUG: mostrar tipo y atributos ---
+    tipo_choice = type(choice).__name__
+    attrs = []
     try:
-        with open("config/prompt_weights.json", "r", encoding="utf-8") as f:
-            return json.load(f)
+        if hasattr(choice, "__dict__"):
+            attrs = list(choice.__dict__.keys())[:15]
+        elif hasattr(choice, "__slots__"):
+            attrs = list(choice.__slots__)[:15]
+    except: pass
+    print(f"   [DEBUG] choice type={tipo_choice} attrs={attrs}")
+
+    content = None
+
+    # Metodo 1: choice.message.content (estandar SDK)
+    if hasattr(choice, "message"):
+        msg = choice.message
+        print(f"   [DEBUG] message type={type(msg).__name__}")
+        if hasattr(msg, "content"):
+            content = _content_to_str(msg.content)
+            print(f"   [DEBUG] via message.content: {len(content)} chars")
+        elif isinstance(msg, dict):
+            content = _content_to_str(msg.get("content", ""))
+        elif isinstance(msg, (list, str)):
+            content = _content_to_str(msg)
+        if content:
+            return content
+
+    # Metodo 2: choice es dict
+    if isinstance(choice, dict):
+        msg = choice.get("message", {})
+        if isinstance(msg, dict):
+            content = _content_to_str(msg.get("content", ""))
+        elif msg:
+            content = _content_to_str(msg)
+        if not content:
+            content = _content_to_str(choice.get("content", choice.get("text", "")))
+        if content:
+            print(f"   [DEBUG] via dict: {len(content)} chars")
+            return content
+
+    # Metodo 3: choice.text o choice.content directo
+    if hasattr(choice, "text") and choice.text:
+        content = _content_to_str(choice.text)
+        if content:
+            print(f"   [DEBUG] via choice.text: {len(content)} chars")
+            return content
+
+    if hasattr(choice, "content") and choice.content:
+        content = _content_to_str(choice.content)
+        if content:
+            print(f"   [DEBUG] via choice.content: {len(content)} chars")
+            return content
+
+    # Metodo 4: delta (respuesta streaming accidental)
+    if hasattr(choice, "delta"):
+        delta = choice.delta
+        if hasattr(delta, "content") and delta.content:
+            content = _content_to_str(delta.content)
+            if content:
+                print(f"   [DEBUG] via delta.content: {len(content)} chars")
+                return content
+
+    # Metodo 5: choice es lista
+    if isinstance(choice, (list, tuple)):
+        content = _content_to_str(choice)
+        if content:
+            print(f"   [DEBUG] via choice-as-list: {len(content)} chars")
+            return content
+
+    # Metodo 6: stringify completo y buscar JSON
+    try:
+        raw = str(choice)
+        print(f"   [DEBUG] choice str: {raw[:200]}")
+        if "{" in raw:
+            # Puede contener el JSON directamente
+            inicio = raw.find("{")
+            fin    = raw.rfind("}")
+            if inicio != -1 and fin > inicio:
+                content = raw[inicio:fin+1]
+                print(f"   [DEBUG] via stringify+JSON: {len(content)} chars")
+                return content
+        return raw if raw and raw != "None" else None
     except:
-        return {
-            "temperatura_groq": 0.85,
-            "umbral_duplicado": 0.38,
-            "verticales_preferidas": [],
-            "verticales_penalizadas": [],
-            "tags_exitosos": [],
-            "score_objetivo": 75,
-        }
+        return None
 
-# ── Validacion calidad ────────────────────────────────────────────────────────
+def _extraer_content_respuesta(resp, modelo=""):
+    """
+    Extrae content de la respuesta completa del SDK.
+    Maneja resp con .choices, resp como lista, resp como dict.
+    """
+    # Debug de la respuesta completa
+    tipo_resp = type(resp).__name__
+    print(f"   [DEBUG] resp type={tipo_resp}")
 
-def _validar_calidad(idea):
+    choices = None
+
+    if hasattr(resp, "choices"):
+        choices = resp.choices
+    elif isinstance(resp, dict):
+        choices = resp.get("choices", [])
+    elif isinstance(resp, (list, tuple)):
+        # resp directamente es la lista de choices
+        choices = resp
+
+    if choices is None or (hasattr(choices, '__len__') and len(choices) == 0):
+        print(f"   [DEBUG] sin choices")
+        # Intentar extraer directamente de resp
+        return _content_to_str(resp)
+
+    print(f"   [DEBUG] choices count={len(choices) if hasattr(choices,'__len__') else '?'}")
+
     try:
-        from agents.watchdog import registrar_placeholder
-    except ImportError:
-        def registrar_placeholder(x): pass
+        choice = choices
+        return _extraer_content_de_choice(choice, modelo)
+    except Exception as e:
+        print(f"   [DEBUG] error en choices: {e}")
+        return _content_to_str(resp)
 
-    texto = json.dumps(idea, ensure_ascii=False).lower()
-    for ph in PLACEHOLDERS_PROHIBIDOS:
-        if ph in texto:
-            registrar_placeholder(ph)
-            return False, f"Placeholder: '{ph}'"
-    for campo in ["nombre", "problema", "solucion", "cliente_objetivo", "tagline"]:
-        val = str(idea.get(campo, "")).strip()
-        if not val or len(val) < 15:
-            return False, f"Campo '{campo}' vacio o muy corto"
-    em = idea.get("estrategia_monetizacion", {})
-    if isinstance(em, dict):
-        sem1 = str(em.get("semana1","")).strip().lower()
-        if len(sem1) < 20 or "accion concreta" in sem1:
-            return False, "semana1 no especifica"
-    ht = idea.get("hipotesis_testeable", {})
-    if isinstance(ht, dict):
-        exp = str(ht.get("experimento_48h","")).strip().lower()
-        if len(exp) < 20 or "plataforma concreta" in exp:
-            return False, "experimento_48h no especifico"
-    return True, ""
-
-def _get_instruccion_diversidad():
-    try:
-        from agents.watchdog import get_verticales_bloqueados, get_palabras_clave_bloqueadas
-        verts    = get_verticales_bloqueados()
-        palabras = get_palabras_clave_bloqueadas()
-    except ImportError:
-        return ""
-    lineas = []
-    if verts:    lineas.append(f"VERTICALES PROHIBIDOS: {', '.join(verts)}")
-    if palabras: lineas.append(f"TEMAS PROHIBIDOS: {', '.join(palabras[:10])}")
-    if lineas:   lineas.append("Elige un vertical COMPLETAMENTE DIFERENTE.")
-    return "\n".join(lineas)
-
-def calcular_score_ponderado(scores):
-    pesos = {
-        "critico":0.25,"generador":0.25,"ejecutabilidad":0.20,
-        "monetizacion":0.15,"timing":0.10,"viral":0.05
-    }
-    return round(sum(scores.get(k,0)*v for k,v in pesos.items()), 1)
-
-# ── Cliente Groq SDK — con extraccion blindada ────────────────────────────────
+# ── Cliente Groq ─────────────────────────────────────────────────────────────
 
 def _llamar_groq_sdk(modelo, messages, max_tokens, temperature):
-    """
-    Llama al SDK de Groq. Extrae content con _content_to_str
-    ANTES de cualquier operacion de string. Nunca falla por tipo.
-    """
     try:
         import groq
+        # Imprimir version del SDK
+        try:
+            print(f"   [DEBUG] groq SDK version: {groq.__version__}")
+        except: pass
+
         client = groq.Groq(api_key=GROQ_API_KEY, timeout=90)
         resp   = client.chat.completions.create(
             model       = modelo,
@@ -171,77 +228,40 @@ def _llamar_groq_sdk(modelo, messages, max_tokens, temperature):
             temperature = temperature,
         )
 
-        # Extraer choices de forma segura
-        choices = None
-        if hasattr(resp, "choices"):
-            choices = resp.choices
-        elif isinstance(resp, dict):
-            choices = resp.get("choices", [])
-
-        if not choices:
-            print(f"   ⚠️ {modelo}: sin choices en respuesta")
-            return None
-
-        choice = choices
-
-        # Extraer message de forma segura
-        message = None
-        if hasattr(choice, "message"):
-            message = choice.message
-        elif isinstance(choice, dict):
-            message = choice.get("message", {})
-
-        if message is None:
-            print(f"   ⚠️ {modelo}: sin message en choice")
-            return None
-
-        # Extraer content de forma segura
-        raw_content = None
-        if hasattr(message, "content"):
-            raw_content = message.content
-        elif isinstance(message, dict):
-            raw_content = message.get("content", "")
-
-        # CONVERSION SEGURA — nunca llama .strip() sobre lista
-        content = _content_to_str(raw_content).strip()
-
-        if not content:
-            print(f"   ⚠️ {modelo}: content vacio")
-            return None
-
-        return content
+        content = _extraer_content_respuesta(resp, modelo)
+        if content:
+            content = content.strip()
+            return content if content else None
+        return None
 
     except Exception as e:
-        return ("RATE_LIMIT" if any(x in str(e).lower()
-                for x in ["rate", "429", "limit"]) else None,
-                str(e))
+        err = str(e).lower()
+        if any(x in err for x in ["rate", "429", "limit", "too many"]):
+            wait = 15
+            try:
+                import re as _re
+                m = _re.search(r'retry.after["\s:]+(\d+)', err)
+                if m: wait = min(int(m.group(1)) + 2, 25)
+            except: pass
+            print(f"   ⏳ Rate limit {modelo} → {wait}s...")
+            time.sleep(wait)
+            return "RATE_LIMIT"
+        elif any(x in err for x in ["not found","decommission","does not exist","invalid model","404","422"]):
+            print(f"   ⚠️ {modelo} no disponible: {str(e)[:80]}")
+            return None
+        else:
+            print(f"   ❌ {modelo}: {str(e)[:150]}")
+            return None
 
 def _llamar_con_retry(modelo, messages, max_tokens, temperature):
     for intento in range(2):
         resultado = _llamar_groq_sdk(modelo, messages, max_tokens, temperature)
-
-        # _llamar_groq_sdk puede devolver: str, None, o tupla (None, error_msg)
-        if isinstance(resultado, tuple):
-            tipo, err = resultado
-            if tipo == "RATE_LIMIT":
-                wait = 15 + (intento * 10)
-                print(f"   ⏳ Rate limit {modelo} → {wait}s...")
-                time.sleep(wait)
+        if resultado == "RATE_LIMIT":
+            if intento == 0:
+                time.sleep(20)
                 continue
-            else:
-                err_low = err.lower()
-                if any(x in err_low for x in ["not found","decommission","does not exist","404","invalid model"]):
-                    print(f"   ⚠️ {modelo} no disponible")
-                    return None
-                print(f"   ❌ {modelo}: {err[:120]}")
-                return None
-
-        if resultado is not None:
-            return resultado
-
-        # None sin tupla = fallo sin rate limit
-        return None
-
+            return None
+        return resultado
     return None
 
 def llamar_groq(prompt, max_tokens=3000, sistema=None):
@@ -271,6 +291,71 @@ def llamar_groq_critico(prompt):
         if result:
             return result
     return ""
+
+# ── Config ────────────────────────────────────────────────────────────────────
+
+def _cargar_pesos():
+    try:
+        with open("config/prompt_weights.json", "r", encoding="utf-8") as f:
+            return json.load(f)
+    except:
+        return {
+            "temperatura_groq": 0.85,
+            "umbral_duplicado": 0.38,
+            "verticales_preferidas": [],
+            "verticales_penalizadas": [],
+            "tags_exitosos": [],
+            "score_objetivo": 75,
+        }
+
+# ── Validacion calidad ────────────────────────────────────────────────────────
+
+def _validar_calidad(idea):
+    try:
+        from agents.watchdog import registrar_placeholder
+    except ImportError:
+        def registrar_placeholder(x): pass
+
+    texto = json.dumps(idea, ensure_ascii=False).lower()
+    for ph in PLACEHOLDERS_PROHIBIDOS:
+        if ph in texto:
+            registrar_placeholder(ph)
+            return False, f"Placeholder: '{ph}'"
+    for campo in ["nombre", "problema", "solucion", "cliente_objetivo", "tagline"]:
+        val = str(idea.get(campo,"")).strip()
+        if not val or len(val) < 15:
+            return False, f"Campo '{campo}' vacio"
+    em = idea.get("estrategia_monetizacion",{})
+    if isinstance(em, dict):
+        sem1 = str(em.get("semana1","")).strip().lower()
+        if len(sem1) < 20 or "accion concreta" in sem1:
+            return False, "semana1 no especifica"
+    ht = idea.get("hipotesis_testeable",{})
+    if isinstance(ht, dict):
+        exp = str(ht.get("experimento_48h","")).strip().lower()
+        if len(exp) < 20 or "plataforma concreta" in exp:
+            return False, "experimento_48h no especifico"
+    return True, ""
+
+def _get_instruccion_diversidad():
+    try:
+        from agents.watchdog import get_verticales_bloqueados, get_palabras_clave_bloqueadas
+        verts    = get_verticales_bloqueados()
+        palabras = get_palabras_clave_bloqueadas()
+    except ImportError:
+        return ""
+    lineas = []
+    if verts:    lineas.append(f"VERTICALES PROHIBIDOS: {', '.join(verts)}")
+    if palabras: lineas.append(f"TEMAS PROHIBIDOS: {', '.join(palabras[:10])}")
+    if lineas:   lineas.append("Elige un vertical COMPLETAMENTE DIFERENTE.")
+    return "\n".join(lineas)
+
+def calcular_score_ponderado(scores):
+    pesos = {
+        "critico":0.25,"generador":0.25,"ejecutabilidad":0.20,
+        "monetizacion":0.15,"timing":0.10,"viral":0.05
+    }
+    return round(sum(scores.get(k,0)*v for k,v in pesos.items()), 1)
 
 # ── Prompts ──────────────────────────────────────────────────────────────────
 
@@ -368,17 +453,13 @@ def get_prompt_idea(contexto, tendencias, tema="", modo_emergencia=False):
 
 def get_prompt_critico(idea):
     return (
-        f"Analiza esta startup:\n"
-        f"NOMBRE: {idea.get('nombre','?')}\n"
+        f"Analiza esta startup:\nNOMBRE: {idea.get('nombre','?')}\n"
         f"PROBLEMA: {str(idea.get('problema',''))[:250]}\n"
         f"CLIENTE: {str(idea.get('cliente_objetivo',''))[:150]}\n"
         f"SCORE: {idea.get('scores',{}).get('score_total',0) if isinstance(idea.get('scores'),dict) else 0}\n\n"
-        '{"veredicto":"1 frase directa",'
-        '"objeciones_principales":["obj1","obj2"],'
-        '"fortalezas_reales":["f1","f2"],'
-        '"ajuste_score":-5,'
-        '"score_critico_final":70,'
-        '"recomendacion":"invertir/pivotar/descartar",'
+        '{"veredicto":"1 frase directa","objeciones_principales":["obj1","obj2"],'
+        '"fortalezas_reales":["f1","f2"],"ajuste_score":-5,'
+        '"score_critico_final":70,"recomendacion":"invertir/pivotar/descartar",'
         '"pivote_sugerido":"hacia donde o null"}'
     )
 
@@ -472,13 +553,12 @@ def ejecutar_batch():
             return False, "", ""
 
         print(f"   Respuesta: {len(respuesta)} chars")
-
         json_limpio = limpiar_json(respuesta)
         try:
             idea_candidata = json.loads(json_limpio)
         except Exception as e:
             print(f"❌ JSON invalido (intento {intento_gen+1}): {e}")
-            print(f"   Raw: {respuesta[:300]}")
+            print(f"   Raw: {respuesta[:400]}")
             emergencia = True
             continue
 
@@ -521,7 +601,6 @@ def ejecutar_batch():
     scores = idea.get("scores",{}) if isinstance(idea.get("scores"),dict) else {}
     scores["score_total"] = calcular_score_ponderado(scores)
     idea["scores"] = scores
-
     idea = _aplicar_scoring_critico(idea)
 
     if validar_idea_fn:
@@ -539,7 +618,7 @@ def ejecutar_batch():
     print(f"📊 Score FINAL: {score}/100")
 
     try:    registrar_idea(idea)
-    except Exception as e: print(f"⚠️ KB registrar: {e}")
+    except Exception as e: print(f"⚠️ KB: {e}")
 
     os.makedirs("data", exist_ok=True)
     try:
@@ -569,14 +648,11 @@ def ejecutar_batch():
                     cola_path = "data/cola_pendientes.csv"
                     existe    = os.path.exists(cola_path)
                     with open(cola_path,"a",newline="",encoding="utf-8") as f:
-                        writer = csv.DictWriter(f, fieldnames=["timestamp","nombre_idea","intentos","error","datos_json"])
-                        if not existe: writer.writeheader()
-                        writer.writerow({
-                            "timestamp":   datetime.now().isoformat(),
-                            "nombre_idea": nombre, "intentos": 1,
-                            "error":       "URL vacia",
-                            "datos_json":  json.dumps(idea, ensure_ascii=False)[:2000],
-                        })
+                        w = csv.DictWriter(f, fieldnames=["timestamp","nombre_idea","intentos","error","datos_json"])
+                        if not existe: w.writeheader()
+                        w.writerow({"timestamp":datetime.now().isoformat(),"nombre_idea":nombre,
+                                    "intentos":1,"error":"URL vacia",
+                                    "datos_json":json.dumps(idea,ensure_ascii=False)[:2000]})
                 except Exception as ce:
                     print(f"⚠️ Cola: {ce}")
         except Exception as e:
@@ -606,29 +682,20 @@ def ejecutar_batch():
     except Exception as e:
         print(f"⚠️ Aprendizaje: {e}")
 
-    def _s(v, n=150):
-        return _content_to_str(v)[:n] if v else ""
-
-    herramienta   = _s(idea.get("herramienta_ia_clave",""), 80)
-    tagline       = _s(idea.get("tagline",""), 100)
-    problema      = _s(idea.get("problema",""), 150)
-    em            = idea.get("estrategia_monetizacion",{})
-    monetiz       = _s(em.get("semana1","") if isinstance(em,dict) else "")
-    ht            = idea.get("hipotesis_testeable",{})
-    hipotesis     = _s(ht.get("experimento_48h","") if isinstance(ht,dict) else "")
-    sc            = idea.get("scoring_critico",{})
-    veredicto     = _s(sc.get("veredicto","") if isinstance(sc,dict) else "")
-    recomendacion = _s(sc.get("recomendacion","") if isinstance(sc,dict) else "")
+    def _s(v, n=150): return _content_to_str(v)[:n] if v else ""
+    em = idea.get("estrategia_monetizacion",{})
+    ht = idea.get("hipotesis_testeable",{})
+    sc = idea.get("scoring_critico",{})
 
     print(f"SCORE_FINAL:{score}")
-    print(f"HERRAMIENTA_IA:{herramienta}")
-    print(f"HIPOTESIS:{hipotesis}")
+    print(f"HERRAMIENTA_IA:{_s(idea.get('herramienta_ia_clave',''),80)}")
+    print(f"HIPOTESIS:{_s(ht.get('experimento_48h','') if isinstance(ht,dict) else '')}")
     print(f"NOTION_URL:{url}")
-    print(f"TAGLINE:{tagline}")
-    print(f"PROBLEMA:{problema}")
-    print(f"MONETIZ_S1:{monetiz}")
-    print(f"VEREDICTO_CRITICO:{veredicto}")
-    print(f"RECOMENDACION:{recomendacion}")
+    print(f"TAGLINE:{_s(idea.get('tagline',''),100)}")
+    print(f"PROBLEMA:{_s(idea.get('problema',''),150)}")
+    print(f"MONETIZ_S1:{_s(em.get('semana1','') if isinstance(em,dict) else '')}")
+    print(f"VEREDICTO_CRITICO:{_s(sc.get('veredicto','') if isinstance(sc,dict) else '')}")
+    print(f"RECOMENDACION:{_s(sc.get('recomendacion','') if isinstance(sc,dict) else '')}")
     print(f"✅ Sincronizada: {nombre}")
     return True, nombre, url
 
@@ -636,4 +703,4 @@ if __name__ == "__main__":
     exito, nombre, url = ejecutar_batch()
     sys.exit(0 if exito else 1)
 
-# fin run_batch.py v9
+# fin run_batch.py v10
