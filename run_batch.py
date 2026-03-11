@@ -25,25 +25,13 @@ PROMPT_CRITICO_SISTEMA = (
     "REGLA ABSOLUTA: responde UNICAMENTE con JSON valido. Sin texto extra."
 )
 
-# Placeholders que el modelo devuelve cuando no sigue instrucciones
 PLACEHOLDERS_PROHIBIDOS = [
     "accion concreta canal mensaje",
     "test sin codigo plataforma concreta",
-    "nombre real",
-    "problema real",
-    "propuesta real",
-    "cliente real",
-    "pricing real",
-    "canal1",
-    "canal2",
-    "f1 detalle tecnico",
-    "tag1",
-    "tag2",
-    "rival1",
-    "rival2",
-    "hito",
-    "objetivo",
-    "descripcion extensa",
+    "nombre real", "problema real", "propuesta real",
+    "cliente real", "pricing real", "canal1", "canal2",
+    "f1 detalle tecnico", "tag1", "tag2", "rival1", "rival2",
+    "hito", "descripcion extensa",
 ]
 
 def _cargar_pesos():
@@ -61,61 +49,50 @@ def _cargar_pesos():
         }
 
 def _validar_calidad(idea):
-    """
-    Devuelve (True, "") si la idea tiene contenido real.
-    Devuelve (False, motivo) si tiene placeholders o está vacía.
-    """
     try:
         from agents.watchdog import registrar_placeholder
     except ImportError:
         registrar_placeholder = lambda x: None
 
     texto_completo = json.dumps(idea, ensure_ascii=False).lower()
-
     for ph in PLACEHOLDERS_PROHIBIDOS:
         if ph in texto_completo:
             registrar_placeholder(ph)
-            return False, f"Placeholder detectado: '{ph}'"
+            return False, f"Placeholder: '{ph}'"
 
-    # Verificar campos clave no vacíos
     for campo in ["nombre", "problema", "solucion", "cliente_objetivo", "tagline"]:
         val = str(idea.get(campo, "")).strip()
         if not val or len(val) < 15:
-            return False, f"Campo '{campo}' vacio o demasiado corto"
+            return False, f"Campo '{campo}' vacio"
 
-    # Verificar monetizacion concreta
     em = idea.get("estrategia_monetizacion", {})
     if isinstance(em, dict):
         sem1 = str(em.get("semana1", "")).strip().lower()
-        if len(sem1) < 20 or sem1 in ["", "accion concreta canal mensaje"]:
-            return False, "estrategia_monetizacion.semana1 no es especifica"
+        if len(sem1) < 20 or "accion concreta" in sem1:
+            return False, "semana1 no especifica"
 
-    # Verificar hipotesis concreta
     ht = idea.get("hipotesis_testeable", {})
     if isinstance(ht, dict):
         exp = str(ht.get("experimento_48h", "")).strip().lower()
         if len(exp) < 20 or "plataforma concreta" in exp:
-            return False, "hipotesis_testeable.experimento_48h no es especifica"
+            return False, "experimento_48h no especifico"
 
     return True, ""
 
 def _get_instruccion_diversidad():
-    """Genera instrucción de diversidad basada en temas recientes."""
     try:
         from agents.watchdog import get_verticales_bloqueados, get_palabras_clave_bloqueadas
-        verts     = get_verticales_bloqueados()
-        palabras  = get_palabras_clave_bloqueadas()
+        verts    = get_verticales_bloqueados()
+        palabras = get_palabras_clave_bloqueadas()
     except ImportError:
         return ""
-
     lineas = []
     if verts:
-        lineas.append(f"VERTICALES PROHIBIDOS (ya usados): {', '.join(verts)}")
+        lineas.append(f"VERTICALES PROHIBIDOS: {', '.join(verts)}")
     if palabras:
-        top = palabras[:10]
-        lineas.append(f"TEMAS PROHIBIDOS (ya saturados): {', '.join(top)}")
+        lineas.append(f"TEMAS PROHIBIDOS: {', '.join(palabras[:10])}")
     if lineas:
-        lineas.append("Elige un vertical y problema COMPLETAMENTE DIFERENTE a los anteriores.")
+        lineas.append("Elige un vertical COMPLETAMENTE DIFERENTE.")
     return "\n".join(lineas)
 
 def get_prompt_idea(contexto, tendencias, tema="", modo_emergencia=False):
@@ -124,102 +101,96 @@ def get_prompt_idea(contexto, tendencias, tema="", modo_emergencia=False):
     ideas_previas = str(contexto.get("ideas_previas", "ninguna"))[:600]
     tema_str      = f"TEMA OBLIGATORIO: '{tema}'\n\n" if tema else ""
     diversidad    = _get_instruccion_diversidad()
-    top_trends    = tendencias[:6]
-    trends_str    = "\n".join(f"- {str(t)[:100]}" for t in top_trends) if top_trends else "- No disponibles"
+    trends_str    = "\n".join(f"- {str(t)[:100]}" for t in tendencias[:6]) or "- No disponibles"
 
     aprendizaje = ""
     if pesos.get("verticales_preferidas"):
-        aprendizaje += "Verticales con exito previo: " + ", ".join(pesos["verticales_preferidas"][:3]) + "\n"
+        aprendizaje += "Verticales con exito: " + ", ".join(pesos["verticales_preferidas"][:3]) + "\n"
 
     instrucciones_calidad = (
         "CALIDAD OBLIGATORIA — PROHIBIDO texto generico:\n"
-        "- semana1 DEBE ser: 'Envia DM a [grupo especifico] en [plataforma] con mensaje: [texto real]'\n"
-        "- experimento_48h DEBE ser: 'Crea un [Typeform/landing/post] en [plataforma] sobre [tema especifico] y mide [metrica]'\n"
-        "- herramienta_ia_clave DEBE ser una herramienta real de las tendencias\n"
-        "- canales_adquisicion DEBEN incluir pasos accionables reales\n"
-        "- competidores DEBEN tener nombres reales (Notion, Linear, etc.) con debilidad especifica\n"
+        "- semana1: 'Envia DM a [grupo especifico] en [plataforma] con: [texto real]'\n"
+        "- experimento_48h: 'Crea [Typeform/landing] en [plataforma] sobre [tema] y mide [metrica]'\n"
+        "- herramienta_ia_clave: herramienta real de las tendencias\n"
+        "- competidores: nombres reales (Notion, Linear, etc.) con debilidad especifica\n"
     )
 
     if modo_emergencia:
-        # Prompt mínimo para modo emergencia — máximo 600 tokens
         return (
-            f"{tema_str}"
-            f"{diversidad}\n\n"
+            f"{tema_str}{diversidad}\n\n"
             f"Genera UNA idea de startup SaaS B2B ORIGINAL 2026. Score minimo: {score_obj}/100.\n\n"
             f"{instrucciones_calidad}\n"
-            f"TENDENCIAS (usa una): {trends_str}\n\n"
+            f"TENDENCIAS: {trends_str}\n\n"
             f"IDEAS PREVIAS (NO repetir): {ideas_previas[:300]}\n\n"
             + '{"nombre":"string","tagline":"max 10 palabras",'
-            + '"problema":"descripcion real con datos del mercado",'
+            + '"problema":"descripcion real con datos",'
             + '"solucion":"como la IA lo resuelve",'
             + '"cliente_objetivo":"cargo empresa sector dolor",'
-            + '"herramienta_ia_clave":"herramienta real de las tendencias",'
+            + '"herramienta_ia_clave":"herramienta real de tendencias",'
             + '"estrategia_monetizacion":{"semana1":"DM a [grupo] en [plataforma] ofreciendo [X]",'
             + '"precio_optimo_justificado":"EUR X/mes porque [razon]"},'
-            + '"hipotesis_testeable":{"experimento_48h":"Crea [typeform/post] en [plataforma] midiendo [metrica]",'
-            + '"metrica_exito":"X signups/respuestas en 48h"},'
+            + '"hipotesis_testeable":{"experimento_48h":"Crea [typeform] en [plataforma] midiendo [metrica]",'
+            + '"metrica_exito":"X signups en 48h"},'
             + '"mvp":{"stack_recomendado":"Next.js+Supabase+Vercel","tiempo_semanas":3,"coste_estimado_eur":0},'
             + '"scores":{"critico":70,"viral":60,"generador":75,"monetizacion":70,"ejecutabilidad":80,"timing":75,"score_total":0},'
             + '"vertical":"SaaS","tipo":"B2B","tags":["tag_real_1","tag_real_2"]}'
         )
 
-    # Prompt completo
     return (
-        f"{tema_str}"
-        f"{diversidad}\n\n"
+        f"{tema_str}{diversidad}\n\n"
         f"Genera UNA idea de startup ORIGINAL para 2026. Score minimo: {score_obj}/100.\n\n"
         f"{instrucciones_calidad}\n"
         f"APRENDIZAJE:\n{aprendizaje if aprendizaje else 'Primera generacion.'}\n\n"
-        f"IDEAS PREVIAS (NO repetir nombre ni tema):\n{ideas_previas}\n\n"
-        f"TENDENCIAS ACTUALES (usa al menos una):\n{trends_str}\n\n"
+        f"IDEAS PREVIAS (NO repetir):\n{ideas_previas}\n\n"
+        f"TENDENCIAS (usa al menos una):\n{trends_str}\n\n"
         f"REGLAS: 0 euros para construir, primera venta en menos de 4 semanas.\n\n"
         + "{"
         + '"nombre":"NombreReal",'
         + '"tagline":"propuesta en max 10 palabras",'
-        + '"problema":"descripcion real con datos: X millones de empresas sufren Y porque Z",'
-        + '"solucion":"usamos [herramienta IA] para automatizar/resolver X en Y minutos",'
+        + '"problema":"X millones de empresas sufren Y porque Z [dato real]",'
+        + '"solucion":"usamos [herramienta IA] para resolver X en Y minutos",'
         + '"cliente_objetivo":"Director de X en empresa Y de Z empleados que sufre W",'
-        + '"propuesta_valor_unica":"unica porque competitors no hacen X por razon tecnica real",'
-        + '"herramienta_ia_clave":"nombre herramienta real de las tendencias + como se usa",'
-        + '"mercado":{"TAM":"$X billion calculado","SAM":"$X million","SOM":"$X año1",'
+        + '"propuesta_valor_unica":"unica porque competitors no hacen X por razon tecnica",'
+        + '"herramienta_ia_clave":"nombre herramienta real + como se usa exactamente",'
+        + '"mercado":{"TAM":"$X billion","SAM":"$X million","SOM":"$X año1",'
         + '"competidores":["Competitor1 (debilidad real)","Competitor2 (debilidad real)"],'
         + '"ventaja_competitiva":"por que es dificil de copiar"},'
-        + '"modelo_negocio":{"tipo":"SaaS","pricing":"EUR X/mes por que este precio",'
-        + '"canales_adquisicion":["1. Envia DM a [grupo] en [plataforma] con [mensaje exacto]","2. Publicar en [comunidad] sobre [angulo especifico]"],'
+        + '"modelo_negocio":{"tipo":"SaaS","pricing":"EUR X/mes justificado",'
+        + '"canales_adquisicion":["1. DM a [grupo] en [plataforma]","2. Post en [comunidad]"],'
         + '"time_to_revenue":"X semanas"},'
         + '"estudio_economico":{'
-        + '"conservador":{"supuestos":"5 clientes/mes CAC EUR50","mes3":{"mrr_eur":750,"usuarios":15,"cac_eur":50},"mes6":{"mrr_eur":2250,"usuarios":45},"mes12":{"mrr_eur":6000,"margen_pct":70},"mes24":{"mrr_eur":15000,"arr_eur":180000,"breakeven":"mes8"}},'
-        + '"realista":{"supuestos":"15 clientes/mes CAC EUR30","mes3":{"mrr_eur":2250,"usuarios":45,"cac_eur":30},"mes6":{"mrr_eur":6750,"usuarios":135},"mes12":{"mrr_eur":18000,"margen_pct":75},"mes24":{"mrr_eur":45000,"arr_eur":540000,"breakeven":"mes5"}},'
-        + '"optimista":{"supuestos":"30 clientes/mes CAC EUR20","mes3":{"mrr_eur":4500,"usuarios":90,"cac_eur":20},"mes6":{"mrr_eur":13500,"usuarios":270},"mes12":{"mrr_eur":36000,"margen_pct":80},"mes24":{"mrr_eur":90000,"arr_eur":1080000,"breakeven":"mes4"}}},'
-        + '"dafo":{"fortalezas":["F1 especifico","F2 especifico"],"debilidades":["D1 real","D2 real"],"oportunidades":["O1 con datos","O2 con datos"],"amenazas":["A1 especifica","A2 especifica"]},'
-        + '"mvp":{"features_minimas":["Feature1: descripcion tecnica real","Feature2: descripcion real","Feature3: descripcion real"],'
+        + '"conservador":{"supuestos":"5 clientes/mes","mes3":{"mrr_eur":750,"usuarios":15,"cac_eur":50},"mes6":{"mrr_eur":2250,"usuarios":45},"mes12":{"mrr_eur":6000,"margen_pct":70},"mes24":{"mrr_eur":15000,"arr_eur":180000,"breakeven":"mes8"}},'
+        + '"realista":{"supuestos":"15 clientes/mes","mes3":{"mrr_eur":2250,"usuarios":45,"cac_eur":30},"mes6":{"mrr_eur":6750,"usuarios":135},"mes12":{"mrr_eur":18000,"margen_pct":75},"mes24":{"mrr_eur":45000,"arr_eur":540000,"breakeven":"mes5"}},'
+        + '"optimista":{"supuestos":"30 clientes/mes","mes3":{"mrr_eur":4500,"usuarios":90,"cac_eur":20},"mes6":{"mrr_eur":13500,"usuarios":270},"mes12":{"mrr_eur":36000,"margen_pct":80},"mes24":{"mrr_eur":90000,"arr_eur":1080000,"breakeven":"mes4"}}},'
+        + '"dafo":{"fortalezas":["F1 especifico","F2 especifico"],"debilidades":["D1 real","D2 real"],"oportunidades":["O1 con datos","O2"],"amenazas":["A1","A2"]},'
+        + '"mvp":{"features_minimas":["Feature1 descripcion tecnica real","Feature2","Feature3"],'
         + '"stack_recomendado":"Next.js 14+Supabase+Vercel+Stripe","tiempo_semanas":3,"coste_estimado_eur":0},'
         + '"prompt_mvp":{'
-        + '"meta":{"nombre_idea":"NOMBRE_REAL_DE_ESTA_IDEA","objetivo":"MVP en 3 semanas 0 euros","ia_recomendada":"Claude 3.5 Sonnet en Cursor","stack_completo":"Next.js+Supabase+Vercel+Stripe"},'
-        + '"system_prompt":"Eres desarrollador senior. Construye [NOMBRE_IDEA] que resuelve [PROBLEMA_REAL]. Stack: Next.js 14, Supabase, Stripe, Tailwind, shadcn/ui.",'
-        + '"contexto_negocio":{"problema_resuelto":"[PROBLEMA_ESPECIFICO_REAL]","propuesta_valor":"[PROPUESTA_ESPECIFICA]","usuario_objetivo":"[CLIENTE_ESPECIFICO]","modelo_monetizacion":"EUR X/mes Stripe"},'
-        + '"arquitectura_tecnica":{"base_datos":"tabla users(id,email,plan), tabla [entidad_principal](id,user_id,[campos_especificos])","auth":"Supabase Auth email+Google","frontend":"Next.js 14+Tailwind+shadcn","backend":"Supabase Edge Functions","pagos":"Stripe Checkout webhook /api/stripe","deploy":"Vercel free tier"},'
-        + '"instrucciones_paso_a_paso":["1. npx create-next-app@latest --typescript --tailwind","2. supabase init + crear tablas","3. Implementar [feature_principal_especifica]","4. Stripe checkout plan EUR X/mes","5. Deploy Vercel + dominio"],'
-        + '"features_mvp":[{"nombre":"[Feature1_Real]","descripcion":"[descripcion_tecnica_real]","prioridad":"P0"}],'
-        + '"primer_cliente_script":"Manana: envia DM a [persona_especifica] en [plataforma] diciendo: [mensaje_exacto_en_menos_de_50_palabras]"},'
-        + '"estrategia_monetizacion":{"semana1":"Envia DM a [N] [perfil] en [LinkedIn/Slack/Reddit] con: [mensaje exacto de menos de 3 lineas]",'
-        + '"semana4":"Ofrece beta gratis 14 dias en [comunidad especifica] a cambio de feedback + testimonial",'
-        + '"mes3":"[estrategia concreta para 50 clientes con canal especifico]",'
-        + '"mes6":"[palanca de crecimiento: afiliados/SEO/integraciones]",'
-        + '"canales":["Canal1 con pasos reales","Canal2 con pasos reales"],'
-        + '"precio_optimo_justificado":"EUR X/mes porque competidor cobra Y y nosotros ahorramos Z horas"},'
+        + '"meta":{"nombre_idea":"NOMBRE_REAL","objetivo":"MVP 3 semanas 0 euros","ia_recomendada":"Claude 3.5 Sonnet en Cursor","stack_completo":"Next.js+Supabase+Vercel+Stripe"},'
+        + '"system_prompt":"Eres dev senior. Construye [NOMBRE] que resuelve [PROBLEMA]. Stack: Next.js 14+Supabase+Stripe+Tailwind.",'
+        + '"contexto_negocio":{"problema_resuelto":"[PROBLEMA ESPECIFICO]","propuesta_valor":"[PROPUESTA]","usuario_objetivo":"[CLIENTE]","modelo_monetizacion":"EUR X/mes Stripe"},'
+        + '"arquitectura_tecnica":{"base_datos":"tabla users, tabla [entidad](id,user_id,[campos])","auth":"Supabase Auth","frontend":"Next.js 14+Tailwind+shadcn","backend":"Edge Functions","pagos":"Stripe Checkout","deploy":"Vercel"},'
+        + '"instrucciones_paso_a_paso":["1. npx create-next-app","2. supabase init","3. Feature principal","4. Stripe","5. Deploy"],'
+        + '"features_mvp":[{"nombre":"Feature1","descripcion":"detalle tecnico real","prioridad":"P0"}],'
+        + '"primer_cliente_script":"Manana: DM a [persona] en [plataforma]: [mensaje exacto <50 palabras]"},'
+        + '"estrategia_monetizacion":{"semana1":"Envia DM a [N] [perfil] en [LinkedIn/Slack] con: [mensaje exacto]",'
+        + '"semana4":"Beta gratis 14 dias en [comunidad] a cambio de feedback",'
+        + '"mes3":"[estrategia 50 clientes canal especifico]",'
+        + '"mes6":"[palanca: afiliados/SEO/integraciones]",'
+        + '"canales":["Canal1 pasos reales","Canal2 pasos reales"],'
+        + '"precio_optimo_justificado":"EUR X/mes porque competitor cobra Y y ahorramos Z horas"},'
         + '"hipotesis_testeable":{"hipotesis_principal":"Si [perfil] usa [solucion] entonces [metrica] en [tiempo]",'
-        + '"metrica_exito":"[N] signups/respuestas en 48h = mercado validado",'
-        + '"experimento_48h":"Crea [Typeform/landing/post] en [plataforma especifica] sobre [angulo especifico] y mide [clicks/signups/replies]",'
-        + '"senal_de_alarma":"Menos de [N] respuestas en 48h = pivotar a [alternativa]"},'
-        + '"hoja_de_ruta":{"semana1":"Setup Next.js+Supabase+auth basico","semana2":"Feature principal funcional","semana3":"Stripe+deploy+dominio","semana4":"Primer cliente de pago","mes3":"[objetivo con numero]","mes6":"[objetivo con numero]"},'
-        + '"opinion_profesional":{"unicidad":"Unica HOY porque [razon especifica ligada a tendencia]",'
-        + '"riesgo_principal":"[riesgo real con probabilidad %]",'
-        + '"timing":"Por que ahora: [razon especifica con dato de mercado]",'
-        + '"dia_uno":"Manana haz: [accion especifica en menos de 30 palabras]",'
-        + '"fallo_probable":"El 60% de startups como esta fallan por [razon especifica]"},'
+        + '"metrica_exito":"[N] signups en 48h = validado",'
+        + '"experimento_48h":"Crea [Typeform/landing] en [plataforma] sobre [angulo] midiendo [clicks/signups]",'
+        + '"senal_de_alarma":"Menos de [N] respuestas en 48h = pivotar"},'
+        + '"hoja_de_ruta":{"semana1":"Setup Next.js+Supabase","semana2":"Feature principal","semana3":"Stripe+deploy","semana4":"Primer cliente pago","mes3":"[objetivo numero]","mes6":"[objetivo numero]"},'
+        + '"opinion_profesional":{"unicidad":"Unica HOY porque [razon ligada a tendencia]",'
+        + '"riesgo_principal":"[riesgo con probabilidad %]",'
+        + '"timing":"Por que ahora: [dato mercado especifico]",'
+        + '"dia_uno":"Manana: [accion especifica <30 palabras]",'
+        + '"fallo_probable":"60% falla por [razon especifica]"},'
         + '"scores":{"critico":0,"viral":0,"generador":0,"monetizacion":0,"ejecutabilidad":0,"timing":0,"score_total":0},'
-        + '"vertical":"[SaaS/Marketplace/API/Tool]","tipo":"[B2B/B2C/B2B2C]","tags":["tag_real_1","tag_real_2","tag_real_3"]'
+        + '"vertical":"SaaS","tipo":"B2B","tags":["tag1","tag2","tag3"]'
         + "}"
     )
 
@@ -231,13 +202,13 @@ def get_prompt_critico(idea):
         f"CLIENTE: {str(idea.get('cliente_objetivo',''))[:150]}\n"
         f"PRICING: {idea.get('modelo_negocio',{}).get('pricing','?') if isinstance(idea.get('modelo_negocio'),dict) else '?'}\n"
         f"SCORE: {idea.get('scores',{}).get('score_total',0) if isinstance(idea.get('scores'),dict) else 0}\n\n"
-        + 'Responde SOLO con: {"veredicto":"1 frase directa especifica sobre ESTA idea",'
-        + '"objeciones_principales":["obj1 especifica","obj2 especifica","obj3 especifica"],'
-        + '"fortalezas_reales":["f1 especifica","f2 especifica"],'
+        + 'Responde SOLO con: {"veredicto":"1 frase directa sobre ESTA idea",'
+        + '"objeciones_principales":["obj1","obj2","obj3"],'
+        + '"fortalezas_reales":["f1","f2"],'
         + '"ajuste_score":-5,'
         + '"score_critico_final":70,'
         + '"recomendacion":"invertir/pivotar/descartar",'
-        + '"pivote_sugerido":"hacia donde exactamente o null"}'
+        + '"pivote_sugerido":"hacia donde o null"}'
     )
 
 def calcular_score_ponderado(scores):
@@ -251,6 +222,24 @@ def _groq_client():
     import groq
     return groq.Groq(api_key=GROQ_API_KEY, timeout=90)
 
+def _content_to_str(content):
+    """Convierte content de Groq a string — maneja str, list y dict."""
+    if content is None:
+        return ""
+    if isinstance(content, str):
+        return content
+    if isinstance(content, list):
+        partes = []
+        for bloque in content:
+            if isinstance(bloque, dict):
+                partes.append(str(bloque.get("text", bloque.get("content", ""))))
+            else:
+                partes.append(str(bloque))
+        return " ".join(partes)
+    if isinstance(content, dict):
+        return str(content.get("text", content.get("content", str(content))))
+    return str(content)
+
 def _llamar_con_retry(client, modelo, messages, max_tokens, temperature):
     for intento in range(2):
         try:
@@ -263,8 +252,9 @@ def _llamar_con_retry(client, modelo, messages, max_tokens, temperature):
             if not resp.choices:
                 return None
             content = resp.choices[0].message.content
-            if content and content.strip():
-                return content.strip()
+            text    = _content_to_str(content).strip()
+            if text:
+                return text
             return None
         except Exception as e:
             err = str(e).lower()
@@ -273,7 +263,7 @@ def _llamar_con_retry(client, modelo, messages, max_tokens, temperature):
                 try:
                     raw = getattr(e, "response", None)
                     if raw:
-                        ra = raw.headers.get("retry-after","")
+                        ra = raw.headers.get("retry-after", "")
                         if ra:
                             wait = min(int(float(str(ra))) + 2, 20)
                 except: pass
@@ -287,13 +277,41 @@ def _llamar_con_retry(client, modelo, messages, max_tokens, temperature):
                 return None
     return None
 
+def limpiar_json(texto):
+    """Limpia y extrae JSON de la respuesta — maneja str, list, dict y None."""
+    if texto is None:
+        return "{}"
+    if isinstance(texto, dict):
+        return json.dumps(texto, ensure_ascii=False)
+    if isinstance(texto, list):
+        for item in texto:
+            if isinstance(item, str) and "{" in item:
+                texto = item
+                break
+            elif isinstance(item, dict):
+                return json.dumps(item, ensure_ascii=False)
+        else:
+            return json.dumps(texto[0] if texto else {}, ensure_ascii=False)
+    if not isinstance(texto, str):
+        texto = str(texto)
+    texto = texto.strip()
+    if "```json" in texto:
+        texto = texto.split("```json").split("```").strip()[1]
+    elif "```" in texto:
+        texto = texto.split("```").split("```")[0].strip()
+    inicio = texto.find("{")
+    fin    = texto.rfind("}")
+    if inicio != -1 and fin != -1:
+        texto = texto[inicio:fin+1]
+    return texto
+
 def llamar_groq(prompt, max_tokens=3000):
     pesos    = _cargar_pesos()
     temp     = pesos.get("temperatura_groq", 0.85)
     client   = _groq_client()
     messages = [
-        {"role":"system","content":PROMPT_SISTEMA},
-        {"role":"user","content":prompt},
+        {"role": "system", "content": PROMPT_SISTEMA},
+        {"role": "user",   "content": prompt},
     ]
     for modelo in MODELOS_GROQ:
         print(f"   Modelo: {modelo}")
@@ -307,28 +325,14 @@ def llamar_groq(prompt, max_tokens=3000):
 def llamar_groq_critico(prompt):
     client   = _groq_client()
     messages = [
-        {"role":"system","content":PROMPT_CRITICO_SISTEMA},
-        {"role":"user","content":prompt},
+        {"role": "system", "content": PROMPT_CRITICO_SISTEMA},
+        {"role": "user",   "content": prompt},
     ]
-    for modelo in ["meta-llama/llama-4-scout-17b-16e-instruct","llama-3.1-8b-instant"]:
+    for modelo in ["meta-llama/llama-4-scout-17b-16e-instruct", "llama-3.1-8b-instant"]:
         result = _llamar_con_retry(client, modelo, messages, 500, 0.6)
         if result:
             return result
     return ""
-
-def limpiar_json(texto):
-    if not isinstance(texto, str):
-        return json.dumps(texto, ensure_ascii=False)
-    texto = texto.strip()
-    if "```json" in texto:
-        texto = texto.split("```json").split("```").strip()[1]
-    elif "```" in texto:
-        texto = texto.split("```").split("```")[0].strip()
-    inicio = texto.find("{")
-    fin    = texto.rfind("}")
-    if inicio != -1 and fin != -1:
-        texto = texto[inicio:fin+1]
-    return texto
 
 def _aplicar_scoring_critico(idea):
     print("🔍 Scoring critico YC...")
@@ -339,9 +343,9 @@ def _aplicar_scoring_critico(idea):
             return idea
         critica = json.loads(limpiar_json(respuesta))
         idea["scoring_critico"] = critica
-        scores      = idea.get("scores",{}) if isinstance(idea.get("scores"),dict) else {}
-        ajuste      = int(critica.get("ajuste_score",0))
-        score_prev  = scores.get("score_total",0)
+        scores      = idea.get("scores", {}) if isinstance(idea.get("scores"), dict) else {}
+        ajuste      = int(critica.get("ajuste_score", 0))
+        score_prev  = scores.get("score_total", 0)
         score_nuevo = max(20, min(98, score_prev + ajuste))
         scores["score_total"]   = score_nuevo
         scores["score_critico"] = critica.get("score_critico_final", score_prev)
@@ -362,13 +366,14 @@ def ejecutar_batch():
 
     try:
         from agents.watchdog import (
-            registrar_exito, registrar_timeout, registrar_fallo,
+            registrar_exito, registrar_fallo,
             modo_emergencia_activo, get_nombres_bloqueados
         )
         watchdog_ok = True
     except ImportError:
         watchdog_ok = False
-        registrar_exito = registrar_timeout = registrar_fallo = lambda *a, **k: None
+        registrar_exito = lambda *a, **k: None
+        registrar_fallo = lambda *a, **k: None
         modo_emergencia_activo = lambda: False
         get_nombres_bloqueados = lambda: []
 
@@ -396,19 +401,18 @@ def ejecutar_batch():
         print(f"📊 KB: {stats.get('total_ideas',0)} ideas | Promedio: {stats.get('score_promedio',0)}")
     except Exception as e:
         print(f"⚠️ KB: {e}")
-        contexto = {"ideas_previas":"","score_promedio":0}
+        contexto = {"ideas_previas": "", "score_promedio": 0}
 
-    pesos       = _cargar_pesos()
-    umbral_dup  = pesos.get("umbral_duplicado",0.38)
-    tema        = os.environ.get("IDEA_TOPIC","")
-    emergencia  = modo_emergencia_activo()
+    pesos      = _cargar_pesos()
+    umbral_dup = pesos.get("umbral_duplicado", 0.38)
+    tema       = os.environ.get("IDEA_TOPIC", "")
+    emergencia = modo_emergencia_activo()
 
     if emergencia:
-        print("⚠️ MODO EMERGENCIA — prompt reducido activo")
+        print("⚠️ MODO EMERGENCIA activo")
     if tema:
         print(f"🎯 Tema: '{tema}'")
 
-    # Nombres bloqueados por watchdog (adicionales al anti-dup de KB)
     nombres_bloqueados = get_nombres_bloqueados()
 
     idea = None
@@ -421,41 +425,37 @@ def ejecutar_batch():
             respuesta = llamar_groq(prompt, max_tokens=3000)
         except Exception as e:
             print(f"❌ Error Groq: {e}")
-            registrar_fallo(str(e))
+            if watchdog_ok: registrar_fallo(str(e))
             return False, "", ""
 
         try:
             idea_candidata = json.loads(limpiar_json(respuesta))
         except Exception as e:
             print(f"❌ JSON invalido (intento {intento_gen+1}): {e}")
-            print(f"   Raw: {str(respuesta)[:200]}")
-            continue
-
-        # Validar que no tenga placeholders
-        calidad_ok, motivo_calidad = _validar_calidad(idea_candidata)
-        if not calidad_ok:
-            print(f"⚠️ Calidad rechazada: {motivo_calidad} — regenerando...")
-            # Forzar modo emergencia en siguiente intento si hay placeholders
+            print(f"   Raw: {str(respuesta)[:300]}")
             emergencia = True
             continue
 
-        # Anti-duplicado por nombre (watchdog)
-        nombre_candidato = idea_candidata.get("nombre","").lower()
-        bloqueado = any(nombre_candidato in n.lower() or n.lower() in nombre_candidato
-                       for n in nombres_bloqueados if n)
-        if bloqueado:
-            print(f"⚠️ Nombre '{idea_candidata.get('nombre')}' en blacklist watchdog — regenerando...")
+        calidad_ok, motivo = _validar_calidad(idea_candidata)
+        if not calidad_ok:
+            print(f"⚠️ Calidad rechazada: {motivo} — regenerando...")
+            emergencia = True
             continue
 
-        # Anti-duplicado semantico KB
+        nombre_cand = idea_candidata.get("nombre", "").lower()
+        if any(nombre_cand in n.lower() or n.lower() in nombre_cand
+               for n in nombres_bloqueados if n):
+            print(f"⚠️ Nombre bloqueado por watchdog — regenerando...")
+            continue
+
         try:
             dup, dup_nombre = es_duplicado(idea_candidata, umbral=umbral_dup)
             if dup:
-                print(f"⚠️ Duplicado KB de '{dup_nombre}' — regenerando...")
+                print(f"⚠️ Duplicado de '{dup_nombre}' — regenerando...")
                 contexto["ideas_previas"] += f"\n- DESCARTADA: '{idea_candidata.get('nombre','?')}'"
                 continue
         except Exception as e:
-            print(f"⚠️ Anti-dup KB: {e}")
+            print(f"⚠️ Anti-dup: {e}")
 
         idea = idea_candidata
         print(f"✅ Idea valida: {idea.get('nombre','?')}")
@@ -463,19 +463,17 @@ def ejecutar_batch():
 
     if not idea:
         print("❌ No se genero idea valida en 4 intentos")
-        registrar_fallo("4 intentos fallidos")
+        if watchdog_ok: registrar_fallo("4 intentos fallidos")
         return False, "", ""
 
-    nombre = idea.get("nombre","SinNombre")
+    nombre = idea.get("nombre", "SinNombre")
 
-    # Normalizar prompt_mvp
-    pm = idea.get("prompt_mvp",{})
+    pm = idea.get("prompt_mvp", {})
     if isinstance(pm, str):
         try:   idea["prompt_mvp"] = json.loads(pm)
-        except: idea["prompt_mvp"] = {"ia_recomendada":"Claude 3.5 Sonnet","primer_cliente_script":pm}
+        except: idea["prompt_mvp"] = {"ia_recomendada": "Claude 3.5 Sonnet", "primer_cliente_script": pm}
 
-    # Score inicial
-    scores = idea.get("scores",{}) if isinstance(idea.get("scores"),dict) else {}
+    scores = idea.get("scores", {}) if isinstance(idea.get("scores"), dict) else {}
     scores["score_total"] = calcular_score_ponderado(scores)
     idea["scores"] = scores
 
@@ -485,14 +483,14 @@ def ejecutar_batch():
         try:
             ev = validar_idea_fn(idea)
             idea["validacion_mercado"] = ev
-            scores = idea.get("scores",{})
-            scores["score_total"]        = ev.get("score_final_ajustado", scores.get("score_total",0))
-            scores["score_mercado_real"] = ev.get("score_mercado_real",0)
+            scores = idea.get("scores", {})
+            scores["score_total"]        = ev.get("score_final_ajustado", scores.get("score_total", 0))
+            scores["score_mercado_real"] = ev.get("score_mercado_real", 0)
             idea["scores"] = scores
         except Exception as e:
             print(f"⚠️ Validacion mercado: {e}")
 
-    score = idea.get("scores",{}).get("score_total",0)
+    score = idea.get("scores", {}).get("score_total", 0)
     print(f"📊 Score FINAL: {score}/100")
 
     try:
@@ -505,50 +503,53 @@ def ejecutar_batch():
         ruta  = "data/ideas.json"
         todas = []
         if os.path.exists(ruta):
-            with open(ruta,"r",encoding="utf-8") as f:
+            with open(ruta, "r", encoding="utf-8") as f:
                 todas = json.load(f)
         todas.append(idea)
-        with open(ruta,"w",encoding="utf-8") as f:
+        with open(ruta, "w", encoding="utf-8") as f:
             json.dump(todas, f, ensure_ascii=False, indent=2)
         print(f"💾 ideas.json: {len(todas)} total")
     except Exception as e:
         print(f"⚠️ ideas.json: {e}")
 
-    # Notion sync con diagnóstico claro
+    # Notion sync
     print("🔗 Sincronizando Notion...")
     url = ""
-    notion_token = os.environ.get("NOTION_TOKEN","")
-    notion_db    = os.environ.get("NOTION_DATABASE_ID","")
+    notion_token = os.environ.get("NOTION_TOKEN", "")
+    notion_db    = os.environ.get("NOTION_DATABASE_ID", "")
     if not notion_token:
-        print("⚠️ NOTION_TOKEN no configurado en Railway — sin link Notion")
+        print("⚠️ NOTION_TOKEN no configurado")
     elif not notion_db:
-        print("⚠️ NOTION_DATABASE_ID no configurado en Railway — sin link Notion")
+        print("⚠️ NOTION_DATABASE_ID no configurado")
     else:
         try:
             url = sync_idea_to_notion(idea)
             if url:
                 print(f"✅ Notion OK: {url}")
             else:
-                print("❌ Notion: sync_idea_to_notion devolvio URL vacia")
+                print("❌ Notion devolvio URL vacia")
         except Exception as e:
-            print(f"❌ Notion excepcion: {e}")
+            print(f"❌ Notion: {e}")
 
-    # Guardar notion_url en la idea para recuperarla
     if url:
         idea["notion_url"] = url
         try:
-            with open("data/ideas.json","r",encoding="utf-8") as f:
+            with open("data/ideas.json", "r", encoding="utf-8") as f:
                 todas = json.load(f)
             if todas:
                 todas[-1]["notion_url"] = url
-            with open("data/ideas.json","w",encoding="utf-8") as f:
+            with open("data/ideas.json", "w", encoding="utf-8") as f:
                 json.dump(todas, f, ensure_ascii=False, indent=2)
         except: pass
 
-    # Registrar exito en watchdog
-    registrar_exito(idea)
+    if watchdog_ok:
+        registrar_exito(idea)
 
-    # Aprendizaje automatico
+    try:
+        from agents.verticales_rotacion import registrar_vertical_usado
+        registrar_vertical_usado(idea.get("vertical", ""))
+    except: pass
+
     try:
         from agents.weekly_learner import analizar_y_aprender
         r = analizar_y_aprender()
@@ -556,20 +557,19 @@ def ejecutar_batch():
     except Exception as e:
         print(f"⚠️ Aprendizaje: {e}")
 
-    # Outputs para el monitor
-    herramienta = str(idea.get("herramienta_ia_clave",""))[:80]
-    tagline     = str(idea.get("tagline",""))[:100]
-    problema    = str(idea.get("problema",""))[:150]
+    herramienta = str(idea.get("herramienta_ia_clave", ""))[:80]
+    tagline     = str(idea.get("tagline", ""))[:100]
+    problema    = str(idea.get("problema", ""))[:150]
     monetiz     = ""
-    if isinstance(idea.get("estrategia_monetizacion"),dict):
-        monetiz = str(idea["estrategia_monetizacion"].get("semana1",""))[:150]
-    hipotesis   = ""
-    if isinstance(idea.get("hipotesis_testeable"),dict):
-        hipotesis = str(idea["hipotesis_testeable"].get("experimento_48h",""))[:150]
+    if isinstance(idea.get("estrategia_monetizacion"), dict):
+        monetiz = str(idea["estrategia_monetizacion"].get("semana1", ""))[:150]
+    hipotesis = ""
+    if isinstance(idea.get("hipotesis_testeable"), dict):
+        hipotesis = str(idea["hipotesis_testeable"].get("experimento_48h", ""))[:150]
     veredicto = recomendacion = ""
-    if isinstance(idea.get("scoring_critico"),dict):
-        veredicto     = str(idea["scoring_critico"].get("veredicto",""))[:150]
-        recomendacion = str(idea["scoring_critico"].get("recomendacion",""))
+    if isinstance(idea.get("scoring_critico"), dict):
+        veredicto     = str(idea["scoring_critico"].get("veredicto", ""))[:150]
+        recomendacion = str(idea["scoring_critico"].get("recomendacion", ""))
 
     print(f"SCORE_FINAL:{score}")
     print(f"HERRAMIENTA_IA:{herramienta}")
