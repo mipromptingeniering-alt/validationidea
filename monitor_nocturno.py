@@ -34,9 +34,7 @@ def get_updates(offset=0):
 # ── Helpers ──────────────────────────────────────────────────────────────────
 
 def _limpiar_tema(texto):
-    """Extrae el tema limpio del texto del usuario."""
     texto = texto.strip().lower()
-    # Eliminar comandos y palabras de relleno
     for quitar in ["/idea", "genera una idea sobre", "genera una idea de",
                    "genera idea sobre", "genera idea de", "dame una idea sobre",
                    "dame una idea de", "idea sobre", "idea de", "genera", "idea"]:
@@ -47,8 +45,8 @@ def _limpiar_tema(texto):
 def _botones_feedback(idea_nombre):
     safe = idea_nombre.replace(" ", "_")[:40]
     return {"inline_keyboard": [[
-        {"text": "👍 Buena", "callback_data": f"like_{safe}"},
-        {"text": "👎 Mala",  "callback_data": f"dislike_{safe}"},
+        {"text": "👍 Buena",   "callback_data": f"like_{safe}"},
+        {"text": "👎 Mala",    "callback_data": f"dislike_{safe}"},
         {"text": "🔖 Guardar", "callback_data": f"save_{safe}"},
     ]]}
 
@@ -102,13 +100,12 @@ def _fmt_mensaje_idea(d):
     if d.get("notion_url"):
         lineas.append(f"\n📋 <a href=\"{d['notion_url']}\">Ver informe completo en Notion</a>")
     else:
-        lineas.append("\n⚠️ Informe Notion: en cola de reintento")
+        lineas.append("\n⚠️ Notion: en cola de reintento automático")
     return "\n".join(lineas)
 
 # ── Notion retry queue ───────────────────────────────────────────────────────
 
 def _notion_retry_loop():
-    """Hilo: reintenta subir a Notion ideas que fallaron, cada 10 min."""
     while True:
         time.sleep(600)
         try:
@@ -126,7 +123,7 @@ def _notion_retry_loop():
             exitos = 0
             for row in rows:
                 if int(row.get("intentos", 1)) > 5:
-                    continue  # Abandonar tras 5 intentos
+                    continue
                 try:
                     idea = json.loads(row.get("datos_json", "{}"))
                     url  = sync_idea_to_notion(idea)
@@ -140,11 +137,10 @@ def _notion_retry_loop():
                     else:
                         row["intentos"] = int(row.get("intentos", 1)) + 1
                         pendientes_nuevos.append(row)
-                except Exception as e:
+                except Exception:
                     row["intentos"] = int(row.get("intentos", 1)) + 1
                     pendientes_nuevos.append(row)
 
-            # Reescribir cola sin los exitosos
             with open(cola_path, "w", newline="", encoding="utf-8") as f:
                 writer = csv.DictWriter(f, fieldnames=["timestamp","nombre_idea","intentos","error","datos_json"])
                 writer.writeheader()
@@ -153,7 +149,7 @@ def _notion_retry_loop():
             if exitos > 0:
                 print(f"✅ Notion retry: {exitos} ideas subidas")
         except Exception as e:
-            print(f"Notion retry loop error: {e}")
+            print(f"Notion retry: {e}")
 
 # ── Ejecucion batch ──────────────────────────────────────────────────────────
 
@@ -162,10 +158,9 @@ def ejecutar_idea(tema="", chat_id=None):
         chat_id = TELEGRAM_CHAT
     env = os.environ.copy()
 
-    # Inyectar vertical rotativo si no hay tema especifico
     if not tema:
         try:
-            from agents.verticales_rotacion import get_vertical_siguiente, get_verticales_prohibidos
+            from agents.verticales_rotacion import get_vertical_siguiente
             from agents.watchdog import get_verticales_bloqueados
             bloqueados = get_verticales_bloqueados()
             vertical   = get_vertical_siguiente(verticales_bloqueados_extra=bloqueados)
@@ -209,10 +204,9 @@ def ejecutar_idea(tema="", chat_id=None):
     if ok:
         d = _extraer_datos_salida(salida)
         if not d.get("nombre"):
-            enviar(chat_id, f"⚠️ Idea generada pero sin datos extraibles.\n{salida[-400:]}")
+            enviar(chat_id, f"⚠️ Generada pero sin datos extraibles.\n{salida[-400:]}")
             return False
 
-        # Registrar vertical usado
         try:
             from agents.verticales_rotacion import registrar_vertical_usado
             registrar_vertical_usado(env.get("IDEA_TOPIC", ""))
@@ -223,11 +217,9 @@ def ejecutar_idea(tema="", chat_id=None):
         mkup = _botones_feedback(d["nombre"])
         enviar(chat_id, msg, reply_markup=mkup)
 
-        # Alerta especial si score >= 85
         if d.get("score", 0) >= 85:
             enviar(chat_id,
-                f"🚨 <b>ALERTA IDEA TOP</b> — Score {d['score']}/100\n"
-                f"Esta idea merece atencion inmediata.\n"
+                f"🚨 <b>ALERTA IDEA TOP — {d['score']}/100</b>\n"
                 f"Usa /ejecutar {d['nombre']} para el prompt MVP completo."
             )
         return True
@@ -241,6 +233,15 @@ def ejecutar_idea(tema="", chat_id=None):
             )
             if necesita_reparacion():
                 auto_reparar(telegram_fn=enviar, chat_id=chat_id)
+                try:
+                    from agents.auto_improver import ciclo_auto_mejora
+                    threading.Thread(
+                        target=ciclo_auto_mejora,
+                        kwargs={"error_log": salida[-600:], "telegram_fn": enviar, "chat_id": chat_id},
+                        daemon=True
+                    ).start()
+                except Exception as e:
+                    print(f"Auto-improver: {e}")
                 def _reintentar():
                     time.sleep(120)
                     ejecutar_idea(tema=tema, chat_id=chat_id)
@@ -251,6 +252,17 @@ def ejecutar_idea(tema="", chat_id=None):
                            if "❌" in l or "error" in l.lower() or "Error" in l]
             error_msg = error_lines[-1][:250] if error_lines else salida[-300:]
             enviar(chat_id, f"❌ Error\n\n{error_msg}\n\nUsa /debug.")
+            # Auto-mejora reactiva
+            if wd_ok and necesita_reparacion():
+                try:
+                    from agents.auto_improver import ciclo_auto_mejora
+                    threading.Thread(
+                        target=ciclo_auto_mejora,
+                        kwargs={"error_log": salida[-600:], "telegram_fn": enviar, "chat_id": chat_id},
+                        daemon=True
+                    ).start()
+                except Exception as e:
+                    print(f"Auto-improver reactivo: {e}")
         return False
 
 # ── Debug ────────────────────────────────────────────────────────────────────
@@ -258,7 +270,6 @@ def ejecutar_idea(tema="", chat_id=None):
 def ejecutar_debug(chat_id):
     enviar(chat_id, "🔍 Ejecutando diagnostico — espera 60s...")
 
-    # Watchdog
     try:
         from agents.watchdog import get_diagnostico
         d = get_diagnostico()
@@ -276,20 +287,29 @@ def ejecutar_debug(chat_id):
     except Exception as e:
         enviar(chat_id, f"⚠️ Watchdog: {e}")
 
-    # Rotacion vertical
     try:
         from agents.verticales_rotacion import get_stats_rotacion
         r = get_stats_rotacion()
         enviar(chat_id,
             f"🎯 <b>Rotacion Vertical</b>\n"
-            f"Ciclo actual: {r['ciclo_actual']}\n"
-            f"Ultimos 5: {', '.join(r['ultimos_5']) or 'ninguno'}\n"
-            f"Disponibles restantes: {r['disponibles_restantes']}/{r['total_disponibles']}"
+            f"Ciclo: {r['ciclo_actual']} | "
+            f"Disponibles: {r['disponibles_restantes']}/{r['total_disponibles']}\n"
+            f"Ultimos 5: {', '.join(r['ultimos_5']) or 'ninguno'}"
         )
     except Exception as e:
         enviar(chat_id, f"⚠️ Rotacion: {e}")
 
-    # Variables
+    try:
+        from agents.auto_improver import get_historial_mejoras
+        h = get_historial_mejoras()
+        enviar(chat_id,
+            f"🔧 <b>Auto-mejoras</b>\n"
+            f"Total: {h['total_mejoras']} | Hoy: {h['total_hoy']}/{h['limite_dia']}\n"
+            f"Rollbacks: {h['rollbacks']}"
+        )
+    except Exception as e:
+        enviar(chat_id, f"⚠️ Auto-improver: {e}")
+
     vars_lineas = []
     for v in ["GROQ_API_KEY","TELEGRAM_BOT_TOKEN","TELEGRAM_CHAT_ID","NOTION_TOKEN","NOTION_DATABASE_ID"]:
         val    = os.environ.get(v, "")
@@ -297,7 +317,6 @@ def ejecutar_debug(chat_id):
         vars_lineas.append(f"{v}: {estado}")
     enviar(chat_id, "🔧 <b>Variables Railway</b>\n" + "\n".join(vars_lineas))
 
-    # Test run_batch
     env = os.environ.copy()
     env["IDEA_TOPIC"] = "fintech"
     try:
@@ -318,9 +337,9 @@ def ejecutar_debug(chat_id):
 
     datos   = _extraer_datos_salida(salida)
     ok_str  = "✅ 0" if ok else "❌ 1"
-    nom_str = f"✅ {datos['nombre']}" if datos["nombre"] else "❌ No encontrada"
-    sco_str = f"✅ {datos['score']}" if datos["score"] else "❌"
-    not_str = f"✅ {datos['notion_url'][:50]}" if datos["notion_url"] else "❌ Sin URL"
+    nom_str = f"✅ {datos['nombre']}"          if datos["nombre"]            else "❌ No encontrada"
+    sco_str = f"✅ {datos['score']}"           if datos["score"]             else "❌"
+    not_str = f"✅ {datos['notion_url'][:50]}" if datos["notion_url"]        else "❌ Sin URL"
     ver_str = f"✅ {datos['veredicto_critico'][:60]}" if datos["veredicto_critico"] else "❌"
     output  = salida[-1500:] if len(salida) > 1500 else salida
 
@@ -357,12 +376,12 @@ def cmd_stats(chat_id):
     try:
         from agents.knowledge_base import get_stats
         s = get_stats()
+        rot_txt = ""
         try:
             from agents.verticales_rotacion import get_stats_rotacion
             r = get_stats_rotacion()
             rot_txt = f"\nRotacion vertical: ciclo {r['ciclo_actual']} | {r['disponibles_restantes']} disponibles"
-        except:
-            rot_txt = ""
+        except: pass
         enviar(chat_id,
             f"📊 <b>Estadisticas KB</b>\n\n"
             f"Total ideas: {s.get('total_ideas',0)}\n"
@@ -429,10 +448,9 @@ def cmd_ejecutar(chat_id, nombre_idea):
         enviar(chat_id, f"❌ {e}")
 
 def cmd_comparar(chat_id, texto):
-    """Compara dos ideas: /comparar Idea1 vs Idea2"""
     partes = re.split(r"\s+vs\.?\s+", texto, flags=re.IGNORECASE)
     if len(partes) < 2:
-        enviar(chat_id, "❓ Uso: /comparar NombreIdea1 vs NombreIdea2")
+        enviar(chat_id, "❓ Uso: /comparar NombreA vs NombreB")
         return
     try:
         ruta = "data/ideas.json"
@@ -451,33 +469,27 @@ def cmd_comparar(chat_id, texto):
 
         a = _buscar(partes[0])
         b = _buscar(partes[1])
-
         if not a:
-            enviar(chat_id, f"❌ No encontre '{partes[0]}'")
-            return
+            enviar(chat_id, f"❌ No encontre '{partes[0]}'"); return
         if not b:
-            enviar(chat_id, f"❌ No encontre '{partes[1]}'")
-            return
+            enviar(chat_id, f"❌ No encontre '{partes[1]}'"); return
 
         def _sc(idea):
-            s = idea.get("scores",{}) if isinstance(idea.get("scores"),dict) else {}
-            return s
-
+            return idea.get("scores",{}) if isinstance(idea.get("scores"),dict) else {}
         def _em(idea):
             e = idea.get("estrategia_monetizacion",{})
             return e if isinstance(e,dict) else {}
 
         lineas = [f"⚔️ <b>{a['nombre']} vs {b['nombre']}</b>\n"]
-        campos = [
-            ("Score total",    _sc(a).get("score_total",0),         _sc(b).get("score_total",0)),
-            ("Ejecutabilidad", _sc(a).get("ejecutabilidad",0),       _sc(b).get("ejecutabilidad",0)),
-            ("Monetizacion",   _sc(a).get("monetizacion",0),         _sc(b).get("monetizacion",0)),
-            ("Viral",          _sc(a).get("viral",0),                _sc(b).get("viral",0)),
-            ("Timing",         _sc(a).get("timing",0),               _sc(b).get("timing",0)),
-        ]
-        for label, va, vb in campos:
-            winner = "⬅️" if va > vb else "➡️" if vb > va else "🤝"
-            lineas.append(f"{winner} <b>{label}:</b> {va} vs {vb}")
+        for label, va, vb in [
+            ("Score total",    _sc(a).get("score_total",0),    _sc(b).get("score_total",0)),
+            ("Ejecutabilidad", _sc(a).get("ejecutabilidad",0), _sc(b).get("ejecutabilidad",0)),
+            ("Monetizacion",   _sc(a).get("monetizacion",0),   _sc(b).get("monetizacion",0)),
+            ("Viral",          _sc(a).get("viral",0),          _sc(b).get("viral",0)),
+            ("Timing",         _sc(a).get("timing",0),         _sc(b).get("timing",0)),
+        ]:
+            w = "⬅️" if va > vb else "➡️" if vb > va else "🤝"
+            lineas.append(f"{w} <b>{label}:</b> {va} vs {vb}")
 
         lineas.append(f"\n💰 <b>Pricing A:</b> {_em(a).get('precio_optimo_justificado','?')[:80]}")
         lineas.append(f"💰 <b>Pricing B:</b> {_em(b).get('precio_optimo_justificado','?')[:80]}")
@@ -485,12 +497,11 @@ def cmd_comparar(chat_id, texto):
         sc_a = _sc(a).get("score_total",0)
         sc_b = _sc(b).get("score_total",0)
         if sc_a > sc_b:
-            lineas.append(f"\n🏆 Ganadora: <b>{a['nombre']}</b> (+{sc_a-sc_b} puntos)")
+            lineas.append(f"\n🏆 Ganadora: <b>{a['nombre']}</b> (+{sc_a-sc_b} pts)")
         elif sc_b > sc_a:
-            lineas.append(f"\n🏆 Ganadora: <b>{b['nombre']}</b> (+{sc_b-sc_a} puntos)")
+            lineas.append(f"\n🏆 Ganadora: <b>{b['nombre']}</b> (+{sc_b-sc_a} pts)")
         else:
-            lineas.append("\n🤝 Empate tecnico — decide por ejecutabilidad")
-
+            lineas.append("\n🤝 Empate — decide por ejecutabilidad")
         enviar(chat_id, "\n".join(lineas))
     except Exception as e:
         enviar(chat_id, f"❌ {e}")
@@ -536,7 +547,7 @@ def cmd_tendencias(chat_id):
 def cmd_cola(chat_id):
     ruta = "data/cola_pendientes.csv"
     if not os.path.exists(ruta):
-        enviar(chat_id, "✅ Cola vacia — todas las ideas en Notion.")
+        enviar(chat_id, "✅ Cola vacia.")
         return
     try:
         import csv
@@ -547,8 +558,7 @@ def cmd_cola(chat_id):
             return
         lineas = [f"🔄 <b>Cola pendientes Notion: {len(rows)}</b>\n"]
         for r in rows[-5:]:
-            intentos = r.get("intentos","1")
-            lineas.append(f"• {r.get('nombre_idea','?')} (intento {intentos}) — {r.get('error','?')[:50]}")
+            lineas.append(f"• {r.get('nombre_idea','?')} (intento {r.get('intentos','1')}) — {r.get('error','?')[:50]}")
         enviar(chat_id, "\n".join(lineas))
     except Exception as e:
         enviar(chat_id, f"❌ {e}")
@@ -563,15 +573,35 @@ def cmd_aprender(chat_id):
             f"✅ <b>Aprendizaje completado</b>\n\n"
             f"Ciclo {r.get('ciclo',0)} | {r.get('total_ideas',0)} ideas | "
             f"{r.get('ideas_exitosas',0)} exitosas ({r.get('pct_exito',0)}%)\n"
-            f"Score promedio: {r.get('score_anterior',0)} → Objetivo: {r.get('score_objetivo',0)}\n"
+            f"Score: {r.get('score_anterior',0)} → Objetivo: {r.get('score_objetivo',0)}\n"
             f"Verticales TOP: {', '.join(pesos.get('verticales_preferidas',[])[:3]) or 'N/A'}\n"
             f"Penalizadas: {', '.join(pesos.get('verticales_penalizadas',[])[:3]) or 'ninguna'}\n"
-            f"Tags exitosos: {', '.join(pesos.get('tags_exitosos',[])[:5]) or 'N/A'}\n"
+            f"Tags: {', '.join(pesos.get('tags_exitosos',[])[:5]) or 'N/A'}\n"
             f"Temperatura: {pesos.get('temperatura_groq',0.85)} | "
             f"Umbral dup: {pesos.get('umbral_duplicado',0.38)}"
         )
     except Exception as e:
         enviar(chat_id, f"❌ Aprendizaje: {e}")
+
+def cmd_mejoras(chat_id):
+    try:
+        from agents.auto_improver import get_historial_mejoras
+        h = get_historial_mejoras()
+        lineas = [
+            f"🔧 <b>Auto-mejoras aplicadas</b>\n",
+            f"Total: {h['total_mejoras']} | Hoy: {h['total_hoy']}/{h['limite_dia']}",
+            f"Rollbacks: {h['rollbacks']}\n",
+            "<b>Ultimas mejoras:</b>",
+        ]
+        for m in reversed(h["ultimas_5"]):
+            ts   = m.get("timestamp","")[:16].replace("T"," ")
+            desc = m.get("descripcion","?")[:60]
+            conf = m.get("confianza",0)
+            tipo = m.get("tipo_error","?")
+            lineas.append(f"• [{ts}] {desc}\n  Confianza: {conf}% | Tipo: {tipo}")
+        enviar(chat_id, "\n".join(lineas))
+    except Exception as e:
+        enviar(chat_id, f"❌ {e}")
 
 def cmd_status(chat_id):
     try:
@@ -597,6 +627,12 @@ def cmd_status(chat_id):
         r = get_stats_rotacion()
         rot_txt = f"\n🎯 Vertical ciclo {r['ciclo_actual']} | {r['disponibles_restantes']} disponibles"
     except: pass
+    ai_txt = ""
+    try:
+        from agents.auto_improver import get_historial_mejoras
+        h = get_historial_mejoras()
+        ai_txt = f"\n🤖 Auto-mejoras: {h['total_mejoras']} total | {h['total_hoy']}/{h['limite_dia']} hoy"
+    except: pass
     notion_ok = "✅" if os.environ.get("NOTION_TOKEN","") else "❌ Sin token"
     groq_ok   = "✅" if os.environ.get("GROQ_API_KEY","") else "❌ Sin key"
     enviar(chat_id,
@@ -606,7 +642,7 @@ def cmd_status(chat_id):
         f"Mejor: {s.get('mejor_idea','?')} ({s.get('mejor_score',0)}/100)\n\n"
         f"Groq: {groq_ok} | Notion: {notion_ok}\n"
         f"Monitor: ✅ activo — ideas cada {INTERVALO_MIN} min"
-        + wd_txt + rot_txt
+        + wd_txt + rot_txt + ai_txt
     )
 
 # ── Feedback ──────────────────────────────────────────────────────────────────
@@ -628,51 +664,11 @@ def procesar_feedback(callback_data, cb_id):
         elif callback_data.startswith("save_"):
             nombre = callback_data[5:].replace("_"," ")
             registrar_feedback(nombre, True)
-            _post("answerCallbackQuery",{"callback_query_id":cb_id,"text":"🔖 Guardada en favoritos"})
+            _post("answerCallbackQuery",{"callback_query_id":cb_id,"text":"🔖 Guardada"})
     except Exception as e:
         print(f"Feedback: {e}")
 
-# ── Log diario ────────────────────────────────────────────────────────────────
-
-def log_diario():
-    """Envia resumen a las 9:00 cada dia."""
-    while True:
-        ahora   = datetime.now()
-        proxima = ahora.replace(hour=9, minute=0, second=0, microsecond=0)
-        if ahora >= proxima:
-            proxima += timedelta(days=1)
-        time.sleep((proxima - ahora).total_seconds())
-        try:
-            from agents.knowledge_base import get_stats
-            s = get_stats()
-            try:
-                from agents.watchdog import get_diagnostico
-                d = get_diagnostico()
-                wd_str = f"Timeouts ayer: {d.get('consecutive_timeouts',0)}"
-            except:
-                wd_str = ""
-            try:
-                from agents.verticales_rotacion import get_stats_rotacion
-                r = get_stats_rotacion()
-                rot_str = f"Ciclo vertical: {r['ciclo_actual']}"
-            except:
-                rot_str = ""
-            if TELEGRAM_CHAT:
-                enviar(TELEGRAM_CHAT,
-                    f"☀️ <b>Resumen diario ValidationIdea</b>\n"
-                    f"{datetime.now().strftime('%d/%m/%Y')}\n\n"
-                    f"📊 Total ideas: {s.get('total_ideas',0)}\n"
-                    f"🏆 Score promedio: {s.get('score_promedio',0)}/100\n"
-                    f"⭐ Mejor de ayer: {s.get('mejor_idea','?')} ({s.get('mejor_score',0)}/100)\n"
-                    f"📅 Generadas hoy: {s.get('ideas_hoy',0)}\n"
-                    + (f"🔧 {wd_str}\n" if wd_str else "")
-                    + (f"🎯 {rot_str}\n" if rot_str else "")
-                    + f"\nUsa /top para ver las mejores ideas."
-                )
-        except Exception as e:
-            print(f"Log diario: {e}")
-
-# ── Aprendizaje diario ────────────────────────────────────────────────────────
+# ── Hilos periodicos ──────────────────────────────────────────────────────────
 
 def aprendizaje_diario():
     while True:
@@ -694,8 +690,33 @@ def aprendizaje_diario():
                 )
         except Exception as e:
             print(f"Aprendizaje diario: {e}")
+        # Mejora proactiva justo despues del aprendizaje
+        try:
+            from agents.auto_improver import ciclo_auto_mejora
+            ciclo_auto_mejora(telegram_fn=enviar, chat_id=TELEGRAM_CHAT)
+        except Exception as e:
+            print(f"Mejora proactiva diaria: {e}")
 
-# ── Watchdog monitor ──────────────────────────────────────────────────────────
+def log_diario():
+    while True:
+        ahora   = datetime.now()
+        proxima = ahora.replace(hour=9, minute=0, second=0, microsecond=0)
+        if ahora >= proxima:
+            proxima += timedelta(days=1)
+        time.sleep((proxima - ahora).total_seconds())
+        try:
+            from agents.knowledge_base import get_stats
+            s = get_stats()
+            if TELEGRAM_CHAT:
+                enviar(TELEGRAM_CHAT,
+                    f"☀️ <b>Resumen diario</b> — {datetime.now().strftime('%d/%m/%Y')}\n\n"
+                    f"📊 Total ideas: {s.get('total_ideas',0)}\n"
+                    f"🏆 Score promedio: {s.get('score_promedio',0)}/100\n"
+                    f"⭐ Mejor: {s.get('mejor_idea','?')} ({s.get('mejor_score',0)}/100)\n\n"
+                    f"Usa /top para ver las mejores."
+                )
+        except Exception as e:
+            print(f"Log diario: {e}")
 
 def monitor_watchdog():
     while True:
@@ -726,7 +747,7 @@ def bot_loop():
                     continue
 
                 msg  = upd.get("message", {})
-                text = msg.get("text", "").strip()
+                text = msg.get("text","").strip()
                 chat = str(msg.get("chat",{}).get("id",""))
                 if not text or not chat:
                     continue
@@ -735,23 +756,24 @@ def bot_loop():
 
                 if tl in ("/start", "/help"):
                     enviar(chat,
-                        "🤖 ValidationIdea Bot v6\n\n"
-                        "Comandos:\n"
+                        "🤖 <b>ValidationIdea Bot v6</b>\n\n"
                         "💡 /idea [tema] — Genera idea\n"
                         "📊 /status — Estado del sistema\n"
                         "🏆 /top — Top 5 mejores ideas\n"
                         "📋 /stats — Estadisticas KB\n"
                         "🚀 /ranking — Top 5 más ejecutables\n"
                         "🛠️ /ejecutar [nombre] — Prompt MVP\n"
-                        "⚔️ /comparar [A] vs [B] — Compara 2 ideas\n"
+                        "⚔️ /comparar [A] vs [B] — Compara ideas\n"
                         "🔍 /buscar [palabra] — Buscar ideas\n"
                         "🌐 /tendencias — Tendencias tech\n"
-                        "🔄 /cola — Ideas pendientes Notion\n"
+                        "🔄 /cola — Cola Notion pendiente\n"
                         "🧠 /aprender — Aprendizaje manual\n"
+                        "🔧 /mejoras — Historial auto-mejoras\n"
+                        "⏪ /rollback — Revertir ultima mejora\n"
+                        "🤖 /mejorar — Forzar auto-mejora ahora\n"
                         "🐛 /debug — Diagnostico completo\n\n"
-                        "Feedback: 👍 / 👎 / 🔖\n"
-                        "Auto-reparacion: activa\n"
-                        "Aprendizaje: diario 08:00"
+                        "Feedback: 👍 👎 🔖 en cada idea\n"
+                        "Auto-reparacion activa 24/7"
                     )
 
                 elif tl.startswith("/idea"):
@@ -786,11 +808,11 @@ def bot_loop():
                         cmd_ejecutar(chat, nombre)
 
                 elif tl.startswith("/comparar"):
-                    texto_cmp = text[9:].strip()
-                    if not texto_cmp:
+                    txt_cmp = text[9:].strip()
+                    if not txt_cmp:
                         enviar(chat, "❓ Uso: /comparar Idea1 vs Idea2")
                     else:
-                        cmd_comparar(chat, texto_cmp)
+                        cmd_comparar(chat, txt_cmp)
 
                 elif tl.startswith("/buscar"):
                     q = text[7:].strip()
@@ -808,8 +830,34 @@ def bot_loop():
                 elif tl == "/aprender":
                     threading.Thread(target=cmd_aprender, args=(chat,), daemon=True).start()
 
+                elif tl == "/mejoras":
+                    cmd_mejoras(chat)
+
+                elif tl == "/rollback":
+                    try:
+                        from agents.auto_improver import rollback_ultimo_fix
+                        threading.Thread(
+                            target=rollback_ultimo_fix,
+                            kwargs={"telegram_fn": enviar, "chat_id": chat},
+                            daemon=True
+                        ).start()
+                        enviar(chat, "⏪ Ejecutando rollback...")
+                    except Exception as e:
+                        enviar(chat, f"❌ {e}")
+
+                elif tl == "/mejorar":
+                    enviar(chat, "🤖 Iniciando ciclo de auto-mejora proactiva...")
+                    def _mejora():
+                        try:
+                            from agents.auto_improver import ciclo_auto_mejora
+                            ok = ciclo_auto_mejora(telegram_fn=enviar, chat_id=chat)
+                            if not ok:
+                                enviar(chat, "ℹ️ Sin mejora con confianza suficiente ahora.")
+                        except Exception as e:
+                            enviar(chat, f"❌ {e}")
+                    threading.Thread(target=_mejora, daemon=True).start()
+
                 else:
-                    # NLP mejorado
                     tema_nlp = ""
                     if any(x in tl for x in ["genera","idea","dame"]):
                         tema_nlp = _limpiar_tema(tl)
@@ -818,8 +866,8 @@ def bot_loop():
                     elif any(x in tl for x in ["top","mejor"]):
                         cmd_top(chat); continue
                     elif any(x in tl for x in ["busca","buscar"]):
-                        q = re.sub(r"busca[r]?\s*","", tl).strip()
-                        cmd_buscar(chat, q) if q else enviar(chat,"❓ /buscar fintech")
+                        q = re.sub(r"busca[r]?\s*","",tl).strip()
+                        cmd_buscar(chat,q) if q else enviar(chat,"❓ /buscar fintech")
                         continue
                     elif "tendencia" in tl:
                         cmd_tendencias(chat); continue
@@ -847,14 +895,12 @@ def bot_loop():
 # ── Main ──────────────────────────────────────────────────────────────────────
 
 def main():
-    # Health server para Railway keepalive
     try:
         from agents.health_server import iniciar_health_server
         iniciar_health_server()
     except Exception as e:
         print(f"Health server: {e}")
 
-    # Migrar KB
     try:
         from agents.knowledge_base import migrar_si_necesario, get_stats
         migrar_si_necesario()
@@ -872,18 +918,18 @@ def main():
     if TELEGRAM_CHAT:
         enviar(TELEGRAM_CHAT,
             f"🟢 <b>Monitor ValidationIdea v6 arrancado</b>\n\n"
-            f"✅ Ideas cada {INTERVALO_MIN} min — verticals rotativos\n"
+            f"✅ Ideas cada {INTERVALO_MIN} min — verticales rotativos\n"
             f"✅ Anti-placeholders + calidad garantizada\n"
             f"✅ Watchdog + auto-reparacion\n"
+            f"✅ Auto-mejora via Groq + git push\n"
             f"✅ Notion retry automatico cada 10 min\n"
-            f"✅ Alerta especial ideas >85 puntos\n"
-            f"✅ /comparar para comparar dos ideas\n"
+            f"✅ Alerta especial ideas +85 puntos\n"
+            f"✅ /comparar, /mejoras, /rollback, /mejorar\n"
             f"✅ Health check HTTP activo\n"
-            f"✅ Log diario 09:00 + Aprendizaje 08:00\n\n"
-            f"📱 /start para ver comandos"
+            f"✅ Log 09:00 + Aprendizaje 08:00\n\n"
+            f"📱 /start para ver todos los comandos"
         )
 
-    # Hilos daemon
     threading.Thread(target=bot_loop,           daemon=True).start()
     threading.Thread(target=aprendizaje_diario,  daemon=True).start()
     threading.Thread(target=log_diario,           daemon=True).start()
