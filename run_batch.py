@@ -31,8 +31,54 @@ PLACEHOLDERS_PROHIBIDOS = [
     "nombre real", "problema real", "propuesta real",
     "cliente real", "pricing real", "canal1", "canal2",
     "f1 detalle tecnico", "tag1", "tag2", "rival1", "rival2",
-    "hito", "descripcion extensa",
 ]
+
+# ── Utilidades base ──────────────────────────────────────────────────────────
+
+def _cualquier_cosa_a_str(valor):
+    """Convierte CUALQUIER tipo a string de forma segura. Nunca falla."""
+    if valor is None:
+        return ""
+    if isinstance(valor, str):
+        return valor
+    if isinstance(valor, list):
+        partes = []
+        for item in valor:
+            if isinstance(item, dict):
+                partes.append(str(item.get("text", item.get("content", str(item)))))
+            else:
+                partes.append(str(item))
+        return "".join(partes)
+    if isinstance(valor, dict):
+        return str(valor.get("text", valor.get("content", str(valor))))
+    return str(valor)
+
+def limpiar_json(texto):
+    """Extrae JSON valido de cualquier tipo de entrada. Nunca lanza excepciones."""
+    # Paso 1: convertir a string sea lo que sea
+    texto = _cualquier_cosa_a_str(texto)
+    if not texto:
+        return "{}"
+    texto = texto.strip()
+    # Paso 2: quitar bloques markdown
+    if "```json" in texto:
+        partes = texto.split("```json")
+        if len(partes) > 1:
+            texto = partes[1].split("```").strip()
+    elif "```" in texto:
+        partes = texto.split("```")
+        # Buscar el bloque que contenga un JSON
+        for parte in partes:
+            parte = parte.strip()
+            if parte.startswith("{") or parte.startswith("["):
+                texto = parte
+                break
+    # Paso 3: extraer solo desde { hasta }
+    inicio = texto.find("{")
+    fin    = texto.rfind("}")
+    if inicio != -1 and fin != -1 and fin > inicio:
+        return texto[inicio:fin+1]
+    return texto
 
 def _cargar_pesos():
     try:
@@ -48,11 +94,13 @@ def _cargar_pesos():
             "score_objetivo": 75,
         }
 
+# ── Validacion calidad ───────────────────────────────────────────────────────
+
 def _validar_calidad(idea):
     try:
         from agents.watchdog import registrar_placeholder
     except ImportError:
-        registrar_placeholder = lambda x: None
+        def registrar_placeholder(x): pass
 
     texto_completo = json.dumps(idea, ensure_ascii=False).lower()
     for ph in PLACEHOLDERS_PROHIBIDOS:
@@ -63,7 +111,7 @@ def _validar_calidad(idea):
     for campo in ["nombre", "problema", "solucion", "cliente_objetivo", "tagline"]:
         val = str(idea.get(campo, "")).strip()
         if not val or len(val) < 15:
-            return False, f"Campo '{campo}' vacio"
+            return False, f"Campo '{campo}' vacio o muy corto"
 
     em = idea.get("estrategia_monetizacion", {})
     if isinstance(em, dict):
@@ -92,8 +140,10 @@ def _get_instruccion_diversidad():
     if palabras:
         lineas.append(f"TEMAS PROHIBIDOS: {', '.join(palabras[:10])}")
     if lineas:
-        lineas.append("Elige un vertical COMPLETAMENTE DIFERENTE.")
+        lineas.append("Elige un vertical COMPLETAMENTE DIFERENTE a los anteriores.")
     return "\n".join(lineas)
+
+# ── Prompts ──────────────────────────────────────────────────────────────────
 
 def get_prompt_idea(contexto, tendencias, tema="", modo_emergencia=False):
     pesos         = _cargar_pesos()
@@ -105,7 +155,7 @@ def get_prompt_idea(contexto, tendencias, tema="", modo_emergencia=False):
 
     aprendizaje = ""
     if pesos.get("verticales_preferidas"):
-        aprendizaje += "Verticales con exito: " + ", ".join(pesos["verticales_preferidas"][:3]) + "\n"
+        aprendizaje = "Verticales con exito: " + ", ".join(pesos["verticales_preferidas"][:3]) + "\n"
 
     instrucciones_calidad = (
         "CALIDAD OBLIGATORIA — PROHIBIDO texto generico:\n"
@@ -122,18 +172,18 @@ def get_prompt_idea(contexto, tendencias, tema="", modo_emergencia=False):
             f"{instrucciones_calidad}\n"
             f"TENDENCIAS: {trends_str}\n\n"
             f"IDEAS PREVIAS (NO repetir): {ideas_previas[:300]}\n\n"
-            + '{"nombre":"string","tagline":"max 10 palabras",'
-            + '"problema":"descripcion real con datos",'
-            + '"solucion":"como la IA lo resuelve",'
-            + '"cliente_objetivo":"cargo empresa sector dolor",'
-            + '"herramienta_ia_clave":"herramienta real de tendencias",'
-            + '"estrategia_monetizacion":{"semana1":"DM a [grupo] en [plataforma] ofreciendo [X]",'
-            + '"precio_optimo_justificado":"EUR X/mes porque [razon]"},'
-            + '"hipotesis_testeable":{"experimento_48h":"Crea [typeform] en [plataforma] midiendo [metrica]",'
-            + '"metrica_exito":"X signups en 48h"},'
-            + '"mvp":{"stack_recomendado":"Next.js+Supabase+Vercel","tiempo_semanas":3,"coste_estimado_eur":0},'
-            + '"scores":{"critico":70,"viral":60,"generador":75,"monetizacion":70,"ejecutabilidad":80,"timing":75,"score_total":0},'
-            + '"vertical":"SaaS","tipo":"B2B","tags":["tag_real_1","tag_real_2"]}'
+            '{"nombre":"string","tagline":"max 10 palabras",'
+            '"problema":"descripcion real con datos",'
+            '"solucion":"como la IA lo resuelve",'
+            '"cliente_objetivo":"cargo empresa sector dolor",'
+            '"herramienta_ia_clave":"herramienta real",'
+            '"estrategia_monetizacion":{"semana1":"DM a [grupo] en [plataforma]",'
+            '"precio_optimo_justificado":"EUR X/mes porque [razon]"},'
+            '"hipotesis_testeable":{"experimento_48h":"Crea [typeform] midiendo [metrica]",'
+            '"metrica_exito":"X signups en 48h"},'
+            '"mvp":{"stack_recomendado":"Next.js+Supabase+Vercel","tiempo_semanas":3,"coste_estimado_eur":0},'
+            '"scores":{"critico":70,"viral":60,"generador":75,"monetizacion":70,"ejecutabilidad":80,"timing":75,"score_total":0},'
+            '"vertical":"SaaS","tipo":"B2B","tags":["tag1","tag2"]}'
         )
 
     return (
@@ -144,54 +194,48 @@ def get_prompt_idea(contexto, tendencias, tema="", modo_emergencia=False):
         f"IDEAS PREVIAS (NO repetir):\n{ideas_previas}\n\n"
         f"TENDENCIAS (usa al menos una):\n{trends_str}\n\n"
         f"REGLAS: 0 euros para construir, primera venta en menos de 4 semanas.\n\n"
-        + "{"
-        + '"nombre":"NombreReal",'
-        + '"tagline":"propuesta en max 10 palabras",'
-        + '"problema":"X millones de empresas sufren Y porque Z [dato real]",'
-        + '"solucion":"usamos [herramienta IA] para resolver X en Y minutos",'
-        + '"cliente_objetivo":"Director de X en empresa Y de Z empleados que sufre W",'
-        + '"propuesta_valor_unica":"unica porque competitors no hacen X por razon tecnica",'
-        + '"herramienta_ia_clave":"nombre herramienta real + como se usa exactamente",'
-        + '"mercado":{"TAM":"$X billion","SAM":"$X million","SOM":"$X año1",'
-        + '"competidores":["Competitor1 (debilidad real)","Competitor2 (debilidad real)"],'
-        + '"ventaja_competitiva":"por que es dificil de copiar"},'
-        + '"modelo_negocio":{"tipo":"SaaS","pricing":"EUR X/mes justificado",'
-        + '"canales_adquisicion":["1. DM a [grupo] en [plataforma]","2. Post en [comunidad]"],'
-        + '"time_to_revenue":"X semanas"},'
-        + '"estudio_economico":{'
-        + '"conservador":{"supuestos":"5 clientes/mes","mes3":{"mrr_eur":750,"usuarios":15,"cac_eur":50},"mes6":{"mrr_eur":2250,"usuarios":45},"mes12":{"mrr_eur":6000,"margen_pct":70},"mes24":{"mrr_eur":15000,"arr_eur":180000,"breakeven":"mes8"}},'
-        + '"realista":{"supuestos":"15 clientes/mes","mes3":{"mrr_eur":2250,"usuarios":45,"cac_eur":30},"mes6":{"mrr_eur":6750,"usuarios":135},"mes12":{"mrr_eur":18000,"margen_pct":75},"mes24":{"mrr_eur":45000,"arr_eur":540000,"breakeven":"mes5"}},'
-        + '"optimista":{"supuestos":"30 clientes/mes","mes3":{"mrr_eur":4500,"usuarios":90,"cac_eur":20},"mes6":{"mrr_eur":13500,"usuarios":270},"mes12":{"mrr_eur":36000,"margen_pct":80},"mes24":{"mrr_eur":90000,"arr_eur":1080000,"breakeven":"mes4"}}},'
-        + '"dafo":{"fortalezas":["F1 especifico","F2 especifico"],"debilidades":["D1 real","D2 real"],"oportunidades":["O1 con datos","O2"],"amenazas":["A1","A2"]},'
-        + '"mvp":{"features_minimas":["Feature1 descripcion tecnica real","Feature2","Feature3"],'
-        + '"stack_recomendado":"Next.js 14+Supabase+Vercel+Stripe","tiempo_semanas":3,"coste_estimado_eur":0},'
-        + '"prompt_mvp":{'
-        + '"meta":{"nombre_idea":"NOMBRE_REAL","objetivo":"MVP 3 semanas 0 euros","ia_recomendada":"Claude 3.5 Sonnet en Cursor","stack_completo":"Next.js+Supabase+Vercel+Stripe"},'
-        + '"system_prompt":"Eres dev senior. Construye [NOMBRE] que resuelve [PROBLEMA]. Stack: Next.js 14+Supabase+Stripe+Tailwind.",'
-        + '"contexto_negocio":{"problema_resuelto":"[PROBLEMA ESPECIFICO]","propuesta_valor":"[PROPUESTA]","usuario_objetivo":"[CLIENTE]","modelo_monetizacion":"EUR X/mes Stripe"},'
-        + '"arquitectura_tecnica":{"base_datos":"tabla users, tabla [entidad](id,user_id,[campos])","auth":"Supabase Auth","frontend":"Next.js 14+Tailwind+shadcn","backend":"Edge Functions","pagos":"Stripe Checkout","deploy":"Vercel"},'
-        + '"instrucciones_paso_a_paso":["1. npx create-next-app","2. supabase init","3. Feature principal","4. Stripe","5. Deploy"],'
-        + '"features_mvp":[{"nombre":"Feature1","descripcion":"detalle tecnico real","prioridad":"P0"}],'
-        + '"primer_cliente_script":"Manana: DM a [persona] en [plataforma]: [mensaje exacto <50 palabras]"},'
-        + '"estrategia_monetizacion":{"semana1":"Envia DM a [N] [perfil] en [LinkedIn/Slack] con: [mensaje exacto]",'
-        + '"semana4":"Beta gratis 14 dias en [comunidad] a cambio de feedback",'
-        + '"mes3":"[estrategia 50 clientes canal especifico]",'
-        + '"mes6":"[palanca: afiliados/SEO/integraciones]",'
-        + '"canales":["Canal1 pasos reales","Canal2 pasos reales"],'
-        + '"precio_optimo_justificado":"EUR X/mes porque competitor cobra Y y ahorramos Z horas"},'
-        + '"hipotesis_testeable":{"hipotesis_principal":"Si [perfil] usa [solucion] entonces [metrica] en [tiempo]",'
-        + '"metrica_exito":"[N] signups en 48h = validado",'
-        + '"experimento_48h":"Crea [Typeform/landing] en [plataforma] sobre [angulo] midiendo [clicks/signups]",'
-        + '"senal_de_alarma":"Menos de [N] respuestas en 48h = pivotar"},'
-        + '"hoja_de_ruta":{"semana1":"Setup Next.js+Supabase","semana2":"Feature principal","semana3":"Stripe+deploy","semana4":"Primer cliente pago","mes3":"[objetivo numero]","mes6":"[objetivo numero]"},'
-        + '"opinion_profesional":{"unicidad":"Unica HOY porque [razon ligada a tendencia]",'
-        + '"riesgo_principal":"[riesgo con probabilidad %]",'
-        + '"timing":"Por que ahora: [dato mercado especifico]",'
-        + '"dia_uno":"Manana: [accion especifica <30 palabras]",'
-        + '"fallo_probable":"60% falla por [razon especifica]"},'
-        + '"scores":{"critico":0,"viral":0,"generador":0,"monetizacion":0,"ejecutabilidad":0,"timing":0,"score_total":0},'
-        + '"vertical":"SaaS","tipo":"B2B","tags":["tag1","tag2","tag3"]'
-        + "}"
+        '{"nombre":"NombreReal",'
+        '"tagline":"propuesta en max 10 palabras",'
+        '"problema":"X millones de empresas sufren Y porque Z [dato real]",'
+        '"solucion":"usamos [herramienta IA] para resolver X en Y minutos",'
+        '"cliente_objetivo":"Director de X en empresa Y de Z empleados",'
+        '"propuesta_valor_unica":"unica porque competitors no hacen X",'
+        '"herramienta_ia_clave":"nombre herramienta real + como se usa",'
+        '"mercado":{"TAM":"$X billion","SAM":"$X million","SOM":"$X año1",'
+        '"competidores":["Competitor1 (debilidad real)","Competitor2 (debilidad real)"],'
+        '"ventaja_competitiva":"por que es dificil de copiar"},'
+        '"modelo_negocio":{"tipo":"SaaS","pricing":"EUR X/mes justificado",'
+        '"canales_adquisicion":["1. DM a [grupo] en [plataforma]","2. Post en [comunidad]"],'
+        '"time_to_revenue":"X semanas"},'
+        '"estudio_economico":{'
+        '"conservador":{"mes3":{"mrr_eur":750,"usuarios":15},"mes12":{"mrr_eur":6000},"breakeven":"mes8"},'
+        '"realista":{"mes3":{"mrr_eur":2250,"usuarios":45},"mes12":{"mrr_eur":18000},"breakeven":"mes5"},'
+        '"optimista":{"mes3":{"mrr_eur":4500,"usuarios":90},"mes12":{"mrr_eur":36000},"breakeven":"mes4"}},'
+        '"dafo":{"fortalezas":["F1","F2"],"debilidades":["D1","D2"],"oportunidades":["O1"],"amenazas":["A1"]},'
+        '"mvp":{"features_minimas":["Feature1 real","Feature2","Feature3"],'
+        '"stack_recomendado":"Next.js 14+Supabase+Vercel+Stripe","tiempo_semanas":3,"coste_estimado_eur":0},'
+        '"prompt_mvp":{'
+        '"meta":{"nombre_idea":"NOMBRE","objetivo":"MVP 3 semanas","ia_recomendada":"Claude 3.5 Sonnet","stack_completo":"Next.js+Supabase+Vercel+Stripe"},'
+        '"system_prompt":"Eres dev senior. Construye [NOMBRE] que resuelve [PROBLEMA].",'
+        '"instrucciones_paso_a_paso":["1. npx create-next-app","2. supabase init","3. Feature principal","4. Stripe","5. Deploy"],'
+        '"primer_cliente_script":"Manana: DM a [persona] en [plataforma]: [mensaje exacto <50 palabras]"},'
+        '"estrategia_monetizacion":{"semana1":"Envia DM a [N] [perfil] en [LinkedIn] con: [mensaje exacto]",'
+        '"semana4":"Beta gratis 14 dias a cambio de feedback",'
+        '"mes3":"[estrategia 50 clientes]",'
+        '"canales":["Canal1 pasos reales","Canal2"],'
+        '"precio_optimo_justificado":"EUR X/mes porque competitor cobra Y"},'
+        '"hipotesis_testeable":{"hipotesis_principal":"Si [perfil] usa [solucion] entonces [metrica]",'
+        '"metrica_exito":"[N] signups en 48h",'
+        '"experimento_48h":"Crea [Typeform] en [plataforma] midiendo [clicks]",'
+        '"senal_de_alarma":"Menos de [N] respuestas = pivotar"},'
+        '"hoja_de_ruta":{"semana1":"Setup Next.js+Supabase","semana2":"Feature principal","semana3":"Stripe+deploy","semana4":"Primer cliente pago"},'
+        '"opinion_profesional":{"unicidad":"Unica HOY porque [razon]",'
+        '"riesgo_principal":"[riesgo %]","timing":"Por que ahora: [dato]",'
+        '"dia_uno":"Manana: [accion <30 palabras]",'
+        '"fallo_probable":"60% falla por [razon]"},'
+        '"scores":{"critico":0,"viral":0,"generador":0,"monetizacion":0,"ejecutabilidad":0,"timing":0,"score_total":0},'
+        '"vertical":"SaaS","tipo":"B2B","tags":["tag1","tag2","tag3"]'
+        "}"
     )
 
 def get_prompt_critico(idea):
@@ -200,15 +244,14 @@ def get_prompt_critico(idea):
         f"NOMBRE: {idea.get('nombre','?')}\n"
         f"PROBLEMA: {str(idea.get('problema',''))[:250]}\n"
         f"CLIENTE: {str(idea.get('cliente_objetivo',''))[:150]}\n"
-        f"PRICING: {idea.get('modelo_negocio',{}).get('pricing','?') if isinstance(idea.get('modelo_negocio'),dict) else '?'}\n"
         f"SCORE: {idea.get('scores',{}).get('score_total',0) if isinstance(idea.get('scores'),dict) else 0}\n\n"
-        + 'Responde SOLO con: {"veredicto":"1 frase directa sobre ESTA idea",'
-        + '"objeciones_principales":["obj1","obj2","obj3"],'
-        + '"fortalezas_reales":["f1","f2"],'
-        + '"ajuste_score":-5,'
-        + '"score_critico_final":70,'
-        + '"recomendacion":"invertir/pivotar/descartar",'
-        + '"pivote_sugerido":"hacia donde o null"}'
+        '{"veredicto":"1 frase directa",'
+        '"objeciones_principales":["obj1","obj2"],'
+        '"fortalezas_reales":["f1","f2"],'
+        '"ajuste_score":-5,'
+        '"score_critico_final":70,'
+        '"recomendacion":"invertir/pivotar/descartar",'
+        '"pivote_sugerido":"hacia donde o null"}'
     )
 
 def calcular_score_ponderado(scores):
@@ -216,46 +259,27 @@ def calcular_score_ponderado(scores):
         "critico":0.25,"generador":0.25,"ejecutabilidad":0.20,
         "monetizacion":0.15,"timing":0.10,"viral":0.05
     }
-    return round(sum(scores.get(k,0)*v for k,v in pesos.items()), 1)
+    return round(sum(scores.get(k, 0) * v for k, v in pesos.items()), 1)
+
+# ── Cliente Groq ─────────────────────────────────────────────────────────────
 
 def _groq_client():
     import groq
     return groq.Groq(api_key=GROQ_API_KEY, timeout=90)
 
-def _content_to_str(content):
-    """Convierte content de Groq a string — maneja str, list y dict."""
-    if content is None:
-        return ""
-    if isinstance(content, str):
-        return content
-    if isinstance(content, list):
-        partes = []
-        for bloque in content:
-            if isinstance(bloque, dict):
-                partes.append(str(bloque.get("text", bloque.get("content", ""))))
-            else:
-                partes.append(str(bloque))
-        return " ".join(partes)
-    if isinstance(content, dict):
-        return str(content.get("text", content.get("content", str(content))))
-    return str(content)
-
 def _llamar_con_retry(client, modelo, messages, max_tokens, temperature):
     for intento in range(2):
         try:
             resp = client.chat.completions.create(
-                model=modelo,
-                messages=messages,
-                max_tokens=max_tokens,
-                temperature=temperature,
+                model=modelo, messages=messages,
+                max_tokens=max_tokens, temperature=temperature,
             )
             if not resp.choices:
                 return None
-            content = resp.choices[0].message.content
-            text    = _content_to_str(content).strip()
-            if text:
-                return text
-            return None
+            # TRIPLE PROTECCION: _cualquier_cosa_a_str maneja str/list/dict/None
+            raw_content = resp.choices.message.content
+            text        = _cualquier_cosa_a_str(raw_content).strip()
+            return text if text else None
         except Exception as e:
             err = str(e).lower()
             if "rate" in err or "429" in err or "limit" in err:
@@ -263,7 +287,7 @@ def _llamar_con_retry(client, modelo, messages, max_tokens, temperature):
                 try:
                     raw = getattr(e, "response", None)
                     if raw:
-                        ra = raw.headers.get("retry-after", "")
+                        ra = raw.headers.get("retry-after","")
                         if ra:
                             wait = min(int(float(str(ra))) + 2, 20)
                 except: pass
@@ -276,34 +300,6 @@ def _llamar_con_retry(client, modelo, messages, max_tokens, temperature):
                 print(f"   ❌ {modelo}: {str(e)[:100]}")
                 return None
     return None
-
-def limpiar_json(texto):
-    """Limpia y extrae JSON de la respuesta — maneja str, list, dict y None."""
-    if texto is None:
-        return "{}"
-    if isinstance(texto, dict):
-        return json.dumps(texto, ensure_ascii=False)
-    if isinstance(texto, list):
-        for item in texto:
-            if isinstance(item, str) and "{" in item:
-                texto = item
-                break
-            elif isinstance(item, dict):
-                return json.dumps(item, ensure_ascii=False)
-        else:
-            return json.dumps(texto[0] if texto else {}, ensure_ascii=False)
-    if not isinstance(texto, str):
-        texto = str(texto)
-    texto = texto.strip()
-    if "```json" in texto:
-        texto = texto.split("```json").split("```").strip()[1]
-    elif "```" in texto:
-        texto = texto.split("```").split("```")[0].strip()
-    inicio = texto.find("{")
-    fin    = texto.rfind("}")
-    if inicio != -1 and fin != -1:
-        texto = texto[inicio:fin+1]
-    return texto
 
 def llamar_groq(prompt, max_tokens=3000):
     pesos    = _cargar_pesos()
@@ -341,11 +337,12 @@ def _aplicar_scoring_critico(idea):
         respuesta = llamar_groq_critico(get_prompt_critico(idea))
         if not respuesta:
             return idea
+        # limpiar_json ya es seguro para cualquier tipo
         critica = json.loads(limpiar_json(respuesta))
         idea["scoring_critico"] = critica
-        scores      = idea.get("scores", {}) if isinstance(idea.get("scores"), dict) else {}
-        ajuste      = int(critica.get("ajuste_score", 0))
-        score_prev  = scores.get("score_total", 0)
+        scores     = idea.get("scores", {}) if isinstance(idea.get("scores"), dict) else {}
+        ajuste     = int(critica.get("ajuste_score", 0))
+        score_prev = scores.get("score_total", 0)
         score_nuevo = max(20, min(98, score_prev + ajuste))
         scores["score_total"]   = score_nuevo
         scores["score_critico"] = critica.get("score_critico_final", score_prev)
@@ -354,6 +351,8 @@ def _aplicar_scoring_critico(idea):
     except Exception as e:
         print(f"   ⚠️ Scoring critico omitido: {e}")
     return idea
+
+# ── Batch principal ──────────────────────────────────────────────────────────
 
 def ejecutar_batch():
     try:
@@ -372,15 +371,18 @@ def ejecutar_batch():
         watchdog_ok = True
     except ImportError:
         watchdog_ok = False
-        registrar_exito = lambda *a, **k: None
-        registrar_fallo = lambda *a, **k: None
-        modo_emergencia_activo = lambda: False
-        get_nombres_bloqueados = lambda: []
+        def registrar_exito(*a, **k): pass
+        def registrar_fallo(*a, **k): pass
+        def modo_emergencia_activo(): return False
+        def get_nombres_bloqueados(): return []
 
     validar_idea_fn    = None
     generar_landing_fn = None
     try:
         from agents.market_validator  import validar_idea    as validar_idea_fn
+    except ImportError:
+        pass
+    try:
         from agents.landing_generator import generar_landing as generar_landing_fn
     except ImportError:
         pass
@@ -405,15 +407,15 @@ def ejecutar_batch():
 
     pesos      = _cargar_pesos()
     umbral_dup = pesos.get("umbral_duplicado", 0.38)
-    tema       = os.environ.get("IDEA_TOPIC", "")
+    tema       = os.environ.get("IDEA_TOPIC", "").strip()
     emergencia = modo_emergencia_activo()
 
     if emergencia:
         print("⚠️ MODO EMERGENCIA activo")
     if tema:
-        print(f"🎯 Tema: '{tema}'")
+        print(f"🎯 Tema solicitado: '{tema}'")
 
-    nombres_bloqueados = get_nombres_bloqueados()
+    nombres_bloqueados = get_nombres_bloqueados() if watchdog_ok else []
 
     idea = None
     for intento_gen in range(4):
@@ -428,8 +430,12 @@ def ejecutar_batch():
             if watchdog_ok: registrar_fallo(str(e))
             return False, "", ""
 
+        # respuesta aqui es SIEMPRE un string gracias a _cualquier_cosa_a_str en _llamar_con_retry
+        print(f"   Tipo respuesta: {type(respuesta).__name__} | {len(str(respuesta))} chars")
+
+        json_limpio = limpiar_json(respuesta)
         try:
-            idea_candidata = json.loads(limpiar_json(respuesta))
+            idea_candidata = json.loads(json_limpio)
         except Exception as e:
             print(f"❌ JSON invalido (intento {intento_gen+1}): {e}")
             print(f"   Raw: {str(respuesta)[:300]}")
@@ -445,7 +451,7 @@ def ejecutar_batch():
         nombre_cand = idea_candidata.get("nombre", "").lower()
         if any(nombre_cand in n.lower() or n.lower() in nombre_cand
                for n in nombres_bloqueados if n):
-            print(f"⚠️ Nombre bloqueado por watchdog — regenerando...")
+            print(f"⚠️ Nombre bloqueado — regenerando...")
             continue
 
         try:
@@ -468,17 +474,21 @@ def ejecutar_batch():
 
     nombre = idea.get("nombre", "SinNombre")
 
+    # Normalizar prompt_mvp
     pm = idea.get("prompt_mvp", {})
     if isinstance(pm, str):
         try:   idea["prompt_mvp"] = json.loads(pm)
         except: idea["prompt_mvp"] = {"ia_recomendada": "Claude 3.5 Sonnet", "primer_cliente_script": pm}
 
+    # Calcular score ponderado
     scores = idea.get("scores", {}) if isinstance(idea.get("scores"), dict) else {}
     scores["score_total"] = calcular_score_ponderado(scores)
     idea["scores"] = scores
 
+    # Scoring critico YC
     idea = _aplicar_scoring_critico(idea)
 
+    # Validacion mercado real (opcional)
     if validar_idea_fn:
         try:
             ev = validar_idea_fn(idea)
@@ -493,11 +503,13 @@ def ejecutar_batch():
     score = idea.get("scores", {}).get("score_total", 0)
     print(f"📊 Score FINAL: {score}/100")
 
+    # Guardar en KB
     try:
         registrar_idea(idea)
     except Exception as e:
         print(f"⚠️ KB registrar: {e}")
 
+    # Guardar en ideas.json
     os.makedirs("data", exist_ok=True)
     try:
         ruta  = "data/ideas.json"
@@ -508,18 +520,16 @@ def ejecutar_batch():
         todas.append(idea)
         with open(ruta, "w", encoding="utf-8") as f:
             json.dump(todas, f, ensure_ascii=False, indent=2)
-        print(f"💾 ideas.json: {len(todas)} total")
+        print(f"💾 ideas.json: {len(todas)} ideas")
     except Exception as e:
         print(f"⚠️ ideas.json: {e}")
 
     # Notion sync
     print("🔗 Sincronizando Notion...")
     url = ""
-    notion_token = os.environ.get("NOTION_TOKEN", "")
-    notion_db    = os.environ.get("NOTION_DATABASE_ID", "")
-    if not notion_token:
+    if not os.environ.get("NOTION_TOKEN",""):
         print("⚠️ NOTION_TOKEN no configurado")
-    elif not notion_db:
+    elif not os.environ.get("NOTION_DATABASE_ID",""):
         print("⚠️ NOTION_DATABASE_ID no configurado")
     else:
         try:
@@ -528,48 +538,72 @@ def ejecutar_batch():
                 print(f"✅ Notion OK: {url}")
             else:
                 print("❌ Notion devolvio URL vacia")
+                # Encolar para retry
+                try:
+                    import csv
+                    cola_path = "data/cola_pendientes.csv"
+                    existe = os.path.exists(cola_path)
+                    with open(cola_path, "a", newline="", encoding="utf-8") as f:
+                        writer = csv.DictWriter(f, fieldnames=["timestamp","nombre_idea","intentos","error","datos_json"])
+                        if not existe:
+                            writer.writeheader()
+                        writer.writerow({
+                            "timestamp":   datetime.now().isoformat(),
+                            "nombre_idea": nombre,
+                            "intentos":    1,
+                            "error":       "URL vacia",
+                            "datos_json":  json.dumps(idea, ensure_ascii=False)[:2000],
+                        })
+                    print("📥 Encolada para retry Notion")
+                except Exception as ce:
+                    print(f"⚠️ Cola: {ce}")
         except Exception as e:
             print(f"❌ Notion: {e}")
 
+    # Actualizar notion_url en ideas.json
     if url:
         idea["notion_url"] = url
         try:
-            with open("data/ideas.json", "r", encoding="utf-8") as f:
+            with open("data/ideas.json","r",encoding="utf-8") as f:
                 todas = json.load(f)
             if todas:
                 todas[-1]["notion_url"] = url
-            with open("data/ideas.json", "w", encoding="utf-8") as f:
+            with open("data/ideas.json","w",encoding="utf-8") as f:
                 json.dump(todas, f, ensure_ascii=False, indent=2)
         except: pass
 
+    # Watchdog exito
     if watchdog_ok:
         registrar_exito(idea)
 
+    # Registrar vertical
     try:
         from agents.verticales_rotacion import registrar_vertical_usado
-        registrar_vertical_usado(idea.get("vertical", ""))
+        registrar_vertical_usado(idea.get("vertical",""))
     except: pass
 
+    # Aprendizaje incremental
     try:
         from agents.weekly_learner import analizar_y_aprender
         r = analizar_y_aprender()
-        print(f"🧠 Aprendizaje: {str(r.get('resumen',''))[:80]}")
+        print(f"🧠 Aprendizaje: {str(r.get('resumen','ok'))[:80]}")
     except Exception as e:
         print(f"⚠️ Aprendizaje: {e}")
 
-    herramienta = str(idea.get("herramienta_ia_clave", ""))[:80]
-    tagline     = str(idea.get("tagline", ""))[:100]
-    problema    = str(idea.get("problema", ""))[:150]
+    # Extraer campos para monitor_nocturno
+    herramienta = _cualquier_cosa_a_str(idea.get("herramienta_ia_clave",""))[:80]
+    tagline     = _cualquier_cosa_a_str(idea.get("tagline",""))[:100]
+    problema    = _cualquier_cosa_a_str(idea.get("problema",""))[:150]
     monetiz     = ""
     if isinstance(idea.get("estrategia_monetizacion"), dict):
-        monetiz = str(idea["estrategia_monetizacion"].get("semana1", ""))[:150]
+        monetiz = _cualquier_cosa_a_str(idea["estrategia_monetizacion"].get("semana1",""))[:150]
     hipotesis = ""
     if isinstance(idea.get("hipotesis_testeable"), dict):
-        hipotesis = str(idea["hipotesis_testeable"].get("experimento_48h", ""))[:150]
+        hipotesis = _cualquier_cosa_a_str(idea["hipotesis_testeable"].get("experimento_48h",""))[:150]
     veredicto = recomendacion = ""
     if isinstance(idea.get("scoring_critico"), dict):
-        veredicto     = str(idea["scoring_critico"].get("veredicto", ""))[:150]
-        recomendacion = str(idea["scoring_critico"].get("recomendacion", ""))
+        veredicto     = _cualquier_cosa_a_str(idea["scoring_critico"].get("veredicto",""))[:150]
+        recomendacion = _cualquier_cosa_a_str(idea["scoring_critico"].get("recomendacion",""))
 
     print(f"SCORE_FINAL:{score}")
     print(f"HERRAMIENTA_IA:{herramienta}")
