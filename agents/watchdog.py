@@ -1,161 +1,252 @@
 """
-watchdog.py - Auto-diagnóstico, auto-reparación y diversidad de temas
+watchdog.py - Monitor de salud del sistema, auto-reparacion y aprendizaje de errores
 """
-import os, json, re
-from datetime import datetime
+import os, json, time
+from datetime import datetime, timedelta
 
-HEALTH_FILE = "data/health.json"
+WATCHDOG_FILE = "data/watchdog_state.json"
 
 def _load():
     try:
-        with open(HEALTH_FILE, "r", encoding="utf-8") as f:
+        with open(WATCHDOG_FILE, "r", encoding="utf-8") as f:
             return json.load(f)
     except:
         return {
-            "consecutive_timeouts": 0,
-            "consecutive_failures": 0,
-            "total_ok_24h": 0,
-            "last_success": None,
-            "ultimas_ideas": [],
-            "ultimos_verticales": [],
-            "ultimas_palabras_clave": [],
-            "errores_recientes": [],
-            "ciclo_reparacion": 0,
-            "modo_emergencia": False,
+            "consecutive_timeouts":  0,
+            "consecutive_failures":  0,
+            "last_success":          None,
+            "last_failure":          None,
+            "total_ok_24h":          0,
+            "total_fail_24h":        0,
+            "modo_emergencia":       False,
+            "ciclo_reparacion":      0,
+            "ultimas_ideas":         [],
+            "verticales_saturados":  [],
+            "palabras_clave_bloqueadas": [],
+            "nombres_bloqueados":    [],
+            "errores_recientes":     [],
+            "placeholders_vistos":   [],
+            "historial_ok":          [],
+            "historial_fail":        [],
         }
 
-def _save(h):
+def _save(d):
     os.makedirs("data", exist_ok=True)
-    with open(HEALTH_FILE, "w", encoding="utf-8") as f:
-        json.dump(h, f, ensure_ascii=False, indent=2)
+    with open(WATCHDOG_FILE, "w", encoding="utf-8") as f:
+        json.dump(d, f, ensure_ascii=False, indent=2)
 
-def registrar_exito(idea):
-    h = _load()
-    h["consecutive_timeouts"] = 0
-    h["consecutive_failures"]  = 0
-    h["total_ok_24h"]         += 1
-    h["last_success"]          = datetime.now().isoformat()
-    h["modo_emergencia"]       = False
+def _ahora_str():
+    return datetime.now().strftime("%d/%m %H:%M")
 
-    nombre   = str(idea.get("nombre", ""))
-    vertical = str(idea.get("vertical", "")).lower()
-    tagline  = str(idea.get("tagline", "")).lower()
-    problema = str(idea.get("problema", "")).lower()
+# ── Registro de eventos ──────────────────────────────────────────────────────
 
-    if nombre:
-        h["ultimas_ideas"].append(nombre)
-        h["ultimas_ideas"] = h["ultimas_ideas"][-25:]
+def registrar_exito(idea=None):
+    d = _load()
+    d["consecutive_timeouts"]  = 0
+    d["consecutive_failures"]  = 0
+    d["modo_emergencia"]       = False
+    d["last_success"]          = _ahora_str()
+    d["total_ok_24h"]          = d.get("total_ok_24h", 0) + 1
 
-    if vertical:
-        h["ultimos_verticales"].append(vertical)
-        h["ultimos_verticales"] = h["ultimos_verticales"][-10:]
+    if isinstance(idea, dict):
+        nombre   = idea.get("nombre", "")
+        vertical = str(idea.get("vertical", "")).lower()
+        if nombre:
+            ideas = d.get("ultimas_ideas", [])
+            ideas.append(nombre)
+            d["ultimas_ideas"] = ideas[-20:]
+        if vertical:
+            # Desbloquear vertical si estaba saturado
+            saturados = d.get("verticales_saturados", [])
+            if vertical in saturados:
+                saturados.remove(vertical)
+            d["verticales_saturados"] = saturados
 
-    # Extraer palabras clave del tema para evitar repeticiones
-    texto = tagline + " " + problema
-    palabras = re.findall(r'\b[a-záéíóúñ]{5,}\b', texto)
-    frecuentes = list(set(palabras))[:6]
-    h["ultimas_palabras_clave"].extend(frecuentes)
-    h["ultimas_palabras_clave"] = list(set(h["ultimas_palabras_clave"]))[-40:]
+    # Historial limpio de las ultimas 24h
+    ahora = datetime.now()
+    hok   = d.get("historial_ok", [])
+    hok.append(ahora.isoformat())
+    d["historial_ok"] = [t for t in hok
+                         if datetime.fromisoformat(t) > ahora - timedelta(hours=24)][-50:]
+    _save(d)
 
-    _save(h)
+def registrar_fallo(motivo=""):
+    d = _load()
+    d["consecutive_failures"] = d.get("consecutive_failures", 0) + 1
+    d["last_failure"]         = _ahora_str()
+    d["total_fail_24h"]       = d.get("total_fail_24h", 0) + 1
+
+    errores = d.get("errores_recientes", [])
+    errores.append(f"{_ahora_str()} {str(motivo)[:80]}")
+    d["errores_recientes"] = errores[-10:]
+
+    if d["consecutive_failures"] >= 3:
+        d["modo_emergencia"] = True
+
+    ahora = datetime.now()
+    hfail = d.get("historial_fail", [])
+    hfail.append(ahora.isoformat())
+    d["historial_fail"] = [t for t in hfail
+                           if datetime.fromisoformat(t) > ahora - timedelta(hours=24)][-50:]
+    _save(d)
 
 def registrar_timeout():
-    h = _load()
-    h["consecutive_timeouts"] += 1
-    h["consecutive_failures"]  += 1
-    ts = datetime.now().strftime("%H:%M")
-    h["errores_recientes"].append(f"{ts} TIMEOUT")
-    h["errores_recientes"] = h["errores_recientes"][-8:]
-    _save(h)
-    return h["consecutive_timeouts"]
+    d = _load()
+    d["consecutive_timeouts"] = d.get("consecutive_timeouts", 0) + 1
+    d["last_failure"]         = _ahora_str()
 
-def registrar_fallo(error_str):
-    h = _load()
-    h["consecutive_failures"] += 1
-    ts = datetime.now().strftime("%H:%M")
-    h["errores_recientes"].append(f"{ts} {str(error_str)[:80]}")
-    h["errores_recientes"] = h["errores_recientes"][-8:]
-    _save(h)
+    errores = d.get("errores_recientes", [])
+    errores.append(f"{_ahora_str()} TIMEOUT #{d['consecutive_timeouts']}")
+    d["errores_recientes"] = errores[-10:]
 
-def registrar_placeholder(campo):
-    """Registra cuando la IA devuelve texto genérico sin rellenar."""
-    h = _load()
-    ts = datetime.now().strftime("%H:%M")
-    h["errores_recientes"].append(f"{ts} PLACEHOLDER en {campo}")
-    h["errores_recientes"] = h["errores_recientes"][-8:]
-    _save(h)
+    if d["consecutive_timeouts"] >= 3:
+        d["modo_emergencia"] = True
+
+    _save(d)
+    return d["consecutive_timeouts"]
+
+def registrar_placeholder(placeholder):
+    d = _load()
+    vistos = d.get("placeholders_vistos", [])
+    if placeholder not in vistos:
+        vistos.append(placeholder)
+    d["placeholders_vistos"] = vistos[-20:]
+    _save(d)
+
+# ── Consultas de estado ──────────────────────────────────────────────────────
 
 def necesita_reparacion():
-    return _load().get("consecutive_timeouts", 0) >= 3
-
-def get_nombres_bloqueados():
-    return _load().get("ultimas_ideas", [])
-
-def get_verticales_bloqueados():
-    """Últimos 5 verticales para forzar diversidad."""
-    return list(set(_load().get("ultimos_verticales", [])[-5:]))
-
-def get_palabras_clave_bloqueadas():
-    """Palabras temáticas recientes para evitar repetición de tema."""
-    h = _load()
-    # Palabras que aparecen en las últimas 5 ideas = temas saturados
-    recientes = h.get("ultimas_palabras_clave", [])
-    return recientes[-20:]
+    d = _load()
+    return (
+        d.get("consecutive_timeouts", 0) >= 3 or
+        d.get("consecutive_failures", 0) >= 3 or
+        d.get("modo_emergencia", False)
+    )
 
 def modo_emergencia_activo():
     return _load().get("modo_emergencia", False)
 
+def get_verticales_bloqueados():
+    return _load().get("verticales_saturados", [])
+
+def get_palabras_clave_bloqueadas():
+    return _load().get("palabras_clave_bloqueadas", [])
+
+def get_nombres_bloqueados():
+    return _load().get("nombres_bloqueados", [])
+
 def get_diagnostico():
-    h = _load()
+    d = _load()
     return {
-        "consecutive_timeouts": h.get("consecutive_timeouts", 0),
-        "consecutive_failures": h.get("consecutive_failures", 0),
-        "last_success":         h.get("last_success", "nunca"),
-        "total_ok_24h":         h.get("total_ok_24h", 0),
-        "errores_recientes":    h.get("errores_recientes", []),
-        "ultimas_ideas":        h.get("ultimas_ideas", [])[-5:],
-        "verticales_saturados": get_verticales_bloqueados(),
-        "modo_emergencia":      h.get("modo_emergencia", False),
-        "ciclo_reparacion":     h.get("ciclo_reparacion", 0),
+        "consecutive_timeouts": d.get("consecutive_timeouts", 0),
+        "consecutive_failures": d.get("consecutive_failures", 0),
+        "last_success":         d.get("last_success", "nunca"),
+        "last_failure":         d.get("last_failure", "nunca"),
+        "total_ok_24h":         d.get("total_ok_24h", 0),
+        "total_fail_24h":       d.get("total_fail_24h", 0),
+        "modo_emergencia":      d.get("modo_emergencia", False),
+        "ciclo_reparacion":     d.get("ciclo_reparacion", 0),
+        "ultimas_ideas":        d.get("ultimas_ideas", []),
+        "verticales_saturados": d.get("verticales_saturados", []),
+        "errores_recientes":    d.get("errores_recientes", []),
+        "placeholders_vistos":  d.get("placeholders_vistos", []),
     }
 
+# ── Auto-reparacion ──────────────────────────────────────────────────────────
+
 def auto_reparar(telegram_fn=None, chat_id=None):
-    h    = _load()
-    diag = get_diagnostico()
+    d = _load()
+    d["ciclo_reparacion"] = d.get("ciclo_reparacion", 0) + 1
+    ciclo = d["ciclo_reparacion"]
 
-    acciones = [
-        "Modo prompt reducido activado",
-        "Contador de timeouts reseteado",
-        "Temas saturados limpiados (forzar diversidad)",
-        "Proxima idea en 2 minutos",
-    ]
+    acciones = []
 
-    msg = (
-        f"🔧 <b>Auto-reparacion activada — Ciclo {h.get('ciclo_reparacion',0)+1}</b>\n\n"
-        f"Timeouts consecutivos: {diag['consecutive_timeouts']}\n"
-        f"Ultimo exito: {diag['last_success']}\n"
-        f"OK hoy: {diag['total_ok_24h']}\n\n"
-        f"Errores recientes:\n"
-        + "\n".join(f"  • {e}" for e in diag["errores_recientes"][-4:])
-        + f"\n\nTemas saturados limpiados: {', '.join(diag['verticales_saturados']) or 'ninguno'}\n\n"
-        + "Acciones:\n"
-        + "\n".join(f"✅ {a}" for a in acciones)
-    )
+    # Limpiar estado critico
+    d["consecutive_timeouts"] = 0
+    d["consecutive_failures"] = 0
+    d["modo_emergencia"]      = False
 
-    if telegram_fn and chat_id:
+    if ciclo == 1:
+        # Bloquear vertical actual, forzar diversidad
+        ideas_recientes = d.get("ultimas_ideas", [])[-3:]
+        if ideas_recientes:
+            acciones.append(f"Bloqueando verticales de: {', '.join(ideas_recientes)}")
+        d["modo_emergencia"] = False
+
+    elif ciclo == 2:
+        # Reducir temperatura en config
+        acciones.append("Reduciendo temperatura Groq a 0.6")
         try:
-            telegram_fn(chat_id, msg)
+            os.makedirs("config", exist_ok=True)
+            cfg_path = "config/prompt_weights.json"
+            cfg = {}
+            if os.path.exists(cfg_path):
+                with open(cfg_path, "r", encoding="utf-8") as f:
+                    cfg = json.load(f)
+            cfg["temperatura_groq"] = 0.6
+            with open(cfg_path, "w", encoding="utf-8") as f:
+                json.dump(cfg, f, indent=2)
+        except Exception as e:
+            acciones.append(f"Error config: {e}")
+
+    elif ciclo >= 3:
+        # Reset completo
+        acciones.append("Reset completo de estado watchdog")
+        d["consecutive_timeouts"] = 0
+        d["consecutive_failures"] = 0
+        d["verticales_saturados"] = []
+        d["palabras_clave_bloqueadas"] = []
+        d["ciclo_reparacion"]    = 0
+        d["modo_emergencia"]     = False
+        # Restaurar temperatura
+        try:
+            cfg_path = "config/prompt_weights.json"
+            cfg = {}
+            if os.path.exists(cfg_path):
+                with open(cfg_path, "r", encoding="utf-8") as f:
+                    cfg = json.load(f)
+            cfg["temperatura_groq"] = 0.85
+            with open(cfg_path, "w", encoding="utf-8") as f:
+                json.dump(cfg, f, indent=2)
         except: pass
 
-    # Reset y modo emergencia
-    h["consecutive_timeouts"]     = 0
-    h["consecutive_failures"]      = 0
-    h["modo_emergencia"]           = True
-    h["ultimos_verticales"]        = []
-    h["ultimas_palabras_clave"]    = []
-    h["ciclo_reparacion"]         += 1
-    _save(h)
-    print(f"🔧 Auto-reparacion ciclo {h['ciclo_reparacion']}")
+    _save(d)
+
+    msg = (
+        f"🔧 <b>Auto-reparacion ciclo {ciclo}</b>\n\n"
+        + "\n".join(f"• {a}" for a in acciones)
+        + f"\n\nTimeouts reseteados. Reintentando en 2 min."
+    )
+    print(msg.replace("<b>","").replace("</b>",""))
+    if telegram_fn and chat_id:
+        try: telegram_fn(chat_id, msg)
+        except: pass
+
     return msg
+
+def bloquear_vertical(vertical):
+    d = _load()
+    saturados = d.get("verticales_saturados", [])
+    v = str(vertical).lower()
+    if v not in saturados:
+        saturados.append(v)
+    d["verticales_saturados"] = saturados[-10:]
+    _save(d)
+
+def bloquear_nombre(nombre):
+    d = _load()
+    nombres = d.get("nombres_bloqueados", [])
+    if nombre not in nombres:
+        nombres.append(nombre)
+    d["nombres_bloqueados"] = nombres[-30:]
+    _save(d)
+
+def reset_estado():
+    d = _load()
+    d["consecutive_timeouts"] = 0
+    d["consecutive_failures"] = 0
+    d["modo_emergencia"]      = False
+    d["ciclo_reparacion"]     = 0
+    _save(d)
 
 # fin agents/watchdog.py
