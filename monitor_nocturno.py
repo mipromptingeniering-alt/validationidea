@@ -1,33 +1,4 @@
-﻿@'
-import re, sys
-
-for fname in ["run_batch.py", "monitor_nocturno.py"]:
-    with open(fname, encoding="utf-8") as f:
-        content = f.read()
-    marker = "import agents.groq_patch"
-    if marker in content:
-        print(f"SKIP (ya tiene patch): {fname}")
-        continue
-    # Insertar despues de "import os"
-    new = content.replace(
-        "import os, sys",
-        "import os, sys\nimport agents.groq_patch  # patch global SDK",
-        1
-    )
-    if new == content:
-        # fallback: insertar en linea 2
-        lines = content.split("\n")
-        lines.insert(1, "import agents.groq_patch  # patch global SDK")
-        new = "\n".join(lines)
-    with open(fname, "w", encoding="utf-8") as f:
-        f.write(new)
-    print(f"OK: {fname}")
-
-print("Listo.")
-'@ | Out-File -FilePath apply_patch.py -Encoding utf8
-
-python apply_patch.py
-import os, sys, json, time, subprocess, threading, re
+﻿import os, sys, json, time, subprocess, threading, re
 from datetime import datetime, timedelta
 
 os.environ["PYTHONUTF8"] = "1"
