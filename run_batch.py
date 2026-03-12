@@ -1,5 +1,4 @@
-﻿import agents.groq_patch  # patch global SDK Groq
-import os, sys, json, time, re
+﻿import os, sys, json, time, re
 from datetime import datetime
 
 os.environ["PYTHONUTF8"] = "1"
