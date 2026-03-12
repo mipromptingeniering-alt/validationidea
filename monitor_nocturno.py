@@ -1,4 +1,4 @@
-@'
+﻿@'
 import re, sys
 
 for fname in ["run_batch.py", "monitor_nocturno.py"]:
@@ -36,7 +36,7 @@ TELEGRAM_TOKEN = os.environ.get("TELEGRAM_BOT_TOKEN", "")
 TELEGRAM_CHAT  = os.environ.get("TELEGRAM_CHAT_ID", "")
 INTERVALO_MIN  = int(os.environ.get("INTERVALO_MINUTOS", "30"))
 
-# -- Telegram helpers ---------------------------------------------------------
+# ── Telegram helpers ─────────────────────────────────────────────────────────
 
 def _post(endpoint, payload, timeout=15):
     import urllib.request
@@ -60,7 +60,7 @@ def enviar(chat_id, texto, reply_markup=None):
 def get_updates(offset=0):
     return _post("getUpdates", {"offset": offset, "timeout": 10, "limit": 5}, timeout=15)
 
-# -- Helpers ------------------------------------------------------------------
+# ── Helpers ──────────────────────────────────────────────────────────────────
 
 def _safe_str(valor):
     """Convierte cualquier tipo a string de forma segura."""
@@ -84,9 +84,9 @@ def _limpiar_tema(texto):
 def _botones_feedback(idea_nombre):
     safe = _safe_str(idea_nombre).replace(" ", "_")[:40]
     return {"inline_keyboard": [[
-        {"text": "?? Buena",   "callback_data": f"like_{safe}"},
-        {"text": "?? Mala",    "callback_data": f"dislike_{safe}"},
-        {"text": "?? Guardar", "callback_data": f"save_{safe}"},
+        {"text": "👍 Buena",   "callback_data": f"like_{safe}"},
+        {"text": "👎 Mala",    "callback_data": f"dislike_{safe}"},
+        {"text": "🔖 Guardar", "callback_data": f"save_{safe}"},
     ]]}
 
 def _extraer_datos_salida(salida):
@@ -115,35 +115,35 @@ def _extraer_datos_salida(salida):
 def _fmt_mensaje_idea(d):
     score  = d.get("score", 0)
     nombre = _safe_str(d.get("nombre", "?"))
-    if   score >= 90: emoji = "??"
-    elif score >= 85: emoji = "?"
-    elif score >= 80: emoji = "??"
-    elif score >= 75: emoji = "?"
-    else:             emoji = "??"
+    if   score >= 90: emoji = "💎"
+    elif score >= 85: emoji = "⭐"
+    elif score >= 80: emoji = "🔥"
+    elif score >= 75: emoji = "✅"
+    else:             emoji = "💡"
 
     lineas = [
-        f"{emoji} <b>{nombre} � {score}/100</b>",
+        f"{emoji} <b>{nombre} — {score}/100</b>",
         f"<i>\"{_safe_str(d.get('tagline', ''))}\"</i>",
         "",
-        f"? <b>Problema:</b> {_safe_str(d.get('problema', ''))[:220]}",
+        f"❗ <b>Problema:</b> {_safe_str(d.get('problema', ''))[:220]}",
     ]
     if d.get("herramienta_ia"):
-        lineas.append(f"?? <b>IA clave:</b> {_safe_str(d['herramienta_ia'])[:160]}")
+        lineas.append(f"🤖 <b>IA clave:</b> {_safe_str(d['herramienta_ia'])[:160]}")
     if d.get("monetiz_s1"):
-        lineas.append(f"?? <b>Semana 1:</b> {_safe_str(d['monetiz_s1'])[:220]}")
+        lineas.append(f"💰 <b>Semana 1:</b> {_safe_str(d['monetiz_s1'])[:220]}")
     if d.get("hipotesis"):
-        lineas.append(f"?? <b>Test 48h:</b> {_safe_str(d['hipotesis'])[:220]}")
+        lineas.append(f"🧪 <b>Test 48h:</b> {_safe_str(d['hipotesis'])[:220]}")
     if d.get("veredicto_critico"):
-        lineas.append(f"? <b>Veredicto YC:</b> {_safe_str(d['veredicto_critico'])[:180]}")
+        lineas.append(f"✅ <b>Veredicto YC:</b> {_safe_str(d['veredicto_critico'])[:180]}")
     if d.get("recomendacion"):
-        lineas.append(f"?? <b>Recomendacion:</b> {_safe_str(d['recomendacion']).upper()}")
+        lineas.append(f"🏷 <b>Recomendacion:</b> {_safe_str(d['recomendacion']).upper()}")
     if d.get("notion_url"):
-        lineas.append(f"\n?? <a href=\"{d['notion_url']}\">Ver informe completo en Notion</a>")
+        lineas.append(f"\n📋 <a href=\"{d['notion_url']}\">Ver informe completo en Notion</a>")
     else:
-        lineas.append("\n?? Notion: en cola de reintento automatico")
+        lineas.append("\n⚠️ Notion: en cola de reintento automatico")
     return "\n".join(lineas)
 
-# -- Notion retry queue -------------------------------------------------------
+# ── Notion retry queue ───────────────────────────────────────────────────────
 
 def _notion_retry_loop():
     while True:
@@ -188,7 +188,7 @@ def _notion_retry_loop():
         except Exception as e:
             print(f"Notion retry loop: {e}")
 
-# -- Ejecucion batch ----------------------------------------------------------
+# ── Ejecucion batch ──────────────────────────────────────────────────────────
 
 def ejecutar_idea(tema="", chat_id=None):
     if not chat_id:
@@ -260,7 +260,7 @@ def ejecutar_idea(tema="", chat_id=None):
 
         if d.get("score", 0) >= 85:
             enviar(chat_id,
-                f"ALERTA IDEA TOP � {d['score']}/100\n"
+                f"ALERTA IDEA TOP — {d['score']}/100\n"
                 f"Usa /ejecutar {d['nombre']} para el prompt MVP completo."
             )
         return True
@@ -268,7 +268,7 @@ def ejecutar_idea(tema="", chat_id=None):
         if "TIMEOUT" in salida:
             n_timeouts = registrar_timeout() if wd_ok else 0
             enviar(chat_id,
-                f"Timeout (>{elapsed}s) � reintento en {INTERVALO_MIN} min. "
+                f"Timeout (>{elapsed}s) — reintento en {INTERVALO_MIN} min. "
                 f"[{n_timeouts} consecutivos]"
             )
             if necesita_reparacion():
@@ -291,7 +291,7 @@ def ejecutar_idea(tema="", chat_id=None):
             error_lines = [l for l in salida.split("\n")
                            if "Error" in l or "error" in l.lower()]
             error_msg = error_lines[-1][:250] if error_lines else salida[-300:]
-            enviar(chat_id, f"? Error\n\n{error_msg}\n\nUsa /debug.")
+            enviar(chat_id, f"❌ Error\n\n{error_msg}\n\nUsa /debug.")
             if wd_ok and necesita_reparacion():
                 try:
                     from agents.auto_improver import ciclo_auto_mejora
@@ -304,10 +304,10 @@ def ejecutar_idea(tema="", chat_id=None):
                     print(f"Auto-improver reactivo: {e}")
         return False
 
-# -- Debug --------------------------------------------------------------------
+# ── Debug ────────────────────────────────────────────────────────────────────
 
 def ejecutar_debug(chat_id):
-    enviar(chat_id, "Ejecutando diagnostico completo � espera 60s...")
+    enviar(chat_id, "Ejecutando diagnostico completo — espera 60s...")
 
     try:
         from agents.watchdog import get_diagnostico
@@ -392,7 +392,7 @@ def ejecutar_debug(chat_id):
         f"Output:\n{'='*35}\n{output}"[:4096]
     )
 
-# -- Comandos -----------------------------------------------------------------
+# ── Comandos ─────────────────────────────────────────────────────────────────
 
 def cmd_top(chat_id):
     try:
@@ -406,7 +406,7 @@ def cmd_top(chat_id):
             s = idea.get("scores",{}).get("score_total",0) if isinstance(idea.get("scores"),dict) else 0
             n = _safe_str(idea.get("nombre","?"))
             t = _safe_str(idea.get("tagline",""))[:80]
-            lineas.append(f"{i}. <b>{n}</b> � {s}/100\n   <i>{t}</i>")
+            lineas.append(f"{i}. <b>{n}</b> — {s}/100\n   <i>{t}</i>")
         enviar(chat_id, "\n".join(lineas))
     except Exception as e:
         enviar(chat_id, f"Error: {e}")
@@ -449,7 +449,7 @@ def cmd_ranking(chat_id):
             em   = idea.get("estrategia_monetizacion",{})
             sem1 = _safe_str(em.get("semana1","") if isinstance(em,dict) else "")[:130]
             herr = _safe_str(idea.get("herramienta_ia_clave",""))[:80]
-            lineas.append(f"{i}. <b>{n}</b> � Ejec: {ej}/100 | Score: {sc}/100")
+            lineas.append(f"{i}. <b>{n}</b> — Ejec: {ej}/100 | Score: {sc}/100")
             if herr: lineas.append(f"   {herr}")
             if sem1: lineas.append(f"   {sem1}")
         enviar(chat_id, "\n".join(lineas))
@@ -540,7 +540,7 @@ def cmd_comparar(chat_id, texto):
         elif sc_b > sc_a:
             lineas.append(f"\nGanadora: <b>{_safe_str(b['nombre'])}</b> (+{sc_b-sc_a} pts)")
         else:
-            lineas.append("\nEmpate � decide por ejecutabilidad")
+            lineas.append("\nEmpate — decide por ejecutabilidad")
         enviar(chat_id, "\n".join(lineas))
     except Exception as e:
         enviar(chat_id, f"Error: {e}")
@@ -682,7 +682,7 @@ def cmd_status(chat_id):
     except Exception as e:
         enviar(chat_id, f"Error status: {e}")
 
-# -- Loop Telegram -------------------------------------------------------------
+# ── Loop Telegram ─────────────────────────────────────────────────────────────
 
 def _procesar_callback(callback, chat_id):
     data  = _safe_str(callback.get("data",""))
@@ -736,22 +736,22 @@ def _loop_telegram():
                     enviar(chat_id,
                         "<b>ValidationIdea Bot v6</b>\n\n"
                         "Comandos:\n"
-                        "?? /idea [tema] � Genera idea\n"
-                        "?? /status � Estado del sistema\n"
-                        "?? /top � Top 5 mejores ideas\n"
-                        "?? /stats � Estadisticas KB\n"
-                        "?? /ranking � Top 5 mas ejecutables\n"
-                        "??? /ejecutar [nombre] � Prompt MVP\n"
-                        "?? /comparar [A] vs [B] � Compara 2 ideas\n"
-                        "?? /buscar [palabra] � Buscar ideas\n"
-                        "?? /tendencias � Tendencias tech\n"
-                        "?? /cola � Ideas pendientes Notion\n"
-                        "?? /aprender � Aprendizaje manual\n"
-                        "?? /mejoras � Historial auto-mejoras\n"
-                        "? /rollback � Revertir ultima mejora\n"
-                        "?? /mejorar � Forzar auto-mejora ahora\n"
-                        "?? /debug � Diagnostico completo\n\n"
-                        "Feedback: ?? / ?? / ??\n"
+                        "💡 /idea [tema] — Genera idea\n"
+                        "📊 /status — Estado del sistema\n"
+                        "🏆 /top — Top 5 mejores ideas\n"
+                        "📋 /stats — Estadisticas KB\n"
+                        "🚀 /ranking — Top 5 mas ejecutables\n"
+                        "🛠️ /ejecutar [nombre] — Prompt MVP\n"
+                        "⚔️ /comparar [A] vs [B] — Compara 2 ideas\n"
+                        "🔍 /buscar [palabra] — Buscar ideas\n"
+                        "🌐 /tendencias — Tendencias tech\n"
+                        "🔄 /cola — Ideas pendientes Notion\n"
+                        "🧠 /aprender — Aprendizaje manual\n"
+                        "🔧 /mejoras — Historial auto-mejoras\n"
+                        "⏪ /rollback — Revertir ultima mejora\n"
+                        "🤖 /mejorar — Forzar auto-mejora ahora\n"
+                        "🐛 /debug — Diagnostico completo\n\n"
+                        "Feedback: 👍 / 👎 / 🔖\n"
                         "Auto-reparacion activa 24/7"
                     )
                 elif texto_lower.startswith("/idea"):
@@ -816,7 +816,7 @@ def _loop_telegram():
                 elif texto_lower == "/mejorar":
                     cmd_mejorar(chat_id)
                 else:
-                    # Texto libre � intentar como tema de idea
+                    # Texto libre — intentar como tema de idea
                     if len(texto) > 3 and not texto.startswith("/"):
                         tema = _limpiar_tema(texto)
                         if tema:
@@ -832,7 +832,7 @@ def _loop_telegram():
             print(f"Loop Telegram: {e}")
             time.sleep(5)
 
-# -- Health check HTTP ---------------------------------------------------------
+# ── Health check HTTP ─────────────────────────────────────────────────────────
 
 def _health_server():
     try:
@@ -848,7 +848,7 @@ def _health_server():
     except Exception as e:
         print(f"Health server: {e}")
 
-# -- Log diario ----------------------------------------------------------------
+# ── Log diario ────────────────────────────────────────────────────────────────
 
 def _log_diario():
     while True:
@@ -862,7 +862,7 @@ def _log_diario():
             s = get_stats()
             if TELEGRAM_CHAT:
                 enviar(TELEGRAM_CHAT,
-                    f"<b>Resumen diario � {datetime.now().strftime('%d/%m/%Y')}</b>\n\n"
+                    f"<b>Resumen diario — {datetime.now().strftime('%d/%m/%Y')}</b>\n\n"
                     f"Total ideas: {s.get('total_ideas',0)}\n"
                     f"Score promedio: {s.get('score_promedio',0)}/100\n"
                     f"Mejor: {s.get('mejor_idea','ninguna')} ({s.get('mejor_score',0)}/100)\n\n"
@@ -871,7 +871,7 @@ def _log_diario():
         except Exception as e:
             print(f"Log diario: {e}")
 
-# -- Aprendizaje automatico ----------------------------------------------------
+# ── Aprendizaje automatico ────────────────────────────────────────────────────
 
 def _aprendizaje_automatico():
     while True:
@@ -893,7 +893,7 @@ def _aprendizaje_automatico():
         except Exception as e:
             print(f"Aprendizaje auto: {e}")
 
-# -- Ciclo principal de generacion ---------------------------------------------
+# ── Ciclo principal de generacion ─────────────────────────────────────────────
 
 def _ciclo_generacion():
     while True:
@@ -901,7 +901,7 @@ def _ciclo_generacion():
         print(f"Ciclo automatico: {datetime.now().strftime('%H:%M')}")
         ejecutar_idea()
 
-# -- Migracion KB --------------------------------------------------------------
+# ── Migracion KB ──────────────────────────────────────────────────────────────
 
 def _migrar_kb():
     try:
@@ -919,15 +919,15 @@ def _migrar_kb():
     except Exception as e:
         print(f"Migracion KB: {e}")
 
-# -- Main ---------------------------------------------------------------------
+# ── Main ─────────────────────────────────────────────────────────────────────
 
 def main():
     _migrar_kb()
 
     if TELEGRAM_CHAT:
         enviar(TELEGRAM_CHAT,
-            "<b>Monitor ValidationIdea v6-PATCH arrancado</b>\n\n"
-            "Ideas cada 30 min � verticales rotativos\n"
+            "<b>Monitor ValidationIdea v6 arrancado</b>\n\n"
+            "Ideas cada 30 min — verticales rotativos\n"
             "Anti-placeholders + calidad garantizada\n"
             "Watchdog + auto-reparacion\n"
             "Auto-mejora via Groq + git push\n"
@@ -949,7 +949,7 @@ def main():
     # Primera idea inmediata al arrancar
     threading.Thread(target=ejecutar_idea, daemon=True).start()
 
-    # Loop principal Telegram (no daemon � mantiene el proceso vivo)
+    # Loop principal Telegram (no daemon — mantiene el proceso vivo)
     _loop_telegram()
 
 if __name__ == "__main__":
