@@ -71,7 +71,7 @@ def limpiar_json(texto):
     if "```json" in texto:
         partes = texto.split("```json")
         if len(partes) > 1:
-            texto = partes[1].split("```").strip()
+            texto = partes[1].split("```")[0].strip()
     elif "```" in texto:
         for parte in texto.split("```"):
             parte = parte.strip()
