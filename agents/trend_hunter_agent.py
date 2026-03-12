@@ -370,7 +370,7 @@ Responde SOLO con JSON (sin markdown):
         
         # Limpiar markdown si existe
         if '```json' in content:
-            content = content.split('```json').split('```').strip()[1]
+            content = content.split('```json')[1].split('```')[0].strip()
         elif '```' in content:
             content = content.split('```').split('```')[0].strip()
         

@@ -40,7 +40,7 @@ Responde SOLO con un objeto JSON válido (sin markdown, sin ```json):
             max_tokens=1200
         )
         
-        content = response.choices.message.content.strip()
+        raw=response.choices[0].message.content if hasattr(response,'choices') and response.choices else ''; content=(raw if isinstance(raw,str) else ''.join(str(getattr(b,'text',b)) for b in raw) if isinstance(raw,list) else str(raw or '')).strip()
         
         # Limpiar markdown si existe
         content = re.sub(r'^```json\s*', '', content)

@@ -85,7 +85,7 @@ def _llamar_groq(prompt):
                 str(b.get("text", b.get("content", ""))) if isinstance(b, dict) else str(b)
                 for b in content
             )
-        return str(content).strip() if content else ""
+        c=content; return (c if isinstance(c,str) else ''.join(str(getattr(b,'text',b)) for b in c) if isinstance(c,list) else str(c or '')).strip()
     except Exception as e:
         print(f"Groq auto_improver: {e}")
         return ""
@@ -94,7 +94,7 @@ def _limpiar_json_respuesta(texto):
     if not isinstance(texto, str):
         return "{}"
     if "```json" in texto:
-        texto = texto.split("```json").split("```").strip()[1]
+        texto = texto.split("```json")[1].split("```")[0].strip()
     elif "```" in texto:
         texto = texto.split("```")[1].split("```")[0].strip()
     inicio = texto.find("{")

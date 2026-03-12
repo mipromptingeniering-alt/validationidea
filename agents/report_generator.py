@@ -180,7 +180,7 @@ Sé directo y honesto."""
             max_tokens=800
         )
         
-        opinion = response.choices[0].message.content.strip()
+        raw=response.choices[0].message.content; opinion=(raw if isinstance(raw,str) else ''.join(str(getattr(b,'text',b)) for b in raw) if isinstance(raw,list) else str(raw or '')).strip()
         return opinion
     
     except Exception as e:

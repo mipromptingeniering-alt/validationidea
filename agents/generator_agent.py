@@ -94,7 +94,7 @@ Responde SOLO JSON válido, sin markdown, sin texto extra:
             continue
 
         try:
-            content = response.choices[0].message.content.strip()
+            raw=response.choices[0].message.content; content=(raw if isinstance(raw,str) else ''.join(str(getattr(b,'text',b)) for b in raw) if isinstance(raw,list) else str(raw or '')).strip()
             content = fix_llm_encoding(content)
 
             if "```" in content:
