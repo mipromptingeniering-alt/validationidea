@@ -563,6 +563,7 @@ def ejecutar_batch():
             continue
 
         calidad_ok, motivo = _validar_calidad(idea_candidata)
+        print(f"   [CALIDAD] ok={calidad_ok} motivo={motivo}")
         if not calidad_ok:
             print(f"⚠️ Calidad rechazada: {motivo} — regenerando...")
             emergencia = True
