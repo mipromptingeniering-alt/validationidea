@@ -1,38 +1,9 @@
-@'
-import re, sys
-
-for fname in ["run_batch.py", "monitor_nocturno.py"]:
-    with open(fname, encoding="utf-8") as f:
-        content = f.read()
-    marker = "import agents.groq_patch"
-    if marker in content:
-        print(f"SKIP (ya tiene patch): {fname}")
-        continue
-    # Insertar despues de "import os"
-    new = content.replace(
-        "import os, sys",
-        "import os, sys\nimport agents.groq_patch  # patch global SDK",
-        1
-    )
-    if new == content:
-        # fallback: insertar en linea 2
-        lines = content.split("\n")
-        lines.insert(1, "import agents.groq_patch  # patch global SDK")
-        new = "\n".join(lines)
-    with open(fname, "w", encoding="utf-8") as f:
-        f.write(new)
-    print(f"OK: {fname}")
-
-print("Listo.")
-'@ | Out-File -FilePath apply_patch.py -Encoding utf8
-
-python apply_patch.py
-import os, sys, json, time, re
+﻿import os, sys, json, time, re
 from datetime import datetime
 
 os.environ["PYTHONUTF8"] = "1"
 print("=" * 50)
-print(f"?? run_batch v11-PATCH iniciado: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
+print(f"🚀 run_batch v10 iniciado: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
 
 GROQ_API_KEY = os.environ.get("GROQ_API_KEY", "")
 
@@ -43,14 +14,14 @@ MODELOS_GROQ = [
 ]
 
 PROMPT_SISTEMA = (
-    "Eres un analista de startups con 20 a�os en YC y a16z. "
+    "Eres un analista de startups con 20 años en YC y a16z. "
     "Generas ideas con datos REALES y especificos. "
     "PROHIBIDO usar texto generico o de ejemplo. "
     "REGLA ABSOLUTA: responde UNICAMENTE con JSON valido. Sin texto extra."
 )
 
 PROMPT_CRITICO_SISTEMA = (
-    "Eres socio de YC con 15 a�os rechazando el 99% de startups. "
+    "Eres socio de YC con 15 años rechazando el 99% de startups. "
     "REGLA ABSOLUTA: responde UNICAMENTE con JSON valido. Sin texto extra."
 )
 
@@ -62,7 +33,7 @@ PLACEHOLDERS_PROHIBIDOS = [
     "f1 detalle tecnico", "tag1", "tag2", "rival1", "rival2",
 ]
 
-# -- Conversion segura ---------------------------------------------------------
+# ── Conversion segura ─────────────────────────────────────────────────────────
 
 def _content_to_str(content):
     if content is None:
@@ -113,7 +84,7 @@ def limpiar_json(texto):
         return texto[inicio:fin+1]
     return texto
 
-# -- Extraccion exhaustiva del choice -----------------------------------------
+# ── Extraccion exhaustiva del choice ─────────────────────────────────────────
 
 def _extraer_content_de_choice(choice, modelo=""):
     """
@@ -239,7 +210,7 @@ def _extraer_content_respuesta(resp, modelo=""):
         print(f"   [DEBUG] error en choices: {e}")
         return _content_to_str(resp)
 
-# -- Cliente Groq -------------------------------------------------------------
+# ── Cliente Groq ─────────────────────────────────────────────────────────────
 
 def _llamar_groq_sdk(modelo, messages, max_tokens, temperature):
     try:
@@ -272,14 +243,14 @@ def _llamar_groq_sdk(modelo, messages, max_tokens, temperature):
                 m = _re.search(r'retry.after["\s:]+(\d+)', err)
                 if m: wait = min(int(m.group(1)) + 2, 25)
             except: pass
-            print(f"   ? Rate limit {modelo} ? {wait}s...")
+            print(f"   ⏳ Rate limit {modelo} → {wait}s...")
             time.sleep(wait)
             return "RATE_LIMIT"
         elif any(x in err for x in ["not found","decommission","does not exist","invalid model","404","422"]):
-            print(f"   ?? {modelo} no disponible: {str(e)[:80]}")
+            print(f"   ⚠️ {modelo} no disponible: {str(e)[:80]}")
             return None
         else:
-            print(f"   ? {modelo}: {str(e)[:150]}")
+            print(f"   ❌ {modelo}: {str(e)[:150]}")
             return None
 
 def _llamar_con_retry(modelo, messages, max_tokens, temperature):
@@ -305,9 +276,9 @@ def llamar_groq(prompt, max_tokens=3000, sistema=None):
         print(f"   Modelo: {modelo}")
         result = _llamar_con_retry(modelo, messages, max_tokens, temp)
         if result:
-            print(f"   ? OK {modelo} ({len(result)} chars)")
+            print(f"   ✅ OK {modelo} ({len(result)} chars)")
             return result
-        print(f"   ? siguiente modelo...")
+        print(f"   → siguiente modelo...")
     raise RuntimeError("Ningun modelo Groq disponible")
 
 def llamar_groq_critico(prompt):
@@ -321,7 +292,7 @@ def llamar_groq_critico(prompt):
             return result
     return ""
 
-# -- Config --------------------------------------------------------------------
+# ── Config ────────────────────────────────────────────────────────────────────
 
 def _cargar_pesos():
     try:
@@ -337,7 +308,7 @@ def _cargar_pesos():
             "score_objetivo": 75,
         }
 
-# -- Validacion calidad --------------------------------------------------------
+# ── Validacion calidad ────────────────────────────────────────────────────────
 
 def _validar_calidad(idea):
     try:
@@ -386,7 +357,7 @@ def calcular_score_ponderado(scores):
     }
     return round(sum(scores.get(k,0)*v for k,v in pesos.items()), 1)
 
-# -- Prompts ------------------------------------------------------------------
+# ── Prompts ──────────────────────────────────────────────────────────────────
 
 def get_prompt_idea(contexto, tendencias, tema="", modo_emergencia=False):
     pesos         = _cargar_pesos()
@@ -400,7 +371,7 @@ def get_prompt_idea(contexto, tendencias, tema="", modo_emergencia=False):
         aprendizaje = "Verticales con exito: " + ", ".join(pesos["verticales_preferidas"][:3]) + "\n"
 
     calidad = (
-        "CALIDAD OBLIGATORIA � PROHIBIDO texto generico:\n"
+        "CALIDAD OBLIGATORIA — PROHIBIDO texto generico:\n"
         "- semana1: 'Envia DM a [grupo especifico] en [plataforma] con: [texto real]'\n"
         "- experimento_48h: 'Crea [Typeform/landing] en [plataforma] midiendo [metrica]'\n"
         "- herramienta_ia_clave: herramienta real\n"
@@ -442,7 +413,7 @@ def get_prompt_idea(contexto, tendencias, tema="", modo_emergencia=False):
         '"cliente_objetivo":"Director de X en empresa Y de Z empleados",'
         '"propuesta_valor_unica":"unica porque competitors no hacen X",'
         '"herramienta_ia_clave":"nombre herramienta real + como se usa",'
-        '"mercado":{"TAM":"$X billion","SAM":"$X million","SOM":"$X a�o1",'
+        '"mercado":{"TAM":"$X billion","SAM":"$X million","SOM":"$X año1",'
         '"competidores":["Competitor1 (debilidad real)","Competitor2 (debilidad real)"],'
         '"ventaja_competitiva":"por que es dificil de copiar"},'
         '"modelo_negocio":{"tipo":"SaaS","pricing":"EUR X/mes justificado",'
@@ -493,7 +464,7 @@ def get_prompt_critico(idea):
     )
 
 def _aplicar_scoring_critico(idea):
-    print("?? Scoring critico YC...")
+    print("🔍 Scoring critico YC...")
     time.sleep(3)
     try:
         respuesta = llamar_groq_critico(get_prompt_critico(idea))
@@ -508,12 +479,12 @@ def _aplicar_scoring_critico(idea):
         scores["score_total"]   = score_new
         scores["score_critico"] = critica.get("score_critico_final", score_prev)
         idea["scores"] = scores
-        print(f"   ? {score_prev}?{score_new} ({ajuste:+d}) | {critica.get('recomendacion','')}")
+        print(f"   ✅ {score_prev}→{score_new} ({ajuste:+d}) | {critica.get('recomendacion','')}")
     except Exception as e:
-        print(f"   ?? Scoring critico omitido: {e}")
+        print(f"   ⚠️ Scoring critico omitido: {e}")
     return idea
 
-# -- Batch principal ----------------------------------------------------------
+# ── Batch principal ──────────────────────────────────────────────────────────
 
 def ejecutar_batch():
     try:
@@ -521,7 +492,7 @@ def ejecutar_batch():
         from agents.trend_scout       import get_tendencias, actualizar_tendencias
         from agents.notion_sync_agent import sync_idea_to_notion
     except ImportError as e:
-        print(f"? Import critico: {e}"); return False, "", ""
+        print(f"❌ Import critico: {e}"); return False, "", ""
 
     try:
         from agents.watchdog import (
@@ -542,42 +513,42 @@ def ejecutar_batch():
     except ImportError:
         pass
 
-    print("?? Actualizando tendencias...")
+    print("🌐 Actualizando tendencias...")
     try:
         actualizar_tendencias()
         tendencias = get_tendencias()
-        print(f"? {len(tendencias)} tendencias")
+        print(f"✅ {len(tendencias)} tendencias")
     except Exception as e:
-        print(f"?? Tendencias: {e}"); tendencias = []
+        print(f"⚠️ Tendencias: {e}"); tendencias = []
 
-    print("?? Cargando contexto KB...")
+    print("📚 Cargando contexto KB...")
     try:
         contexto = get_contexto_para_prompt()
         stats    = get_stats()
-        print(f"?? KB: {stats.get('total_ideas',0)} ideas | Promedio: {stats.get('score_promedio',0)}")
+        print(f"📊 KB: {stats.get('total_ideas',0)} ideas | Promedio: {stats.get('score_promedio',0)}")
     except Exception as e:
-        print(f"?? KB: {e}"); contexto = {"ideas_previas":"","score_promedio":0}
+        print(f"⚠️ KB: {e}"); contexto = {"ideas_previas":"","score_promedio":0}
 
     pesos      = _cargar_pesos()
     umbral_dup = pesos.get("umbral_duplicado", 0.38)
     tema       = os.environ.get("IDEA_TOPIC","").strip()
     emergencia = modo_emergencia_activo()
 
-    if emergencia: print("?? MODO EMERGENCIA activo")
-    if tema:       print(f"?? Tema solicitado: '{tema}'")
+    if emergencia: print("⚠️ MODO EMERGENCIA activo")
+    if tema:       print(f"🎯 Tema solicitado: '{tema}'")
 
     nombres_bloqueados = get_nombres_bloqueados() if watchdog_ok else []
 
     idea = None
     for intento_gen in range(4):
-        print(f"?? Generando idea (intento {intento_gen+1}/4)...")
+        print(f"🧠 Generando idea (intento {intento_gen+1}/4)...")
         prompt = get_prompt_idea(contexto, tendencias, tema, modo_emergencia=emergencia)
         print(f"   Prompt: {len(prompt)} chars")
 
         try:
             respuesta = llamar_groq(prompt, max_tokens=3000)
         except Exception as e:
-            print(f"? Error Groq: {e}")
+            print(f"❌ Error Groq: {e}")
             if watchdog_ok: registrar_fallo(str(e))
             return False, "", ""
 
@@ -586,37 +557,37 @@ def ejecutar_batch():
         try:
             idea_candidata = json.loads(json_limpio)
         except Exception as e:
-            print(f"? JSON invalido (intento {intento_gen+1}): {e}")
+            print(f"❌ JSON invalido (intento {intento_gen+1}): {e}")
             print(f"   Raw: {respuesta[:400]}")
             emergencia = True
             continue
 
         calidad_ok, motivo = _validar_calidad(idea_candidata)
         if not calidad_ok:
-            print(f"?? Calidad rechazada: {motivo} � regenerando...")
+            print(f"⚠️ Calidad rechazada: {motivo} — regenerando...")
             emergencia = True
             continue
 
         nombre_cand = idea_candidata.get("nombre","").lower()
         if any(nombre_cand in n.lower() or n.lower() in nombre_cand
                for n in nombres_bloqueados if n):
-            print(f"?? Nombre bloqueado � regenerando..."); continue
+            print(f"⚠️ Nombre bloqueado — regenerando..."); continue
 
         try:
             dup, dup_nombre = es_duplicado(idea_candidata, umbral=umbral_dup)
             if dup:
-                print(f"?? Duplicado de '{dup_nombre}' � regenerando...")
+                print(f"⚠️ Duplicado de '{dup_nombre}' — regenerando...")
                 contexto["ideas_previas"] += f"\n- DESCARTADA: '{idea_candidata.get('nombre','?')}'"
                 continue
         except Exception as e:
-            print(f"?? Anti-dup: {e}")
+            print(f"⚠️ Anti-dup: {e}")
 
         idea = idea_candidata
-        print(f"? Idea valida: {idea.get('nombre','?')}")
+        print(f"✅ Idea valida: {idea.get('nombre','?')}")
         break
 
     if not idea:
-        print("? No se genero idea valida en 4 intentos")
+        print("❌ No se genero idea valida en 4 intentos")
         if watchdog_ok: registrar_fallo("4 intentos fallidos")
         return False, "", ""
 
@@ -641,13 +612,13 @@ def ejecutar_batch():
             scores["score_mercado_real"] = ev.get("score_mercado_real",0)
             idea["scores"] = scores
         except Exception as e:
-            print(f"?? Validacion mercado: {e}")
+            print(f"⚠️ Validacion mercado: {e}")
 
     score = idea.get("scores",{}).get("score_total",0)
-    print(f"?? Score FINAL: {score}/100")
+    print(f"📊 Score FINAL: {score}/100")
 
     try:    registrar_idea(idea)
-    except Exception as e: print(f"?? KB: {e}")
+    except Exception as e: print(f"⚠️ KB: {e}")
 
     os.makedirs("data", exist_ok=True)
     try:
@@ -659,19 +630,19 @@ def ejecutar_batch():
         todas.append(idea)
         with open(ruta,"w",encoding="utf-8") as f:
             json.dump(todas, f, ensure_ascii=False, indent=2)
-        print(f"?? ideas.json: {len(todas)} ideas")
+        print(f"💾 ideas.json: {len(todas)} ideas")
     except Exception as e:
-        print(f"?? ideas.json: {e}")
+        print(f"⚠️ ideas.json: {e}")
 
-    print("?? Sincronizando Notion...")
+    print("🔗 Sincronizando Notion...")
     url = ""
     if os.environ.get("NOTION_TOKEN","") and os.environ.get("NOTION_DATABASE_ID",""):
         try:
             url = sync_idea_to_notion(idea)
             if url:
-                print(f"? Notion OK: {url}")
+                print(f"✅ Notion OK: {url}")
             else:
-                print("? Notion URL vacia � encolando")
+                print("❌ Notion URL vacia — encolando")
                 try:
                     import csv
                     cola_path = "data/cola_pendientes.csv"
@@ -683,9 +654,9 @@ def ejecutar_batch():
                                     "intentos":1,"error":"URL vacia",
                                     "datos_json":json.dumps(idea,ensure_ascii=False)[:2000]})
                 except Exception as ce:
-                    print(f"?? Cola: {ce}")
+                    print(f"⚠️ Cola: {ce}")
         except Exception as e:
-            print(f"? Notion: {e}")
+            print(f"❌ Notion: {e}")
 
     if url:
         idea["notion_url"] = url
@@ -707,9 +678,9 @@ def ejecutar_batch():
     try:
         from agents.weekly_learner import analizar_y_aprender
         r = analizar_y_aprender()
-        print(f"?? Aprendizaje: {str(r.get('resumen','ok'))[:80]}")
+        print(f"🧠 Aprendizaje: {str(r.get('resumen','ok'))[:80]}")
     except Exception as e:
-        print(f"?? Aprendizaje: {e}")
+        print(f"⚠️ Aprendizaje: {e}")
 
     def _s(v, n=150): return _content_to_str(v)[:n] if v else ""
     em = idea.get("estrategia_monetizacion",{})
@@ -725,7 +696,7 @@ def ejecutar_batch():
     print(f"MONETIZ_S1:{_s(em.get('semana1','') if isinstance(em,dict) else '')}")
     print(f"VEREDICTO_CRITICO:{_s(sc.get('veredicto','') if isinstance(sc,dict) else '')}")
     print(f"RECOMENDACION:{_s(sc.get('recomendacion','') if isinstance(sc,dict) else '')}")
-    print(f"? Sincronizada: {nombre}")
+    print(f"✅ Sincronizada: {nombre}")
     return True, nombre, url
 
 if __name__ == "__main__":
