@@ -362,7 +362,7 @@ def calcular_score_ponderado(scores):
 
 def get_prompt_idea(contexto, tendencias, tema="", modo_emergencia=False):
     pesos         = _cargar_pesos()
-    score_obj     = pesos.get("score_objetivo", 75)
+    score_obj     = int(os.environ.get("SCORE_MINIMO", pesos.get("score_objetivo", 75)))
     ideas_previas = str(contexto.get("ideas_previas","ninguna"))[:600]
     tema_str      = f"TEMA OBLIGATORIO: '{tema}'\n\n" if tema else ""
     diversidad    = _get_instruccion_diversidad()
