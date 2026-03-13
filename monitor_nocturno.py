@@ -81,6 +81,7 @@ def _extraer_datos_salida(salida):
         "problema":          _get("PROBLEMA"),
         "veredicto_critico": _get("VEREDICTO_CRITICO"),
         "recomendacion":     _get("RECOMENDACION"),
+        "mrr_m12":           _get("MRR_M12"),
     }
 
 def _fmt_mensaje_idea(d):
@@ -105,6 +106,8 @@ def _fmt_mensaje_idea(d):
     if d.get("hipotesis"):
         lineas.append(f"🧪 <b>Test 48h:</b> {_safe_str(d['hipotesis'])[:220]}")
     if d.get("veredicto_critico"):
+    if d.get("mrr_m12") and d.get("mrr_m12") != "0":
+        lineas.append(f"💹 <b>MRR mes12:</b> {d[chr(109)+chr(114)+chr(114)+chr(95)+chr(109)+chr(49)+chr(50)]}EUR")
         lineas.append(f"✅ <b>Veredicto YC:</b> {_safe_str(d['veredicto_critico'])[:180]}")
     if d.get("recomendacion"):
         lineas.append(f"🏷 <b>Recomendacion:</b> {_safe_str(d['recomendacion']).upper()}")
