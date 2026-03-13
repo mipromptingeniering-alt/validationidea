@@ -89,28 +89,18 @@ def sync_idea_to_notion(idea):
     _rb  = ee_real.get("breakeven", "?")
     _ob  = ee_opt.get("breakeven",  "?")
     ee_txt = "Conservador: "+str(_c12)+"EUR/mes12 | Breakeven: "+str(_cb)+"\nRealista: "+str(_r12)+"EUR/mes12 | Breakeven: "+str(_rb)+"\nOptimista: "+str(_o12)+"EUR/mes12 | Breakeven: "+str(_ob)
-"
-               f"Realista:    {ee_real.get('mes12',{}).get('mrr_eur',0) if isinstance(ee_real.get('mes12'),dict) else 0}EUR/mes12 | Breakeven: {ee_real.get('breakeven','?')}
-"
-               f"Optimista:   {ee_opt.get('mes12',{}).get('mrr_eur',0) if isinstance(ee_opt.get('mes12'),dict) else 0}EUR/mes12 | Breakeven: {ee_opt.get('breakeven','?')}")
+    op_txt = ("Unicidad: "+_s(op.get("unicidad",""),200)+"\n"+
+             "Riesgo: "+_s(op.get("riesgo_principal",""),150)+"\n"+
+             "Timing: "+_s(op.get("timing",""),150)+"\n"+
+             "Dia uno: "+_s(op.get("dia_uno",""),150)+"\n"+
+             "Fallo probable: "+_s(op.get("fallo_probable",""),150))
+    hr_txt = ("S1: "+_s(hr.get("semana1",""),150)+"\n"+
+             "S2: "+_s(hr.get("semana2",""),150)+"\n"+
+             "S3: "+_s(hr.get("semana3",""),150)+"\n"+
+             "S4: "+_s(hr.get("semana4",""),150))
+    canales_txt = "\n".join("- "+_s(c,150) for c in mn.get("canales_adquisicion",[])[:5])
+    comp_txt    = "\n".join("- "+_s(c,150) for c in merc.get("competidores",[])[:5])
 
-    op_txt = (f"Unicidad: {_s(op.get('unicidad',''),200)}
-Riesgo: {_s(op.get('riesgo_principal',''),150)}
-"
-              f"Timing: {_s(op.get('timing',''),150)}
-Dia uno: {_s(op.get('dia_uno',''),150)}
-Fallo probable: {_s(op.get('fallo_probable',''),150)}")
-
-    hr_txt = (f"S1: {_s(hr.get('semana1',''),150)}
-S2: {_s(hr.get('semana2',''),150)}
-"
-              f"S3: {_s(hr.get('semana3',''),150)}
-S4: {_s(hr.get('semana4',''),150)}")
-
-    canales_txt = "
-".join(f"- {_s(c,150)}" for c in mn.get("canales_adquisicion",[])[:5])
-    comp_txt    = "
-".join(f"- {_s(c,150)}" for c in merc.get("competidores",[])[:5])
     primer_cli  = _s(pm.get("primer_cliente_script",""), 400)
 
     properties = {
@@ -129,40 +119,24 @@ S4: {_s(hr.get('semana4',''),150)}")
     if recomendacion: properties["Recomendacion"] = {"select": {"name": recomendacion[:50]}}
 
     children = []
-    children += _bloque("🚀 Resumen ejecutivo", f"{tagline}
-
-{propuesta}")
-    children += _bloque("❗ Problema", problema, 3)
-    children += _bloque("💡 Solución", solucion, 3)
-    children += _bloque("👤 Cliente objetivo", cliente, 3)
-    children += _bloque("📊 Scoring", f"Total: {score}/100 | Crítico YC: {critico_s}/100
-Ejecutabilidad: {ejec} | Monetización: {monetiz} | Viral: {viral} | Timing: {timing_s}")
-    children += _bloque("✅ Veredicto YC", f"{veredicto}
-Recomendacion: {recomendacion.upper()}
-Objeciones: {_s(sc.get('objeciones_principales',[]),300)}")
-    children += _bloque("🧠 Opinión profesional", op_txt)
-    children += _bloque("📈 Estudio económico", ee_txt)
-    children += _bloque("🌍 Mercado", f"TAM: {_s(merc.get('TAM',''),100)} | SAM: {_s(merc.get('SAM',''),100)} | SOM: {_s(merc.get('SOM',''),100)}
-Ventaja: {_s(merc.get('ventaja_competitiva',''),300)}")
-    if comp_txt: children += _bloque("⚔️ Competidores", comp_txt, 3)
-    children += _bloque("🔲 DAFO", f"Fortalezas: {_s(dafo.get('fortalezas',[]),200)}
-Debilidades: {_s(dafo.get('debilidades',[]),200)}
-Oportunidades: {_s(dafo.get('oportunidades',[]),200)}
-Amenazas: {_s(dafo.get('amenazas',[]),200)}")
-    children += _bloque("💰 Monetización", f"S1: {_s(em.get('semana1',''),300)}
-S4: {_s(em.get('semana4',''),200)}
-Mes3: {_s(em.get('mes3',''),200)}
-Precio: {_s(em.get('precio_optimo_justificado',''),200)}")
-    if canales_txt: children += _bloque("📣 Canales", canales_txt, 3)
-    children += _bloque("🧪 Hipótesis", f"Test: {_s(ht.get('experimento_48h',''),200)}
-Métrica: {_s(ht.get('metrica_exito',''),150)}
-Alarma: {_s(ht.get('senal_de_alarma',''),150)}")
-    children += _bloque("🛠️ MVP", f"Stack: {_s(mvp.get('stack_recomendado',''),200)}
-Tiempo: {mvp.get('tiempo_semanas',3)} semanas | Coste: 0€
-Features: {_s(mvp.get('features_minimas',[]),300)}")
-    children += _bloque("🗓️ Hoja de ruta", hr_txt)
-    children += _bloque("🤖 Herramienta IA", herr_ia, 3)
-    if primer_cli: children += _bloque("🎯 Primer cliente", primer_cli)
+    children += _bloque("Resumen ejecutivo", tagline+"\n\n"+propuesta)
+    children += _bloque("Problema", problema, 3)
+    children += _bloque("Solucion", solucion, 3)
+    children += _bloque("Cliente objetivo", cliente, 3)
+    children += _bloque("Scoring", "Total: "+str(score)+"/100 | Critico YC: "+str(critico_s)+"/100\nEjecutabilidad: "+str(ejec)+" | Monetizacion: "+str(monetiz)+" | Viral: "+str(viral)+" | Timing: "+str(timing_s))
+    children += _bloque("Veredicto YC", str(veredicto)+"\nRecomendacion: "+recomendacion.upper()+"\nObjeciones: "+_s(sc.get("objeciones_principales",[]),300))
+    children += _bloque("Opinion profesional", op_txt)
+    children += _bloque("Estudio economico", ee_txt)
+    children += _bloque("Mercado", "TAM: "+_s(merc.get("TAM",""),100)+" | SAM: "+_s(merc.get("SAM",""),100)+" | SOM: "+_s(merc.get("SOM",""),100)+"\nVentaja: "+_s(merc.get("ventaja_competitiva",""),300))
+    if comp_txt: children += _bloque("Competidores", comp_txt, 3)
+    children += _bloque("DAFO", "Fortalezas: "+_s(dafo.get("fortalezas",[]),200)+"\nDebilidades: "+_s(dafo.get("debilidades",[]),200)+"\nOportunidades: "+_s(dafo.get("oportunidades",[]),200)+"\nAmenazas: "+_s(dafo.get("amenazas",[]),200))
+    children += _bloque("Monetizacion", "S1: "+_s(em.get("semana1",""),300)+"\nS4: "+_s(em.get("semana4",""),200)+"\nMes3: "+_s(em.get("mes3",""),200)+"\nPrecio: "+_s(em.get("precio_optimo_justificado",""),200))
+    if canales_txt: children += _bloque("Canales", canales_txt, 3)
+    children += _bloque("Hipotesis", "Test: "+_s(ht.get("experimento_48h",""),200)+"\nMetrica: "+_s(ht.get("metrica_exito",""),150)+"\nAlarma: "+_s(ht.get("senal_de_alarma",""),150))
+    children += _bloque("MVP", "Stack: "+_s(mvp.get("stack_recomendado",""),200)+"\nTiempo: "+str(mvp.get("tiempo_semanas",3))+" semanas\nFeatures: "+_s(mvp.get("features_minimas",[]),300))
+    children += _bloque("Hoja de ruta", hr_txt)
+    children += _bloque("Herramienta IA", herr_ia, 3)
+    if primer_cli: children += _bloque("Primer cliente", primer_cli)
 
     payload = {"parent": {"database_id": NOTION_DB_ID}, "properties": properties, "children": children[:95]}
 
