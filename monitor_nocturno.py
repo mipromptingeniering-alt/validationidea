@@ -113,7 +113,7 @@ def _fmt_mensaje_idea(d):
     if d.get("recomendacion"):
         lineas.append(f"🏷 <b>Recomendacion:</b> {_safe_str(d['recomendacion']).upper()}")
     if d.get("notion_url"):
-        lineas.append(f"\n📋 <a href=\"{d['notion_url']}\">Ver informe completo en Notion</a>")
+        lineas.append("\n📋 <a href=" + chr(34) + str(d.get("notion_url","")) + chr(34) + ">Ver informe completo en Notion</a>")
     else:
         lineas.append("\n⚠️ Notion: en cola de reintento automatico")
     return "\n".join(lineas)
