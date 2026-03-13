@@ -96,7 +96,7 @@ def sync_idea_to_notion(idea):
         "Tagline":         {"rich_text": _rt(tagline)},
         "Vertical":        {"select": {"name": vertical[:100]}},
         "Tipo":            {"select": {"name": tipo[:50]}},
-        "Recomendacion":   {"select": {"name": recomendacion[:50] if recomendacion else "pivotar"}},
+        "Recomendacion":   {"select": {"name": (recomendacion[:50] if recomendacion else "pivotar") or "pivotar"}},
         "Ejecutabilidad":  {"number": float(ejec)},
         "Stack":           {"rich_text": _rt(_s(mvp.get("stack_recomendado",""), 200))},
         "Tags":            {"rich_text": _rt(", ".join(str(t) for t in idea.get("tags",[])[:5]))},
@@ -204,14 +204,22 @@ def sync_idea_to_notion(idea):
         "children":   children[:95],
     }
 
-    try:
-        result   = _post("/pages", payload)
+    # Intentar sin selects si falla
+    for intento in range(2):
+        try:
+            result   = _post("/pages", payload)
         page_url = result.get("url","")
         page_id  = result.get("id","").replace("-","")
         if not page_url and page_id:
             page_url = f"https://notion.so/{page_id}"
-        print(f"Notion OK: {page_url}")
-        return page_url
-    except Exception as e:
-        print(f"Notion sync: {e}")
-        return ""
+            print(f"Notion OK: {page_url}")
+            return page_url
+        except Exception as e:
+            print(f"Notion sync intento {intento}: {e}")
+            if intento == 0:
+                # Quitar selects y reintentar
+                for k in ["Recomendacion","Vertical","Tipo"]:
+                    payload["properties"].pop(k, None)
+            else:
+                return ""
+    return ""

@@ -698,6 +698,10 @@ def ejecutar_batch():
     print(f"MONETIZ_S1:{_s(em.get('semana1','') if isinstance(em,dict) else '')}")
     print(f"VEREDICTO_CRITICO:{_s(sc.get('veredicto','') if isinstance(sc,dict) else '')}")
     print(f"RECOMENDACION:{_s(sc.get('recomendacion','') if isinstance(sc,dict) else '')}")
+    ee = idea.get("estudio_economico",{}) if isinstance(idea.get("estudio_economico"),dict) else {}
+    ee_real = ee.get("realista",{}) if isinstance(ee.get("realista"),dict) else {}
+    mrr_m12 = ee_real.get("mes12",{}).get("mrr_eur",0) if isinstance(ee_real.get("mes12"),dict) else 0
+    print(f"MRR_M12:{mrr_m12}")
     print(f"✅ Sincronizada: {nombre}")
     return True, nombre, url
 

@@ -681,6 +681,49 @@ def _procesar_callback(callback, chat_id):
         _post("answerCallbackQuery", {"callback_query_id": callback["id"]})
     except: pass
 
+
+def cmd_resubir(chat_id):
+    enviar(chat_id, "Resubiendo ideas pendientes a Notion...")
+    try:
+        import csv
+        from agents.notion_sync_agent import sync_idea_to_notion
+        cola_path = "data/cola_pendientes.csv"
+        ruta_ideas = "data/ideas.json"
+        exitos = 0
+        # Reintentar cola
+        if os.path.exists(cola_path):
+            with open(cola_path,"r",encoding="utf-8") as f:
+                rows = list(csv.DictReader(f))
+            pendientes = []
+            for row in rows:
+                try:
+                    idea = json.loads(row.get("datos_json","{}"))
+                    url = sync_idea_to_notion(idea)
+                    if url:
+                        exitos += 1
+                    else:
+                        pendientes.append(row)
+                except:
+                    pendientes.append(row)
+            with open(cola_path,"w",newline="",encoding="utf-8") as f:
+                w = csv.DictWriter(f,fieldnames=["timestamp","nombre_idea","intentos","error","datos_json"])
+                w.writeheader(); w.writerows(pendientes)
+        # Reintentar ultimas 5 ideas sin URL
+        if os.path.exists(ruta_ideas):
+            with open(ruta_ideas,"r",encoding="utf-8") as f:
+                todas = json.load(f)
+            for idea in todas[-5:]:
+                if not idea.get("notion_url"):
+                    url = sync_idea_to_notion(idea)
+                    if url:
+                        idea["notion_url"] = url
+                        exitos += 1
+            with open(ruta_ideas,"w",encoding="utf-8") as f:
+                json.dump(todas, f, ensure_ascii=False, indent=2)
+        enviar(chat_id, f"Resubida completada: {exitos} ideas subidas a Notion.")
+    except Exception as e:
+        enviar(chat_id, f"Error resubir: {e}")
+
 def _loop_telegram():
     offset = 0
     print("Escuchando comandos Telegram...")
@@ -778,6 +821,8 @@ def _loop_telegram():
                     cmd_tendencias(chat_id)
                 elif texto_lower == "/cola":
                     cmd_cola(chat_id)
+                elif texto_lower == "/resubir":
+                    threading.Thread(target=cmd_resubir, args=(chat_id,), daemon=True).start()
                 elif texto_lower == "/aprender":
                     threading.Thread(target=cmd_aprender, args=(chat_id,), daemon=True).start()
                 elif texto_lower == "/mejoras":
@@ -904,7 +949,7 @@ def main():
             "Auto-mejora via Groq + git push\n"
             "Notion retry automatico cada 10 min\n"
             "Alerta especial ideas +85 puntos\n"
-            "/comparar, /mejoras, /rollback, /mejorar\n"
+            "/comparar, /mejoras, /rollback, /mejorar, /resubir\n"
             "Health check HTTP activo\n"
             "Log 09:00 + Aprendizaje 08:00\n\n"
             "/start para ver todos los comandos"
