@@ -88,7 +88,7 @@ def sync_idea_to_notion(idea):
     _cb  = ee_cons.get("breakeven", "?")
     _rb  = ee_real.get("breakeven", "?")
     _ob  = ee_opt.get("breakeven",  "?")
-    ee_txt = f"Conservador: {_c12}EUR/mes12 | Breakeven: {_cb}\nRealista: {_r12}EUR/mes12 | Breakeven: {_rb}\nOptimista: {_o12}EUR/mes12 | Breakeven: {_ob}"
+    ee_txt = ("Conservador: " + str(_c12) + "EUR/mes12 | Breakeven: " + str(_cb) + chr(10) + "Realista: " + str(_r12) + "EUR/mes12 | Breakeven: " + str(_rb) + chr(10) + "Optimista: " + str(_o12) + "EUR/mes12 | Breakeven: " + str(_ob))
 "
                f"Realista:    {ee_real.get('mes12',{}).get('mrr_eur',0) if isinstance(ee_real.get('mes12'),dict) else 0}EUR/mes12 | Breakeven: {ee_real.get('breakeven','?')}
 "
