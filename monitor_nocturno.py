@@ -107,14 +107,12 @@ def _fmt_mensaje_idea(d):
     if d.get("hipotesis"):
         lineas.append(f"🧪 <b>Test 48h:</b> {_safe_str(d['hipotesis'])[:220]}")
     if d.get("veredicto_critico"):
+        lineas.append(f"✅ <b>Veredicto YC:</b> {_safe_str(d['veredicto_critico'])[:180]}")
     if d.get("mrr_m12") and d.get("mrr_m12") != "0":
         lineas.append(f"💹 <b>MRR mes12:</b> {d[chr(109)+chr(114)+chr(114)+chr(95)+chr(109)+chr(49)+chr(50)]}EUR")
-        lineas.append(f"✅ <b>Veredicto YC:</b> {_safe_str(d['veredicto_critico'])[:180]}")
     if d.get("recomendacion"):
         lineas.append(f"🏷 <b>Recomendacion:</b> {_safe_str(d['recomendacion']).upper()}")
     if d.get("notion_url"):
-    if d.get("mrr_m12") and d.get("mrr_m12","0") != "0":
-        lineas.append(f"💹 <b>MRR mes12:</b> {_safe_str(d["mrr_m12"])}EUR")
         lineas.append(f"\n📋 <a href=\"{d['notion_url']}\">Ver informe completo en Notion</a>")
     else:
         lineas.append("\n⚠️ Notion: en cola de reintento automatico")
