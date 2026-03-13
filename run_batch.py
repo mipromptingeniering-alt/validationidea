@@ -204,7 +204,7 @@ def _extraer_content_respuesta(resp, modelo=""):
     print(f"   [DEBUG] choices count={len(choices) if hasattr(choices,'__len__') else '?'}")
 
     try:
-        choice = choices
+        choice = choices[0]
         return _extraer_content_de_choice(choice, modelo)
     except Exception as e:
         print(f"   [DEBUG] error en choices: {e}")
