@@ -82,7 +82,13 @@ def sync_idea_to_notion(idea):
     ee_cons = ee.get("conservador",{}) if isinstance(ee.get("conservador"),dict) else {}
     ee_real = ee.get("realista",{}) if isinstance(ee.get("realista"),dict) else {}
     ee_opt  = ee.get("optimista",{}) if isinstance(ee.get("optimista"),dict) else {}
-    ee_txt  = (f"Conservador: {ee_cons.get('mes12',{}).get('mrr_eur',0) if isinstance(ee_cons.get('mes12'),dict) else 0}EUR/mes12 | Breakeven: {ee_cons.get('breakeven','?')}
+    _c12 = ee_cons.get("mes12", {}).get("mrr_eur", 0) if isinstance(ee_cons.get("mes12"), dict) else 0
+    _r12 = ee_real.get("mes12", {}).get("mrr_eur", 0) if isinstance(ee_real.get("mes12"), dict) else 0
+    _o12 = ee_opt.get("mes12",  {}).get("mrr_eur", 0) if isinstance(ee_opt.get("mes12"),  dict) else 0
+    _cb  = ee_cons.get("breakeven", "?")
+    _rb  = ee_real.get("breakeven", "?")
+    _ob  = ee_opt.get("breakeven",  "?")
+    ee_txt = f"Conservador: {_c12}EUR/mes12 | Breakeven: {_cb}\nRealista: {_r12}EUR/mes12 | Breakeven: {_rb}\nOptimista: {_o12}EUR/mes12 | Breakeven: {_ob}"
 "
                f"Realista:    {ee_real.get('mes12',{}).get('mrr_eur',0) if isinstance(ee_real.get('mes12'),dict) else 0}EUR/mes12 | Breakeven: {ee_real.get('breakeven','?')}
 "
