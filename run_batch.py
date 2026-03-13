@@ -321,9 +321,10 @@ def _validar_calidad(idea):
         if ph in texto:
             registrar_placeholder(ph)
             return False, f"Placeholder: '{ph}'"
-    for campo in ["nombre", "problema", "solucion", "cliente_objetivo", "tagline"]:
+    _minimos = {"nombre": 3, "problema": 15, "solucion": 15, "cliente_objetivo": 15, "tagline": 5}
+    for campo, _min in _minimos.items():
         val = str(idea.get(campo,"")).strip()
-        if not val or len(val) < 15:
+        if not val or len(val) < _min:
             return False, f"Campo '{campo}' vacio"
     em = idea.get("estrategia_monetizacion",{})
     if isinstance(em, dict):
