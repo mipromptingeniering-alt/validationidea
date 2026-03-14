@@ -495,7 +495,7 @@ def get_prompt_idea(contexto, tendencias, tema="", modo_emergencia=False):
             '"hipotesis_testeable":{"experimento_48h":"Crea [typeform] midiendo [metrica]",'
             '"metrica_exito":"X signups en 48h"},'
             '"mvp":{"stack_recomendado":"Next.js+Supabase+Vercel","tiempo_semanas":3,"coste_estimado_eur":0},'
-            '"scores":{"critico":70,"viral":60,"generador":75,"monetizacion":70,"ejecutabilidad":80,"timing":75,"score_total":0},'
+            '"estudio_economico":{"conservador":{"mes3":{"mrr_eur":750},"mes12":{"mrr_eur":6000}},"realista":{"mes3":{"mrr_eur":2250},"mes12":{"mrr_eur":18000}},"optimista":{"mes3":{"mrr_eur":4500},"mes12":{"mrr_eur":36000}}},'\n            '"scores":{"critico":70,"viral":60,"generador":75,"monetizacion":70,"ejecutabilidad":80,"timing":75,"score_total":0},'
             '"vertical":"SaaS","tipo":"B2B","tags":["tag1","tag2"]}'
         )
 
