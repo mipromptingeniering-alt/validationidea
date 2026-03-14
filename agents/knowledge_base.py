@@ -242,19 +242,24 @@ def es_similar(idea: dict, umbral: float = 0.55):
     nombre_nuevo = str(idea.get("nombre", "")).strip().lower()
     problema_nuevo = str(idea.get("problema", "")).strip().lower()
 
-    ruta_kb = _p.Path(__file__).parent.parent / "data" / "ideas.jsonl"
+    # ideas.json es lista JSON, no jsonl
+    ruta_kb = _p.Path(__file__).parent.parent / "data" / "ideas.json"
     if not ruta_kb.exists():
+        return False, ""
+
+    try:
+        ideas_lista = json.loads(ruta_kb.read_text(encoding="utf-8"))
+    except Exception:
         return False, ""
 
     palabras_n = set(nombre_nuevo.split())
     palabras_p = set(problema_nuevo.split())
 
-    with open(ruta_kb, encoding="utf-8") as fh:
-        for linea in fh:
-            try:
-                prev = json.loads(linea)
-            except Exception:
-                continue
+    for prev in (ideas_lista if isinstance(ideas_lista, list) else []):
+        try:
+            pass
+        except Exception:
+            continue
             n_prev = str(prev.get("nombre", "")).strip().lower()
             p_prev = str(prev.get("problema", "")).strip().lower()
 
