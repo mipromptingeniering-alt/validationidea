@@ -107,7 +107,18 @@ def sync_idea_to_notion(idea):
         "Name":  {"title": _rt(f"{emoji} {nombre} — {score}/100")},
             }
 
-    # Selects opcionales desactivados hasta crear schema en Notion
+    # Propiedades adicionales
+    properties["Score"]         = {"number": float(score)}
+    properties["Ejecutabilidad"]= {"number": float(ejec)}
+    properties["MRR_M12"]       = {"number": float(_c12) if _c12 else 0}
+    properties["Tagline"]       = {"rich_text": _rt(tagline)}
+    properties["Veredicto"]     = {"rich_text": _rt(_s(str(veredicto), 300))}
+    properties["Stack"]         = {"rich_text": _rt(_s(mvp.get("stack_recomendado",""), 200))}
+    properties["Fecha"]         = {"date": {"start": datetime.now().strftime("%Y-%m-%d")}}
+    properties["Tags"]          = {"multi_select": [{"name": str(t)[:50]} for t in idea.get("tags",[])[:5]]}
+    if vertical:     properties["Vertical"]      = {"select": {"name": vertical[:100]}}
+    if tipo:         properties["Tipo"]          = {"select": {"name": tipo[:50]}}
+    if recomendacion: properties["Recomendacion"] = {"select": {"name": recomendacion[:50]}}
 
     children = []
     children += _bloque("Resumen ejecutivo", tagline+"\n\n"+propuesta)
