@@ -388,6 +388,8 @@ def _validar_calidad(idea):
         if ph in texto:
             registrar_placeholder(ph)
             return False, f"Placeholder: '{ph}'"
+    # Normalizar claves con tilde antes de validar
+    idea = {unicodedata.normalize("NFD", k).encode("ascii","ignore").decode(): v for k,v in idea.items()}
     _minimos = {"nombre": 3, "problema": 15, "solucion": 15, "cliente_objetivo": 15, "tagline": 5}
     for campo, _min in _minimos.items():
         val = str(idea.get(campo,"")).strip()
@@ -716,6 +718,18 @@ def ejecutar_batch():
     scores = idea.get("scores",{}) if isinstance(idea.get("scores"),dict) else {}
     scores["score_total"] = calcular_score_ponderado(scores)
     idea["scores"] = scores
+    # Calcular score_total desde sub-scores del LLM antes del scorer YC
+    _sc = idea.get("scores", {})
+    if isinstance(_sc, dict) and _sc.get("score_total", 0) == 0:
+        _subs = ["critico","viral","generador","monetizacion","ejecutabilidad","timing"]
+        _vals = [v for k,v in _sc.items() if k in _subs and isinstance(v,(int,float)) and v > 0]
+        if _vals:
+            idea["scores"]["score_total"] = round(sum(_vals) / len(_vals), 1)
+        else:
+            # Score base por contenido: si tiene datos reales, empieza en 55
+            _prob = str(idea.get("problema",""))
+            _base = 55 if len(_prob) > 80 and any(c.isdigit() for c in _prob) else 35
+            idea["scores"] = {"score_total": _base, **_sc}
     idea = _aplicar_scoring_critico(idea)
 
     if validar_idea_fn:
