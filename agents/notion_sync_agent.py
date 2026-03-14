@@ -125,20 +125,61 @@ def sync_idea_to_notion(idea):
     children += _bloque("Problema", problema, 3)
     children += _bloque("Solucion", solucion, 3)
     children += _bloque("Cliente objetivo", cliente, 3)
-    children += _bloque("Scoring", "Total: "+str(score)+"/100 | Critico YC: "+str(critico_s)+"/100\nEjecutabilidad: "+str(ejec)+" | Monetizacion: "+str(monetiz)+" | Viral: "+str(viral)+" | Timing: "+str(timing_s))
-    children += _bloque("Veredicto YC", str(veredicto)+"\nRecomendacion: "+recomendacion.upper()+"\nObjeciones: "+_s(sc.get("objeciones_principales",[]),300))
+    children += _bloque("Scoring detallado", "Score global: "+str(score)+"/100 | Critico YC: "+str(critico_s)+"/100\nEjecutabilidad: "+str(ejec)+" | Monetizacion: "+str(monetiz)+" | Viral: "+str(viral)+" | Timing: "+str(timing_s))
+    children += _bloque("Veredicto YC", str(veredicto)+"\nRecomendacion: "+recomendacion.upper()+"\nObjeciones clave: "+_s(sc.get("objeciones_principales",[]),300)+"\nPivote sugerido: "+_s(sc.get("pivote_sugerido",""),200))
     children += _bloque("Opinion profesional", op_txt)
-    children += _bloque("Estudio economico", ee_txt)
-    children += _bloque("Mercado", "TAM: "+_s(merc.get("TAM",""),100)+" | SAM: "+_s(merc.get("SAM",""),100)+" | SOM: "+_s(merc.get("SOM",""),100)+"\nVentaja: "+_s(merc.get("ventaja_competitiva",""),300))
-    if comp_txt: children += _bloque("Competidores", comp_txt, 3)
-    children += _bloque("DAFO", "Fortalezas: "+_s(dafo.get("fortalezas",[]),200)+"\nDebilidades: "+_s(dafo.get("debilidades",[]),200)+"\nOportunidades: "+_s(dafo.get("oportunidades",[]),200)+"\nAmenazas: "+_s(dafo.get("amenazas",[]),200))
-    children += _bloque("Monetizacion", "S1: "+_s(em.get("semana1",""),300)+"\nS4: "+_s(em.get("semana4",""),200)+"\nMes3: "+_s(em.get("mes3",""),200)+"\nPrecio: "+_s(em.get("precio_optimo_justificado",""),200))
-    if canales_txt: children += _bloque("Canales", canales_txt, 3)
-    children += _bloque("Hipotesis", "Test: "+_s(ht.get("experimento_48h",""),200)+"\nMetrica: "+_s(ht.get("metrica_exito",""),150)+"\nAlarma: "+_s(ht.get("senal_de_alarma",""),150))
-    children += _bloque("MVP", "Stack: "+_s(mvp.get("stack_recomendado",""),200)+"\nTiempo: "+str(mvp.get("tiempo_semanas",3))+" semanas\nFeatures: "+_s(mvp.get("features_minimas",[]),300))
-    children += _bloque("Hoja de ruta", hr_txt)
-    children += _bloque("Herramienta IA", herr_ia, 3)
-    if primer_cli: children += _bloque("Primer cliente", primer_cli)
+    children += _bloque("Estudio economico 3 escenarios", ee_txt)
+    _mrr_r = ee_real.get("mes12",{}).get("mrr_eur",0) if isinstance(ee_real.get("mes12"),dict) else 0
+    _ur = ee_real.get("mes3",{}).get("usuarios",10) if isinstance(ee_real.get("mes3"),dict) else 10
+    _ltv = round(float(_mrr_r)/max(float(_ur),1)*24,0)
+    _cac_max = round(_ltv/3,0)
+    _ue = ("MRR mes12 realista: "+str(_mrr_r)+"EUR | MRR mes12 optimista: "+str(_o12)+"EUR\n"
+           "Usuarios mes3 estimados: "+str(_ur)+"\n"
+           "LTV estimado 24 meses: "+str(_ltv)+"EUR\n"
+           "CAC maximo recomendado: "+str(_cac_max)+"EUR\n"
+           "Payback period objetivo: 3 meses | Churn objetivo: menos 5pct/mes\n"
+           "Margen bruto SaaS objetivo: 70-80pct | Break-even: "+str(_rb))
+    children += _bloque("Unit Economics CAC/LTV/Churn", _ue)
+    children += _bloque("Mercado TAM/SAM/SOM", "TAM: "+_s(merc.get("TAM",""),100)+" | SAM: "+_s(merc.get("SAM",""),100)+" | SOM: "+_s(merc.get("SOM",""),100)+"\nVentaja competitiva: "+_s(merc.get("ventaja_competitiva",""),300))
+    if comp_txt: children += _bloque("Competidores y debilidades explotables", comp_txt, 3)
+    children += _bloque("DAFO estrategico", "FORTALEZAS: "+_s(dafo.get("fortalezas",[]),200)+"\nDEBILIDADES: "+_s(dafo.get("debilidades",[]),200)+"\nOPORTUNIDADES: "+_s(dafo.get("oportunidades",[]),200)+"\nAMENAZAS: "+_s(dafo.get("amenazas",[]),200))
+    children += _bloque("Estrategia monetizacion semana a semana", "SEMANA 1: "+_s(em.get("semana1",""),300)+"\nSEMANA 4: "+_s(em.get("semana4",""),200)+"\nMES 3: "+_s(em.get("mes3",""),200)+"\nPRECIO OPTIMO: "+_s(em.get("precio_optimo_justificado",""),200))
+    if canales_txt: children += _bloque("Canales adquisicion prioritarios", canales_txt, 3)
+    children += _bloque("Hipotesis 48h testeable", "EXPERIMENTO: "+_s(ht.get("experimento_48h",""),200)+"\nMETRICA EXITO: "+_s(ht.get("metrica_exito",""),150)+"\nSENAL DE ALARMA pivot: "+_s(ht.get("senal_de_alarma",""),150))
+    _qw = ("DIA 0: Crea landing en Carrd.co gratis en 15min - describe el problema + formulario email\n"
+           "DIA 1: "+_s(em.get("semana1","Envia 10 DMs personalizados a tu ICP"),200)+"\n"
+           "DIA 2: Post en comunidad del sector preguntando por el problema - sin mencionar solucion\n"
+           "DIA 3: Analiza respuestas, ajusta propuesta de valor, prepara demo de 5 slides\n"
+           "DIA 5: Primera llamada discovery 30min con interesado - escucha, no vendas\n"
+           "DIA 7: Envia propuesta con precio y solicita prepago o carta de intencion")
+    children += _bloque("Quick Wins Semana 1 sin escribir codigo", _qw)
+    _mvp_txt = ("STACK: "+_s(mvp.get("stack_recomendado","Next.js 14+Supabase+Vercel+Stripe"),200)+"\n"
+               "TIEMPO: "+str(mvp.get("tiempo_semanas",3))+" semanas | COSTE: 0EUR\n"
+               "FEATURES MINIMAS: "+_s(mvp.get("features_minimas",[]),400)+"\n\n"
+               "HERRAMIENTAS 0EUR:\n"
+               "- Vercel: hosting + deploy automatico desde GitHub\n"
+               "- Supabase: PostgreSQL + Auth + Storage gratis\n"
+               "- Stripe: pagos sin coste hasta cobrar\n"
+               "- Resend: 100 emails/dia gratis\n"
+               "- Clerk: auth alternativa 10k MAU gratis")
+    children += _bloque("MVP Como construirlo GRATIS", _mvp_txt)
+    _pm = mvp.get("prompt_mvp",{}) if isinstance(mvp.get("prompt_mvp"),dict) else {}
+    _pm_meta = _pm.get("meta",{}) if isinstance(_pm,dict) else {}
+    _ia = _pm_meta.get("ia_recomendada","Claude 3.5 Sonnet") if isinstance(_pm_meta,dict) else "Claude 3.5 Sonnet"
+    _sys_def = "Eres dev senior experto en SaaS. Construye "+str(nombre)+" que resuelve: "+_s(str(problema),200)+". Stack: Next.js+Supabase+Vercel. Objetivo: MVP funcional en 3 semanas con 0EUR."
+    _sys = _pm.get("system_prompt",_sys_def) if isinstance(_pm,dict) else _sys_def
+    _steps = _pm.get("instrucciones_paso_a_paso",["1. npx create-next-app@latest --typescript --tailwind","2. supabase init + crear tablas","3. Implementar feature principal con IA","4. Stripe checkout + webhook","5. Deploy en Vercel + dominio"]) if isinstance(_pm,dict) else []
+    _pt = ("IA RECOMENDADA: "+str(_ia)+"\n"
+           "ALTERNATIVAS GRATUITAS: Groq Llama3.3-70B | Gemini 1.5 Flash | Mistral 7B | HuggingFace Inference API\n\n"
+           "=== COPIA ESTE PROMPT EN CLAUDE O CURSOR ===\n"
+           +str(_sys)[:600]+"\n\n"
+           "=== PASOS EXACTOS DE IMPLEMENTACION ===\n"
+           +_s(_steps,700))
+    children += _bloque("Prompt completo para construir el MVP con IA", _pt)
+    children += _bloque("Hoja de ruta semana a semana", hr_txt)
+    children += _bloque("Herramienta IA principal y alternativas gratuitas", herr_ia+"\n\nALTERNATIVAS 0EUR:\n- Groq API: Llama3.3-70B ultrarapido\n- Google Gemini Flash: 1M tokens/dia gratis\n- Mistral API: 7B y Mixtral gratis\n- HuggingFace: inference gratuita")
+    if primer_cli: children += _bloque("Script primer cliente - copia y pega exacto", primer_cli)
+
 
     payload = {"parent": {"database_id": NOTION_DB_ID}, "properties": properties, "children": children[:95]}
 
