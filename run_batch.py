@@ -336,6 +336,34 @@ def _validar_calidad(idea):
         exp = str(ht.get("experimento_48h","")).strip().lower()
         if len(exp) < 20 or "plataforma concreta" in exp:
             return False, "experimento_48h no especifico"
+    ee = idea.get("estudio_economico",{})
+    if isinstance(ee, dict):
+        ee_r = ee.get("realista",{})
+        if isinstance(ee_r, dict):
+            m12 = ee_r.get("mes12",{})
+            mrr = m12.get("mrr_eur",0) if isinstance(m12,dict) else 0
+            if not mrr or float(mrr) == 0:
+                return False, "estudio_economico realista mes12 es 0"
+    dafo = idea.get("dafo",{})
+    if isinstance(dafo, dict):
+        forts = dafo.get("fortalezas",[])
+        if not forts or len(str(forts)) < 10:
+            return False, "dafo.fortalezas vacio"
+    merc = idea.get("mercado",{})
+    if isinstance(merc, dict):
+        tam = str(merc.get("TAM","")).strip()
+        if len(tam) < 3:
+            return False, "mercado.TAM vacio"
+    op = idea.get("opinion_profesional",{})
+    if isinstance(op, dict):
+        uni = str(op.get("unicidad","")).strip()
+        if len(uni) < 10:
+            return False, "opinion_profesional.unicidad vacia"
+    hr = idea.get("hoja_de_ruta",{})
+    if isinstance(hr, dict):
+        s1 = str(hr.get("semana1","")).strip()
+        if len(s1) < 5:
+            return False, "hoja_de_ruta.semana1 vacia"
     return True, ""
 
 def _get_instruccion_diversidad():
