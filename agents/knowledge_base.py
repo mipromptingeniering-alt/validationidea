@@ -223,7 +223,7 @@ def get_ideas_con_feedback_positivo():
 
 def registrar_rechazo(idea: dict, motivo: str):
     """Guarda rechazos para que el prompt aprenda a evitarlos."""
-    import json, datetime, os
+    import json, datetime, os, pathlib
     ruta = pathlib.Path(__file__).parent.parent / "data" / "rechazos.jsonl"
     ruta.parent.mkdir(parents=True, exist_ok=True)
     entry = {
@@ -291,7 +291,7 @@ def cargar_kb() -> list:
 
 def get_rechazos_recientes(n: int = 10) -> str:
     """Devuelve los ultimos N rechazos como texto para inyectar en el prompt."""
-    import json
+    import json, pathlib
     ruta = pathlib.Path(__file__).parent.parent / "data" / "rechazos.jsonl"
     if not ruta.exists():
         return ""
