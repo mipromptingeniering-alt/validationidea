@@ -316,6 +316,22 @@ def _validar_calidad(idea):
     except ImportError:
         def registrar_placeholder(x): pass
 
+    # Bloquear nombre exacto si ya existe en KB
+    nombre_nuevo = str(idea.get("nombre","")).strip().lower()
+    try:
+        from agents.knowledge_base import cargar_kb
+        kb = cargar_kb()
+        nombres_kb = [str(i.get("nombre","")).strip().lower() for i in kb if isinstance(i,dict)]
+        if nombre_nuevo in nombres_kb:
+            return False, f"Nombre duplicado exacto: {nombre_nuevo}"
+        # Bloquear si el nombre es muy similar (contiene palabras clave iguales)
+        palabras_nuevo = set(nombre_nuevo.split())
+        for n in nombres_kb:
+            palabras_n = set(n.split())
+            if len(palabras_nuevo & palabras_n) >= 2 and len(palabras_nuevo) <= 3:
+                return False, f"Nombre demasiado similar a existente: {n}"
+    except Exception:
+        pass
     texto = json.dumps(idea, ensure_ascii=False).lower()
     for ph in PLACEHOLDERS_PROHIBIDOS:
         if ph in texto:
