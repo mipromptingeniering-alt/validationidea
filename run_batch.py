@@ -409,8 +409,8 @@ def _validar_calidad(idea):
         if isinstance(ee_r, dict):
             m12 = ee_r.get("mes12",{})
             mrr = m12.get("mrr_eur",0) if isinstance(m12,dict) else 0
-            if not mrr or float(mrr) == 0:
-                return False, "estudio_economico realista mes12 es 0"
+            if mrr is None:
+                return False, "estudio_economico realista mes12 ausente"
     dafo = idea.get("dafo",{})
     if isinstance(dafo, dict):
         forts = dafo.get("fortalezas",[])
@@ -495,7 +495,6 @@ def get_prompt_idea(contexto, tendencias, tema="", modo_emergencia=False):
             '"hipotesis_testeable":{"experimento_48h":"Crea [typeform] midiendo [metrica]",'
             '"metrica_exito":"X signups en 48h"},'
             '"mvp":{"stack_recomendado":"Next.js+Supabase+Vercel","tiempo_semanas":3,"coste_estimado_eur":0},'
-            '"estudio_economico":{"conservador":{"mes3":{"mrr_eur":750},"mes12":{"mrr_eur":6000}},"realista":{"mes3":{"mrr_eur":2250},"mes12":{"mrr_eur":18000}},"optimista":{"mes3":{"mrr_eur":4500},"mes12":{"mrr_eur":36000}}},'\n            '"scores":{"critico":70,"viral":60,"generador":75,"monetizacion":70,"ejecutabilidad":80,"timing":75,"score_total":0},'
             '"vertical":"SaaS","tipo":"B2B","tags":["tag1","tag2"]}'
         )
 
