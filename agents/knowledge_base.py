@@ -219,3 +219,63 @@ def get_ideas_con_feedback_positivo():
     ]
 
 # fin agents/knowledge_base.py
+
+
+def registrar_rechazo(idea: dict, motivo: str):
+    """Guarda rechazos para que el prompt aprenda a evitarlos."""
+    import json, datetime, os
+    ruta = pathlib.Path(__file__).parent.parent / "data" / "rechazos.jsonl"
+    ruta.parent.mkdir(parents=True, exist_ok=True)
+    entry = {
+        "ts": datetime.datetime.utcnow().isoformat(),
+        "nombre": idea.get("nombre",""),
+        "motivo": motivo,
+        "sector": idea.get("sector",""),
+    }
+    with open(ruta, "a", encoding="utf-8") as fh:
+        fh.write(json.dumps(entry, ensure_ascii=False) + "\n")
+
+
+def es_similar(idea: dict, umbral: float = 0.55):
+    """Devuelve (True, motivo) si la idea es demasiado similar a una anterior."""
+    import json, pathlib as _p
+    nombre_nuevo = str(idea.get("nombre", "")).strip().lower()
+    problema_nuevo = str(idea.get("problema", "")).strip().lower()
+
+    ruta_kb = _p.Path(__file__).parent.parent / "data" / "ideas.jsonl"
+    if not ruta_kb.exists():
+        return False, ""
+
+    palabras_n = set(nombre_nuevo.split())
+    palabras_p = set(problema_nuevo.split())
+
+    with open(ruta_kb, encoding="utf-8") as fh:
+        for linea in fh:
+            try:
+                prev = json.loads(linea)
+            except Exception:
+                continue
+            n_prev = str(prev.get("nombre", "")).strip().lower()
+            p_prev = str(prev.get("problema", "")).strip().lower()
+
+            # Nombre identico
+            if nombre_nuevo and nombre_nuevo == n_prev:
+                return True, f"Nombre identico: {n_prev}"
+
+            # Nombre muy similar (Jaccard sobre palabras)
+            palabras_prev = set(n_prev.split())
+            if palabras_n and palabras_prev:
+                union = palabras_n | palabras_prev
+                inter = palabras_n & palabras_prev
+                if len(union) > 0 and len(inter) / len(union) >= umbral:
+                    return True, f"Nombre similar ({int(len(inter)/len(union)*100)}%): {n_prev}"
+
+            # Problema muy similar
+            palabras_pp = set(p_prev.split())
+            if len(palabras_p) > 5 and palabras_pp:
+                union_p = palabras_p | palabras_pp
+                inter_p = palabras_p & palabras_pp
+                if len(union_p) > 0 and len(inter_p) / len(union_p) >= 0.65:
+                    return True, f"Problema similar a: {n_prev}"
+
+    return False, ""
