@@ -414,22 +414,22 @@ def _validar_calidad(idea):
     dafo = idea.get("dafo",{})
     if isinstance(dafo, dict):
         forts = dafo.get("fortalezas",[])
-        if not forts or len(str(forts)) < 10:
+        if forts and len(str(forts)) < 10:
             return False, "dafo.fortalezas vacio"
     merc = idea.get("mercado",{})
     if isinstance(merc, dict):
         tam = str(merc.get("TAM","")).strip()
-        if len(tam) < 3:
+        if tam and len(tam) < 3:
             return False, "mercado.TAM vacio"
     op = idea.get("opinion_profesional",{})
     if isinstance(op, dict):
         uni = str(op.get("unicidad","")).strip()
-        if len(uni) < 10:
+        if uni and len(uni) < 10:
             return False, "opinion_profesional.unicidad vacia"
     hr = idea.get("hoja_de_ruta",{})
     if isinstance(hr, dict):
         s1 = str(hr.get("semana1","")).strip()
-        if len(s1) < 5:
+        if s1 and len(s1) < 5:
             return False, "hoja_de_ruta.semana1 vacia"
     return True, ""
 
