@@ -382,7 +382,7 @@ def get_prompt_idea(contexto, tendencias, tema="", modo_emergencia=False):
     if modo_emergencia:
         return (
             f"{tema_str}{diversidad}\n\n"
-            f"Genera UNA idea de startup SaaS B2B ORIGINAL 2026. Score minimo: {score_obj}/100.\n\n"
+            f"MISION: idea GENUINAMENTE ORIGINAL 2026. PROHIBIDO: rutas/finanzas-generica/telemedicina/elearning/CRM-generico. Score minimo: {score_obj}/100.\n\n"
             f"{calidad}\nTENDENCIAS: {trends_str}\n\n"
             f"IDEAS PREVIAS (NO repetir): {ideas_previas[:300]}\n\n"
             '{"nombre":"NombreReal","tagline":"max 10 palabras",'
@@ -400,13 +400,17 @@ def get_prompt_idea(contexto, tendencias, tema="", modo_emergencia=False):
         )
 
     return (
+        "ROL: Eres un partner de YC con 10 anos evaluando 10.000 startups. Solo el 1% pasa tu filtro.\n"
         f"{tema_str}{diversidad}\n\n"
-        f"Genera UNA idea de startup ORIGINAL para 2026. Score minimo: {score_obj}/100.\n\n"
+        "PROHIBIDO score 0 automatico: optimizacion rutas, finanzas generica, telemedicina generica, elearning generico, CRM/ERP sin ventaja injusta clara.\n\n"
+        f"MISION: genera UNA idea GENUINAMENTE ORIGINAL 2026. Score minimo: {score_obj}/100.\n\n"
+        "TIPOS VALIDOS: B2B vertical nicho especifico / developer tool / marketplace nicho ignorado / B2C monetizacion dia1 / API-first.\n\n"
         f"{calidad}\n"
+        "RAZONA ANTES DEL JSON (obligatorio):\n1-SECRETO: algo que la mayoria cree falso pero es verdad en 2026.\n2-DOLOR: cuantifica con datos reales (fuente+fecha+%).\n3-VENTAJA INJUSTA: por que tu y no Google en 6 meses.\n4-VENTA DIA 7: como consigues el primer pago sin escribir codigo.\n\n"
         f"APRENDIZAJE:\n{aprendizaje if aprendizaje else 'Primera generacion.'}\n\n"
-        f"IDEAS PREVIAS (NO repetir):\n{ideas_previas}\n\n"
-        f"TENDENCIAS (usa al menos una):\n{trends_str}\n\n"
-        f"REGLAS: 0 euros para construir, primera venta en menos de 4 semanas.\n\n"
+        f"IDEAS PROHIBIDAS - NO repetir concepto ni sector:\n{ideas_previas}\n\n"
+        f"TENDENCIAS REALES 2026 - ancla la idea en al menos una:\n{trends_str}\n\n"
+        "REGLAS DURAS: 0 euros construir. Primera venta menos de 7 dias. Ventaja injusta demostrable. Competidor conocido con debilidad especifica nombrada.\n\n"
         '{"nombre":"NombreReal",'
         '"tagline":"propuesta en max 10 palabras",'
         '"problema":"X millones de empresas sufren Y porque Z [dato real]",'

@@ -105,13 +105,7 @@ def sync_idea_to_notion(idea):
 
     properties = {
         "Name":  {"title": _rt(f"{emoji} {nombre} — {score}/100")},
-        "Score": {"number": float(score)},
-        "Tagline": {"rich_text": _rt(tagline)},
-        "Fecha": {"date": {"start": datetime.now().strftime("%Y-%m-%d")}},
-        "Ejecutabilidad": {"number": float(ejec)},
-        "Stack": {"rich_text": _rt(_s(mvp.get("stack_recomendado",""),200))},
-        "Tags":  {"rich_text": _rt(", ".join(str(t) for t in idea.get("tags",[])[:5]))},
-    }
+            }
 
     # Selects opcionales — solo si tienen valor
     if vertical: properties["Vertical"]      = {"select": {"name": vertical[:100]}}
