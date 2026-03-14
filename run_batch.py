@@ -411,6 +411,7 @@ def get_prompt_idea(contexto, tendencias, tema="", modo_emergencia=False):
         f"IDEAS PROHIBIDAS - NO repetir concepto ni sector:\n{ideas_previas}\n\n"
         f"TENDENCIAS REALES 2026 - ancla la idea en al menos una:\n{trends_str}\n\n"
         "REGLAS DURAS: 0 euros construir. Primera venta menos de 7 dias. Ventaja injusta demostrable. Competidor conocido con debilidad especifica nombrada.\n\n"
+        "CRITICO: PROHIBIDO dejar campos vacios. PROHIBIDO valores 0 en estudio_economico. PROHIBIDO texto entre corchetes []. Todos los campos con datos reales especificos.\n\n"
         '{"nombre":"NombreReal",'
         '"tagline":"propuesta en max 10 palabras",'
         '"problema":"X millones de empresas sufren Y porque Z [dato real]",'
