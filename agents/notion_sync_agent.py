@@ -125,20 +125,33 @@ def sync_idea_to_notion(idea):
     children += _bloque("Problema", problema, 3)
     children += _bloque("Solucion", solucion, 3)
     children += _bloque("Cliente objetivo", cliente, 3)
-    children += _bloque("Scoring detallado", "Score global: "+str(score)+"/100 | Critico YC: "+str(critico_s)+"/100\nEjecutabilidad: "+str(ejec)+" | Monetizacion: "+str(monetiz)+" | Viral: "+str(viral)+" | Timing: "+str(timing_s))
-    children += _bloque("Veredicto YC", str(veredicto)+"\nRecomendacion: "+recomendacion.upper()+"\nObjeciones clave: "+_s(sc.get("objeciones_principales",[]),300)+"\nPivote sugerido: "+_s(sc.get("pivote_sugerido",""),200))
+    children += _bloque("Scoring detallado", "Score global: "+str(score)+"/100 | Critico YC: "+str(critico_s)+"/100" + chr(10) + "Ejecutabilidad: "+str(ejec)+" | Monetizacion: "+str(monetiz)+" | Viral: "+str(viral)+" | Timing: "+str(timing_s))
+    children += _bloque("Veredicto YC", str(veredicto)+chr(10)+"Recomendacion: "+recomendacion.upper()+chr(10)+"Objeciones: "+_s(sc.get("objeciones_principales",[]),300)+chr(10)+"Pivote sugerido: "+_s(sc.get("pivote_sugerido",""),200))
     children += _bloque("Opinion profesional", op_txt)
     children += _bloque("Estudio economico 3 escenarios", ee_txt)
-    _mrr_r = ee_real.get("mes12",{}).get("mrr_eur",0) if isinstance(ee_real.get("mes12"),dict) else 0
-    _ur = ee_real.get("mes3",{}).get("usuarios",10) if isinstance(ee_real.get("mes3"),dict) else 10
-    _ltv = round(float(_mrr_r)/max(float(_ur),1)*24,0)
-    _cac_max = round(_ltv/3,0)
-    _ue = ("MRR mes12 realista: "+str(_mrr_r)+"EUR | MRR mes12 optimista: "+str(_o12)+"EUR\n"
-           "Usuarios mes3 estimados: "+str(_ur)+"\n"
-           "LTV estimado 24 meses: "+str(_ltv)+"EUR\n"
-           "CAC maximo recomendado: "+str(_cac_max)+"EUR\n"
-           "Payback period objetivo: 3 meses | Churn objetivo: menos 5pct/mes\n"
-           "Margen bruto SaaS objetivo: 70-80pct | Break-even: "+str(_rb))
+    _ltv = round(float(_mrr_r if (_mrr_r:=ee_real.get("mes12",{}).get("mrr_eur",0) if isinstance(ee_real.get("mes12"),dict) else 0) else 0)/max(float(ee_real.get("mes3",{}).get("usuarios",10) if isinstance(ee_real.get("mes3"),dict) else 10),1)*24,0)
+    _ue = ("MRR mes12 realista: "+str(_o12)+"EUR"+chr(10)+"LTV estimado 24m: "+str(_ltv)+"EUR"+chr(10)+"CAC maximo: "+str(round(_ltv/3,0))+"EUR"+chr(10)+"Payback objetivo: 3 meses | Churn objetivo: menor 5pct"+chr(10)+"Breakeven: "+str(_rb))
+    children += _bloque("Unit Economics LTV/CAC/Churn", _ue)
+    children += _bloque("Mercado TAM/SAM/SOM", "TAM: "+_s(merc.get("TAM",""),100)+" | SAM: "+_s(merc.get("SAM",""),100)+" | SOM: "+_s(merc.get("SOM",""),100)+chr(10)+"Ventaja: "+_s(merc.get("ventaja_competitiva",""),300))
+    if comp_txt: children += _bloque("Competidores y debilidades", comp_txt, 3)
+    children += _bloque("DAFO estrategico", "FORTALEZAS: "+_s(dafo.get("fortalezas",[]),200)+chr(10)+"DEBILIDADES: "+_s(dafo.get("debilidades",[]),200)+chr(10)+"OPORTUNIDADES: "+_s(dafo.get("oportunidades",[]),200)+chr(10)+"AMENAZAS: "+_s(dafo.get("amenazas",[]),200))
+    children += _bloque("Monetizacion semana a semana", "S1: "+_s(em.get("semana1",""),300)+chr(10)+"S4: "+_s(em.get("semana4",""),200)+chr(10)+"Mes3: "+_s(em.get("mes3",""),200)+chr(10)+"Precio optimo: "+_s(em.get("precio_optimo_justificado",""),200))
+    if canales_txt: children += _bloque("Canales adquisicion", canales_txt, 3)
+    children += _bloque("Hipotesis 48h testeable", "EXPERIMENTO: "+_s(ht.get("experimento_48h",""),200)+chr(10)+"METRICA EXITO: "+_s(ht.get("metrica_exito",""),150)+chr(10)+"ALARMA pivot: "+_s(ht.get("senal_de_alarma",""),150))
+    _qw = ("DIA 0: Crea landing en Carrd.co gratis - describe problema + formulario email"+chr(10)+"DIA 1: "+_s(em.get("semana1","Envia 10 DMs personalizados a tu ICP"),150)+chr(10)+"DIA 2: Post en comunidad del sector preguntando por el problema sin mencionar solucion"+chr(10)+"DIA 3: Analiza respuestas, ajusta propuesta de valor, prepara demo 5 slides"+chr(10)+"DIA 5: Primera llamada discovery 30min - escucha, no vendas"+chr(10)+"DIA 7: Envia propuesta con precio y solicita prepago o carta de intencion")
+    children += _bloque("Quick Wins Semana 1 sin codigo", _qw)
+    _mvp_txt = ("STACK: "+_s(mvp.get("stack_recomendado","Next.js 14+Supabase+Vercel+Stripe"),200)+chr(10)+"TIEMPO: "+str(mvp.get("tiempo_semanas",3))+" semanas | COSTE: 0EUR"+chr(10)+"FEATURES: "+_s(mvp.get("features_minimas",[]),400)+chr(10)+chr(10)+"HERRAMIENTAS 0EUR:"+chr(10)+"- Vercel: hosting gratuito"+chr(10)+"- Supabase: PostgreSQL+Auth gratis"+chr(10)+"- Stripe: pagos sin coste hasta cobrar"+chr(10)+"- Resend: 100 emails/dia gratis"+chr(10)+"- Clerk: auth 10k MAU gratis")
+    children += _bloque("MVP Como construirlo GRATIS", _mvp_txt)
+    _pm = mvp.get("prompt_mvp",{}) if isinstance(mvp.get("prompt_mvp"),dict) else {}
+    _ia = (_pm.get("meta",{}) or {}).get("ia_recomendada","Claude 3.5 Sonnet") if isinstance(_pm,dict) else "Claude 3.5 Sonnet"
+    _sys = _pm.get("system_prompt","Eres dev senior SaaS. Construye "+str(nombre)+" resolviendo: "+_s(str(problema),200)+". Stack: Next.js+Supabase+Vercel. MVP en 3 semanas 0EUR.") if isinstance(_pm,dict) else ""
+    _steps = _s(_pm.get("instrucciones_paso_a_paso",["1. npx create-next-app","2. supabase init","3. Feature principal","4. Stripe+webhook","5. Deploy Vercel"]),500) if isinstance(_pm,dict) else ""
+    _pt = ("IA RECOMENDADA: "+str(_ia)+chr(10)+"ALTERNATIVAS GRATIS: Groq Llama3.3-70B | Gemini Flash | Mistral 7B | HuggingFace"+chr(10)+chr(10)+"=== PROMPT PARA CLAUDE/CURSOR ==="+chr(10)+str(_sys)[:500]+chr(10)+chr(10)+"=== PASOS ==="+chr(10)+str(_steps))
+    children += _bloque("Prompt MVP para Claude o Cursor listo para usar", _pt)
+    children += _bloque("Hoja de ruta semana a semana", hr_txt)
+    children += _bloque("IA principal y alternativas gratuitas", herr_ia+chr(10)+chr(10)+"ALTERNATIVAS 0EUR:"+chr(10)+"- Groq: Llama3.3-70B ultrarapido"+chr(10)+"- Gemini Flash: 1M tokens/dia gratis"+chr(10)+"- Mistral: 7B gratuito"+chr(10)+"- HuggingFace: inference gratuita")
+    if primer_cli: children += _bloque("Script primer cliente - copia y pega", primer_cli)
+
     children += _bloque("Unit Economics CAC/LTV/Churn", _ue)
     children += _bloque("Mercado TAM/SAM/SOM", "TAM: "+_s(merc.get("TAM",""),100)+" | SAM: "+_s(merc.get("SAM",""),100)+" | SOM: "+_s(merc.get("SOM",""),100)+"\nVentaja competitiva: "+_s(merc.get("ventaja_competitiva",""),300))
     if comp_txt: children += _bloque("Competidores y debilidades explotables", comp_txt, 3)
