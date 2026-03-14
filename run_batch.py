@@ -316,6 +316,35 @@ def _validar_calidad(idea):
     except ImportError:
         def registrar_placeholder(x): pass
 
+    # Anti-generico: rechazar nombres de producto demasiado genericos
+    NOMBRES_GENERICOS = [
+        "ai assistant","ai platform","ai tool","ai coach","code assistant",
+        "codecompanion","smart assistant","app","platform","saas","tool",
+        "ai solution","digital assistant","virtual assistant","chatbot","bot"
+    ]
+    nombre_check = str(idea.get("nombre","")).strip().lower()
+    if nombre_check in NOMBRES_GENERICOS:
+        return False, f"Nombre demasiado generico: {nombre_check}"
+    if len(nombre_check.split()) <= 2:
+        for gen in NOMBRES_GENERICOS:
+            if gen in nombre_check:
+                return False, f"Nombre contiene termino generico: {gen}"
+
+    # Score minimo obligatorio
+    score = idea.get("scoring",{})
+    if isinstance(score, dict):
+        sg = float(score.get("score_global", score.get("global", 0)) or 0)
+        if sg > 0 and sg < 65:
+            return False, f"Score global insuficiente: {sg}/100 (minimo 65)"
+
+    # Veredicto YC y pivote obligatorios
+    vy = idea.get("veredicto_yc",{})
+    if isinstance(vy, dict):
+        rec = str(vy.get("recomendacion","")).strip().upper()
+        pivote = str(vy.get("pivote_sugerido","")).strip()
+        if rec == "DESCARTAR" and len(pivote) < 10:
+            return False, "veredicto_yc DESCARTAR sin pivote_sugerido"
+
     # Bloquear nombre exacto si ya existe en KB
     nombre_nuevo = str(idea.get("nombre","")).strip().lower()
     try:
