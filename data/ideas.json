@@ -710,5 +710,1829 @@
     ],
     "resumen": "EcoVaya tiene un buen potencial de éxito gracias a su tecnología innovadora y modelo de negocio sólido, pero debe enfrentar la competencia en el mercado y asegurarse de que su plataforma sea accesible para empresas de todos los tamaños.",
     "score_general": 79.5
+  },
+  {
+    "nombre": "HelioGuard",
+    "tagline": "Protección de cadena de suministro de semiconductores",
+    "problema": "La interrupción del suministro de helio en Qatar pone en riesgo la producción de chips, afectando a empresas como TSMC y Samsung. Según un informe de Bloomberg, la industria de semiconductores podría enfrentar una escasez de chips en 2 semanas si no se resuelve el problema.",
+    "solucion": "HelioGuard utiliza modelos de lenguaje natural (NLP) como LLaMA para monitorear y predecir interrupciones en la cadena de suministro de helio, permitiendo a las empresas de semiconductores tomar medidas proactivas para mitigar el impacto.",
+    "cliente_objetivo": "Gerentes de cadena de suministro de empresas de semiconductores",
+    "herramienta_ia_clave": "LLaMA",
+    "estrategia_monetizacion": {
+      "semana1": "Envia DM a gerentes de cadena de suministro de empresas de semiconductores en LinkedIn con: '¿Está preparado para proteger su cadena de suministro de helio?'",
+      "precio_optimo_justificado": "EUR 500/mes porque HelioGuard reduce el riesgo de interrupción de producción en un 30% y ahorra un 20% en costos de logística"
+    },
+    "hipotesis_testeable": {
+      "experimento_48h": "Crea una Typeform en LinkedIn midiendo la cantidad de gerentes de cadena de suministro que se registran para una prueba gratuita",
+      "metrica_exito": "50 signups en 48h"
+    },
+    "mvp": {
+      "stack_recomendado": "Next.js + Supabase + Vercel",
+      "tiempo_semanas": 3,
+      "coste_estimado_eur": 0
+    },
+    "vertical": "SaaS",
+    "tipo": "B2B",
+    "tags": [
+      "cadena de suministro",
+      "semiconductores",
+      "IA"
+    ],
+    "scores": {
+      "score_total": 21.5,
+      "score_critico": 20,
+      "score_mercado_real": 65
+    },
+    "scoring_critico": {
+      "veredicto": "Riesgo de suministro crítico pero nicho muy específico",
+      "objeciones_principales": [
+        "dependencia de un solo proveedor",
+        "impacto geopolítico variable",
+        "solución puede requerir acuerdos complejos"
+      ],
+      "fortalezas_reales": [
+        "urgencia alta para clientes específicos",
+        "potencial de escalada rápida"
+      ],
+      "ajuste_score": 10,
+      "score_critico_final": 20,
+      "recomendacion": "pivotar",
+      "pivote_sugerido": "hacia diversificación de fuentes de suministro"
+    },
+    "validacion_mercado": {
+      "google_trends": {
+        "HelioGuard": 0,
+        "Protección de cadena de suministro de semiconducto": 1
+      },
+      "reddit": {
+        "posts": 10,
+        "upvotes_total": 40915,
+        "subreddits": [
+          "mexico",
+          "rmexico"
+        ],
+        "top_post": "Estudiante italiano en Jalisco se metió a tomar fotos en el sepelio del Mencho; obvio se lo madrearon y le robaron la cá"
+      },
+      "github": {
+        "repos": 0
+      },
+      "score_mercado_real": 65,
+      "score_ia_original": 20,
+      "ajuste_aplicado": 1.5,
+      "score_final_ajustado": 21.5
+    },
+    "notion_url": "https://www.notion.so/HelioGuard-21-5-100-323313aca1338129b5b6ff26c18e66fe"
+  },
+  {
+    "nombre": "VerifyAge",
+    "tagline": "Verificación de edad para contenido sensible",
+    "problema": "En Estados Unidos, la ley requiere que los sitios web con contenido sensible verifiquen la edad de los usuarios menores de 18 años. Sin embargo, solo el 22% de los sitios web utilizan métodos de verificación de edad efectivos, según un estudio de la Brookings Institution.",
+    "solucion": "VerifyAge utiliza la API de verificación de edad de AWS, Rekognition, para analizar la documentación de identidad de los usuarios y verificar su edad de manera precisa y segura.",
+    "cliente_objetivo": "Gerente de Cumplimiento, Empresas de Tecnología y Medios",
+    "herramienta_ia_clave": "AWS Rekognition",
+    "estrategia_monetizacion": {
+      "semana1": "Envia DM a 1000 Gerentes de Cumplimiento en LinkedIn con: '¿Está su sitio web cumpliendo con las regulaciones de verificación de edad?'",
+      "precio_optimo_justificado": "EUR 500/mes porque la solución reduce el riesgo de multas por incumplimiento y protege la reputación de la empresa"
+    },
+    "hipotesis_testeable": {
+      "experimento_48h": "Crea una Typeform en LinkedIn midiendo la tasa de respuesta de los gerentes de cumplimiento",
+      "metrica_exito": "20% de respuestas positivas en 48h"
+    },
+    "mvp": {
+      "stack_recomendado": "Next.js + Supabase + Vercel",
+      "tiempo_semanas": 4,
+      "coste_estimado_eur": 15000
+    },
+    "vertical": "RegTech",
+    "tipo": "B2B",
+    "tags": [
+      "cumplimiento",
+      "verificación de edad",
+      "RegTech"
+    ],
+    "scores": {
+      "score_total": 23.5,
+      "score_critico": 0,
+      "score_mercado_real": 85
+    },
+    "scoring_critico": {
+      "veredicto": "No cumple con los requisitos mínimos para ser considerado una oportunidad de inversión",
+      "objeciones_principales": [
+        "Mercado limitado",
+        "Falta de innovación en la solución",
+        "Dependencia de cumplimiento legal",
+        "No hay escalabilidad clara"
+      ],
+      "fortalezas_reales": [
+        "Conocimiento del problema",
+        "Demanda existente"
+      ],
+      "ajuste_score": -10,
+      "score_critico_final": 0,
+      "recomendacion": "descartar",
+      "pivote_sugerido": null
+    },
+    "validacion_mercado": {
+      "google_trends": {
+        "VerifyAge": 54,
+        "Verificación de edad para contenido sensible": 0
+      },
+      "reddit": {
+        "posts": 10,
+        "upvotes_total": 19039,
+        "subreddits": [
+          "mexico",
+          "2hispanic4you",
+          "argentina"
+        ],
+        "top_post": "Recordatorio de como Estados Unidos ayuda a los paises en los que interviene."
+      },
+      "github": {
+        "repos": 0
+      },
+      "score_mercado_real": 85,
+      "score_ia_original": 20,
+      "ajuste_aplicado": 3.5,
+      "score_final_ajustado": 23.5
+    },
+    "notion_url": "https://www.notion.so/VerifyAge-23-5-100-323313aca1338185865ed0b29905409e"
+  },
+  {
+    "nombre": "HelioMind",
+    "tagline": "Optimiza la gestión de helio en la industria de chips",
+    "problema": "La escasez de helio debido al cierre de la planta de Qatar afecta la producción de chips, con un 30% de dependencia global. Las empresas de semiconductores enfrentan retrasos y costos adicionales.",
+    "solucion": "HelioMind utiliza IA predictiva con modelos de series temporales como Prophet y análisis de sentimiento en datos de mercado para anticipar y mitigar la escasez de helio.",
+    "cliente_objetivo": "Gerentes de cadena de suministro en empresas de semiconductores",
+    "herramienta_ia_clave": "Prophet de Facebook",
+    "estrategia_monetizacion": {
+      "semana1": "Envia DM a gerentes de cadena de suministro en LinkedIn con: '¿Está preparado para la próxima escasez de helio? Nuestra solución de IA puede ayudar'",
+      "precio_optimo_justificado": "EUR 10,000/mes porque reduce costos de producción en un 15% mediante la optimización de inventario y compras anticipadas"
+    },
+    "hipotesis_testeable": {
+      "experimento_48h": "Crea una landing page con Typeform midiendo la tasa de conversión de gerentes interesados",
+      "metrica_exito": "20 gerentes inscritos en 48h"
+    },
+    "mvp": {
+      "stack_recomendado": "Next.js + Supabase + Vercel",
+      "tiempo_semanas": 3,
+      "coste_estimado_eur": 0
+    },
+    "vertical": "SaaS",
+    "tipo": "B2B",
+    "tags": [
+      "industria de chips",
+      "gestión de recursos",
+      "IA predictiva"
+    ],
+    "scores": {
+      "score_total": 21.5,
+      "score_critico": 0,
+      "score_mercado_real": 65
+    },
+    "scoring_critico": {
+      "veredicto": "Rechazada por falta de escalabilidad y dependencia de un recurso específico",
+      "objeciones_principales": [
+        "Dependencia de un solo recurso (helio)",
+        "Impacto limitado a un sector específico",
+        "No aborda la raíz del problema"
+      ],
+      "fortalezas_reales": [
+        "Conocimiento del problema específico en la industria de semiconductores",
+        "Potencial para soluciones temporales"
+      ],
+      "ajuste_score": -10,
+      "score_critico_final": 0,
+      "recomendacion": "descartar",
+      "pivote_sugerido": null
+    },
+    "validacion_mercado": {
+      "google_trends": {},
+      "reddit": {
+        "posts": 10,
+        "upvotes_total": 48312,
+        "subreddits": [
+          "rmexico",
+          "mexico"
+        ],
+        "top_post": "Estudiante italiano en Jalisco se metió a tomar fotos en el sepelio del Mencho; obvio se lo madrearon y le robaron la cá"
+      },
+      "github": {
+        "repos": 0
+      },
+      "score_mercado_real": 65,
+      "score_ia_original": 20,
+      "ajuste_aplicado": 1.5,
+      "score_final_ajustado": 21.5
+    },
+    "notion_url": "https://www.notion.so/HelioMind-21-5-100-323313aca13381fd9b02e630ba443d87"
+  },
+  {
+    "nombre": "HelioMind",
+    "tagline": "Optimiza la gestión de inventarios de helio",
+    "problema": "La escasez de helio debido al cierre de la planta de Qatar afecta a la cadena de suministro de chips, con un 30% de aumento en los precios en solo una semana, según reportes de Mouser y la industria de semiconductores",
+    "solucion": "HelioMind utiliza modelos predictivos con Long Short-Term Memory (LSTM) y análisis de series temporales para optimizar la gestión de inventarios de helio en tiempo real, minimizando costos y maximizando la eficiencia en la cadena de suministro",
+    "cliente_objetivo": "Gerentes de compras y supply chain en empresas de semiconductores y fabricación de chips",
+    "herramienta_ia_clave": "TensorFlow",
+    "estrategia_monetizacion": {
+      "semana1": "Envia DM a gerentes de compras en LinkedIn con: '¿Está su cadena de suministro de chips preparada para la volatilidad del helio?'",
+      "precio_optimo_justificado": "EUR 5,000/mes porque reduce costos de inventario en un 20% y aumenta la eficiencia en un 15%, según análisis de Mouser y la industria"
+    },
+    "hipotesis_testeable": {
+      "experimento_48h": "Crea Typeform en LinkedIn midiendo la tasa de respuesta de gerentes de compras interesados en optimizar su gestión de inventarios de helio",
+      "metrica_exito": "50 respuestas en 48h"
+    },
+    "mvp": {
+      "stack_recomendado": "Next.js + Supabase + Vercel",
+      "tiempo_semanas": 4,
+      "coste_estimado_eur": 8000
+    },
+    "vertical": "SaaS",
+    "tipo": "B2B",
+    "tags": [
+      "supply chain",
+      "gestion de inventarios",
+      "helio"
+    ],
+    "scores": {
+      "score_total": 21.5,
+      "score_critico": 0,
+      "score_mercado_real": 65
+    },
+    "scoring_critico": {
+      "veredicto": "Rechazada por falta de urgencia",
+      "objeciones_principales": [
+        "Impacto limitado en el tiempo",
+        "Falta de escalabilidad",
+        "Dependencia de factores externos"
+      ],
+      "fortalezas_reales": [
+        "Conocimiento del mercado",
+        "Análisis de la competencia"
+      ],
+      "ajuste_score": -10,
+      "score_critico_final": 0,
+      "recomendacion": "descartar",
+      "pivote_sugerido": null
+    },
+    "validacion_mercado": {
+      "google_trends": {},
+      "reddit": {
+        "posts": 10,
+        "upvotes_total": 46418,
+        "subreddits": [
+          "mildlyinfuriating",
+          "mexico",
+          "argentina"
+        ],
+        "top_post": "Crisis sanitaria en Bolivia debido al cobro en Argentina (Salta y Jujuy) de la atención a extranjeros."
+      },
+      "github": {
+        "repos": 0,
+        "top_repo_stars": 0,
+        "top_repo": "",
+        "señal": "baja"
+      },
+      "score_mercado_real": 65,
+      "score_ia_original": 20,
+      "ajuste_aplicado": 1.5,
+      "score_final_ajustado": 21.5
+    },
+    "notion_url": "https://www.notion.so/HelioMind-21-5-100-323313aca133818b9267d2cff7e7c814"
+  },
+  {
+    "nombre": "HelioMind Insights",
+    "tagline": "Análisis predictivo de suministro de helio",
+    "problema": "La escasez de helio afecta a la producción de chips y semiconductores. Según Mouser, un proveedor líder de componentes electrónicos, la interrupción del suministro de helio en Qatar pone en riesgo la cadena de suministro de chips durante 2 semanas. Las empresas de semiconductores necesitan anticipar y mitigar estos riesgos.",
+    "solucion": "HelioMind Insights utiliza modelos de Machine Learning con la herramienta IA clave 'Sonnet 4.6' para analizar datos de producción, consumo y suministro de helio, proporcionando alertas predictivas y recomendaciones para optimizar la gestión de inventario y suministro.",
+    "cliente_objetivo": "Gerente de Compras, Director de Supply Chain, empresas de semiconductores y producción de chips",
+    "herramienta_ia_clave": "Sonnet 4.6",
+    "estrategia_monetizacion": {
+      "semana1": "Envia DM a 'Grupo de Supply Chain' en LinkedIn con: '¿Está preparado para anticipar los riesgos de suministro de helio?'",
+      "precio_optimo_justificado": "EUR 5.000/mes porque brinda una reducción estimada del 20% en los costos de gestión de inventario y minimiza los riesgos de producción asociados a la escasez de helio."
+    },
+    "hipotesis_testeable": {
+      "experimento_48h": "Crea Typeform en LinkedIn midiendo 'Tasa de respuesta de interesados'",
+      "metrica_exito": "20 respuestas de empresas interesadas en 48h"
+    },
+    "mvp": {
+      "stack_recomendado": "Next.js+Supabase+Vercel",
+      "tiempo_semanas": 4,
+      "coste_estimado_eur": 15000
+    },
+    "vertical": "SaaS",
+    "tipo": "B2B",
+    "tags": [
+      "supplychain",
+      "semiconductores",
+      " prediccióndesuministro"
+    ],
+    "scores": {
+      "score_total": 21.5,
+      "score_critico": 40,
+      "score_mercado_real": 65
+    },
+    "scoring_critico": {
+      "veredicto": "Problema específico pero impacto limitado en la cadena de suministro",
+      "objeciones_principales": [
+        "dependencia de un solo proveedor",
+        "corto plazo de interrupción",
+        "no hay propuesta de solución clara"
+      ],
+      "fortalezas_reales": [
+        "nicho de mercado específico",
+        "potencial de escalabilidad"
+      ],
+      "ajuste_score": 3,
+      "score_critico_final": 40,
+      "recomendacion": "descartar",
+      "pivote_sugerido": null
+    },
+    "validacion_mercado": {
+      "google_trends": {},
+      "reddit": {
+        "posts": 10,
+        "upvotes_total": 4733,
+        "subreddits": [
+          "AskArgentina",
+          "esHistorico",
+          "argentina",
+          "EducacionChile"
+        ],
+        "top_post": "Fábrica de \"La gotita\" y otros se va de Uruguay y traslada producción a Argentina; afecta a 40 trabajadores"
+      },
+      "github": {
+        "repos": 0
+      },
+      "score_mercado_real": 65,
+      "score_ia_original": 20,
+      "ajuste_aplicado": 1.5,
+      "score_final_ajustado": 21.5
+    }
+  },
+  {
+    "nombre": "HelioMind Insights",
+    "tagline": "Análisis predictivo de suministro de helio",
+    "problema": "La escasez de helio afecta a la producción de chips y semiconductores. Según Mouser, un proveedor líder de componentes electrónicos, la interrupción del suministro de helio en Qatar pone en riesgo la cadena de suministro de chips durante 2 semanas. Las empresas de semiconductores necesitan anticipar y mitigar estos riesgos.",
+    "solucion": "HelioMind Insights utiliza modelos de Machine Learning con la herramienta IA clave 'Sonnet 4.6' para analizar datos de producción, consumo y suministro de helio, proporcionando alertas predictivas y recomendaciones para optimizar la gestión de inventario y suministro.",
+    "cliente_objetivo": "Gerente de Compras, Director de Supply Chain, empresas de semiconductores y producción de chips",
+    "herramienta_ia_clave": "Sonnet 4.6",
+    "estrategia_monetizacion": {
+      "semana1": "Envia DM a 'Grupo de Supply Chain' en LinkedIn con: '¿Está preparado para anticipar los riesgos de suministro de helio?'",
+      "precio_optimo_justificado": "EUR 5.000/mes porque brinda una reducción estimada del 20% en los costos de gestión de inventario y minimiza los riesgos de producción asociados a la escasez de helio."
+    },
+    "hipotesis_testeable": {
+      "experimento_48h": "Crea Typeform en LinkedIn midiendo 'Tasa de respuesta de interesados'",
+      "metrica_exito": "20 respuestas de empresas interesadas en 48h"
+    },
+    "mvp": {
+      "stack_recomendado": "Next.js+Supabase+Vercel",
+      "tiempo_semanas": 4,
+      "coste_estimado_eur": 15000
+    },
+    "vertical": "SaaS",
+    "tipo": "B2B",
+    "tags": [
+      "supplychain",
+      "semiconductores",
+      " prediccióndesuministro"
+    ],
+    "scores": {
+      "score_total": 21.5,
+      "score_critico": 40,
+      "score_mercado_real": 65
+    },
+    "scoring_critico": {
+      "veredicto": "Problema específico pero impacto limitado en la cadena de suministro",
+      "objeciones_principales": [
+        "dependencia de un solo proveedor",
+        "corto plazo de interrupción",
+        "no hay propuesta de solución clara"
+      ],
+      "fortalezas_reales": [
+        "nicho de mercado específico",
+        "potencial de escalabilidad"
+      ],
+      "ajuste_score": 3,
+      "score_critico_final": 40,
+      "recomendacion": "descartar",
+      "pivote_sugerido": null
+    },
+    "validacion_mercado": {
+      "google_trends": {},
+      "reddit": {
+        "posts": 10,
+        "upvotes_total": 4733,
+        "subreddits": [
+          "AskArgentina",
+          "esHistorico",
+          "argentina",
+          "EducacionChile"
+        ],
+        "top_post": "Fábrica de \"La gotita\" y otros se va de Uruguay y traslada producción a Argentina; afecta a 40 trabajadores"
+      },
+      "github": {
+        "repos": 0
+      },
+      "score_mercado_real": 65,
+      "score_ia_original": 20,
+      "ajuste_aplicado": 1.5,
+      "score_final_ajustado": 21.5
+    },
+    "notion_url": "https://www.notion.so/HelioMind-Insights-21-5-100-323313aca13381f8a3f5d7ff9b14ab4d"
+  },
+  {
+    "nombre": "HelioGuard Insights",
+    "tagline": "Protege tu cadena de suministro de helio",
+    "problema": "La escasez de helio debido al cierre de la planta de Qatar afecta a la producción de chips, con un 30% de la producción mundial en riesgo, según un informe de la consultora IC Insights. Las empresas de semiconductores necesitan encontrar proveedores alternativos rápidamente.",
+    "solucion": "HelioGuard Insights utiliza IA para analizar datos de mercado y predecir la disponibilidad de helio, alertando a los compradores de posibles escaseces y sugiriendo proveedores alternativos.",
+    "cliente_objetivo": "Gerente de compras, empresa de semiconductores",
+    "herramienta_ia_clave": "TensorFlow",
+    "estrategia_monetizacion": {
+      "semana1": "Envia DM a gerentes de compras de empresas de semiconductores en LinkedIn con: '¿Está preparado para la escasez de helio? Nuestra solución de IA puede ayudar'",
+      "precio_optimo_justificado": "EUR 500/mes porque reduce el riesgo de interrupción de la producción en un 20%"
+    },
+    "hipotesis_testeable": {
+      "experimento_48h": "Crea una landing page en Instapage midiendo la tasa de conversión de gerentes de compras que se registran para obtener más información",
+      "metrica_exito": "20 registros en 48h"
+    },
+    "mvp": {
+      "stack_recomendado": "Next.js+Supabase+Vercel",
+      "tiempo_semanas": 3,
+      "coste_estimado_eur": 0
+    },
+    "vertical": "SaaS",
+    "tipo": "B2B",
+    "tags": [
+      "supply chain",
+      "semiconductores"
+    ],
+    "scores": {
+      "score_total": 21.5,
+      "score_critico": 0,
+      "score_mercado_real": 65
+    },
+    "scoring_critico": {
+      "veredicto": "No hay una propuesta clara de valor para resolver el problema de escasez de helio de manera efectiva",
+      "objeciones_principales": [
+        "Falta de escalabilidad en la solución propuesta",
+        "No se evidencia una ventaja competitiva sostenible",
+        "Impacto limitado en la reducción de la dependencia de proveedores críticos"
+      ],
+      "fortalezas_reales": [
+        "Conocimiento especializado en la industria de semiconductores",
+        "Capacidad para identificar problemas críticos"
+      ],
+      "ajuste_score": -10,
+      "score_critico_final": 0,
+      "recomendacion": "descartar",
+      "pivote_sugerido": null
+    },
+    "validacion_mercado": {
+      "google_trends": {},
+      "reddit": {
+        "posts": 10,
+        "upvotes_total": 989,
+        "subreddits": [
+          "Ayahuasca",
+          "programare",
+          "chile",
+          "BuenosAires"
+        ],
+        "top_post": "Por qué se habla de 30 mil desaparecidos y cómo se llega a ese número"
+      },
+      "github": {
+        "repos": 0,
+        "top_repo_stars": 0,
+        "top_repo": "",
+        "señal": "baja"
+      },
+      "score_mercado_real": 65,
+      "score_ia_original": 20,
+      "ajuste_aplicado": 1.5,
+      "score_final_ajustado": 21.5
+    }
+  },
+  {
+    "nombre": "HelioGuard Insights",
+    "tagline": "Protege tu cadena de suministro de helio",
+    "problema": "La escasez de helio debido al cierre de la planta de Qatar afecta a la producción de chips, con un 30% de la producción mundial en riesgo, según un informe de la consultora IC Insights. Las empresas de semiconductores necesitan encontrar proveedores alternativos rápidamente.",
+    "solucion": "HelioGuard Insights utiliza IA para analizar datos de mercado y predecir la disponibilidad de helio, alertando a los compradores de posibles escaseces y sugiriendo proveedores alternativos.",
+    "cliente_objetivo": "Gerente de compras, empresa de semiconductores",
+    "herramienta_ia_clave": "TensorFlow",
+    "estrategia_monetizacion": {
+      "semana1": "Envia DM a gerentes de compras de empresas de semiconductores en LinkedIn con: '¿Está preparado para la escasez de helio? Nuestra solución de IA puede ayudar'",
+      "precio_optimo_justificado": "EUR 500/mes porque reduce el riesgo de interrupción de la producción en un 20%"
+    },
+    "hipotesis_testeable": {
+      "experimento_48h": "Crea una landing page en Instapage midiendo la tasa de conversión de gerentes de compras que se registran para obtener más información",
+      "metrica_exito": "20 registros en 48h"
+    },
+    "mvp": {
+      "stack_recomendado": "Next.js+Supabase+Vercel",
+      "tiempo_semanas": 3,
+      "coste_estimado_eur": 0
+    },
+    "vertical": "SaaS",
+    "tipo": "B2B",
+    "tags": [
+      "supply chain",
+      "semiconductores"
+    ],
+    "scores": {
+      "score_total": 21.5,
+      "score_critico": 0,
+      "score_mercado_real": 65
+    },
+    "scoring_critico": {
+      "veredicto": "No hay una propuesta clara de valor para resolver el problema de escasez de helio de manera efectiva",
+      "objeciones_principales": [
+        "Falta de escalabilidad en la solución propuesta",
+        "No se evidencia una ventaja competitiva sostenible",
+        "Impacto limitado en la reducción de la dependencia de proveedores críticos"
+      ],
+      "fortalezas_reales": [
+        "Conocimiento especializado en la industria de semiconductores",
+        "Capacidad para identificar problemas críticos"
+      ],
+      "ajuste_score": -10,
+      "score_critico_final": 0,
+      "recomendacion": "descartar",
+      "pivote_sugerido": null
+    },
+    "validacion_mercado": {
+      "google_trends": {},
+      "reddit": {
+        "posts": 10,
+        "upvotes_total": 989,
+        "subreddits": [
+          "Ayahuasca",
+          "programare",
+          "chile",
+          "BuenosAires"
+        ],
+        "top_post": "Por qué se habla de 30 mil desaparecidos y cómo se llega a ese número"
+      },
+      "github": {
+        "repos": 0,
+        "top_repo_stars": 0,
+        "top_repo": "",
+        "señal": "baja"
+      },
+      "score_mercado_real": 65,
+      "score_ia_original": 20,
+      "ajuste_aplicado": 1.5,
+      "score_final_ajustado": 21.5
+    },
+    "notion_url": "https://www.notion.so/HelioGuard-Insights-21-5-100-323313aca1338196bdd9ed2644e36cdd"
+  },
+  {
+    "nombre": "ChipSentinel",
+    "tagline": "Monitoreo de suministro de chips en tiempo real",
+    "problema": "La industria de semiconductores enfrenta desafíos en la gestión de la cadena de suministro. Un reciente apagón de helio en Qatar puso a la cadena de suministro de chips en un reloj de 2 semanas. Los fabricantes de chips necesitan visibilidad en tiempo real sobre el suministro de materiales críticos.",
+    "solucion": "ChipSentinel utiliza IA para monitorear y predecir interrupciones en la cadena de suministro de chips, integrando datos de fuentes públicas y privadas para alertar a los fabricantes sobre posibles riesgos.",
+    "cliente_objetivo": "Gerente de Compras, Fábrica de Semiconductores, Sector de Tecnología",
+    "herramienta_ia_clave": "Google Cloud AI Platform",
+    "estrategia_monetizacion": {
+      "semana1": "Envia DM a 'Gerentes de Compras de Semiconductores' en LinkedIn con: '¿Está su cadena de suministro de chips preparada para interrupciones?'",
+      "precio_optimo_justificado": "EUR 500/mes porque ofrece una reducción del 20% en costos de gestión de riesgos para la cadena de suministro"
+    },
+    "hipotesis_testeable": {
+      "experimento_48h": "Crea Typeform en Google Forms midiendo 'Número de gerentes de compras que se registran para una prueba'",
+      "metrica_exito": "20 signups en 48h"
+    },
+    "mvp": {
+      "stack_recomendado": "Next.js+Supabase+Vercel",
+      "tiempo_semanas": 4,
+      "coste_estimado_eur": 8000
+    },
+    "vertical": "SaaS",
+    "tipo": "B2B",
+    "tags": [
+      "semiconductores",
+      "cadena de suministro",
+      "monitoreo"
+    ],
+    "scores": {
+      "score_total": 21.5,
+      "score_critico": 40,
+      "score_mercado_real": 65
+    },
+    "scoring_critico": {
+      "veredicto": "Rechazada por falta de urgencia clara en el problema planteado",
+      "objeciones_principales": [
+        "Falta de datos concretos sobre el impacto financiero del apagón de helio",
+        "No se define claramente la solución única de ChipSentinel"
+      ],
+      "fortalezas_reales": [
+        "Conocimiento del sector de semiconductores",
+        "Identificación de un problema relevante"
+      ],
+      "ajuste_score": -3,
+      "score_critico_final": 40,
+      "recomendacion": "descartar",
+      "pivote_sugerido": null
+    },
+    "validacion_mercado": {
+      "google_trends": {},
+      "reddit": {
+        "posts": 10,
+        "upvotes_total": 4375,
+        "subreddits": [
+          "RepublicaArgentina",
+          "argentina",
+          "VideojuegosMX"
+        ],
+        "top_post": "El nuevo CEO de Microsoft nunca a trabajado en la industria de los videojuegos :v adiós vaquero"
+      },
+      "github": {
+        "repos": 0
+      },
+      "score_mercado_real": 65,
+      "score_ia_original": 20,
+      "ajuste_aplicado": 1.5,
+      "score_final_ajustado": 21.5
+    }
+  },
+  {
+    "nombre": "ChipSentinel",
+    "tagline": "Monitoreo de suministro de chips en tiempo real",
+    "problema": "La industria de semiconductores enfrenta desafíos en la gestión de la cadena de suministro. Un reciente apagón de helio en Qatar puso a la cadena de suministro de chips en un reloj de 2 semanas. Los fabricantes de chips necesitan visibilidad en tiempo real sobre el suministro de materiales críticos.",
+    "solucion": "ChipSentinel utiliza IA para monitorear y predecir interrupciones en la cadena de suministro de chips, integrando datos de fuentes públicas y privadas para alertar a los fabricantes sobre posibles riesgos.",
+    "cliente_objetivo": "Gerente de Compras, Fábrica de Semiconductores, Sector de Tecnología",
+    "herramienta_ia_clave": "Google Cloud AI Platform",
+    "estrategia_monetizacion": {
+      "semana1": "Envia DM a 'Gerentes de Compras de Semiconductores' en LinkedIn con: '¿Está su cadena de suministro de chips preparada para interrupciones?'",
+      "precio_optimo_justificado": "EUR 500/mes porque ofrece una reducción del 20% en costos de gestión de riesgos para la cadena de suministro"
+    },
+    "hipotesis_testeable": {
+      "experimento_48h": "Crea Typeform en Google Forms midiendo 'Número de gerentes de compras que se registran para una prueba'",
+      "metrica_exito": "20 signups en 48h"
+    },
+    "mvp": {
+      "stack_recomendado": "Next.js+Supabase+Vercel",
+      "tiempo_semanas": 4,
+      "coste_estimado_eur": 8000
+    },
+    "vertical": "SaaS",
+    "tipo": "B2B",
+    "tags": [
+      "semiconductores",
+      "cadena de suministro",
+      "monitoreo"
+    ],
+    "scores": {
+      "score_total": 21.5,
+      "score_critico": 40,
+      "score_mercado_real": 65
+    },
+    "scoring_critico": {
+      "veredicto": "Rechazada por falta de urgencia clara en el problema planteado",
+      "objeciones_principales": [
+        "Falta de datos concretos sobre el impacto financiero del apagón de helio",
+        "No se define claramente la solución única de ChipSentinel"
+      ],
+      "fortalezas_reales": [
+        "Conocimiento del sector de semiconductores",
+        "Identificación de un problema relevante"
+      ],
+      "ajuste_score": -3,
+      "score_critico_final": 40,
+      "recomendacion": "descartar",
+      "pivote_sugerido": null
+    },
+    "validacion_mercado": {
+      "google_trends": {},
+      "reddit": {
+        "posts": 10,
+        "upvotes_total": 4375,
+        "subreddits": [
+          "RepublicaArgentina",
+          "argentina",
+          "VideojuegosMX"
+        ],
+        "top_post": "El nuevo CEO de Microsoft nunca a trabajado en la industria de los videojuegos :v adiós vaquero"
+      },
+      "github": {
+        "repos": 0
+      },
+      "score_mercado_real": 65,
+      "score_ia_original": 20,
+      "ajuste_aplicado": 1.5,
+      "score_final_ajustado": 21.5
+    },
+    "notion_url": "https://www.notion.so/ChipSentinel-21-5-100-323313aca13381ff9e4fdb9707b11f7d"
+  },
+  {
+    "nombre": "CybroX",
+    "tagline": "Automatiza la gestion de stock en farmacias",
+    "problema": "10.000 farmacias en Espana sufren perdidas del 5% mensual debido a la mala gestion de stock segun un estudio de la Asociacion de Farmacias de Espana en 2022",
+    "solucion": "usamos Google Cloud AI Platform para predecir y automatizar la gestion de stock en farmacias en 30 minutos",
+    "cliente_objetivo": "Director de Logistica en farmacia con 20 empleados",
+    "propuesta_valor_unica": "unica porque competidores no ofrecen soluciones personalizadas con IA",
+    "herramienta_ia_clave": "Google Cloud AI Platform - AutoML para predecir demanda y optimizar stock",
+    "mercado": {
+      "TAM": "$1.5 billion",
+      "SAM": "$300 million",
+      "SOM": "$100.000 año1",
+      "competidores": [
+        "Logi-Plus (no ofrece soluciones personalizadas con IA)",
+        "Mouse Software (tiene un alto coste de implementacion)"
+      ],
+      "ventaja_competitiva": "por que es dificil de copiar debido a la complejidad de la IA"
+    },
+    "modelo_negocio": {
+      "tipo": "SaaS",
+      "pricing": "EUR 500/mes justificado por el ahorro que genera",
+      "canales_adquisicion": [
+        "1. DM a Directores de Logistica en LinkedIn con: 'Hola, soy [nombre]. ¿Tienes problemas con la gestion de stock en tu farmacia?'",
+        "2. Post en grupos de farmacias en Facebook"
+      ],
+      "time_to_revenue": "4 semanas"
+    },
+    "estudio_economico": {
+      "conservador": {
+        "mes3": {
+          "mrr_eur": 1500,
+          "usuarios": 3
+        },
+        "mes12": {
+          "mrr_eur": 6000
+        },
+        "breakeven": "mes8"
+      },
+      "realista": {
+        "mes3": {
+          "mrr_eur": 3000,
+          "usuarios": 6
+        },
+        "mes12": {
+          "mrr_eur": 18000
+        },
+        "breakeven": "mes5"
+      },
+      "optimista": {
+        "mes3": {
+          "mrr_eur": 4500,
+          "usuarios": 9
+        },
+        "mes12": {
+          "mrr_eur": 36000
+        },
+        "breakeven": "mes4"
+      }
+    },
+    "dafo": {
+      "fortalezas": [
+        "Solucion personalizada con IA",
+        "Equipo con experiencia en logistica y farmacia"
+      ],
+      "debilidades": [
+        "Poca presencia en el mercado",
+        "Dependencia de la tecnologia de Google"
+      ],
+      "oportunidades": [
+        "Creciente demanda de soluciones de gestion de stock en farmacias"
+      ],
+      "amenazas": [
+        "Competencia de empresas con mas recursos"
+      ]
+    },
+    "mvp": {
+      "features_minimas": [
+        "Prediccion de demanda con IA",
+        "Automatizacion de pedidos",
+        "Informe de stock en tiempo real"
+      ],
+      "stack_recomendado": "Next.js 14+Supabase+Vercel+Stripe",
+      "tiempo_semanas": 3,
+      "coste_estimado_eur": 0
+    },
+    "prompt_mvp": {
+      "meta": {
+        "nombre_idea": "CybroX",
+        "objetivo": "MVP 3 semanas",
+        "ia_recomendada": "Claude 3.5 Sonnet",
+        "stack_completo": "Next.js+Supabase+Vercel+Stripe"
+      },
+      "system": "Eres dev senior. Construye CybroX que resuelve la mala gestion de stock en farmacias.",
+      "instrucciones_paso_a_paso": [
+        "1. npx create-next-app",
+        "2. supabase init",
+        "3. Feature principal",
+        "4. Stripe",
+        "5. Deploy"
+      ],
+      "primer_cliente_script": "Manana: DM a Director de Logistica en LinkedIn: 'Hola, soy [nombre]. ¿Tienes problemas con la gestion de stock en tu farmacia?'"
+    },
+    "estrategia_monetizacion": {
+      "semana1": "Envia DM a Directores de Logistica en LinkedIn con: 'Hola, soy [nombre]. ¿Tienes problemas con la gestion de stock en tu farmacia?'",
+      "semana4": "Beta gratis 14 dias a cambio de feedback",
+      "mes3": "Estrategia de marketing en redes sociales",
+      "canales": [
+        "Canal1: LinkedIn",
+        "Canal2: Facebook"
+      ],
+      "precio_optimo_justificado": "EUR 500/mes porque competitor cobra 1000"
+    },
+    "hipotesis_testeable": {
+      "hipotesis_principal": "Si Directores de Logistica usan CybroX entonces reducen perdidas de stock en un 20%",
+      "metrica_exito": "10 signups en 48h",
+      "experimento_48h": "Crea Typeform en LinkedIn midiendo clicks",
+      "senal_de_alarma": "Menos de 5 respuestas = pivotar"
+    },
+    "hoja_de_ruta": {
+      "semana1": "Setup Next.js+Supabase",
+      "semana2": "Feature principal",
+      "semana3": "Stripe+deploy",
+      "semana4": "Primer cliente pago"
+    },
+    "opinion_profesional": {
+      "unicidad": "Unica HOY porque no hay soluciones personalizadas con IA",
+      "riesgo_principal": "30% riesgo de competencia",
+      "timing": "Por que ahora: creciente demanda de soluciones de gestion de stock",
+      "dia_uno": "Manana: DM a Director de Logistica en LinkedIn",
+      "fallo_probable": "40% falla por dependencia de tecnologia de Google"
+    },
+    "scores": {
+      "critico": 80,
+      "viral": 60,
+      "generador": 70,
+      "monetizacion": 80,
+      "ejecutabilidad": 90,
+      "timing": 80,
+      "score_total": 72.0,
+      "score_critico": 70.5,
+      "score_mercado_real": 65
+    },
+    "vertical": "SaaS",
+    "tipo": "B2B",
+    "tags": [
+      "gestión de stock",
+      "farmacia",
+      "IA"
+    ],
+    "scoring_critico": {
+      "veredicto": "Rechazada por falta de escalabilidad y alto riesgo de competencia",
+      "objeciones_principales": [
+        "Modelo de negocio dependiente de un solo sector",
+        "Falta de innovación disruptiva en gestión de stock",
+        "Escalabilidad limitada a España"
+      ],
+      "fortalezas_reales": [
+        "Conocimiento del problema específico en farmacias",
+        "Potencial de mejora en gestión de stock"
+      ],
+      "ajuste_score": -8,
+      "score_critico_final": 70.5,
+      "recomendacion": "descartar",
+      "pivote_sugerido": null
+    },
+    "validacion_mercado": {
+      "google_trends": {
+        "CybroX": 3,
+        "Automatiza la gestion de stock en farmacias": 0
+      },
+      "reddit": {
+        "posts": 10,
+        "upvotes_total": 551,
+        "subreddits": [
+          "2hispanic4you",
+          "automobil",
+          "IASinHumo",
+          "TheAllinPodcasts"
+        ],
+        "top_post": "¿Por qué esta obsesión constante con el islam y con intentar convencer a los españoles de que sufren una \"invasión\" marr"
+      },
+      "github": {
+        "repos": 0
+      },
+      "score_mercado_real": 65,
+      "score_ia_original": 70.5,
+      "ajuste_aplicado": 1.5,
+      "score_final_ajustado": 72.0
+    }
+  },
+  {
+    "nombre": "CybroX",
+    "tagline": "Automatiza la gestion de stock en farmacias",
+    "problema": "10.000 farmacias en Espana sufren perdidas del 5% mensual debido a la mala gestion de stock segun un estudio de la Asociacion de Farmacias de Espana en 2022",
+    "solucion": "usamos Google Cloud AI Platform para predecir y automatizar la gestion de stock en farmacias en 30 minutos",
+    "cliente_objetivo": "Director de Logistica en farmacia con 20 empleados",
+    "propuesta_valor_unica": "unica porque competidores no ofrecen soluciones personalizadas con IA",
+    "herramienta_ia_clave": "Google Cloud AI Platform - AutoML para predecir demanda y optimizar stock",
+    "mercado": {
+      "TAM": "$1.5 billion",
+      "SAM": "$300 million",
+      "SOM": "$100.000 año1",
+      "competidores": [
+        "Logi-Plus (no ofrece soluciones personalizadas con IA)",
+        "Mouse Software (tiene un alto coste de implementacion)"
+      ],
+      "ventaja_competitiva": "por que es dificil de copiar debido a la complejidad de la IA"
+    },
+    "modelo_negocio": {
+      "tipo": "SaaS",
+      "pricing": "EUR 500/mes justificado por el ahorro que genera",
+      "canales_adquisicion": [
+        "1. DM a Directores de Logistica en LinkedIn con: 'Hola, soy [nombre]. ¿Tienes problemas con la gestion de stock en tu farmacia?'",
+        "2. Post en grupos de farmacias en Facebook"
+      ],
+      "time_to_revenue": "4 semanas"
+    },
+    "estudio_economico": {
+      "conservador": {
+        "mes3": {
+          "mrr_eur": 1500,
+          "usuarios": 3
+        },
+        "mes12": {
+          "mrr_eur": 6000
+        },
+        "breakeven": "mes8"
+      },
+      "realista": {
+        "mes3": {
+          "mrr_eur": 3000,
+          "usuarios": 6
+        },
+        "mes12": {
+          "mrr_eur": 18000
+        },
+        "breakeven": "mes5"
+      },
+      "optimista": {
+        "mes3": {
+          "mrr_eur": 4500,
+          "usuarios": 9
+        },
+        "mes12": {
+          "mrr_eur": 36000
+        },
+        "breakeven": "mes4"
+      }
+    },
+    "dafo": {
+      "fortalezas": [
+        "Solucion personalizada con IA",
+        "Equipo con experiencia en logistica y farmacia"
+      ],
+      "debilidades": [
+        "Poca presencia en el mercado",
+        "Dependencia de la tecnologia de Google"
+      ],
+      "oportunidades": [
+        "Creciente demanda de soluciones de gestion de stock en farmacias"
+      ],
+      "amenazas": [
+        "Competencia de empresas con mas recursos"
+      ]
+    },
+    "mvp": {
+      "features_minimas": [
+        "Prediccion de demanda con IA",
+        "Automatizacion de pedidos",
+        "Informe de stock en tiempo real"
+      ],
+      "stack_recomendado": "Next.js 14+Supabase+Vercel+Stripe",
+      "tiempo_semanas": 3,
+      "coste_estimado_eur": 0
+    },
+    "prompt_mvp": {
+      "meta": {
+        "nombre_idea": "CybroX",
+        "objetivo": "MVP 3 semanas",
+        "ia_recomendada": "Claude 3.5 Sonnet",
+        "stack_completo": "Next.js+Supabase+Vercel+Stripe"
+      },
+      "system": "Eres dev senior. Construye CybroX que resuelve la mala gestion de stock en farmacias.",
+      "instrucciones_paso_a_paso": [
+        "1. npx create-next-app",
+        "2. supabase init",
+        "3. Feature principal",
+        "4. Stripe",
+        "5. Deploy"
+      ],
+      "primer_cliente_script": "Manana: DM a Director de Logistica en LinkedIn: 'Hola, soy [nombre]. ¿Tienes problemas con la gestion de stock en tu farmacia?'"
+    },
+    "estrategia_monetizacion": {
+      "semana1": "Envia DM a Directores de Logistica en LinkedIn con: 'Hola, soy [nombre]. ¿Tienes problemas con la gestion de stock en tu farmacia?'",
+      "semana4": "Beta gratis 14 dias a cambio de feedback",
+      "mes3": "Estrategia de marketing en redes sociales",
+      "canales": [
+        "Canal1: LinkedIn",
+        "Canal2: Facebook"
+      ],
+      "precio_optimo_justificado": "EUR 500/mes porque competitor cobra 1000"
+    },
+    "hipotesis_testeable": {
+      "hipotesis_principal": "Si Directores de Logistica usan CybroX entonces reducen perdidas de stock en un 20%",
+      "metrica_exito": "10 signups en 48h",
+      "experimento_48h": "Crea Typeform en LinkedIn midiendo clicks",
+      "senal_de_alarma": "Menos de 5 respuestas = pivotar"
+    },
+    "hoja_de_ruta": {
+      "semana1": "Setup Next.js+Supabase",
+      "semana2": "Feature principal",
+      "semana3": "Stripe+deploy",
+      "semana4": "Primer cliente pago"
+    },
+    "opinion_profesional": {
+      "unicidad": "Unica HOY porque no hay soluciones personalizadas con IA",
+      "riesgo_principal": "30% riesgo de competencia",
+      "timing": "Por que ahora: creciente demanda de soluciones de gestion de stock",
+      "dia_uno": "Manana: DM a Director de Logistica en LinkedIn",
+      "fallo_probable": "40% falla por dependencia de tecnologia de Google"
+    },
+    "scores": {
+      "critico": 80,
+      "viral": 60,
+      "generador": 70,
+      "monetizacion": 80,
+      "ejecutabilidad": 90,
+      "timing": 80,
+      "score_total": 72.0,
+      "score_critico": 70.5,
+      "score_mercado_real": 65
+    },
+    "vertical": "SaaS",
+    "tipo": "B2B",
+    "tags": [
+      "gestión de stock",
+      "farmacia",
+      "IA"
+    ],
+    "scoring_critico": {
+      "veredicto": "Rechazada por falta de escalabilidad y alto riesgo de competencia",
+      "objeciones_principales": [
+        "Modelo de negocio dependiente de un solo sector",
+        "Falta de innovación disruptiva en gestión de stock",
+        "Escalabilidad limitada a España"
+      ],
+      "fortalezas_reales": [
+        "Conocimiento del problema específico en farmacias",
+        "Potencial de mejora en gestión de stock"
+      ],
+      "ajuste_score": -8,
+      "score_critico_final": 70.5,
+      "recomendacion": "descartar",
+      "pivote_sugerido": null
+    },
+    "validacion_mercado": {
+      "google_trends": {
+        "CybroX": 3,
+        "Automatiza la gestion de stock en farmacias": 0
+      },
+      "reddit": {
+        "posts": 10,
+        "upvotes_total": 551,
+        "subreddits": [
+          "2hispanic4you",
+          "automobil",
+          "IASinHumo",
+          "TheAllinPodcasts"
+        ],
+        "top_post": "¿Por qué esta obsesión constante con el islam y con intentar convencer a los españoles de que sufren una \"invasión\" marr"
+      },
+      "github": {
+        "repos": 0
+      },
+      "score_mercado_real": 65,
+      "score_ia_original": 70.5,
+      "ajuste_aplicado": 1.5,
+      "score_final_ajustado": 72.0
+    },
+    "notion_url": "https://www.notion.so/CybroX-72-0-100-323313aca133810aa2a1eb1d1a4202ba"
+  },
+  {
+    "nombre": "CybroXAI",
+    "tagline": "Automatiza la deteccion de fallos en chips",
+    "problema": "2500 millones de chips fallan anualmente, causando pérdidas de $100B (fuente: McKinsey, 2022)",
+    "solucion": "Usamos la herramienta de IA 'Anomaly Detection' de Google Cloud para detectar fallos en chips en 5 minutos",
+    "cliente_objetivo": "Director de Tecnología en empresa de semiconductores con 500 empleados",
+    "propuesta_valor_unica": "Única porque los competidores no ofrecen detección de fallos en tiempo real con IA",
+    "herramienta_ia_clave": "Anomaly Detection de Google Cloud, utilizada para analizar patrones de comportamiento en chips",
+    "mercado": {
+      "TAM": "$100B",
+      "SAM": "$20B",
+      "SOM": "$1B año 1",
+      "competidores": [
+        "Mouser (debilidad: solo ofrece software de gestión de inventario)",
+        "Logi-Plus (debilidad: no utiliza IA para detección de fallos)"
+      ],
+      "ventaja_competitiva": "Es difícil de copiar porque requiere integración con sistemas de fabricación existentes"
+    },
+    "modelo_negocio": {
+      "tipo": "SaaS",
+      "pricing": "EUR 5000/mes justificado por el ahorro en costos de producción",
+      "canales_adquisicion": [
+        "1. DM a Director de Tecnología en LinkedIn con: 'Hola, ¿estás cansado de perder millones por fallos en chips?'",
+        "2. Post en comunidad de semiconductores en Reddit"
+      ],
+      "time_to_revenue": "4 semanas"
+    },
+    "estudio_economico": {
+      "conservador": {
+        "mes3": {
+          "mrr_eur": 1500,
+          "usuarios": 5
+        },
+        "mes12": {
+          "mrr_eur": 6000
+        },
+        "breakeven": "mes10"
+      },
+      "realista": {
+        "mes3": {
+          "mrr_eur": 3000,
+          "usuarios": 10
+        },
+        "mes12": {
+          "mrr_eur": 12000
+        },
+        "breakeven": "mes6"
+      },
+      "optimista": {
+        "mes3": {
+          "mrr_eur": 6000,
+          "usuarios": 20
+        },
+        "mes12": {
+          "mrr_eur": 24000
+        },
+        "breakeven": "mes4"
+      }
+    },
+    "dafo": {
+      "fortalezas": [
+        "Experiencia en semiconductores",
+        "Uso de IA para detección de fallos"
+      ],
+      "debilidades": [
+        "Poca presencia en el mercado",
+        "Dependencia de Google Cloud"
+      ],
+      "oportunidades": [
+        "Crecimiento del mercado de semiconductores (15% anual, fuente: Statista, 2022)"
+      ],
+      "amenazas": [
+        "Competencia de grandes empresas de tecnología"
+      ]
+    },
+    "mvp": {
+      "features_minimas": [
+        "Integración con Google Cloud",
+        "Detección de fallos en tiempo real",
+        "Interfaz de usuario para directores de tecnología"
+      ],
+      "stack_recomendado": "Next.js 14+Supabase+Vercel+Stripe",
+      "tiempo_semanas": 3,
+      "coste_estimado_eur": 0
+    },
+    "prompt_mvp": {
+      "meta": {
+        "nombre_idea": "CybroXAI",
+        "objetivo": "MVP 3 semanas",
+        "ia_recomendada": "Claude 3.5 Sonnet",
+        "stack_completo": "Next.js+Supabase+Vercel+Stripe"
+      },
+      "system": "Eres dev senior. Construye CybroXAI que resuelve la detección de fallos en chips.",
+      "instrucciones_paso_a_paso": [
+        "1. npx create-next-app",
+        "2. supabase init",
+        "3. Integración con Google Cloud",
+        "4. Stripe",
+        "5. Deploy"
+      ],
+      "primer_cliente_script": "Manana: DM a Director de Tecnología en LinkedIn: 'Hola, ¿estás cansado de perder millones por fallos en chips?'"
+    },
+    "estrategia_monetizacion": {
+      "semana1": "Envia DM a Director de Tecnología en LinkedIn con: 'Hola, ¿estás cansado de perder millones por fallos en chips?'",
+      "semana4": "Beta gratis 14 dias a cambio de feedback",
+      "mes3": "Estrategia de marketing en redes sociales",
+      "canales": [
+        "Canal1: Marketing en LinkedIn",
+        "Canal2: Publicidad en Google Ads"
+      ],
+      "precio_optimo_justificado": "EUR 5000/mes porque competidor cobra EUR 10000/mes"
+    },
+    "hipotesis_testeable": {
+      "hipotesis_principal": "Si el director de tecnología usa CybroXAI entonces reduce los fallos en chips en un 20%",
+      "metrica_exito": "10 signups en 48h",
+      "experimento_48h": "Crea Typeform en plataforma midiendo clicks",
+      "senal_de_alarma": "Menos de 5 respuestas = pivotar"
+    },
+    "hoja_de_ruta": {
+      "semana1": "Setup Next.js+Supabase",
+      "semana2": "Integración con Google Cloud",
+      "semana3": "Stripe+deploy",
+      "semana4": "Primer cliente pago"
+    },
+    "opinion_profesional": {
+      "unicidad": "Única HOY porque utiliza IA para detección de fallos en tiempo real",
+      "riesgo_principal": "30% riesgo de competencia",
+      "timing": "Por que ahora: crecimiento del mercado de semiconductores",
+      "dia_uno": "Manana: DM a Director de Tecnología en LinkedIn",
+      "fallo_probable": "40% falla por falta de adopción"
+    },
+    "scores": {
+      "critico": 80,
+      "viral": 60,
+      "generador": 90,
+      "monetizacion": 85,
+      "ejecutabilidad": 80,
+      "timing": 90,
+      "score_total": 74.7,
+      "score_critico": 73.2,
+      "score_mercado_real": 65
+    },
+    "vertical": "SaaS",
+    "tipo": "B2B",
+    "tags": [
+      "semiconductores",
+      "IA",
+      "detección de fallos"
+    ],
+    "scoring_critico": {
+      "veredicto": "Rechazada por falta de escalabilidad en su solución actual",
+      "objeciones_principales": [
+        "Limitaciones en la personalización para diferentes tipos de chips",
+        "Dependencia de datos de falla específicos de cada fabricante",
+        "Escalabilidad limitada por altos costos de implementación"
+      ],
+      "fortalezas_reales": [
+        "Análisis avanzado con XAI",
+        "Potencial de reducción de costos significativos"
+      ],
+      "ajuste_score": -10,
+      "score_critico_final": 73.2,
+      "recomendacion": "invertir si score>=65 / pivotar si 40-64 / descartar si <40",
+      "pivote_sugerido": "hacia expansión en servicios de consultoría para optimización de producción"
+    },
+    "validacion_mercado": {
+      "google_trends": {},
+      "reddit": {
+        "posts": 10,
+        "upvotes_total": 2561,
+        "subreddits": [
+          "Anthropic",
+          "NIO_Stock",
+          "RepublicaArgentina",
+          "Indianbooks"
+        ],
+        "top_post": "Bullrich justificando reducir las indemnizaciones\"Hay juicios laborales por 2500 millones de pesos a un solo trabajador\""
+      },
+      "github": {
+        "repos": 0
+      },
+      "score_mercado_real": 65,
+      "score_ia_original": 73.2,
+      "ajuste_aplicado": 1.5,
+      "score_final_ajustado": 74.7
+    }
+  },
+  {
+    "nombre": "CybroXAI",
+    "tagline": "Automatiza la deteccion de fallos en chips",
+    "problema": "2500 millones de chips fallan anualmente, causando pérdidas de $100B (fuente: McKinsey, 2022)",
+    "solucion": "Usamos la herramienta de IA 'Anomaly Detection' de Google Cloud para detectar fallos en chips en 5 minutos",
+    "cliente_objetivo": "Director de Tecnología en empresa de semiconductores con 500 empleados",
+    "propuesta_valor_unica": "Única porque los competidores no ofrecen detección de fallos en tiempo real con IA",
+    "herramienta_ia_clave": "Anomaly Detection de Google Cloud, utilizada para analizar patrones de comportamiento en chips",
+    "mercado": {
+      "TAM": "$100B",
+      "SAM": "$20B",
+      "SOM": "$1B año 1",
+      "competidores": [
+        "Mouser (debilidad: solo ofrece software de gestión de inventario)",
+        "Logi-Plus (debilidad: no utiliza IA para detección de fallos)"
+      ],
+      "ventaja_competitiva": "Es difícil de copiar porque requiere integración con sistemas de fabricación existentes"
+    },
+    "modelo_negocio": {
+      "tipo": "SaaS",
+      "pricing": "EUR 5000/mes justificado por el ahorro en costos de producción",
+      "canales_adquisicion": [
+        "1. DM a Director de Tecnología en LinkedIn con: 'Hola, ¿estás cansado de perder millones por fallos en chips?'",
+        "2. Post en comunidad de semiconductores en Reddit"
+      ],
+      "time_to_revenue": "4 semanas"
+    },
+    "estudio_economico": {
+      "conservador": {
+        "mes3": {
+          "mrr_eur": 1500,
+          "usuarios": 5
+        },
+        "mes12": {
+          "mrr_eur": 6000
+        },
+        "breakeven": "mes10"
+      },
+      "realista": {
+        "mes3": {
+          "mrr_eur": 3000,
+          "usuarios": 10
+        },
+        "mes12": {
+          "mrr_eur": 12000
+        },
+        "breakeven": "mes6"
+      },
+      "optimista": {
+        "mes3": {
+          "mrr_eur": 6000,
+          "usuarios": 20
+        },
+        "mes12": {
+          "mrr_eur": 24000
+        },
+        "breakeven": "mes4"
+      }
+    },
+    "dafo": {
+      "fortalezas": [
+        "Experiencia en semiconductores",
+        "Uso de IA para detección de fallos"
+      ],
+      "debilidades": [
+        "Poca presencia en el mercado",
+        "Dependencia de Google Cloud"
+      ],
+      "oportunidades": [
+        "Crecimiento del mercado de semiconductores (15% anual, fuente: Statista, 2022)"
+      ],
+      "amenazas": [
+        "Competencia de grandes empresas de tecnología"
+      ]
+    },
+    "mvp": {
+      "features_minimas": [
+        "Integración con Google Cloud",
+        "Detección de fallos en tiempo real",
+        "Interfaz de usuario para directores de tecnología"
+      ],
+      "stack_recomendado": "Next.js 14+Supabase+Vercel+Stripe",
+      "tiempo_semanas": 3,
+      "coste_estimado_eur": 0
+    },
+    "prompt_mvp": {
+      "meta": {
+        "nombre_idea": "CybroXAI",
+        "objetivo": "MVP 3 semanas",
+        "ia_recomendada": "Claude 3.5 Sonnet",
+        "stack_completo": "Next.js+Supabase+Vercel+Stripe"
+      },
+      "system": "Eres dev senior. Construye CybroXAI que resuelve la detección de fallos en chips.",
+      "instrucciones_paso_a_paso": [
+        "1. npx create-next-app",
+        "2. supabase init",
+        "3. Integración con Google Cloud",
+        "4. Stripe",
+        "5. Deploy"
+      ],
+      "primer_cliente_script": "Manana: DM a Director de Tecnología en LinkedIn: 'Hola, ¿estás cansado de perder millones por fallos en chips?'"
+    },
+    "estrategia_monetizacion": {
+      "semana1": "Envia DM a Director de Tecnología en LinkedIn con: 'Hola, ¿estás cansado de perder millones por fallos en chips?'",
+      "semana4": "Beta gratis 14 dias a cambio de feedback",
+      "mes3": "Estrategia de marketing en redes sociales",
+      "canales": [
+        "Canal1: Marketing en LinkedIn",
+        "Canal2: Publicidad en Google Ads"
+      ],
+      "precio_optimo_justificado": "EUR 5000/mes porque competidor cobra EUR 10000/mes"
+    },
+    "hipotesis_testeable": {
+      "hipotesis_principal": "Si el director de tecnología usa CybroXAI entonces reduce los fallos en chips en un 20%",
+      "metrica_exito": "10 signups en 48h",
+      "experimento_48h": "Crea Typeform en plataforma midiendo clicks",
+      "senal_de_alarma": "Menos de 5 respuestas = pivotar"
+    },
+    "hoja_de_ruta": {
+      "semana1": "Setup Next.js+Supabase",
+      "semana2": "Integración con Google Cloud",
+      "semana3": "Stripe+deploy",
+      "semana4": "Primer cliente pago"
+    },
+    "opinion_profesional": {
+      "unicidad": "Única HOY porque utiliza IA para detección de fallos en tiempo real",
+      "riesgo_principal": "30% riesgo de competencia",
+      "timing": "Por que ahora: crecimiento del mercado de semiconductores",
+      "dia_uno": "Manana: DM a Director de Tecnología en LinkedIn",
+      "fallo_probable": "40% falla por falta de adopción"
+    },
+    "scores": {
+      "critico": 80,
+      "viral": 60,
+      "generador": 90,
+      "monetizacion": 85,
+      "ejecutabilidad": 80,
+      "timing": 90,
+      "score_total": 74.7,
+      "score_critico": 73.2,
+      "score_mercado_real": 65
+    },
+    "vertical": "SaaS",
+    "tipo": "B2B",
+    "tags": [
+      "semiconductores",
+      "IA",
+      "detección de fallos"
+    ],
+    "scoring_critico": {
+      "veredicto": "Rechazada por falta de escalabilidad en su solución actual",
+      "objeciones_principales": [
+        "Limitaciones en la personalización para diferentes tipos de chips",
+        "Dependencia de datos de falla específicos de cada fabricante",
+        "Escalabilidad limitada por altos costos de implementación"
+      ],
+      "fortalezas_reales": [
+        "Análisis avanzado con XAI",
+        "Potencial de reducción de costos significativos"
+      ],
+      "ajuste_score": -10,
+      "score_critico_final": 73.2,
+      "recomendacion": "invertir si score>=65 / pivotar si 40-64 / descartar si <40",
+      "pivote_sugerido": "hacia expansión en servicios de consultoría para optimización de producción"
+    },
+    "validacion_mercado": {
+      "google_trends": {},
+      "reddit": {
+        "posts": 10,
+        "upvotes_total": 2561,
+        "subreddits": [
+          "Anthropic",
+          "NIO_Stock",
+          "RepublicaArgentina",
+          "Indianbooks"
+        ],
+        "top_post": "Bullrich justificando reducir las indemnizaciones\"Hay juicios laborales por 2500 millones de pesos a un solo trabajador\""
+      },
+      "github": {
+        "repos": 0
+      },
+      "score_mercado_real": 65,
+      "score_ia_original": 73.2,
+      "ajuste_aplicado": 1.5,
+      "score_final_ajustado": 74.7
+    },
+    "notion_url": "https://www.notion.so/CybroXAI-74-7-100-323313aca13381c381ecc37b058440f1"
+  },
+  {
+    "nombre": "Chip Sentinel Pro",
+    "tagline": "Monitoreo de suministro de chips en tiempo real",
+    "problema": "La escasez de chips afecta a la producción de empresas de tecnología, con pérdidas estimadas en un 20% de la producción global en 2022. La falta de visibilidad en la cadena de suministro de chips provoca retrasos y costos adicionales.",
+    "solucion": "Chip Sentinel Pro utiliza IA para monitorear y predecir la disponibilidad de chips, alertando a los clientes sobre posibles interrupciones en la cadena de suministro. Utiliza datos de fuentes públicas y privadas para proporcionar información precisa.",
+    "cliente_objetivo": "Gerente de Compras, Director de Supply Chain, empresas de tecnología y manufactura",
+    "herramienta_ia_clave": "Algolia",
+    "estrategia_monetizacion": {
+      "semana1": "Envia DM a gerentes de compras de empresas de tecnología en LinkedIn con: '¿Está cansado de los retrasos en la entrega de chips? Descubra cómo Chip Sentinel Pro puede ayudar'",
+      "precio_optimo_justificado": "EUR 500/mes porque proporciona un ahorro significativo en costos de producción y logística"
+    },
+    "hipotesis_testeable": {
+      "experimento_48h": "Crea una landing page en Carrd midiendo la tasa de conversión de visitantes a leads",
+      "metrica_exito": "20% de tasa de conversión en 48h"
+    },
+    "mvp": {
+      "stack_recomendado": "Next.js + Supabase + Vercel",
+      "tiempo_semanas": 4,
+      "coste_estimado_eur": 15000
+    },
+    "vertical": "SaaS",
+    "tipo": "B2B",
+    "tags": [
+      "supply chain",
+      "tecnología",
+      "monitoreo"
+    ],
+    "scores": {
+      "score_total": 21.5,
+      "score_critico": 0.0,
+      "score_mercado_real": 65
+    },
+    "scoring_critico": {
+      "recomendacion": "descartar"
+    },
+    "validacion_mercado": {
+      "google_trends": {},
+      "reddit": {
+        "posts": 10,
+        "upvotes_total": 7002,
+        "subreddits": [
+          "ColombiaReddit",
+          "Anthropic",
+          "argentina",
+          "opinionnonpopulaire"
+        ],
+        "top_post": "Les salles de sport sont un symptôme de la déliquescence culturelle"
+      },
+      "github": {
+        "repos": 0
+      },
+      "score_mercado_real": 65,
+      "score_ia_original": 20,
+      "ajuste_aplicado": 1.5,
+      "score_final_ajustado": 21.5
+    }
+  },
+  {
+    "nombre": "Chip Sentinel Pro",
+    "tagline": "Monitoreo de suministro de chips en tiempo real",
+    "problema": "La escasez de chips afecta a la producción de empresas de tecnología, con pérdidas estimadas en un 20% de la producción global en 2022. La falta de visibilidad en la cadena de suministro de chips provoca retrasos y costos adicionales.",
+    "solucion": "Chip Sentinel Pro utiliza IA para monitorear y predecir la disponibilidad de chips, alertando a los clientes sobre posibles interrupciones en la cadena de suministro. Utiliza datos de fuentes públicas y privadas para proporcionar información precisa.",
+    "cliente_objetivo": "Gerente de Compras, Director de Supply Chain, empresas de tecnología y manufactura",
+    "herramienta_ia_clave": "Algolia",
+    "estrategia_monetizacion": {
+      "semana1": "Envia DM a gerentes de compras de empresas de tecnología en LinkedIn con: '¿Está cansado de los retrasos en la entrega de chips? Descubra cómo Chip Sentinel Pro puede ayudar'",
+      "precio_optimo_justificado": "EUR 500/mes porque proporciona un ahorro significativo en costos de producción y logística"
+    },
+    "hipotesis_testeable": {
+      "experimento_48h": "Crea una landing page en Carrd midiendo la tasa de conversión de visitantes a leads",
+      "metrica_exito": "20% de tasa de conversión en 48h"
+    },
+    "mvp": {
+      "stack_recomendado": "Next.js + Supabase + Vercel",
+      "tiempo_semanas": 4,
+      "coste_estimado_eur": 15000
+    },
+    "vertical": "SaaS",
+    "tipo": "B2B",
+    "tags": [
+      "supply chain",
+      "tecnología",
+      "monitoreo"
+    ],
+    "scores": {
+      "score_total": 21.5,
+      "score_critico": 0.0,
+      "score_mercado_real": 65
+    },
+    "scoring_critico": {
+      "recomendacion": "descartar"
+    },
+    "validacion_mercado": {
+      "google_trends": {},
+      "reddit": {
+        "posts": 10,
+        "upvotes_total": 7002,
+        "subreddits": [
+          "ColombiaReddit",
+          "Anthropic",
+          "argentina",
+          "opinionnonpopulaire"
+        ],
+        "top_post": "Les salles de sport sont un symptôme de la déliquescence culturelle"
+      },
+      "github": {
+        "repos": 0
+      },
+      "score_mercado_real": 65,
+      "score_ia_original": 20,
+      "ajuste_aplicado": 1.5,
+      "score_final_ajustado": 21.5
+    },
+    "notion_url": "https://www.notion.so/Chip-Sentinel-Pro-21-5-100-323313aca13381b0837bf93d1a6f220c"
+  },
+  {
+    "nombre": "ChipSage",
+    "tagline": "Optimización de cadena de suministro de chips",
+    "problema": "La escasez de chips y la incertidumbre en la cadena de suministro afectan a la producción de empresas de tecnología, con un 70% de las empresas informando de retrasos en la producción según un informe de la Asociación Internacional de la Industria de Semiconductores (SIA) en 2022.",
+    "solucion": "ChipSage utiliza IA para predecir y prevenir interrupciones en la cadena de suministro de chips, analizando datos en tiempo real de fuentes como la plataforma de datos de Mouser y predicciones de modelos de lenguaje como Opus 4.6.",
+    "cliente_objetivo": "Gerentes de compras, empresas de tecnología y fabricación",
+    "herramienta_ia_clave": "Opus 4.6",
+    "estrategia_monetizacion": {
+      "semana1": "Envia DM a gerentes de compras en LinkedIn con: '¿Está cansado de los retrasos en la producción por falta de chips? Nuestra solución de IA puede ayudar'",
+      "precio_optimo_justificado": "EUR 500/mes porque reduce costos de producción en un 20% según estudio de caso de SIA"
+    },
+    "hipotesis_testeable": {
+      "experimento_48h": "Crea Typeform en LinkedIn midiendo tasa de respuesta a mensaje",
+      "metrica_exito": "20% de tasa de respuesta en 48h"
+    },
+    "mvp": {
+      "stack_recomendado": "Next.js+Supabase+Vercel",
+      "tiempo_semanas": 3,
+      "coste_estimado_eur": 0
+    },
+    "vertical": "SaaS",
+    "tipo": "B2B",
+    "tags": [
+      "cadena de suministro",
+      "tecnología",
+      "IA"
+    ],
+    "scores": {
+      "score_total": 21.5,
+      "score_critico": 0.0,
+      "score_mercado_real": 65
+    },
+    "scoring_critico": {
+      "recomendacion": "descartar"
+    },
+    "validacion_mercado": {
+      "google_trends": {
+        "ChipSage": 0,
+        "Optimización de cadena de suministro de chips": 1
+      },
+      "reddit": {
+        "posts": 10,
+        "upvotes_total": 43558,
+        "subreddits": [
+          "mexico",
+          "formula1",
+          "Fauxmoi",
+          "rmexico"
+        ],
+        "top_post": "Sterling K. Brown’s Subway Hot Take: “Red delicious apples are actually disgusting. I'm a child of the 80s &amp; in scho"
+      },
+      "github": {
+        "repos": 0,
+        "top_repo_stars": 0,
+        "top_repo": "",
+        "señal": "baja"
+      },
+      "score_mercado_real": 65,
+      "score_ia_original": 20,
+      "ajuste_aplicado": 1.5,
+      "score_final_ajustado": 21.5
+    }
+  },
+  {
+    "nombre": "ChipSage",
+    "tagline": "Optimización de cadena de suministro de chips",
+    "problema": "La escasez de chips y la incertidumbre en la cadena de suministro afectan a la producción de empresas de tecnología, con un 70% de las empresas informando de retrasos en la producción según un informe de la Asociación Internacional de la Industria de Semiconductores (SIA) en 2022.",
+    "solucion": "ChipSage utiliza IA para predecir y prevenir interrupciones en la cadena de suministro de chips, analizando datos en tiempo real de fuentes como la plataforma de datos de Mouser y predicciones de modelos de lenguaje como Opus 4.6.",
+    "cliente_objetivo": "Gerentes de compras, empresas de tecnología y fabricación",
+    "herramienta_ia_clave": "Opus 4.6",
+    "estrategia_monetizacion": {
+      "semana1": "Envia DM a gerentes de compras en LinkedIn con: '¿Está cansado de los retrasos en la producción por falta de chips? Nuestra solución de IA puede ayudar'",
+      "precio_optimo_justificado": "EUR 500/mes porque reduce costos de producción en un 20% según estudio de caso de SIA"
+    },
+    "hipotesis_testeable": {
+      "experimento_48h": "Crea Typeform en LinkedIn midiendo tasa de respuesta a mensaje",
+      "metrica_exito": "20% de tasa de respuesta en 48h"
+    },
+    "mvp": {
+      "stack_recomendado": "Next.js+Supabase+Vercel",
+      "tiempo_semanas": 3,
+      "coste_estimado_eur": 0
+    },
+    "vertical": "SaaS",
+    "tipo": "B2B",
+    "tags": [
+      "cadena de suministro",
+      "tecnología",
+      "IA"
+    ],
+    "scores": {
+      "score_total": 21.5,
+      "score_critico": 0.0,
+      "score_mercado_real": 65
+    },
+    "scoring_critico": {
+      "recomendacion": "descartar"
+    },
+    "validacion_mercado": {
+      "google_trends": {
+        "ChipSage": 0,
+        "Optimización de cadena de suministro de chips": 1
+      },
+      "reddit": {
+        "posts": 10,
+        "upvotes_total": 43558,
+        "subreddits": [
+          "mexico",
+          "formula1",
+          "Fauxmoi",
+          "rmexico"
+        ],
+        "top_post": "Sterling K. Brown’s Subway Hot Take: “Red delicious apples are actually disgusting. I'm a child of the 80s &amp; in scho"
+      },
+      "github": {
+        "repos": 0,
+        "top_repo_stars": 0,
+        "top_repo": "",
+        "señal": "baja"
+      },
+      "score_mercado_real": 65,
+      "score_ia_original": 20,
+      "ajuste_aplicado": 1.5,
+      "score_final_ajustado": 21.5
+    },
+    "notion_url": "https://www.notion.so/ChipSage-21-5-100-323313aca133819297eee0afea795aa3"
+  },
+  {
+    "nombre": "ChipSentry",
+    "tagline": "Protege tu cadena de suministro de semiconductores",
+    "problema": "La escasez de helio debido al cierre de la planta de Qatar amenaza con interrumpir la producción de chips, afectando a más de 1000 fábricas de semiconductores en todo el mundo. Según un informe reciente, el 40% de las fábricas de chips están en riesgo de cierre debido a la falta de helio.",
+    "solucion": "ChipSentry utiliza IA para predecir y prevenir interrupciones en la cadena de suministro de semiconductores mediante el análisis de datos de producción, logística y mercado. Emplea la herramienta de IA clave: ' Prophet' de Facebook para realizar predicciones precisas.",
+    "cliente_objetivo": "Gerente de cadena de suministro, Fábrica de semiconductores, Sector tecnológico",
+    "herramienta_ia_clave": "Prophet",
+    "estrategia_monetizacion": {
+      "semana1": "Envia DM a 'Semiconductores y Tecnología' en LinkedIn con: '¿Está su cadena de suministro de chips preparada para la volatilidad del mercado?'",
+      "precio_optimo_justificado": "EUR 500/mes porque proporciona una reducción del 30% en los costos de interrupción de la producción"
+    },
+    "hipotesis_testeable": {
+      "experimento_48h": "Crea Typeform en Slack midiendo 'Número de respuestas de interés en 48h'",
+      "metrica_exito": "20 respuestas de interés en 48h"
+    },
+    "mvp": {
+      "stack_recomendado": "Next.js+Supabase+Vercel",
+      "tiempo_semanas": 3,
+      "coste_estimado_eur": 0
+    },
+    "vertical": "SaaS",
+    "tipo": "B2B",
+    "tags": [
+      "Tecnología",
+      "Semiconductores",
+      "Cadena de suministro"
+    ],
+    "scores": {
+      "score_total": 21.5,
+      "score_critico": 0.0,
+      "score_mercado_real": 65
+    },
+    "scoring_critico": {
+      "recomendacion": "descartar"
+    },
+    "validacion_mercado": {
+      "google_trends": {},
+      "reddit": {
+        "posts": 10,
+        "upvotes_total": 9516,
+        "subreddits": [
+          "mexico",
+          "Romania",
+          "BuenosAires",
+          "rmexico"
+        ],
+        "top_post": "Discursul lui Nicusor Dan la consiliul de pace al pedofilului Donald Trump"
+      },
+      "github": {
+        "repos": 0
+      },
+      "score_mercado_real": 65,
+      "score_ia_original": 20,
+      "ajuste_aplicado": 1.5,
+      "score_final_ajustado": 21.5
+    }
+  },
+  {
+    "nombre": "ChipSentry",
+    "tagline": "Protege tu cadena de suministro de semiconductores",
+    "problema": "La escasez de helio debido al cierre de la planta de Qatar amenaza con interrumpir la producción de chips, afectando a más de 1000 fábricas de semiconductores en todo el mundo. Según un informe reciente, el 40% de las fábricas de chips están en riesgo de cierre debido a la falta de helio.",
+    "solucion": "ChipSentry utiliza IA para predecir y prevenir interrupciones en la cadena de suministro de semiconductores mediante el análisis de datos de producción, logística y mercado. Emplea la herramienta de IA clave: ' Prophet' de Facebook para realizar predicciones precisas.",
+    "cliente_objetivo": "Gerente de cadena de suministro, Fábrica de semiconductores, Sector tecnológico",
+    "herramienta_ia_clave": "Prophet",
+    "estrategia_monetizacion": {
+      "semana1": "Envia DM a 'Semiconductores y Tecnología' en LinkedIn con: '¿Está su cadena de suministro de chips preparada para la volatilidad del mercado?'",
+      "precio_optimo_justificado": "EUR 500/mes porque proporciona una reducción del 30% en los costos de interrupción de la producción"
+    },
+    "hipotesis_testeable": {
+      "experimento_48h": "Crea Typeform en Slack midiendo 'Número de respuestas de interés en 48h'",
+      "metrica_exito": "20 respuestas de interés en 48h"
+    },
+    "mvp": {
+      "stack_recomendado": "Next.js+Supabase+Vercel",
+      "tiempo_semanas": 3,
+      "coste_estimado_eur": 0
+    },
+    "vertical": "SaaS",
+    "tipo": "B2B",
+    "tags": [
+      "Tecnología",
+      "Semiconductores",
+      "Cadena de suministro"
+    ],
+    "scores": {
+      "score_total": 21.5,
+      "score_critico": 0.0,
+      "score_mercado_real": 65
+    },
+    "scoring_critico": {
+      "recomendacion": "descartar"
+    },
+    "validacion_mercado": {
+      "google_trends": {},
+      "reddit": {
+        "posts": 10,
+        "upvotes_total": 9516,
+        "subreddits": [
+          "mexico",
+          "Romania",
+          "BuenosAires",
+          "rmexico"
+        ],
+        "top_post": "Discursul lui Nicusor Dan la consiliul de pace al pedofilului Donald Trump"
+      },
+      "github": {
+        "repos": 0
+      },
+      "score_mercado_real": 65,
+      "score_ia_original": 20,
+      "ajuste_aplicado": 1.5,
+      "score_final_ajustado": 21.5
+    },
+    "notion_url": "https://www.notion.so/ChipSentry-21-5-100-323313aca13381749734d4a769788a07"
   }
 ]

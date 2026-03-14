@@ -70,7 +70,7 @@ def analizar_y_aprender():
         }
 
     # Clasificar ideas
-    UMBRAL_EXITO = 75
+    UMBRAL_EXITO = 65
     exitosas  = []
     fallidas  = []
     for idea in ideas:

@@ -1,1 +1,26 @@
-﻿{"temperatura_groq":0.85,"umbral_duplicado":0.38,"verticales_preferidas":[],"verticales_penalizadas":[],"tags_exitosos":[],"score_objetivo":75,"ultimo_ciclo":0,"ultimo_aprendizaje":""}
+{
+  "temperatura_groq": 0.6,
+  "umbral_duplicado": 0.43,
+  "verticales_preferidas": [
+    "saas"
+  ],
+  "verticales_penalizadas": [
+    "regtech"
+  ],
+  "tags_exitosos": [
+    "ia",
+    "gestión de stock",
+    "farmacia",
+    "semiconductores",
+    "detección de fallos"
+  ],
+  "score_objetivo": 70,
+  "ultimo_ciclo": 12,
+  "ultimo_aprendizaje": "2026-03-14T12:17:23.893416",
+  "estadisticas": {
+    "total_ideas": 35,
+    "ideas_exitosas": 2,
+    "pct_exito": 5.7,
+    "score_promedio": 30.3
+  }
+}

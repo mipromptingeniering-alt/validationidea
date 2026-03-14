@@ -27,9 +27,11 @@ def _reddit_evidencia(problema: str) -> dict:
     """Busca posts en Reddit que hablen del problema."""
     try:
         headers = {"User-Agent": "ValidationIdea/3.0"}
-        query   = problema[:80].replace('"','')
+        import re as _re
+        palabras = _re.sub(r"[^a-zA-Z0-9 ]","",problema[:60].replace("helio","helium").replace("escasez","shortage").replace("cadena de suministro","supply chain"))
+        query    = " ".join(palabras.split()[:6])
         resp    = requests.get(
-            f"https://www.reddit.com/search.json?q={query}&sort=relevance&limit=10&type=link",
+            f"https://www.reddit.com/search.json?q={query}+startup+SaaS&sort=relevance&t=month&limit=10&type=link",
             headers=headers, timeout=8
         )
         if resp.status_code != 200:

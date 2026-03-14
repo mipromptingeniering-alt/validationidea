@@ -35,8 +35,8 @@ PLACEHOLDERS_PROHIBIDOS = [
     "accion concreta canal mensaje",
     "test sin codigo plataforma concreta",
     "nombre real", "problema real", "propuesta real",
-    "cliente real", "pricing real", "canal1", "canal2",
-    "f1 detalle tecnico", "tag1", "tag2", "rival1", "rival2",
+    "cliente real", "pricing real", "canal_principal", "canal_secundario",
+    "rival1 real", "rival2 real",
 ]
 
 # ── Conversion segura ─────────────────────────────────────────────────────────
@@ -495,7 +495,7 @@ def get_prompt_idea(contexto, tendencias, tema="", modo_emergencia=False):
             '"hipotesis_testeable":{"experimento_48h":"Crea [typeform] midiendo [metrica]",'
             '"metrica_exito":"X signups en 48h"},'
             '"mvp":{"stack_recomendado":"Next.js+Supabase+Vercel","tiempo_semanas":3,"coste_estimado_eur":0},'
-            '"vertical":"SaaS","tipo":"B2B","tags":["tag1","tag2"]}'
+            '"vertical":"SaaS","tipo":"B2B","tags":["categoria_real","vertical_real"]}'
         )
 
     return (
@@ -559,16 +559,18 @@ def get_prompt_idea(contexto, tendencias, tema="", modo_emergencia=False):
     )
 
 def get_prompt_critico(idea):
+    s = idea.get('scores',{}).get('score_total',0) if isinstance(idea.get('scores'),dict) else 0
     return (
-        f"Analiza esta startup:\nNOMBRE: {idea.get('nombre','?')}\n"
+        "REGLA: recomendacion = exactamente 'invertir' si score>=65, 'pivotar' si 40-64, 'descartar' si <40.\n"
+        f"NOMBRE: {idea.get('nombre','?')}\n"
         f"PROBLEMA: {str(idea.get('problema',''))[:250]}\n"
         f"CLIENTE: {str(idea.get('cliente_objetivo',''))[:150]}\n"
-        f"SCORE: {idea.get('scores',{}).get('score_total',0) if isinstance(idea.get('scores'),dict) else 0}\n\n"
+        f"SCORE: {s}\n\n"
         '{"veredicto":"1 frase directa","objeciones_principales":["obj1","obj2"],'
         '"fortalezas_reales":["f1","f2"],"ajuste_score":-5,'
-        '"score_critico_final":70,"recomendacion":"invertir/pivotar/descartar",'
-        '"pivote_sugerido":"hacia donde o null"}'
+        '"score_critico_final":70,"recomendacion":"invertir","pivote_sugerido":"null"}'
     )
+
 
 def _aplicar_scoring_critico(idea):
     print("🔍 Scoring critico YC...")
