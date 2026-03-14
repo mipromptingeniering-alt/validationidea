@@ -1,6 +1,6 @@
 {
   "temperatura_groq": 0.6,
-  "umbral_duplicado": 0.43,
+  "umbral_duplicado": 0.45,
   "verticales_preferidas": [
     "saas"
   ],
@@ -12,15 +12,20 @@
     "gestión de stock",
     "farmacia",
     "semiconductores",
-    "detección de fallos"
+    "detección de fallos",
+    "testing",
+    "automatización",
+    "desarrollo",
+    "automatización de desarrollo",
+    "github"
   ],
   "score_objetivo": 70,
-  "ultimo_ciclo": 12,
-  "ultimo_aprendizaje": "2026-03-14T12:17:23.893416",
+  "ultimo_ciclo": 14,
+  "ultimo_aprendizaje": "2026-03-14T18:13:20.621886",
   "estadisticas": {
-    "total_ideas": 35,
-    "ideas_exitosas": 2,
-    "pct_exito": 5.7,
-    "score_promedio": 30.3
+    "total_ideas": 37,
+    "ideas_exitosas": 4,
+    "pct_exito": 10.8,
+    "score_promedio": 36.5
   }
 }

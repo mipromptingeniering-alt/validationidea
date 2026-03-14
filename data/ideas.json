@@ -2534,5 +2534,767 @@
       "score_final_ajustado": 21.5
     },
     "notion_url": "https://www.notion.so/ChipSentry-21-5-100-323313aca13381749734d4a769788a07"
+  },
+  {
+    "nombre": "DevCycle",
+    "tagline": "Automatiza testing para desarrolladores",
+    "problema": "9 de cada 10 equipos de desarrollo pierden 2 horas diarias en testing manual segun encuesta de Stack Overflow 2023",
+    "solucion": "usamos GitAgent para automatizar testing en 10 minutos",
+    "cliente_objetivo": "Lider de desarrollo en empresa de software de 50 empleados",
+    "propuesta_valor_unica": "unica porque competidores no ofrecen integracion con Git en un solo clic",
+    "herramienta_ia_clave": "GitAgent - agente de IA para Git repos",
+    "mercado": {
+      "TAM": "$1.5 billion",
+      "SAM": "$150 million",
+      "SOM": "$500k año1",
+      "competidores": [
+        "Testim (debilidad: requiere conocimientos de automatización)",
+        "Applitools (debilidad: enfocado en testing visual)"
+      ],
+      "ventaja_competitiva": "por que es dificil de copiar con nuestra integracion con Git"
+    },
+    "modelo_negocio": {
+      "tipo": "SaaS",
+      "pricing": "EUR 99/mes justificado por features avanzadas",
+      "canales_adquisicion": [
+        "1. DM a lideres de desarrollo en LinkedIn con: '¿Cuántas horas pierdes en testing manual?'",
+        "2. Post en comunidad de GitHub sobre testing automatizado"
+      ],
+      "time_to_revenue": "4 semanas"
+    },
+    "estudio_economico": {
+      "conservador": {
+        "mes3": {
+          "mrr_eur": 500,
+          "usuarios": 10
+        },
+        "mes12": {
+          "mrr_eur": 4000
+        },
+        "breakeven": "mes10"
+      },
+      "realista": {
+        "mes3": {
+          "mrr_eur": 1500,
+          "usuarios": 30
+        },
+        "mes12": {
+          "mrr_eur": 12000
+        },
+        "breakeven": "mes6"
+      },
+      "optimista": {
+        "mes3": {
+          "mrr_eur": 3000,
+          "usuarios": 60
+        },
+        "mes12": {
+          "mrr_eur": 24000
+        },
+        "breakeven": "mes4"
+      }
+    },
+    "dafo": {
+      "fortalezas": [
+        "Integración con Git en un solo clic",
+        "Automatización de testing para desarrolladores"
+      ],
+      "debilidades": [
+        "Poca presencia en el mercado",
+        "Dependencia de GitAgent"
+      ],
+      "oportunidades": [
+        "Crecimiento del mercado de testing automatizado (20% anual según MarketsandMarkets)"
+      ],
+      "amenazas": [
+        "Competencia de Testim y Applitools"
+      ]
+    },
+    "mvp": {
+      "features_minimas": [
+        "Integración con Git",
+        "Automatización de testing básico"
+      ],
+      "stack_recomendado": "Next.js 14+Supabase+Vercel+Stripe",
+      "tiempo_semanas": 3,
+      "coste_estimado_eur": 0
+    },
+    "prompt_mvp": {
+      "meta": {
+        "nombre_idea": "DevCycle",
+        "objetivo": "MVP 3 semanas",
+        "ia_recomendada": "Claude 3.5 Sonnet",
+        "stack_completo": "Next.js+Supabase+Vercel+Stripe"
+      },
+      "system": "Eres dev senior. Construye DevCycle que resuelve testing manual.",
+      "instrucciones_paso_a_paso": [
+        "1. npx create-next-app",
+        "2. supabase init",
+        "3. Feature principal",
+        "4. Stripe",
+        "5. Deploy"
+      ],
+      "primer_cliente_script": "Manana: DM a lider de desarrollo en LinkedIn: '¿Cuántas horas pierdes en testing manual?'"
+    },
+    "estrategia_monetizacion": {
+      "semana1": "Envia DM a lideres de desarrollo en LinkedIn con: '¿Cuántas horas pierdes en testing manual?'",
+      "semana4": "Beta gratis 14 dias a cambio de feedback",
+      "mes3": "Estrategia de marketing de contenidos en blog de DevCycle",
+      "canales": [
+        "Canal1: Marketing de contenidos",
+        "Canal2: Publicidad en GitHub"
+      ],
+      "precio_optimo_justificado": "EUR 99/mes porque competidor cobra $200/mes"
+    },
+    "hipotesis_testeable": {
+      "hipotesis_principal": "Si lider de desarrollo usa DevCycle entonces reduce tiempo de testing manual",
+      "metrica_exito": "10 signups en 48h",
+      "experimento_48h": "Crea Typeform en plataforma midiendo clicks en '¿Cuántas horas pierdes en testing manual?'",
+      "senal_de_alarma": "Menos de 5 respuestas = pivotar"
+    },
+    "hoja_de_ruta": {
+      "semana1": "Setup Next.js+Supabase",
+      "semana2": "Feature principal",
+      "semana3": "Stripe+deploy",
+      "semana4": "Primer cliente pago"
+    },
+    "opinion_profesional": {
+      "unicidad": "Unica HOY porque integracion con Git en un solo clic",
+      "riesgo_principal": "30% falla por dependencia de GitAgent",
+      "timing": "Por que ahora: mercado en crecimiento (20% anual)",
+      "dia_uno": "Manana: DM a lider de desarrollo en LinkedIn",
+      "fallo_probable": "60% falla por falta de marketing"
+    },
+    "scores": {
+      "critico": 80,
+      "viral": 40,
+      "generador": 60,
+      "monetizacion": 70,
+      "ejecutabilidad": 80,
+      "timing": 90,
+      "score_total": 72.5,
+      "score_critico": 72.5,
+      "score_mercado_real": 70
+    },
+    "vertical": "SaaS",
+    "tipo": "B2B",
+    "tags": [
+      "testing",
+      "automatización",
+      "desarrollo"
+    ],
+    "scoring_critico": {
+      "veredicto": "El problema de pérdida de tiempo en testing manual es significativo y tiene un impacto claro en la productividad.",
+      "objeciones_principales": [
+        "Escalabilidad del modelo de automatización",
+        "Adopción por parte de los equipos de desarrollo"
+      ],
+      "fortalezas_reales": [
+        "Solución innovadora para automatizar testing",
+        "Potencial de ahorro de tiempo y recursos"
+      ],
+      "ajuste_score": -2.5,
+      "score_critico_final": 72.5,
+      "recomendacion": "invertir",
+      "pivote_sugerido": "null"
+    },
+    "validacion_mercado": {
+      "google_trends": {
+        "DevCycle": 14,
+        "Automatiza testing para desarrolladores": 0
+      },
+      "reddit": {
+        "posts": 10,
+        "upvotes_total": 20865,
+        "subreddits": [
+          "anime",
+          "Saints",
+          "RepublicaArgentina"
+        ],
+        "top_post": "Shibou Yuugi de Meshi wo Kuu. • Shiboyugi: Playing Death Games to Put Food on the Table - Episode 9 discussion"
+      },
+      "github": {
+        "repos": 0,
+        "top_repo_stars": 0,
+        "top_repo": "",
+        "señal": "baja"
+      },
+      "score_mercado_real": 70,
+      "score_ia_original": 70.5,
+      "ajuste_aplicado": 2.0,
+      "score_final_ajustado": 72.5
+    }
+  },
+  {
+    "nombre": "DevCycle",
+    "tagline": "Automatiza testing para desarrolladores",
+    "problema": "9 de cada 10 equipos de desarrollo pierden 2 horas diarias en testing manual segun encuesta de Stack Overflow 2023",
+    "solucion": "usamos GitAgent para automatizar testing en 10 minutos",
+    "cliente_objetivo": "Lider de desarrollo en empresa de software de 50 empleados",
+    "propuesta_valor_unica": "unica porque competidores no ofrecen integracion con Git en un solo clic",
+    "herramienta_ia_clave": "GitAgent - agente de IA para Git repos",
+    "mercado": {
+      "TAM": "$1.5 billion",
+      "SAM": "$150 million",
+      "SOM": "$500k año1",
+      "competidores": [
+        "Testim (debilidad: requiere conocimientos de automatización)",
+        "Applitools (debilidad: enfocado en testing visual)"
+      ],
+      "ventaja_competitiva": "por que es dificil de copiar con nuestra integracion con Git"
+    },
+    "modelo_negocio": {
+      "tipo": "SaaS",
+      "pricing": "EUR 99/mes justificado por features avanzadas",
+      "canales_adquisicion": [
+        "1. DM a lideres de desarrollo en LinkedIn con: '¿Cuántas horas pierdes en testing manual?'",
+        "2. Post en comunidad de GitHub sobre testing automatizado"
+      ],
+      "time_to_revenue": "4 semanas"
+    },
+    "estudio_economico": {
+      "conservador": {
+        "mes3": {
+          "mrr_eur": 500,
+          "usuarios": 10
+        },
+        "mes12": {
+          "mrr_eur": 4000
+        },
+        "breakeven": "mes10"
+      },
+      "realista": {
+        "mes3": {
+          "mrr_eur": 1500,
+          "usuarios": 30
+        },
+        "mes12": {
+          "mrr_eur": 12000
+        },
+        "breakeven": "mes6"
+      },
+      "optimista": {
+        "mes3": {
+          "mrr_eur": 3000,
+          "usuarios": 60
+        },
+        "mes12": {
+          "mrr_eur": 24000
+        },
+        "breakeven": "mes4"
+      }
+    },
+    "dafo": {
+      "fortalezas": [
+        "Integración con Git en un solo clic",
+        "Automatización de testing para desarrolladores"
+      ],
+      "debilidades": [
+        "Poca presencia en el mercado",
+        "Dependencia de GitAgent"
+      ],
+      "oportunidades": [
+        "Crecimiento del mercado de testing automatizado (20% anual según MarketsandMarkets)"
+      ],
+      "amenazas": [
+        "Competencia de Testim y Applitools"
+      ]
+    },
+    "mvp": {
+      "features_minimas": [
+        "Integración con Git",
+        "Automatización de testing básico"
+      ],
+      "stack_recomendado": "Next.js 14+Supabase+Vercel+Stripe",
+      "tiempo_semanas": 3,
+      "coste_estimado_eur": 0
+    },
+    "prompt_mvp": {
+      "meta": {
+        "nombre_idea": "DevCycle",
+        "objetivo": "MVP 3 semanas",
+        "ia_recomendada": "Claude 3.5 Sonnet",
+        "stack_completo": "Next.js+Supabase+Vercel+Stripe"
+      },
+      "system": "Eres dev senior. Construye DevCycle que resuelve testing manual.",
+      "instrucciones_paso_a_paso": [
+        "1. npx create-next-app",
+        "2. supabase init",
+        "3. Feature principal",
+        "4. Stripe",
+        "5. Deploy"
+      ],
+      "primer_cliente_script": "Manana: DM a lider de desarrollo en LinkedIn: '¿Cuántas horas pierdes en testing manual?'"
+    },
+    "estrategia_monetizacion": {
+      "semana1": "Envia DM a lideres de desarrollo en LinkedIn con: '¿Cuántas horas pierdes en testing manual?'",
+      "semana4": "Beta gratis 14 dias a cambio de feedback",
+      "mes3": "Estrategia de marketing de contenidos en blog de DevCycle",
+      "canales": [
+        "Canal1: Marketing de contenidos",
+        "Canal2: Publicidad en GitHub"
+      ],
+      "precio_optimo_justificado": "EUR 99/mes porque competidor cobra $200/mes"
+    },
+    "hipotesis_testeable": {
+      "hipotesis_principal": "Si lider de desarrollo usa DevCycle entonces reduce tiempo de testing manual",
+      "metrica_exito": "10 signups en 48h",
+      "experimento_48h": "Crea Typeform en plataforma midiendo clicks en '¿Cuántas horas pierdes en testing manual?'",
+      "senal_de_alarma": "Menos de 5 respuestas = pivotar"
+    },
+    "hoja_de_ruta": {
+      "semana1": "Setup Next.js+Supabase",
+      "semana2": "Feature principal",
+      "semana3": "Stripe+deploy",
+      "semana4": "Primer cliente pago"
+    },
+    "opinion_profesional": {
+      "unicidad": "Unica HOY porque integracion con Git en un solo clic",
+      "riesgo_principal": "30% falla por dependencia de GitAgent",
+      "timing": "Por que ahora: mercado en crecimiento (20% anual)",
+      "dia_uno": "Manana: DM a lider de desarrollo en LinkedIn",
+      "fallo_probable": "60% falla por falta de marketing"
+    },
+    "scores": {
+      "critico": 80,
+      "viral": 40,
+      "generador": 60,
+      "monetizacion": 70,
+      "ejecutabilidad": 80,
+      "timing": 90,
+      "score_total": 72.5,
+      "score_critico": 72.5,
+      "score_mercado_real": 70
+    },
+    "vertical": "SaaS",
+    "tipo": "B2B",
+    "tags": [
+      "testing",
+      "automatización",
+      "desarrollo"
+    ],
+    "scoring_critico": {
+      "veredicto": "El problema de pérdida de tiempo en testing manual es significativo y tiene un impacto claro en la productividad.",
+      "objeciones_principales": [
+        "Escalabilidad del modelo de automatización",
+        "Adopción por parte de los equipos de desarrollo"
+      ],
+      "fortalezas_reales": [
+        "Solución innovadora para automatizar testing",
+        "Potencial de ahorro de tiempo y recursos"
+      ],
+      "ajuste_score": -2.5,
+      "score_critico_final": 72.5,
+      "recomendacion": "invertir",
+      "pivote_sugerido": "null"
+    },
+    "validacion_mercado": {
+      "google_trends": {
+        "DevCycle": 14,
+        "Automatiza testing para desarrolladores": 0
+      },
+      "reddit": {
+        "posts": 10,
+        "upvotes_total": 20865,
+        "subreddits": [
+          "anime",
+          "Saints",
+          "RepublicaArgentina"
+        ],
+        "top_post": "Shibou Yuugi de Meshi wo Kuu. • Shiboyugi: Playing Death Games to Put Food on the Table - Episode 9 discussion"
+      },
+      "github": {
+        "repos": 0,
+        "top_repo_stars": 0,
+        "top_repo": "",
+        "señal": "baja"
+      },
+      "score_mercado_real": 70,
+      "score_ia_original": 70.5,
+      "ajuste_aplicado": 2.0,
+      "score_final_ajustado": 72.5
+    },
+    "notion_url": "https://www.notion.so/DevCycle-72-5-100-323313aca13381eb9a1aec4ddf360d39"
+  },
+  {
+    "nombre": "DevPal",
+    "tagline": "Asistente de desarrollo para startups",
+    "problema": "10.000 startups en Europa sufren por encontrar desarrolladores cualificados, con un 70% de ellas reportando dificultades para encontrar talento adecuado (Fuente: Eurostat, 2022)",
+    "solucion": "Usamos GitAgent para automatizar tareas de desarrollo y resolver problemas de codificación en minutos",
+    "cliente_objetivo": "Director de Tecnología en startup de software de 50 empleados",
+    "propuesta_valor_unica": "Única porque competidores no ofrecen integración con GitHub para automatizar tareas de desarrollo",
+    "herramienta_ia_clave": "GitAgent - Un estándar abierto que convierte cualquier repositorio Git en un agente de IA",
+    "mercado": {
+      "TAM": "$10 billion",
+      "SAM": "$500 million",
+      "SOM": "$1 million año1",
+      "competidores": [
+        "GitHub Copilot (limitaciones en personalización)",
+        "Kite (dependencia de plugins)"
+      ],
+      "ventaja_competitiva": "Por qué es difícil de copiar: requiere desarrollo de algoritmos personalizados para cada tarea de codificación"
+    },
+    "modelo_negocio": {
+      "tipo": "SaaS",
+      "pricing": "EUR 99/mes justificado",
+      "canales_adquisicion": [
+        "1. DM a Directores de Tecnología en LinkedIn con: '¿Necesitas ayuda para automatizar tareas de desarrollo en tu startup?'",
+        "2. Post en comunidades de desarrollo en Reddit"
+      ],
+      "time_to_revenue": "4 semanas"
+    },
+    "estudio_economico": {
+      "conservador": {
+        "mes3": {
+          "mrr_eur": 500,
+          "usuarios": 10
+        },
+        "mes12": {
+          "mrr_eur": 4000
+        },
+        "breakeven": "mes10"
+      },
+      "realista": {
+        "mes3": {
+          "mrr_eur": 1500,
+          "usuarios": 30
+        },
+        "mes12": {
+          "mrr_eur": 12000
+        },
+        "breakeven": "mes6"
+      },
+      "optimista": {
+        "mes3": {
+          "mrr_eur": 3000,
+          "usuarios": 60
+        },
+        "mes12": {
+          "mrr_eur": 24000
+        },
+        "breakeven": "mes4"
+      }
+    },
+    "dafo": {
+      "fortalezas": [
+        "Integración con GitHub",
+        "Automatización de tareas de desarrollo"
+      ],
+      "debilidades": [
+        "Limitaciones en personalización",
+        "Dependencia de algoritmos de IA"
+      ],
+      "oportunidades": [
+        "Crecimiento del mercado de automatización de desarrollo (20% anual, Fuente: MarketsandMarkets, 2022)"
+      ],
+      "amenazas": [
+        "Competencia de GitHub Copilot"
+      ]
+    },
+    "mvp": {
+      "features_minimas": [
+        "Integración con GitHub",
+        "Automatización de tareas de desarrollo básicas"
+      ],
+      "stack_recomendado": "Next.js 14+Supabase+Vercel+Stripe",
+      "tiempo_semanas": 3,
+      "coste_estimado_eur": 0
+    },
+    "prompt_mvp": {
+      "meta": {
+        "nombre_idea": "DevPal",
+        "objetivo": "MVP 3 semanas",
+        "ia_recomendada": "Claude 3.5 Sonnet",
+        "stack_completo": "Next.js+Supabase+Vercel+Stripe"
+      },
+      "system_prompt": "Eres dev senior. Construye DevPal que resuelve problemas de automatización de desarrollo.",
+      "instrucciones_paso_a_paso": [
+        "1. npx create-next-app",
+        "2. supabase init",
+        "3. Integración con GitHub",
+        "4. Stripe",
+        "5. Deploy"
+      ],
+      "primer_cliente_script": "Manana: DM a Director de Tecnología en LinkedIn: '¿Necesitas ayuda para automatizar tareas de desarrollo en tu startup?'"
+    },
+    "estrategia_monetizacion": {
+      "semana1": "Envia DM a Directores de Tecnología en LinkedIn con: '¿Necesitas ayuda para automatizar tareas de desarrollo en tu startup?'",
+      "semana4": "Beta gratis 14 dias a cambio de feedback",
+      "mes3": "Estrategia de adquisición de 50 clientes",
+      "canales": [
+        "Canal1: Publicaciones en comunidades de desarrollo",
+        "Canal2: Publicidad en LinkedIn"
+      ],
+      "precio_optimo_justificado": "EUR 99/mes porque competidor cobra $200/mes"
+    },
+    "hipotesis_testeable": {
+      "hipotesis_principal": "Si un Director de Tecnología usa DevPal entonces reduce el tiempo de desarrollo en un 30%",
+      "metrica_exito": "10 signups en 48h",
+      "experimento_48h": "Crea Typeform en plataforma midiendo clicks en 'Registra tu interés'",
+      "senal_de_alarma": "Menos de 5 respuestas = pivotar"
+    },
+    "hoja_de_ruta": {
+      "semana1": "Setup Next.js+Supabase",
+      "semana2": "Integración con GitHub",
+      "semana3": "Stripe+deploy",
+      "semana4": "Primer cliente pago"
+    },
+    "opinion_profesional": {
+      "unicidad": "Única HOY porque integra GitAgent con GitHub",
+      "riesgo_principal": "30% riesgo de competencia",
+      "timing": "Por qué ahora: crecimiento del mercado de automatización de desarrollo",
+      "dia_uno": "Manana: DM a Director de Tecnología en LinkedIn",
+      "fallo_probable": "40% falla por limitaciones en personalización"
+    },
+    "scores": {
+      "critico": 80,
+      "viral": 60,
+      "generador": 70,
+      "monetizacion": 80,
+      "ejecutabilidad": 90,
+      "timing": 80,
+      "score_total": 75.5,
+      "score_critico": 73.5,
+      "score_mercado_real": 70
+    },
+    "vertical": "SaaS",
+    "tipo": "B2B",
+    "tags": [
+      "Automatización de desarrollo",
+      "GitHub",
+      "IA"
+    ],
+    "scoring_critico": {
+      "veredicto": "El potencial de DevPal es alto",
+      "objeciones_principales": [
+        "falta de escalabilidad",
+        "dependencia de la calidad de los desarrolladores"
+      ],
+      "fortalezas_reales": [
+        "demanda alta",
+        "problema claro"
+      ],
+      "ajuste_score": -5,
+      "score_critico_final": 73.5,
+      "recomendacion": "invertir",
+      "pivote_sugerido": "null"
+    },
+    "validacion_mercado": {
+      "google_trends": {
+        "DevPal": 10,
+        "Asistente de desarrollo para startups": 1
+      },
+      "reddit": {
+        "posts": 10,
+        "upvotes_total": 5133,
+        "subreddits": [
+          "RepublicaArgentina",
+          "IndianWorkplace",
+          "startupaccelerator"
+        ],
+        "top_post": "Un colono israelí apuntando con una pistola a un agricultor palestino. \"Esta tierra es mía ahora. Lárgate. No vuelvas nu"
+      },
+      "github": {
+        "repos": 0,
+        "top_repo_stars": 0,
+        "top_repo": "",
+        "señal": "baja"
+      },
+      "score_mercado_real": 70,
+      "score_ia_original": 73.5,
+      "ajuste_aplicado": 2.0,
+      "score_final_ajustado": 75.5
+    }
+  },
+  {
+    "nombre": "DevPal",
+    "tagline": "Asistente de desarrollo para startups",
+    "problema": "10.000 startups en Europa sufren por encontrar desarrolladores cualificados, con un 70% de ellas reportando dificultades para encontrar talento adecuado (Fuente: Eurostat, 2022)",
+    "solucion": "Usamos GitAgent para automatizar tareas de desarrollo y resolver problemas de codificación en minutos",
+    "cliente_objetivo": "Director de Tecnología en startup de software de 50 empleados",
+    "propuesta_valor_unica": "Única porque competidores no ofrecen integración con GitHub para automatizar tareas de desarrollo",
+    "herramienta_ia_clave": "GitAgent - Un estándar abierto que convierte cualquier repositorio Git en un agente de IA",
+    "mercado": {
+      "TAM": "$10 billion",
+      "SAM": "$500 million",
+      "SOM": "$1 million año1",
+      "competidores": [
+        "GitHub Copilot (limitaciones en personalización)",
+        "Kite (dependencia de plugins)"
+      ],
+      "ventaja_competitiva": "Por qué es difícil de copiar: requiere desarrollo de algoritmos personalizados para cada tarea de codificación"
+    },
+    "modelo_negocio": {
+      "tipo": "SaaS",
+      "pricing": "EUR 99/mes justificado",
+      "canales_adquisicion": [
+        "1. DM a Directores de Tecnología en LinkedIn con: '¿Necesitas ayuda para automatizar tareas de desarrollo en tu startup?'",
+        "2. Post en comunidades de desarrollo en Reddit"
+      ],
+      "time_to_revenue": "4 semanas"
+    },
+    "estudio_economico": {
+      "conservador": {
+        "mes3": {
+          "mrr_eur": 500,
+          "usuarios": 10
+        },
+        "mes12": {
+          "mrr_eur": 4000
+        },
+        "breakeven": "mes10"
+      },
+      "realista": {
+        "mes3": {
+          "mrr_eur": 1500,
+          "usuarios": 30
+        },
+        "mes12": {
+          "mrr_eur": 12000
+        },
+        "breakeven": "mes6"
+      },
+      "optimista": {
+        "mes3": {
+          "mrr_eur": 3000,
+          "usuarios": 60
+        },
+        "mes12": {
+          "mrr_eur": 24000
+        },
+        "breakeven": "mes4"
+      }
+    },
+    "dafo": {
+      "fortalezas": [
+        "Integración con GitHub",
+        "Automatización de tareas de desarrollo"
+      ],
+      "debilidades": [
+        "Limitaciones en personalización",
+        "Dependencia de algoritmos de IA"
+      ],
+      "oportunidades": [
+        "Crecimiento del mercado de automatización de desarrollo (20% anual, Fuente: MarketsandMarkets, 2022)"
+      ],
+      "amenazas": [
+        "Competencia de GitHub Copilot"
+      ]
+    },
+    "mvp": {
+      "features_minimas": [
+        "Integración con GitHub",
+        "Automatización de tareas de desarrollo básicas"
+      ],
+      "stack_recomendado": "Next.js 14+Supabase+Vercel+Stripe",
+      "tiempo_semanas": 3,
+      "coste_estimado_eur": 0
+    },
+    "prompt_mvp": {
+      "meta": {
+        "nombre_idea": "DevPal",
+        "objetivo": "MVP 3 semanas",
+        "ia_recomendada": "Claude 3.5 Sonnet",
+        "stack_completo": "Next.js+Supabase+Vercel+Stripe"
+      },
+      "system_prompt": "Eres dev senior. Construye DevPal que resuelve problemas de automatización de desarrollo.",
+      "instrucciones_paso_a_paso": [
+        "1. npx create-next-app",
+        "2. supabase init",
+        "3. Integración con GitHub",
+        "4. Stripe",
+        "5. Deploy"
+      ],
+      "primer_cliente_script": "Manana: DM a Director de Tecnología en LinkedIn: '¿Necesitas ayuda para automatizar tareas de desarrollo en tu startup?'"
+    },
+    "estrategia_monetizacion": {
+      "semana1": "Envia DM a Directores de Tecnología en LinkedIn con: '¿Necesitas ayuda para automatizar tareas de desarrollo en tu startup?'",
+      "semana4": "Beta gratis 14 dias a cambio de feedback",
+      "mes3": "Estrategia de adquisición de 50 clientes",
+      "canales": [
+        "Canal1: Publicaciones en comunidades de desarrollo",
+        "Canal2: Publicidad en LinkedIn"
+      ],
+      "precio_optimo_justificado": "EUR 99/mes porque competidor cobra $200/mes"
+    },
+    "hipotesis_testeable": {
+      "hipotesis_principal": "Si un Director de Tecnología usa DevPal entonces reduce el tiempo de desarrollo en un 30%",
+      "metrica_exito": "10 signups en 48h",
+      "experimento_48h": "Crea Typeform en plataforma midiendo clicks en 'Registra tu interés'",
+      "senal_de_alarma": "Menos de 5 respuestas = pivotar"
+    },
+    "hoja_de_ruta": {
+      "semana1": "Setup Next.js+Supabase",
+      "semana2": "Integración con GitHub",
+      "semana3": "Stripe+deploy",
+      "semana4": "Primer cliente pago"
+    },
+    "opinion_profesional": {
+      "unicidad": "Única HOY porque integra GitAgent con GitHub",
+      "riesgo_principal": "30% riesgo de competencia",
+      "timing": "Por qué ahora: crecimiento del mercado de automatización de desarrollo",
+      "dia_uno": "Manana: DM a Director de Tecnología en LinkedIn",
+      "fallo_probable": "40% falla por limitaciones en personalización"
+    },
+    "scores": {
+      "critico": 80,
+      "viral": 60,
+      "generador": 70,
+      "monetizacion": 80,
+      "ejecutabilidad": 90,
+      "timing": 80,
+      "score_total": 75.5,
+      "score_critico": 73.5,
+      "score_mercado_real": 70
+    },
+    "vertical": "SaaS",
+    "tipo": "B2B",
+    "tags": [
+      "Automatización de desarrollo",
+      "GitHub",
+      "IA"
+    ],
+    "scoring_critico": {
+      "veredicto": "El potencial de DevPal es alto",
+      "objeciones_principales": [
+        "falta de escalabilidad",
+        "dependencia de la calidad de los desarrolladores"
+      ],
+      "fortalezas_reales": [
+        "demanda alta",
+        "problema claro"
+      ],
+      "ajuste_score": -5,
+      "score_critico_final": 73.5,
+      "recomendacion": "invertir",
+      "pivote_sugerido": "null"
+    },
+    "validacion_mercado": {
+      "google_trends": {
+        "DevPal": 10,
+        "Asistente de desarrollo para startups": 1
+      },
+      "reddit": {
+        "posts": 10,
+        "upvotes_total": 5133,
+        "subreddits": [
+          "RepublicaArgentina",
+          "IndianWorkplace",
+          "startupaccelerator"
+        ],
+        "top_post": "Un colono israelí apuntando con una pistola a un agricultor palestino. \"Esta tierra es mía ahora. Lárgate. No vuelvas nu"
+      },
+      "github": {
+        "repos": 0,
+        "top_repo_stars": 0,
+        "top_repo": "",
+        "señal": "baja"
+      },
+      "score_mercado_real": 70,
+      "score_ia_original": 73.5,
+      "ajuste_aplicado": 2.0,
+      "score_final_ajustado": 75.5
+    },
+    "notion_url": "https://www.notion.so/DevPal-75-5-100-323313aca1338164a218c8e346785adb"
   }
 ]
