@@ -242,7 +242,6 @@ def es_similar(idea: dict, umbral: float = 0.55):
     nombre_nuevo = str(idea.get("nombre", "")).strip().lower()
     problema_nuevo = str(idea.get("problema", "")).strip().lower()
 
-    # ideas.json es lista JSON, no jsonl
     ruta_kb = _p.Path(__file__).parent.parent / "data" / "ideas.json"
     if not ruta_kb.exists():
         return False, ""
@@ -257,17 +256,12 @@ def es_similar(idea: dict, umbral: float = 0.55):
 
     for prev in (ideas_lista if isinstance(ideas_lista, list) else []):
         try:
-            pass
-        except Exception:
-            continue
             n_prev = str(prev.get("nombre", "")).strip().lower()
             p_prev = str(prev.get("problema", "")).strip().lower()
 
-            # Nombre identico
             if nombre_nuevo and nombre_nuevo == n_prev:
                 return True, f"Nombre identico: {n_prev}"
 
-            # Nombre muy similar (Jaccard sobre palabras)
             palabras_prev = set(n_prev.split())
             if palabras_n and palabras_prev:
                 union = palabras_n | palabras_prev
@@ -275,13 +269,14 @@ def es_similar(idea: dict, umbral: float = 0.55):
                 if len(union) > 0 and len(inter) / len(union) >= umbral:
                     return True, f"Nombre similar ({int(len(inter)/len(union)*100)}%): {n_prev}"
 
-            # Problema muy similar
             palabras_pp = set(p_prev.split())
             if len(palabras_p) > 5 and palabras_pp:
                 union_p = palabras_p | palabras_pp
                 inter_p = palabras_p & palabras_pp
                 if len(union_p) > 0 and len(inter_p) / len(union_p) >= 0.65:
                     return True, f"Problema similar a: {n_prev}"
+        except Exception:
+            continue
 
     return False, ""
 
