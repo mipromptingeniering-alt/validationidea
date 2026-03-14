@@ -7,12 +7,16 @@ os.environ["PYTHONUTF8"] = "1"
 print("=" * 50)
 print(f"🚀 run_batch v10 iniciado: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
 
-GROQ_API_KEY = os.environ.get("GROQ_API_KEY", "")
+try:
+    from dotenv import load_dotenv; load_dotenv(override=True)
+except ImportError:
+    pass
+GROQ_API_KEY = os.environ.get("GROQ_API_KEY", "").strip()
 
 MODELOS_GROQ = [
-    "llama-3.3-70b-versatile",
     "meta-llama/llama-4-scout-17b-16e-instruct",
     "llama-3.1-8b-instant",
+    "llama-3.3-70b-versatile",
 ]
 
 PROMPT_SISTEMA = (
@@ -222,7 +226,7 @@ def _llamar_groq_sdk(modelo, messages, max_tokens, temperature):
             print(f"   [DEBUG] groq SDK version: {groq.__version__}")
         except: pass
 
-        client = groq.Groq(api_key=GROQ_API_KEY, timeout=90)
+        client = groq.Groq(api_key=GROQ_API_KEY, timeout=90, max_retries=0)
         resp   = client.chat.completions.create(
             model       = modelo,
             messages    = messages,
