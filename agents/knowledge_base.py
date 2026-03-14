@@ -121,7 +121,7 @@ def get_contexto_para_prompt():
     if not ideas:
         return {"ideas_previas": "ninguna", "score_promedio": 0}
 
-    nombres = [i.get("nombre","?") for i in ideas[-15:]]
+    nombres = [i.get("nombre","?") for i in ideas[-30:]]
     scores  = [
         i.get("scores",{}).get("score_total",0)
         for i in ideas
@@ -284,3 +284,32 @@ def es_similar(idea: dict, umbral: float = 0.55):
                     return True, f"Problema similar a: {n_prev}"
 
     return False, ""
+
+
+def cargar_kb() -> list:
+    """Devuelve lista plana de ideas (para sector saturado y otros checks)."""
+    try:
+        return _load_kb().get("ideas", [])
+    except Exception:
+        return []
+
+
+def get_rechazos_recientes(n: int = 10) -> str:
+    """Devuelve los ultimos N rechazos como texto para inyectar en el prompt."""
+    import json
+    ruta = pathlib.Path(__file__).parent.parent / "data" / "rechazos.jsonl"
+    if not ruta.exists():
+        return ""
+    try:
+        lineas = ruta.read_text(encoding="utf-8").strip().splitlines()
+    except Exception:
+        return ""
+    ultimos = lineas[-n:]
+    resumen = []
+    for l in ultimos:
+        try:
+            r = json.loads(l)
+            resumen.append(f"- {r.get('nombre','?')}: {r.get('motivo','?')}")
+        except Exception:
+            pass
+    return "\n".join(resumen)

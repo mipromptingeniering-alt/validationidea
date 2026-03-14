@@ -453,6 +453,11 @@ def get_prompt_idea(contexto, tendencias, tema="", modo_emergencia=False):
     pesos         = _cargar_pesos()
     score_obj     = int(os.environ.get("SCORE_MINIMO", pesos.get("score_objetivo", 75)))
     ideas_previas = str(contexto.get("ideas_previas","ninguna"))[:2000]
+    try:
+        from agents.knowledge_base import get_rechazos_recientes
+        rechazos_recientes = get_rechazos_recientes(10)
+    except Exception:
+        rechazos_recientes = ""
     tema_str      = f"TEMA OBLIGATORIO: '{tema}'\n\n" if tema else ""
     diversidad    = _get_instruccion_diversidad()
     trends_str    = "\n".join(f"- {str(t)[:100]}" for t in tendencias[:6]) or "- No disponibles"
