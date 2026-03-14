@@ -503,6 +503,7 @@ def get_prompt_idea(contexto, tendencias, tema="", modo_emergencia=False):
         "RAZONA ANTES DEL JSON (obligatorio):\n1-SECRETO: algo que la mayoria cree falso pero es verdad en 2026.\n2-DOLOR: cuantifica con datos reales (fuente+fecha+%).\n3-VENTAJA INJUSTA: por que tu y no Google en 6 meses.\n4-VENTA DIA 7: como consigues el primer pago sin escribir codigo.\n\n"
         f"APRENDIZAJE:\n{aprendizaje if aprendizaje else 'Primera generacion.'}\n\n"
         f"IDEAS PROHIBIDAS - NO repetir concepto ni sector:\n{ideas_previas}\n\n"
+        f"ERRORES PREVIOS QUE DEBES EVITAR:\\n{rechazos_recientes}\\n\\n"
         f"TENDENCIAS REALES 2026 - ancla la idea en al menos una:\n{trends_str}\n\n"
         "IDIOMA: Todo el JSON en ESPANOL. PROHIBIDO mezclar ingles y espanol en mismo campo.\n\n"
         "REGLAS DURAS: 0 euros construir. Primera venta menos de 7 dias. Ventaja injusta demostrable. Competidor conocido con debilidad especifica nombrada.\n\n"
