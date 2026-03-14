@@ -107,10 +107,7 @@ def sync_idea_to_notion(idea):
         "Name":  {"title": _rt(f"{emoji} {nombre} — {score}/100")},
             }
 
-    # Selects opcionales — solo si tienen valor
-    if vertical: properties["Vertical"]      = {"select": {"name": vertical[:100]}}
-    if tipo:     properties["Tipo"]          = {"select": {"name": tipo[:50]}}
-    if recomendacion: properties["Recomendacion"] = {"select": {"name": recomendacion[:50]}}
+    # Selects opcionales desactivados hasta crear schema en Notion
 
     children = []
     children += _bloque("Resumen ejecutivo", tagline+"\n\n"+propuesta)
