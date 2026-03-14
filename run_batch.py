@@ -1,5 +1,7 @@
 ﻿import os, sys, json, time, re
 from datetime import datetime
+import sys, io
+if hasattr(sys.stdout, "reconfigure"): sys.stdout.reconfigure(encoding="utf-8", errors="replace")
 
 os.environ["PYTHONUTF8"] = "1"
 print("=" * 50)
