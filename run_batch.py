@@ -436,7 +436,7 @@ def calcular_score_ponderado(scores):
 def get_prompt_idea(contexto, tendencias, tema="", modo_emergencia=False):
     pesos         = _cargar_pesos()
     score_obj     = int(os.environ.get("SCORE_MINIMO", pesos.get("score_objetivo", 75)))
-    ideas_previas = str(contexto.get("ideas_previas","ninguna"))[:600]
+    ideas_previas = str(contexto.get("ideas_previas","ninguna"))[:2000]
     tema_str      = f"TEMA OBLIGATORIO: '{tema}'\n\n" if tema else ""
     diversidad    = _get_instruccion_diversidad()
     trends_str    = "\n".join(f"- {str(t)[:100]}" for t in tendencias[:6]) or "- No disponibles"
@@ -457,7 +457,7 @@ def get_prompt_idea(contexto, tendencias, tema="", modo_emergencia=False):
             f"{tema_str}{diversidad}\n\n"
             f"MISION: idea GENUINAMENTE ORIGINAL 2026. PROHIBIDO: rutas/finanzas-generica/telemedicina/elearning/CRM-generico. Score minimo: {score_obj}/100.\n\n"
             f"{calidad}\nTENDENCIAS: {trends_str}\n\n"
-            f"IDEAS PREVIAS (NO repetir): {ideas_previas[:300]}\n\n"
+            f"IDEAS PREVIAS (NO repetir): {ideas_previas[:1500]}\n\n"
             '{"nombre":"NombreReal","tagline":"max 10 palabras",'
             '"problema":"descripcion real con datos",'
             '"solucion":"como la IA lo resuelve",'
@@ -645,6 +645,11 @@ def ejecutar_batch():
         calidad_ok, motivo = _validar_calidad(idea_candidata)
         print(f"   [CALIDAD] ok={calidad_ok} motivo={motivo}")
         if not calidad_ok:
+            try:
+                from agents.knowledge_base import registrar_rechazo
+                registrar_rechazo(idea_candidata, motivo)
+            except Exception:
+                pass
             print(f"⚠️ Calidad rechazada: {motivo} — regenerando...")
             emergencia = True
             continue
