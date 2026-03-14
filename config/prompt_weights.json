@@ -9,23 +9,23 @@
   ],
   "tags_exitosos": [
     "ia",
+    "automatización",
+    "desarrollo",
+    "desarrollo de software",
+    "git",
+    "devops",
     "gestión de stock",
     "farmacia",
     "semiconductores",
-    "detección de fallos",
-    "testing",
-    "automatización",
-    "desarrollo",
-    "automatización de desarrollo",
-    "github"
+    "detección de fallos"
   ],
   "score_objetivo": 70,
-  "ultimo_ciclo": 14,
-  "ultimo_aprendizaje": "2026-03-14T18:13:20.621886",
+  "ultimo_ciclo": 26,
+  "ultimo_aprendizaje": "2026-03-14T18:49:21.166554",
   "estadisticas": {
-    "total_ideas": 37,
-    "ideas_exitosas": 4,
-    "pct_exito": 10.8,
-    "score_promedio": 36.5
+    "total_ideas": 49,
+    "ideas_exitosas": 14,
+    "pct_exito": 28.6,
+    "score_promedio": 52.2
   }
 }

@@ -3296,5 +3296,3903 @@
       "score_final_ajustado": 75.5
     },
     "notion_url": "https://www.notion.so/DevPal-75-5-100-323313aca1338164a218c8e346785adb"
+  },
+  {
+    "nombre": "DevPal Pro",
+    "tagline": "Asistente de desarrollo para startups",
+    "problema": "10.000 startups sufren por encontrar desarrolladores cualificados porque solo el 1% de los desarrolladores junior son contratados directamente [dato de Stack Overflow 2023]",
+    "solucion": "usamos GitAgent para automatizar tareas de desarrollo en startups en 30 minutos",
+    "cliente_objetivo": "Director de Tecnología en startup de 20 empleados",
+    "propuesta_valor_unica": "única porque competidores no ofrecen automatización de tareas de desarrollo con GitAgent",
+    "herramienta_ia_clave": "GitAgent - convierte cualquier repo de Git en un agente de IA",
+    "mercado": {
+      "TAM": "$10 billion",
+      "SAM": "$100 million",
+      "SOM": "$1 million año1",
+      "competidores": [
+        "GitHub Copilot (limitaciones en personalización)",
+        "Codex (requiere conocimientos técnicos avanzados)"
+      ],
+      "ventaja_competitiva": "porque es difícil de copiar con la tecnología actual"
+    },
+    "modelo_negocio": {
+      "tipo": "SaaS",
+      "pricing": "EUR 99/mes justificado por el ahorro en tiempo de desarrollo",
+      "canales_adquisicion": [
+        "1. DM a directores de tecnología en LinkedIn con: '¿Estás cansado de buscar desarrolladores? Te presento DevPal Pro'",
+        "2. Post en comunidades de startups en Reddit"
+      ],
+      "time_to_revenue": "4 semanas"
+    },
+    "estudio_economico": {
+      "conservador": {
+        "mes3": {
+          "mrr_eur": 2970,
+          "usuarios": 30
+        },
+        "mes12": {
+          "mrr_eur": 23760
+        },
+        "breakeven": "mes9"
+      },
+      "realista": {
+        "mes3": {
+          "mrr_eur": 8910,
+          "usuarios": 90
+        },
+        "mes12": {
+          "mrr_eur": 71280
+        },
+        "breakeven": "mes6"
+      },
+      "optimista": {
+        "mes3": {
+          "mrr_eur": 17820,
+          "usuarios": 180
+        },
+        "mes12": {
+          "mrr_eur": 142560
+        },
+        "breakeven": "mes4"
+      }
+    },
+    "dafo": {
+      "fortalezas": [
+        "Tecnología innovadora con GitAgent",
+        "Equipo con experiencia en desarrollo de software"
+      ],
+      "debilidades": [
+        "Limitaciones en marketing y ventas",
+        "Dependencia de la adopción de GitAgent"
+      ],
+      "oportunidades": [
+        "Crecimiento del mercado de desarrollo de software en 2026",
+        "Alianzas con empresas de tecnología"
+      ],
+      "amenazas": [
+        "Competencia de grandes empresas de tecnología"
+      ]
+    },
+    "mvp": {
+      "features_minimas": [
+        "Integración con GitHub",
+        "Automatización de tareas de desarrollo con GitAgent",
+        "Interfaz de usuario intuitiva"
+      ],
+      "stack_recomendado": "Next.js 14+Supabase+Vercel+Stripe",
+      "tiempo_semanas": 3,
+      "coste_estimado_eur": 0
+    },
+    "prompt_mvp": {
+      "meta": {
+        "nombre_idea": "DevPal Pro",
+        "objetivo": "MVP 3 semanas",
+        "ia_recomendada": "Claude 3.5 Sonnet",
+        "stack_completo": "Next.js+Supabase+Vercel+Stripe"
+      },
+      "system_prompt": "Eres dev senior. Construye DevPal Pro que resuelve el problema de encontrar desarrolladores cualificados.",
+      "instrucciones_paso_a_paso": [
+        "1. npx create-next-app",
+        "2. supabase init",
+        "3. Feature principal con GitAgent",
+        "4. Stripe",
+        "5. Deploy"
+      ],
+      "primer_cliente_script": "Manana: DM a @juanpablo en LinkedIn: '¿Estás cansado de buscar desarrolladores? Te presento DevPal Pro'"
+    },
+    "estrategia_monetizacion": {
+      "semana1": "Envia DM a 50 directores de tecnología en LinkedIn con: '¿Estás cansado de buscar desarrolladores? Te presento DevPal Pro'",
+      "semana4": "Beta gratis 14 dias a cambio de feedback",
+      "mes3": "Estrategia de marketing de contenidos en blog de DevPal Pro",
+      "canales": [
+        "Canal1: Marketing de contenidos",
+        "Canal2: Publicidad en redes sociales"
+      ],
+      "precio_optimo_justificado": "EUR 99/mes porque competidor cobra $200/mes"
+    },
+    "hipotesis_testeable": {
+      "hipotesis_principal": "Si directores de tecnología usan DevPal Pro entonces reducirán el tiempo de búsqueda de desarrolladores",
+      "metrica_exito": "50 signups en 48h",
+      "experimento_48h": "Crea Typeform en plataforma midiendo clicks en '¡Quiero probar DevPal Pro!'",
+      "senal_de_alarma": "Menos de 10 respuestas = pivotar"
+    },
+    "hoja_de_ruta": {
+      "semana1": "Setup Next.js+Supabase",
+      "semana2": "Feature principal con GitAgent",
+      "semana3": "Stripe+deploy",
+      "semana4": "Primer cliente pago"
+    },
+    "opinion_profesional": {
+      "unicidad": "Única HOY porque integra GitAgent para automatizar tareas de desarrollo",
+      "riesgo_principal": "60% falla por competencia de grandes empresas de tecnología",
+      "timing": "Por que ahora: el mercado de desarrollo de software está creciendo rápidamente",
+      "dia_uno": "Manana: DM a @juanpablo en LinkedIn: '¿Estás cansado de buscar desarrolladores? Te presento DevPal Pro'",
+      "fallo_probable": "60% falla por falta de adopción de GitAgent"
+    },
+    "scores": {
+      "critico": 80,
+      "viral": 40,
+      "generador": 90,
+      "monetizacion": 85,
+      "ejecutabilidad": 80,
+      "timing": 90,
+      "score_total": 83.7,
+      "score_critico": 82.2,
+      "score_mercado_real": 65
+    },
+    "vertical": "SaaS",
+    "tipo": "B2B",
+    "tags": [
+      "desarrollo de software",
+      "automatización",
+      "GitAgent"
+    ],
+    "scoring_critico": {
+      "veredicto": "Excelente oportunidad de crecimiento",
+      "objeciones_principales": [],
+      "fortalezas_reales": [
+        "Gran demanda de desarrolladores cualificados",
+        "Solución innovadora para el problema"
+      ],
+      "ajuste_score": 0,
+      "score_critico_final": 82.2,
+      "recomendacion": "invertir",
+      "pivote_sugerido": "null"
+    },
+    "validacion_mercado": {
+      "google_trends": {
+        "DevPal Pro": 0,
+        "Asistente de desarrollo para startups": 1
+      },
+      "reddit": {
+        "posts": 10,
+        "upvotes_total": 4649,
+        "subreddits": [
+          "startupaccelerator",
+          "IndianWorkplace"
+        ],
+        "top_post": "\"What a great company I work at"
+      },
+      "github": {
+        "repos": 0,
+        "top_repo_stars": 0,
+        "top_repo": "",
+        "señal": "baja"
+      },
+      "score_mercado_real": 65,
+      "score_ia_original": 82.2,
+      "ajuste_aplicado": 1.5,
+      "score_final_ajustado": 83.7
+    }
+  },
+  {
+    "nombre": "DevPal Pro",
+    "tagline": "Asistente de desarrollo para startups",
+    "problema": "10.000 startups sufren por encontrar desarrolladores cualificados porque solo el 1% de los desarrolladores junior son contratados directamente [dato de Stack Overflow 2023]",
+    "solucion": "usamos GitAgent para automatizar tareas de desarrollo en startups en 30 minutos",
+    "cliente_objetivo": "Director de Tecnología en startup de 20 empleados",
+    "propuesta_valor_unica": "única porque competidores no ofrecen automatización de tareas de desarrollo con GitAgent",
+    "herramienta_ia_clave": "GitAgent - convierte cualquier repo de Git en un agente de IA",
+    "mercado": {
+      "TAM": "$10 billion",
+      "SAM": "$100 million",
+      "SOM": "$1 million año1",
+      "competidores": [
+        "GitHub Copilot (limitaciones en personalización)",
+        "Codex (requiere conocimientos técnicos avanzados)"
+      ],
+      "ventaja_competitiva": "porque es difícil de copiar con la tecnología actual"
+    },
+    "modelo_negocio": {
+      "tipo": "SaaS",
+      "pricing": "EUR 99/mes justificado por el ahorro en tiempo de desarrollo",
+      "canales_adquisicion": [
+        "1. DM a directores de tecnología en LinkedIn con: '¿Estás cansado de buscar desarrolladores? Te presento DevPal Pro'",
+        "2. Post en comunidades de startups en Reddit"
+      ],
+      "time_to_revenue": "4 semanas"
+    },
+    "estudio_economico": {
+      "conservador": {
+        "mes3": {
+          "mrr_eur": 2970,
+          "usuarios": 30
+        },
+        "mes12": {
+          "mrr_eur": 23760
+        },
+        "breakeven": "mes9"
+      },
+      "realista": {
+        "mes3": {
+          "mrr_eur": 8910,
+          "usuarios": 90
+        },
+        "mes12": {
+          "mrr_eur": 71280
+        },
+        "breakeven": "mes6"
+      },
+      "optimista": {
+        "mes3": {
+          "mrr_eur": 17820,
+          "usuarios": 180
+        },
+        "mes12": {
+          "mrr_eur": 142560
+        },
+        "breakeven": "mes4"
+      }
+    },
+    "dafo": {
+      "fortalezas": [
+        "Tecnología innovadora con GitAgent",
+        "Equipo con experiencia en desarrollo de software"
+      ],
+      "debilidades": [
+        "Limitaciones en marketing y ventas",
+        "Dependencia de la adopción de GitAgent"
+      ],
+      "oportunidades": [
+        "Crecimiento del mercado de desarrollo de software en 2026",
+        "Alianzas con empresas de tecnología"
+      ],
+      "amenazas": [
+        "Competencia de grandes empresas de tecnología"
+      ]
+    },
+    "mvp": {
+      "features_minimas": [
+        "Integración con GitHub",
+        "Automatización de tareas de desarrollo con GitAgent",
+        "Interfaz de usuario intuitiva"
+      ],
+      "stack_recomendado": "Next.js 14+Supabase+Vercel+Stripe",
+      "tiempo_semanas": 3,
+      "coste_estimado_eur": 0
+    },
+    "prompt_mvp": {
+      "meta": {
+        "nombre_idea": "DevPal Pro",
+        "objetivo": "MVP 3 semanas",
+        "ia_recomendada": "Claude 3.5 Sonnet",
+        "stack_completo": "Next.js+Supabase+Vercel+Stripe"
+      },
+      "system_prompt": "Eres dev senior. Construye DevPal Pro que resuelve el problema de encontrar desarrolladores cualificados.",
+      "instrucciones_paso_a_paso": [
+        "1. npx create-next-app",
+        "2. supabase init",
+        "3. Feature principal con GitAgent",
+        "4. Stripe",
+        "5. Deploy"
+      ],
+      "primer_cliente_script": "Manana: DM a @juanpablo en LinkedIn: '¿Estás cansado de buscar desarrolladores? Te presento DevPal Pro'"
+    },
+    "estrategia_monetizacion": {
+      "semana1": "Envia DM a 50 directores de tecnología en LinkedIn con: '¿Estás cansado de buscar desarrolladores? Te presento DevPal Pro'",
+      "semana4": "Beta gratis 14 dias a cambio de feedback",
+      "mes3": "Estrategia de marketing de contenidos en blog de DevPal Pro",
+      "canales": [
+        "Canal1: Marketing de contenidos",
+        "Canal2: Publicidad en redes sociales"
+      ],
+      "precio_optimo_justificado": "EUR 99/mes porque competidor cobra $200/mes"
+    },
+    "hipotesis_testeable": {
+      "hipotesis_principal": "Si directores de tecnología usan DevPal Pro entonces reducirán el tiempo de búsqueda de desarrolladores",
+      "metrica_exito": "50 signups en 48h",
+      "experimento_48h": "Crea Typeform en plataforma midiendo clicks en '¡Quiero probar DevPal Pro!'",
+      "senal_de_alarma": "Menos de 10 respuestas = pivotar"
+    },
+    "hoja_de_ruta": {
+      "semana1": "Setup Next.js+Supabase",
+      "semana2": "Feature principal con GitAgent",
+      "semana3": "Stripe+deploy",
+      "semana4": "Primer cliente pago"
+    },
+    "opinion_profesional": {
+      "unicidad": "Única HOY porque integra GitAgent para automatizar tareas de desarrollo",
+      "riesgo_principal": "60% falla por competencia de grandes empresas de tecnología",
+      "timing": "Por que ahora: el mercado de desarrollo de software está creciendo rápidamente",
+      "dia_uno": "Manana: DM a @juanpablo en LinkedIn: '¿Estás cansado de buscar desarrolladores? Te presento DevPal Pro'",
+      "fallo_probable": "60% falla por falta de adopción de GitAgent"
+    },
+    "scores": {
+      "critico": 80,
+      "viral": 40,
+      "generador": 90,
+      "monetizacion": 85,
+      "ejecutabilidad": 80,
+      "timing": 90,
+      "score_total": 83.7,
+      "score_critico": 82.2,
+      "score_mercado_real": 65
+    },
+    "vertical": "SaaS",
+    "tipo": "B2B",
+    "tags": [
+      "desarrollo de software",
+      "automatización",
+      "GitAgent"
+    ],
+    "scoring_critico": {
+      "veredicto": "Excelente oportunidad de crecimiento",
+      "objeciones_principales": [],
+      "fortalezas_reales": [
+        "Gran demanda de desarrolladores cualificados",
+        "Solución innovadora para el problema"
+      ],
+      "ajuste_score": 0,
+      "score_critico_final": 82.2,
+      "recomendacion": "invertir",
+      "pivote_sugerido": "null"
+    },
+    "validacion_mercado": {
+      "google_trends": {
+        "DevPal Pro": 0,
+        "Asistente de desarrollo para startups": 1
+      },
+      "reddit": {
+        "posts": 10,
+        "upvotes_total": 4649,
+        "subreddits": [
+          "startupaccelerator",
+          "IndianWorkplace"
+        ],
+        "top_post": "\"What a great company I work at"
+      },
+      "github": {
+        "repos": 0,
+        "top_repo_stars": 0,
+        "top_repo": "",
+        "señal": "baja"
+      },
+      "score_mercado_real": 65,
+      "score_ia_original": 82.2,
+      "ajuste_aplicado": 1.5,
+      "score_final_ajustado": 83.7
+    },
+    "notion_url": "https://www.notion.so/DevPal-Pro-83-7-100-323313aca13381dca1d0fc0cc60ea513"
+  },
+  {
+    "nombre": "DevPal Plus",
+    "tagline": "Automatiza testing de APIs en minutos",
+    "problema": "300.000 desarrolladores sufren la falta de herramientas de testing de APIs efectivas, según un estudio de Postman (2022) donde el 70% de los encuestados considera que el testing de APIs es un desafío significativo",
+    "solucion": "Usamos GitAgent para automatizar testing de APIs en 10 minutos",
+    "cliente_objetivo": "Líder de Desarrollo de Software en empresa de 50 empleados",
+    "propuesta_valor_unica": "Única porque competidores no ofrecen automatización de testing de APIs con tecnología de agente de Git",
+    "herramienta_ia_clave": "GitAgent - Agente de Git que convierte cualquier repo en un agente de IA",
+    "mercado": {
+      "TAM": "$1.5 billion",
+      "SAM": "$150 million",
+      "SOM": "$50.000 año1",
+      "competidores": [
+        "Postman (limitaciones en automatización de testing)",
+        "Apigee (complejidad en implementación)"
+      ],
+      "ventaja_competitiva": "Dificil de copiar debido a la integración con Git"
+    },
+    "modelo_negocio": {
+      "tipo": "SaaS",
+      "pricing": "EUR 29/mes",
+      "canales_adquisicion": [
+        "DM a Desarrolladores en LinkedIn con: '¿Estás cansado de testing manual de APIs?'",
+        "Post en comunidades de desarrollo en Reddit"
+      ],
+      "time_to_revenue": "4 semanas"
+    },
+    "estudio_economico": {
+      "conservador": {
+        "mes3": {
+          "mrr_eur": 200,
+          "usuarios": 5
+        },
+        "mes12": {
+          "mrr_eur": 2000
+        },
+        "breakeven": "mes10"
+      },
+      "realista": {
+        "mes3": {
+          "mrr_eur": 500,
+          "usuarios": 15
+        },
+        "mes12": {
+          "mrr_eur": 5000
+        },
+        "breakeven": "mes6"
+      },
+      "optimista": {
+        "mes3": {
+          "mrr_eur": 1000,
+          "usuarios": 30
+        },
+        "mes12": {
+          "mrr_eur": 10000
+        },
+        "breakeven": "mes4"
+      }
+    },
+    "dafo": {
+      "fortalezas": [
+        "Tecnología innovadora de automatización de testing de APIs",
+        "Equipo con experiencia en desarrollo de herramientas de Git"
+      ],
+      "debilidades": [
+        "Poca presencia en el mercado",
+        "Dependencia de la adopción de Git"
+      ],
+      "oportunidades": [
+        "Creciente demanda de herramientas de testing de APIs automatizadas"
+      ],
+      "amenazas": [
+        "Competencia de empresas establecidas en el mercado de testing de APIs"
+      ]
+    },
+    "mvp": {
+      "features_minimas": [
+        "Automatización de testing de APIs con GitAgent",
+        "Integración con GitHub y GitLab",
+        "Reporting de resultados de testing"
+      ],
+      "stack_recomendado": "Next.js 14+Supabase+Vercel+Stripe",
+      "tiempo_semanas": 3,
+      "coste_estimado_eur": 0
+    },
+    "prompt_mvp": {
+      "meta": {
+        "nombre_idea": "DevPal Plus",
+        "objetivo": "MVP 3 semanas",
+        "ia_recomendada": "Claude 3.5 Sonnet",
+        "stack_completo": "Next.js+Supabase+Vercel+Stripe"
+      },
+      "system_prompt": "Eres dev senior. Construye DevPal Plus que automatiza testing de APIs con GitAgent.",
+      "instrucciones_paso_a_paso": [
+        "1. npx create-next-app",
+        "2. supabase init",
+        "3. Implementar GitAgent",
+        "4. Integración con Stripe",
+        "5. Deploy"
+      ],
+      "primer_cliente_script": "Manana: DM a Juan Pérez en LinkedIn: '¿Quieres automatizar el testing de APIs en minutos?'"
+    },
+    "estrategia_monetizacion": {
+      "semana1": "Envia DM a Desarrolladores en LinkedIn con: '¿Estás cansado de testing manual de APIs?'",
+      "semana4": "Beta gratis 14 dias a cambio de feedback",
+      "mes3": "Estrategia de marketing de contenidos en blog de DevPal",
+      "canales": [
+        "Canal1: Marketing de contenidos",
+        "Canal2: Publicidad en redes sociales"
+      ],
+      "precio_optimo_justificado": "EUR 29/mes porque competidor cobra EUR 49/mes"
+    },
+    "hipotesis_testeable": {
+      "hipotesis_principal": "Si un Desarrollador usa DevPal Plus entonces reducirá el tiempo de testing de APIs en un 50%",
+      "metrica_exito": "10 signups en 48h",
+      "experimento_48h": "Crea Typeform en LinkedIn midiendo clicks en el enlace de registro",
+      "senal_de_alarma": "Menos de 5 respuestas = pivotar"
+    },
+    "hoja_de_ruta": {
+      "semana1": "Setup Next.js+Supabase",
+      "semana2": "Implementar GitAgent",
+      "semana3": "Integración con Stripe+deploy",
+      "semana4": "Primer cliente pago"
+    },
+    "opinion_profesional": {
+      "unicidad": "Única HOY porque combina testing de APIs con tecnología de agente de Git",
+      "riesgo_principal": "30% riesgo de competencia",
+      "timing": "Por que ahora: La demanda de herramientas de testing de APIs automatizadas está creciendo rápidamente",
+      "dia_uno": "Manana: Enviar DM a Desarrolladores en LinkedIn",
+      "fallo_probable": "40% falla por falta de adopción"
+    },
+    "scores": {
+      "critico": 80,
+      "viral": 60,
+      "generador": 70,
+      "monetizacion": 80,
+      "ejecutabilidad": 90,
+      "timing": 80,
+      "score_total": 78.0,
+      "score_critico": 78.5,
+      "score_mercado_real": 45
+    },
+    "vertical": "SaaS",
+    "tipo": "B2B",
+    "tags": [
+      "testing de APIs",
+      "automatización",
+      "Git"
+    ],
+    "scoring_critico": {
+      "veredicto": "El potencial de DevPal Plus es alto",
+      "objeciones_principales": [],
+      "fortalezas_reales": [
+        "demanda significativa",
+        "problema relevante en la industria"
+      ],
+      "ajuste_score": 0,
+      "score_critico_final": 78.5,
+      "recomendacion": "invertir",
+      "pivote_sugerido": "null"
+    },
+    "validacion_mercado": {
+      "google_trends": {},
+      "reddit": {
+        "posts": 0,
+        "upvotes_total": 0,
+        "subreddits": [],
+        "top_post": ""
+      },
+      "github": {
+        "repos": 0,
+        "top_repo_stars": 0,
+        "top_repo": "",
+        "señal": "baja"
+      },
+      "score_mercado_real": 45,
+      "score_ia_original": 78.5,
+      "ajuste_aplicado": -0.5,
+      "score_final_ajustado": 78.0
+    }
+  },
+  {
+    "nombre": "DevPal Plus",
+    "tagline": "Automatiza testing de APIs en minutos",
+    "problema": "300.000 desarrolladores sufren la falta de herramientas de testing de APIs efectivas, según un estudio de Postman (2022) donde el 70% de los encuestados considera que el testing de APIs es un desafío significativo",
+    "solucion": "Usamos GitAgent para automatizar testing de APIs en 10 minutos",
+    "cliente_objetivo": "Líder de Desarrollo de Software en empresa de 50 empleados",
+    "propuesta_valor_unica": "Única porque competidores no ofrecen automatización de testing de APIs con tecnología de agente de Git",
+    "herramienta_ia_clave": "GitAgent - Agente de Git que convierte cualquier repo en un agente de IA",
+    "mercado": {
+      "TAM": "$1.5 billion",
+      "SAM": "$150 million",
+      "SOM": "$50.000 año1",
+      "competidores": [
+        "Postman (limitaciones en automatización de testing)",
+        "Apigee (complejidad en implementación)"
+      ],
+      "ventaja_competitiva": "Dificil de copiar debido a la integración con Git"
+    },
+    "modelo_negocio": {
+      "tipo": "SaaS",
+      "pricing": "EUR 29/mes",
+      "canales_adquisicion": [
+        "DM a Desarrolladores en LinkedIn con: '¿Estás cansado de testing manual de APIs?'",
+        "Post en comunidades de desarrollo en Reddit"
+      ],
+      "time_to_revenue": "4 semanas"
+    },
+    "estudio_economico": {
+      "conservador": {
+        "mes3": {
+          "mrr_eur": 200,
+          "usuarios": 5
+        },
+        "mes12": {
+          "mrr_eur": 2000
+        },
+        "breakeven": "mes10"
+      },
+      "realista": {
+        "mes3": {
+          "mrr_eur": 500,
+          "usuarios": 15
+        },
+        "mes12": {
+          "mrr_eur": 5000
+        },
+        "breakeven": "mes6"
+      },
+      "optimista": {
+        "mes3": {
+          "mrr_eur": 1000,
+          "usuarios": 30
+        },
+        "mes12": {
+          "mrr_eur": 10000
+        },
+        "breakeven": "mes4"
+      }
+    },
+    "dafo": {
+      "fortalezas": [
+        "Tecnología innovadora de automatización de testing de APIs",
+        "Equipo con experiencia en desarrollo de herramientas de Git"
+      ],
+      "debilidades": [
+        "Poca presencia en el mercado",
+        "Dependencia de la adopción de Git"
+      ],
+      "oportunidades": [
+        "Creciente demanda de herramientas de testing de APIs automatizadas"
+      ],
+      "amenazas": [
+        "Competencia de empresas establecidas en el mercado de testing de APIs"
+      ]
+    },
+    "mvp": {
+      "features_minimas": [
+        "Automatización de testing de APIs con GitAgent",
+        "Integración con GitHub y GitLab",
+        "Reporting de resultados de testing"
+      ],
+      "stack_recomendado": "Next.js 14+Supabase+Vercel+Stripe",
+      "tiempo_semanas": 3,
+      "coste_estimado_eur": 0
+    },
+    "prompt_mvp": {
+      "meta": {
+        "nombre_idea": "DevPal Plus",
+        "objetivo": "MVP 3 semanas",
+        "ia_recomendada": "Claude 3.5 Sonnet",
+        "stack_completo": "Next.js+Supabase+Vercel+Stripe"
+      },
+      "system_prompt": "Eres dev senior. Construye DevPal Plus que automatiza testing de APIs con GitAgent.",
+      "instrucciones_paso_a_paso": [
+        "1. npx create-next-app",
+        "2. supabase init",
+        "3. Implementar GitAgent",
+        "4. Integración con Stripe",
+        "5. Deploy"
+      ],
+      "primer_cliente_script": "Manana: DM a Juan Pérez en LinkedIn: '¿Quieres automatizar el testing de APIs en minutos?'"
+    },
+    "estrategia_monetizacion": {
+      "semana1": "Envia DM a Desarrolladores en LinkedIn con: '¿Estás cansado de testing manual de APIs?'",
+      "semana4": "Beta gratis 14 dias a cambio de feedback",
+      "mes3": "Estrategia de marketing de contenidos en blog de DevPal",
+      "canales": [
+        "Canal1: Marketing de contenidos",
+        "Canal2: Publicidad en redes sociales"
+      ],
+      "precio_optimo_justificado": "EUR 29/mes porque competidor cobra EUR 49/mes"
+    },
+    "hipotesis_testeable": {
+      "hipotesis_principal": "Si un Desarrollador usa DevPal Plus entonces reducirá el tiempo de testing de APIs en un 50%",
+      "metrica_exito": "10 signups en 48h",
+      "experimento_48h": "Crea Typeform en LinkedIn midiendo clicks en el enlace de registro",
+      "senal_de_alarma": "Menos de 5 respuestas = pivotar"
+    },
+    "hoja_de_ruta": {
+      "semana1": "Setup Next.js+Supabase",
+      "semana2": "Implementar GitAgent",
+      "semana3": "Integración con Stripe+deploy",
+      "semana4": "Primer cliente pago"
+    },
+    "opinion_profesional": {
+      "unicidad": "Única HOY porque combina testing de APIs con tecnología de agente de Git",
+      "riesgo_principal": "30% riesgo de competencia",
+      "timing": "Por que ahora: La demanda de herramientas de testing de APIs automatizadas está creciendo rápidamente",
+      "dia_uno": "Manana: Enviar DM a Desarrolladores en LinkedIn",
+      "fallo_probable": "40% falla por falta de adopción"
+    },
+    "scores": {
+      "critico": 80,
+      "viral": 60,
+      "generador": 70,
+      "monetizacion": 80,
+      "ejecutabilidad": 90,
+      "timing": 80,
+      "score_total": 78.0,
+      "score_critico": 78.5,
+      "score_mercado_real": 45
+    },
+    "vertical": "SaaS",
+    "tipo": "B2B",
+    "tags": [
+      "testing de APIs",
+      "automatización",
+      "Git"
+    ],
+    "scoring_critico": {
+      "veredicto": "El potencial de DevPal Plus es alto",
+      "objeciones_principales": [],
+      "fortalezas_reales": [
+        "demanda significativa",
+        "problema relevante en la industria"
+      ],
+      "ajuste_score": 0,
+      "score_critico_final": 78.5,
+      "recomendacion": "invertir",
+      "pivote_sugerido": "null"
+    },
+    "validacion_mercado": {
+      "google_trends": {},
+      "reddit": {
+        "posts": 0,
+        "upvotes_total": 0,
+        "subreddits": [],
+        "top_post": ""
+      },
+      "github": {
+        "repos": 0,
+        "top_repo_stars": 0,
+        "top_repo": "",
+        "señal": "baja"
+      },
+      "score_mercado_real": 45,
+      "score_ia_original": 78.5,
+      "ajuste_aplicado": -0.5,
+      "score_final_ajustado": 78.0
+    },
+    "notion_url": "https://www.notion.so/DevPal-Plus-78-0-100-323313aca133818386a2c644467bbb63"
+  },
+  {
+    "nombre": "GitPilot",
+    "tagline": "Automatiza la gestión de repositorios Git con IA",
+    "problema": "Los desarrolladores dedican un 20% de su tiempo a gestionar repositorios Git, según una encuesta de GitLab. Esto incluye tareas como la creación de issues, etiquetado y asignación de tareas.",
+    "solucion": "GitPilot utiliza la herramienta de IA GitAgent para convertir cualquier repositorio Git en un agente de IA que puede automatizar tareas de gestión, como la creación de issues y la asignación de tareas.",
+    "cliente_objetivo": "Desarrollador líder en empresas de tecnología",
+    "herramienta_ia_clave": "GitAgent",
+    "estrategia_monetizacion": {
+      "semana1": "Envia DM a Desarrolladores Líderes en Slack con: '¿Estás cansado de gestionar manualmente tus repositorios Git?'",
+      "precio_optimo_justificado": "29 EUR/mes porque reduce el tiempo de gestión de repositorios en un 80%"
+    },
+    "hipotesis_testeable": {
+      "experimento_48h": "Crea Typeform en typeform.com midiendo 100 clics/respuestas en 48h",
+      "metrica_exito": "20 signups en 48h"
+    },
+    "mvp": {
+      "stack_recomendado": "Next.js+Supabase+Vercel",
+      "tiempo_semanas": 3,
+      "coste_estimado_eur": 0
+    },
+    "vertical": "SaaS",
+    "tipo": "B2B",
+    "tags": [
+      "Desarrollo de software",
+      "Git",
+      "Automatización"
+    ],
+    "competidores": [
+      {
+        "nombre": "GitLab",
+        "debilidad": "Su funcionalidad de automatización de tareas es limitada"
+      },
+      {
+        "nombre": "GitHub",
+        "debilidad": "No ofrece una solución de automatización de tareas integrada"
+      }
+    ],
+    "scores": {
+      "score_total": 19.5,
+      "score_critico": 0.0,
+      "score_mercado_real": 45
+    },
+    "scoring_critico": {
+      "recomendacion": "descartar"
+    },
+    "validacion_mercado": {
+      "google_trends": {
+        "error": "The request failed: Google returned a response with code 429"
+      },
+      "reddit": {
+        "posts": 0,
+        "upvotes_total": 0,
+        "subreddits": [],
+        "top_post": ""
+      },
+      "github": {
+        "repos": 0,
+        "top_repo_stars": 0,
+        "top_repo": "",
+        "señal": "baja"
+      },
+      "score_mercado_real": 45,
+      "score_ia_original": 20,
+      "ajuste_aplicado": -0.5,
+      "score_final_ajustado": 19.5
+    }
+  },
+  {
+    "nombre": "GitPilot",
+    "tagline": "Automatiza la gestión de repositorios Git con IA",
+    "problema": "Los desarrolladores dedican un 20% de su tiempo a gestionar repositorios Git, según una encuesta de GitLab. Esto incluye tareas como la creación de issues, etiquetado y asignación de tareas.",
+    "solucion": "GitPilot utiliza la herramienta de IA GitAgent para convertir cualquier repositorio Git en un agente de IA que puede automatizar tareas de gestión, como la creación de issues y la asignación de tareas.",
+    "cliente_objetivo": "Desarrollador líder en empresas de tecnología",
+    "herramienta_ia_clave": "GitAgent",
+    "estrategia_monetizacion": {
+      "semana1": "Envia DM a Desarrolladores Líderes en Slack con: '¿Estás cansado de gestionar manualmente tus repositorios Git?'",
+      "precio_optimo_justificado": "29 EUR/mes porque reduce el tiempo de gestión de repositorios en un 80%"
+    },
+    "hipotesis_testeable": {
+      "experimento_48h": "Crea Typeform en typeform.com midiendo 100 clics/respuestas en 48h",
+      "metrica_exito": "20 signups en 48h"
+    },
+    "mvp": {
+      "stack_recomendado": "Next.js+Supabase+Vercel",
+      "tiempo_semanas": 3,
+      "coste_estimado_eur": 0
+    },
+    "vertical": "SaaS",
+    "tipo": "B2B",
+    "tags": [
+      "Desarrollo de software",
+      "Git",
+      "Automatización"
+    ],
+    "competidores": [
+      {
+        "nombre": "GitLab",
+        "debilidad": "Su funcionalidad de automatización de tareas es limitada"
+      },
+      {
+        "nombre": "GitHub",
+        "debilidad": "No ofrece una solución de automatización de tareas integrada"
+      }
+    ],
+    "scores": {
+      "score_total": 19.5,
+      "score_critico": 0.0,
+      "score_mercado_real": 45
+    },
+    "scoring_critico": {
+      "recomendacion": "descartar"
+    },
+    "validacion_mercado": {
+      "google_trends": {
+        "error": "The request failed: Google returned a response with code 429"
+      },
+      "reddit": {
+        "posts": 0,
+        "upvotes_total": 0,
+        "subreddits": [],
+        "top_post": ""
+      },
+      "github": {
+        "repos": 0,
+        "top_repo_stars": 0,
+        "top_repo": "",
+        "señal": "baja"
+      },
+      "score_mercado_real": 45,
+      "score_ia_original": 20,
+      "ajuste_aplicado": -0.5,
+      "score_final_ajustado": 19.5
+    },
+    "notion_url": "https://www.notion.so/GitPilot-19-5-100-323313aca133810380c1c15716dd0f06"
+  },
+  {
+    "nombre": "DevMind",
+    "tagline": "Asistente de codificación para desarrolladores",
+    "problema": "1,2 millones de desarrolladores sufren al perder 2 horas diarias en tareas repetitivas de codificación según Stack Overflow (2022)",
+    "solución": "usamos GitAgent para automatizar tareas de codificación en 10 minutos",
+    "cliente_objetivo": "Director de Tecnología en empresa de software de 100 empleados",
+    "propuesta_valor_unica": "única porque competidores no ofrecen automatización de codificación con GitAgent",
+    "herramienta_ia_clave": "GitAgent - open standard que convierte cualquier Git repo en un agente de IA",
+    "mercado": {
+      "TAM": "$10 billion",
+      "SAM": "$500 million",
+      "SOM": "$1 million año1",
+      "competidores": [
+        "GitHub Copilot (limitaciones en personalización)",
+        "TabNine (no compatible con Git repos)"
+      ],
+      "ventaja_competitiva": "porque es difícil de copiar con GitAgent"
+    },
+    "modelo_negocio": {
+      "tipo": "SaaS",
+      "pricing": "EUR 29/mes justificado",
+      "canales_adquisición": [
+        "1. DM a Desarrolladores en GitHub con: '¿Quieres automatizar tus tareas de codificación?'",
+        "2. Post en comunidades de desarrolladores"
+      ],
+      "time_to_revenue": "4 semanas"
+    },
+    "estudio_economico": {
+      "conservador": {
+        "mes3": {
+          "mrr_eur": 750,
+          "usuarios": 15
+        },
+        "mes12": {
+          "mrr_eur": 6000
+        },
+        "breakeven": "mes8"
+      },
+      "realista": {
+        "mes3": {
+          "mrr_eur": 2250,
+          "usuarios": 45
+        },
+        "mes12": {
+          "mrr_eur": 18000
+        },
+        "breakeven": "mes5"
+      },
+      "optimista": {
+        "mes3": {
+          "mrr_eur": 4500,
+          "usuarios": 90
+        },
+        "mes12": {
+          "mrr_eur": 36000
+        },
+        "breakeven": "mes4"
+      }
+    },
+    "dafo": {
+      "fortalezas": [
+        "Automatización de codificación con GitAgent",
+        "Compatibilidad con Git repos"
+      ],
+      "debilidades": [
+        "Limitaciones en personalización",
+        "Dependencia de GitAgent"
+      ],
+      "oportunidades": [
+        "Crecimiento del mercado de desarrollo de software (15% anual según Gartner)"
+      ],
+      "amenazas": [
+        "Competencia de GitHub Copilot y TabNine"
+      ]
+    },
+    "mvp": {
+      "features_minimas": [
+        "Automatización de tareas de codificación con GitAgent",
+        "Integración con GitHub",
+        "Panel de control de tareas"
+      ],
+      "stack_recomendado": "Next.js 14+Supabase+Vercel+Stripe",
+      "tiempo_semanas": 3,
+      "coste_estimado_eur": 0
+    },
+    "prompt_mvp": {
+      "meta": {
+        "nombre_idea": "DevMind",
+        "objetivo": "MVP 3 semanas",
+        "ia_recomendada": "Claude 3.5 Sonnet",
+        "stack_completo": "Next.js+Supabase+Vercel+Stripe"
+      },
+      "system_prompt": "Eres dev senior. Construye DevMind que resuelve la automatización de tareas de codificación.",
+      "instrucciones_paso_a_paso": [
+        "1. npx create-next-app",
+        "2. supabase init",
+        "3. Feature principal",
+        "4. Stripe",
+        "5. Deploy"
+      ],
+      "primer_cliente_script": "Manana: DM a Desarrollador en GitHub: '¿Quieres automatizar tus tareas de codificación?'"
+    },
+    "estrategia_monetizacion": {
+      "semana1": "Envia DM a Desarrolladores en GitHub con: '¿Quieres automatizar tus tareas de codificación?'",
+      "semana4": "Beta gratis 14 dias a cambio de feedback",
+      "mes3": "[estrategia 50 clientes]",
+      "canales": [
+        "Canal1: GitHub",
+        "Canal2: Comunidades de desarrolladores"
+      ],
+      "precio_optimo_justificado": "EUR 29/mes porque competitor cobra $49/mes"
+    },
+    "hipotesis_testeable": {
+      "hipotesis_principal": "Si Desarrollador usa DevMind entonces aumenta la productividad en un 30%",
+      "metrica_exito": "20 signups en 48h",
+      "experimento_48h": "Crea Typeform en GitHub midiendo clicks",
+      "senal_de_alarma": "Menos de 5 respuestas = pivotar"
+    },
+    "hoja_de_ruta": {
+      "semana1": "Setup Next.js+Supabase",
+      "semana2": "Feature principal",
+      "semana3": "Stripe+deploy",
+      "semana4": "Primer cliente pago"
+    },
+    "opinion_profesional": {
+      "unicidad": "Unica HOY porque automatiza tareas de codificación con GitAgent",
+      "riesgo_principal": "30% riesgo de competencia",
+      "timing": "Por que ahora: crecimiento del mercado de desarrollo de software",
+      "dia_uno": "Manana: DM a Desarrollador en GitHub",
+      "fallo_probable": "40% falla por limitaciones en personalización"
+    },
+    "scores": {
+      "critico": 80,
+      "viral": 60,
+      "generador": 70,
+      "monetizacion": 80,
+      "ejecutabilidad": 90,
+      "timing": 80,
+      "score_total": 78.0,
+      "score_critico": 78.5,
+      "score_mercado_real": 45
+    },
+    "vertical": "SaaS",
+    "tipo": "B2B",
+    "tags": [
+      "automatización",
+      "codificación",
+      "desarrollo de software"
+    ],
+    "scoring_critico": {
+      "veredicto": "DevMind tiene un alto potencial",
+      "objeciones_principales": [],
+      "fortalezas_reales": [
+        "gran mercado objetivo",
+        "problema significativo"
+      ],
+      "ajuste_score": 0,
+      "score_critico_final": 78.5,
+      "recomendacion": "invertir",
+      "pivote_sugerido": "null"
+    },
+    "validacion_mercado": {
+      "google_trends": {
+        "error": "The request failed: Google returned a response with code 429"
+      },
+      "reddit": {
+        "posts": 0,
+        "upvotes_total": 0,
+        "subreddits": [],
+        "top_post": ""
+      },
+      "github": {
+        "repos": 0,
+        "top_repo_stars": 0,
+        "top_repo": "",
+        "señal": "baja"
+      },
+      "score_mercado_real": 45,
+      "score_ia_original": 78.5,
+      "ajuste_aplicado": -0.5,
+      "score_final_ajustado": 78.0
+    }
+  },
+  {
+    "nombre": "DevMind",
+    "tagline": "Asistente de codificación para desarrolladores",
+    "problema": "1,2 millones de desarrolladores sufren al perder 2 horas diarias en tareas repetitivas de codificación según Stack Overflow (2022)",
+    "solución": "usamos GitAgent para automatizar tareas de codificación en 10 minutos",
+    "cliente_objetivo": "Director de Tecnología en empresa de software de 100 empleados",
+    "propuesta_valor_unica": "única porque competidores no ofrecen automatización de codificación con GitAgent",
+    "herramienta_ia_clave": "GitAgent - open standard que convierte cualquier Git repo en un agente de IA",
+    "mercado": {
+      "TAM": "$10 billion",
+      "SAM": "$500 million",
+      "SOM": "$1 million año1",
+      "competidores": [
+        "GitHub Copilot (limitaciones en personalización)",
+        "TabNine (no compatible con Git repos)"
+      ],
+      "ventaja_competitiva": "porque es difícil de copiar con GitAgent"
+    },
+    "modelo_negocio": {
+      "tipo": "SaaS",
+      "pricing": "EUR 29/mes justificado",
+      "canales_adquisición": [
+        "1. DM a Desarrolladores en GitHub con: '¿Quieres automatizar tus tareas de codificación?'",
+        "2. Post en comunidades de desarrolladores"
+      ],
+      "time_to_revenue": "4 semanas"
+    },
+    "estudio_economico": {
+      "conservador": {
+        "mes3": {
+          "mrr_eur": 750,
+          "usuarios": 15
+        },
+        "mes12": {
+          "mrr_eur": 6000
+        },
+        "breakeven": "mes8"
+      },
+      "realista": {
+        "mes3": {
+          "mrr_eur": 2250,
+          "usuarios": 45
+        },
+        "mes12": {
+          "mrr_eur": 18000
+        },
+        "breakeven": "mes5"
+      },
+      "optimista": {
+        "mes3": {
+          "mrr_eur": 4500,
+          "usuarios": 90
+        },
+        "mes12": {
+          "mrr_eur": 36000
+        },
+        "breakeven": "mes4"
+      }
+    },
+    "dafo": {
+      "fortalezas": [
+        "Automatización de codificación con GitAgent",
+        "Compatibilidad con Git repos"
+      ],
+      "debilidades": [
+        "Limitaciones en personalización",
+        "Dependencia de GitAgent"
+      ],
+      "oportunidades": [
+        "Crecimiento del mercado de desarrollo de software (15% anual según Gartner)"
+      ],
+      "amenazas": [
+        "Competencia de GitHub Copilot y TabNine"
+      ]
+    },
+    "mvp": {
+      "features_minimas": [
+        "Automatización de tareas de codificación con GitAgent",
+        "Integración con GitHub",
+        "Panel de control de tareas"
+      ],
+      "stack_recomendado": "Next.js 14+Supabase+Vercel+Stripe",
+      "tiempo_semanas": 3,
+      "coste_estimado_eur": 0
+    },
+    "prompt_mvp": {
+      "meta": {
+        "nombre_idea": "DevMind",
+        "objetivo": "MVP 3 semanas",
+        "ia_recomendada": "Claude 3.5 Sonnet",
+        "stack_completo": "Next.js+Supabase+Vercel+Stripe"
+      },
+      "system_prompt": "Eres dev senior. Construye DevMind que resuelve la automatización de tareas de codificación.",
+      "instrucciones_paso_a_paso": [
+        "1. npx create-next-app",
+        "2. supabase init",
+        "3. Feature principal",
+        "4. Stripe",
+        "5. Deploy"
+      ],
+      "primer_cliente_script": "Manana: DM a Desarrollador en GitHub: '¿Quieres automatizar tus tareas de codificación?'"
+    },
+    "estrategia_monetizacion": {
+      "semana1": "Envia DM a Desarrolladores en GitHub con: '¿Quieres automatizar tus tareas de codificación?'",
+      "semana4": "Beta gratis 14 dias a cambio de feedback",
+      "mes3": "[estrategia 50 clientes]",
+      "canales": [
+        "Canal1: GitHub",
+        "Canal2: Comunidades de desarrolladores"
+      ],
+      "precio_optimo_justificado": "EUR 29/mes porque competitor cobra $49/mes"
+    },
+    "hipotesis_testeable": {
+      "hipotesis_principal": "Si Desarrollador usa DevMind entonces aumenta la productividad en un 30%",
+      "metrica_exito": "20 signups en 48h",
+      "experimento_48h": "Crea Typeform en GitHub midiendo clicks",
+      "senal_de_alarma": "Menos de 5 respuestas = pivotar"
+    },
+    "hoja_de_ruta": {
+      "semana1": "Setup Next.js+Supabase",
+      "semana2": "Feature principal",
+      "semana3": "Stripe+deploy",
+      "semana4": "Primer cliente pago"
+    },
+    "opinion_profesional": {
+      "unicidad": "Unica HOY porque automatiza tareas de codificación con GitAgent",
+      "riesgo_principal": "30% riesgo de competencia",
+      "timing": "Por que ahora: crecimiento del mercado de desarrollo de software",
+      "dia_uno": "Manana: DM a Desarrollador en GitHub",
+      "fallo_probable": "40% falla por limitaciones en personalización"
+    },
+    "scores": {
+      "critico": 80,
+      "viral": 60,
+      "generador": 70,
+      "monetizacion": 80,
+      "ejecutabilidad": 90,
+      "timing": 80,
+      "score_total": 78.0,
+      "score_critico": 78.5,
+      "score_mercado_real": 45
+    },
+    "vertical": "SaaS",
+    "tipo": "B2B",
+    "tags": [
+      "automatización",
+      "codificación",
+      "desarrollo de software"
+    ],
+    "scoring_critico": {
+      "veredicto": "DevMind tiene un alto potencial",
+      "objeciones_principales": [],
+      "fortalezas_reales": [
+        "gran mercado objetivo",
+        "problema significativo"
+      ],
+      "ajuste_score": 0,
+      "score_critico_final": 78.5,
+      "recomendacion": "invertir",
+      "pivote_sugerido": "null"
+    },
+    "validacion_mercado": {
+      "google_trends": {
+        "error": "The request failed: Google returned a response with code 429"
+      },
+      "reddit": {
+        "posts": 0,
+        "upvotes_total": 0,
+        "subreddits": [],
+        "top_post": ""
+      },
+      "github": {
+        "repos": 0,
+        "top_repo_stars": 0,
+        "top_repo": "",
+        "señal": "baja"
+      },
+      "score_mercado_real": 45,
+      "score_ia_original": 78.5,
+      "ajuste_aplicado": -0.5,
+      "score_final_ajustado": 78.0
+    },
+    "notion_url": "https://www.notion.so/DevMind-78-0-100-323313aca13381a39eaede94ddfb47da"
+  },
+  {
+    "nombre": "DevMind Insights",
+    "tagline": "Análisis de código predictivo para equipos DevOps",
+    "problema": "El 60% de los equipos DevOps sufren retrasos en la entrega de software debido a errores no detectados en el código, según un estudio de GitLab (2022)",
+    "solución": "Usamos GitAgent para analizar código y predecir errores en tiempo real",
+    "cliente_objetivo": "Director de Tecnología en empresas de software de 50-200 empleados",
+    "propuesta_valor_unica": "Única porque los competidores no ofrecen análisis predictivo en tiempo real integrado con Git",
+    "herramienta_ia_clave": "GitAgent, una herramienta de código abierto que convierte cualquier repo de Git en un agente de IA",
+    "mercado": {
+      "TAM": "$10 billion",
+      "SAM": "$500 million",
+      "SOM": "$1 million año1",
+      "competidores": [
+        "SonarQube (no ofrece análisis predictivo en tiempo real)",
+        "CodeClimate (no se integra con Git de manera nativa)"
+      ],
+      "ventaja_competitiva": "Dificil de copiar debido a la integración nativa con Git y el uso de IA predictiva"
+    },
+    "modelo_negocio": {
+      "tipo": "SaaS",
+      "pricing": "EUR 99/mes por usuario",
+      "canales_adquisicion": [
+        "1. DM a Directores de Tecnología en LinkedIn con: '¿Estás cansado de errores en tu código? Te presento DevMind Insights'",
+        "2. Post en comunidades de DevOps en Reddit"
+      ],
+      "time_to_revenue": "4 semanas"
+    },
+    "estudio_economico": {
+      "conservador": {
+        "mes3": {
+          "mrr_eur": 500,
+          "usuarios": 5
+        },
+        "mes12": {
+          "mrr_eur": 5000
+        },
+        "breakeven": "mes10"
+      },
+      "realista": {
+        "mes3": {
+          "mrr_eur": 1500,
+          "usuarios": 15
+        },
+        "mes12": {
+          "mrr_eur": 15000
+        },
+        "breakeven": "mes6"
+      },
+      "optimista": {
+        "mes3": {
+          "mrr_eur": 3000,
+          "usuarios": 30
+        },
+        "mes12": {
+          "mrr_eur": 30000
+        },
+        "breakeven": "mes4"
+      }
+    },
+    "dafo": {
+      "fortalezas": [
+        "Integración nativa con Git",
+        "Análisis predictivo en tiempo real"
+      ],
+      "debilidades": [
+        "Dependencia de la adopción de GitAgent",
+        "Competencia con herramientas establecidas"
+      ],
+      "oportunidades": [
+        "Crecimiento del mercado de DevOps",
+        "Adopción de IA en el desarrollo de software"
+      ],
+      "amenazas": [
+        "Competencia con nuevas startups",
+        "Cambios en la tecnología de Git"
+      ]
+    },
+    "mvp": {
+      "features_minimas": [
+        "Integración con Git",
+        "Análisis predictivo básico"
+      ],
+      "stack_recomendado": "Next.js 14+Supabase+Vercel+Stripe",
+      "tiempo_semanas": 3,
+      "coste_estimado_eur": 0
+    },
+    "prompt_mvp": {
+      "meta": {
+        "nombre_idea": "DevMind Insights",
+        "objetivo": "MVP 3 semanas",
+        "ia_recomendada": "Claude 3.5 Sonnet",
+        "stack_completo": "Next.js+Supabase+Vercel+Stripe"
+      },
+      "system_prompt": "Eres dev senior. Construye DevMind Insights que resuelve errores en código predictivamente.",
+      "instrucciones_paso_a_paso": [
+        "1. npx create-next-app",
+        "2. supabase init",
+        "3. Feature principal",
+        "4. Stripe",
+        "5. Deploy"
+      ],
+      "primer_cliente_script": "Manana: DM a Director de Tecnología en LinkedIn: '¿Estás cansado de errores en tu código? Te presento DevMind Insights'"
+    },
+    "estrategia_monetizacion": {
+      "semana1": "Envia DM a 10 Directores de Tecnología en LinkedIn con: '¿Estás cansado de errores en tu código? Te presento DevMind Insights'",
+      "semana4": "Beta gratis 14 dias a cambio de feedback",
+      "mes3": "Estrategia de marketing de contenidos para atraer a 50 clientes",
+      "canales": [
+        "Canal1: Marketing de contenidos",
+        "Canal2: Publicidad en redes sociales"
+      ],
+      "precio_optimo_justificado": "EUR 99/mes porque competidor cobra EUR 199/mes"
+    },
+    "hipotesis_testeable": {
+      "hipotesis_principal": "Si un Director de Tecnología usa DevMind Insights entonces reduce los errores en código en un 30%",
+      "metrica_exito": "10 signups en 48h",
+      "experimento_48h": "Crea Typeform en plataforma midiendo clicks en 'Registra tu interés'",
+      "senal_de_alarma": "Menos de 5 respuestas = pivotar"
+    },
+    "hoja_de_ruta": {
+      "semana1": "Setup Next.js+Supabase",
+      "semana2": "Feature principal",
+      "semana3": "Stripe+deploy",
+      "semana4": "Primer cliente pago"
+    },
+    "opinion_profesional": {
+      "unicidad": "Unica HOY porque integra GitAgent para análisis predictivo en tiempo real",
+      "riesgo_principal": "30% falla por adopción lenta de GitAgent",
+      "timing": "Por que ahora: el mercado de DevOps está creciendo rápidamente",
+      "dia_uno": "Manana: DM a Director de Tecnología en LinkedIn",
+      "fallo_probable": "60% falla por competencia con herramientas establecidas"
+    },
+    "scores": {
+      "critico": 80,
+      "viral": 40,
+      "generador": 90,
+      "monetizacion": 70,
+      "ejecutabilidad": 85,
+      "timing": 80,
+      "score_total": 79.5,
+      "score_critico": 80,
+      "score_mercado_real": 45
+    },
+    "vertical": "SaaS",
+    "tipo": "B2B",
+    "tags": [
+      "DevOps",
+      "IA",
+      "Git"
+    ],
+    "scoring_critico": {
+      "veredicto": "DevMind Insights tiene un alto potencial",
+      "objeciones_principales": [],
+      "fortalezas_reales": [
+        "alto impacto en la industria",
+        "demanda específica"
+      ],
+      "ajuste_score": 0,
+      "score_critico_final": 80,
+      "recomendacion": "invertir",
+      "pivote_sugerido": "null"
+    },
+    "validacion_mercado": {
+      "google_trends": {},
+      "reddit": {
+        "posts": 0,
+        "upvotes_total": 0,
+        "subreddits": [],
+        "top_post": ""
+      },
+      "github": {
+        "repos": 0,
+        "top_repo_stars": 0,
+        "top_repo": "",
+        "señal": "baja"
+      },
+      "score_mercado_real": 45,
+      "score_ia_original": 80.0,
+      "ajuste_aplicado": -0.5,
+      "score_final_ajustado": 79.5
+    }
+  },
+  {
+    "nombre": "DevMind Insights",
+    "tagline": "Análisis de código predictivo para equipos DevOps",
+    "problema": "El 60% de los equipos DevOps sufren retrasos en la entrega de software debido a errores no detectados en el código, según un estudio de GitLab (2022)",
+    "solución": "Usamos GitAgent para analizar código y predecir errores en tiempo real",
+    "cliente_objetivo": "Director de Tecnología en empresas de software de 50-200 empleados",
+    "propuesta_valor_unica": "Única porque los competidores no ofrecen análisis predictivo en tiempo real integrado con Git",
+    "herramienta_ia_clave": "GitAgent, una herramienta de código abierto que convierte cualquier repo de Git en un agente de IA",
+    "mercado": {
+      "TAM": "$10 billion",
+      "SAM": "$500 million",
+      "SOM": "$1 million año1",
+      "competidores": [
+        "SonarQube (no ofrece análisis predictivo en tiempo real)",
+        "CodeClimate (no se integra con Git de manera nativa)"
+      ],
+      "ventaja_competitiva": "Dificil de copiar debido a la integración nativa con Git y el uso de IA predictiva"
+    },
+    "modelo_negocio": {
+      "tipo": "SaaS",
+      "pricing": "EUR 99/mes por usuario",
+      "canales_adquisicion": [
+        "1. DM a Directores de Tecnología en LinkedIn con: '¿Estás cansado de errores en tu código? Te presento DevMind Insights'",
+        "2. Post en comunidades de DevOps en Reddit"
+      ],
+      "time_to_revenue": "4 semanas"
+    },
+    "estudio_economico": {
+      "conservador": {
+        "mes3": {
+          "mrr_eur": 500,
+          "usuarios": 5
+        },
+        "mes12": {
+          "mrr_eur": 5000
+        },
+        "breakeven": "mes10"
+      },
+      "realista": {
+        "mes3": {
+          "mrr_eur": 1500,
+          "usuarios": 15
+        },
+        "mes12": {
+          "mrr_eur": 15000
+        },
+        "breakeven": "mes6"
+      },
+      "optimista": {
+        "mes3": {
+          "mrr_eur": 3000,
+          "usuarios": 30
+        },
+        "mes12": {
+          "mrr_eur": 30000
+        },
+        "breakeven": "mes4"
+      }
+    },
+    "dafo": {
+      "fortalezas": [
+        "Integración nativa con Git",
+        "Análisis predictivo en tiempo real"
+      ],
+      "debilidades": [
+        "Dependencia de la adopción de GitAgent",
+        "Competencia con herramientas establecidas"
+      ],
+      "oportunidades": [
+        "Crecimiento del mercado de DevOps",
+        "Adopción de IA en el desarrollo de software"
+      ],
+      "amenazas": [
+        "Competencia con nuevas startups",
+        "Cambios en la tecnología de Git"
+      ]
+    },
+    "mvp": {
+      "features_minimas": [
+        "Integración con Git",
+        "Análisis predictivo básico"
+      ],
+      "stack_recomendado": "Next.js 14+Supabase+Vercel+Stripe",
+      "tiempo_semanas": 3,
+      "coste_estimado_eur": 0
+    },
+    "prompt_mvp": {
+      "meta": {
+        "nombre_idea": "DevMind Insights",
+        "objetivo": "MVP 3 semanas",
+        "ia_recomendada": "Claude 3.5 Sonnet",
+        "stack_completo": "Next.js+Supabase+Vercel+Stripe"
+      },
+      "system_prompt": "Eres dev senior. Construye DevMind Insights que resuelve errores en código predictivamente.",
+      "instrucciones_paso_a_paso": [
+        "1. npx create-next-app",
+        "2. supabase init",
+        "3. Feature principal",
+        "4. Stripe",
+        "5. Deploy"
+      ],
+      "primer_cliente_script": "Manana: DM a Director de Tecnología en LinkedIn: '¿Estás cansado de errores en tu código? Te presento DevMind Insights'"
+    },
+    "estrategia_monetizacion": {
+      "semana1": "Envia DM a 10 Directores de Tecnología en LinkedIn con: '¿Estás cansado de errores en tu código? Te presento DevMind Insights'",
+      "semana4": "Beta gratis 14 dias a cambio de feedback",
+      "mes3": "Estrategia de marketing de contenidos para atraer a 50 clientes",
+      "canales": [
+        "Canal1: Marketing de contenidos",
+        "Canal2: Publicidad en redes sociales"
+      ],
+      "precio_optimo_justificado": "EUR 99/mes porque competidor cobra EUR 199/mes"
+    },
+    "hipotesis_testeable": {
+      "hipotesis_principal": "Si un Director de Tecnología usa DevMind Insights entonces reduce los errores en código en un 30%",
+      "metrica_exito": "10 signups en 48h",
+      "experimento_48h": "Crea Typeform en plataforma midiendo clicks en 'Registra tu interés'",
+      "senal_de_alarma": "Menos de 5 respuestas = pivotar"
+    },
+    "hoja_de_ruta": {
+      "semana1": "Setup Next.js+Supabase",
+      "semana2": "Feature principal",
+      "semana3": "Stripe+deploy",
+      "semana4": "Primer cliente pago"
+    },
+    "opinion_profesional": {
+      "unicidad": "Unica HOY porque integra GitAgent para análisis predictivo en tiempo real",
+      "riesgo_principal": "30% falla por adopción lenta de GitAgent",
+      "timing": "Por que ahora: el mercado de DevOps está creciendo rápidamente",
+      "dia_uno": "Manana: DM a Director de Tecnología en LinkedIn",
+      "fallo_probable": "60% falla por competencia con herramientas establecidas"
+    },
+    "scores": {
+      "critico": 80,
+      "viral": 40,
+      "generador": 90,
+      "monetizacion": 70,
+      "ejecutabilidad": 85,
+      "timing": 80,
+      "score_total": 79.5,
+      "score_critico": 80,
+      "score_mercado_real": 45
+    },
+    "vertical": "SaaS",
+    "tipo": "B2B",
+    "tags": [
+      "DevOps",
+      "IA",
+      "Git"
+    ],
+    "scoring_critico": {
+      "veredicto": "DevMind Insights tiene un alto potencial",
+      "objeciones_principales": [],
+      "fortalezas_reales": [
+        "alto impacto en la industria",
+        "demanda específica"
+      ],
+      "ajuste_score": 0,
+      "score_critico_final": 80,
+      "recomendacion": "invertir",
+      "pivote_sugerido": "null"
+    },
+    "validacion_mercado": {
+      "google_trends": {},
+      "reddit": {
+        "posts": 0,
+        "upvotes_total": 0,
+        "subreddits": [],
+        "top_post": ""
+      },
+      "github": {
+        "repos": 0,
+        "top_repo_stars": 0,
+        "top_repo": "",
+        "señal": "baja"
+      },
+      "score_mercado_real": 45,
+      "score_ia_original": 80.0,
+      "ajuste_aplicado": -0.5,
+      "score_final_ajustado": 79.5
+    },
+    "notion_url": "https://www.notion.so/DevMind-Insights-79-5-100-323313aca13381c68911c667603b184b"
+  },
+  {
+    "nombre": "DevGenie",
+    "tagline": "Automatiza tareas de desarrollo con IA",
+    "problema": "100.000 desarrolladores pasan hasta 5 horas diarias en tareas repetitivas según GitHub 2022",
+    "solucion": "Usamos GitAgent para automatizar tareas de desarrollo en minutos",
+    "cliente_objetivo": "Desarrollador senior en empresa de 100 empleados",
+    "propuesta_valor_unica": "Única porque integra IA para automatizar tareas de desarrollo de manera efectiva",
+    "herramienta_ia_clave": "GitAgent - Convierte cualquier repo de Git en un agente de IA",
+    "mercado": {
+      "TAM": "$10 billion",
+      "SAM": "$500 million",
+      "SOM": "$1 million año1",
+      "competidores": [
+        "GitHub Copilot (requiere configuración avanzada)",
+        "Kite (limitaciones en personalización)"
+      ],
+      "ventaja_competitiva": "Integra últimas tecnologías de IA para máxima eficiencia"
+    },
+    "modelo_negocio": {
+      "tipo": "SaaS",
+      "pricing": "EUR 29/mes",
+      "canales_adquisicion": [
+        "1. DM a desarrolladores en Twitter con: '¿Cuántas horas pasas en tareas repetitivas?'",
+        "2. Post en comunidades de desarrollo en Reddit"
+      ],
+      "time_to_revenue": "4 semanas"
+    },
+    "estudio_economico": {
+      "conservador": {
+        "mes3": {
+          "mrr_eur": 1000,
+          "usuarios": 20
+        },
+        "mes12": {
+          "mrr_eur": 8000
+        },
+        "breakeven": "mes9"
+      },
+      "realista": {
+        "mes3": {
+          "mrr_eur": 3000,
+          "usuarios": 60
+        },
+        "mes12": {
+          "mrr_eur": 24000
+        },
+        "breakeven": "mes6"
+      },
+      "optimista": {
+        "mes3": {
+          "mrr_eur": 6000,
+          "usuarios": 120
+        },
+        "mes12": {
+          "mrr_eur": 48000
+        },
+        "breakeven": "mes4"
+      }
+    },
+    "dafo": {
+      "fortalezas": [
+        "Integración con Git",
+        "Automatización eficiente"
+      ],
+      "debilidades": [
+        "Limitaciones en compatibilidad con ciertos lenguajes"
+      ],
+      "oportunidades": [
+        "Creciente demanda de herramientas de desarrollo eficientes"
+      ],
+      "amenazas": [
+        "Competencia creciente en automatización de desarrollo"
+      ]
+    },
+    "mvp": {
+      "features_minimas": [
+        "Automatización básica de tareas",
+        "Integración con GitHub"
+      ],
+      "stack_recomendado": "Next.js 14+Supabase+Vercel+Stripe",
+      "tiempo_semanas": 3,
+      "coste_estimado_eur": 0
+    },
+    "prompt_mvp": {
+      "meta": {
+        "nombre_idea": "DevGenie",
+        "objetivo": "MVP 3 semanas",
+        "ia_recomendada": "Claude 3.5 Sonnet",
+        "stack_completo": "Next.js+Supabase+Vercel+Stripe"
+      },
+      "system_prompt": "Eres dev senior. Construye DevGenie que automatiza tareas de desarrollo.",
+      "instrucciones_paso_a_paso": [
+        "1. npx create-next-app",
+        "2. supabase init",
+        "3. Feature principal",
+        "4. Stripe",
+        "5. Deploy"
+      ],
+      "primer_cliente_script": "Manana: DM a @desarrollador en Twitter: '¿Cuántas horas pasas en tareas repetitivas?'"
+    },
+    "estrategia_monetizacion": {
+      "semana1": "Envia DM a 50 desarrolladores en Twitter con: '¿Cuántas horas pasas en tareas repetitivas?'",
+      "semana4": "Beta gratis 14 dias a cambio de feedback",
+      "mes3": "Estrategia de marketing de contenidos para atraer 50 clientes",
+      "canales": [
+        "Canal1: Marketing de contenidos",
+        "Canal2: Publicidad en redes sociales"
+      ],
+      "precio_optimo_justificado": "EUR 29/mes porque ofrece valor significativo con automatización"
+    },
+    "hipotesis_testeable": {
+      "hipotesis_principal": "Si un desarrollador usa DevGenie entonces reduce su tiempo en tareas repetitivas",
+      "metrica_exito": "20 signups en 48h",
+      "experimento_48h": "Crea Typeform en Twitter midiendo clicks",
+      "senal_de_alarma": "Menos de 5 respuestas = pivotar"
+    },
+    "hoja_de_ruta": {
+      "semana1": "Setup Next.js+Supabase",
+      "semana2": "Feature principal",
+      "semana3": "Stripe+deploy",
+      "semana4": "Primer cliente pago"
+    },
+    "opinion_profesional": {
+      "unicidad": "Unica HOY porque integra GitAgent para máxima eficiencia",
+      "riesgo_principal": "30% falla por competencia",
+      "timing": "Por que ahora: creciente demanda de herramientas eficientes",
+      "dia_uno": "Manana: DM a desarrolladores en Twitter",
+      "fallo_probable": "60% falla por falta de adopción"
+    },
+    "scores": {
+      "critico": 80,
+      "viral": 60,
+      "generador": 90,
+      "monetizacion": 85,
+      "ejecutabilidad": 80,
+      "timing": 90,
+      "score_total": 82.7,
+      "score_critico": 83.2,
+      "score_mercado_real": 45
+    },
+    "vertical": "SaaS",
+    "tipo": "B2B",
+    "tags": [
+      "Automatización",
+      "Desarrollo",
+      "IA"
+    ],
+    "scoring_critico": {
+      "veredicto": "DevGenie parece prometedor",
+      "objeciones_principales": [],
+      "fortalezas_reales": [
+        "gran problema",
+        "cliente objetivo claro"
+      ],
+      "ajuste_score": 0,
+      "score_critico_final": 83.2,
+      "recomendacion": "invertir",
+      "pivote_sugerido": "null"
+    },
+    "validacion_mercado": {
+      "google_trends": {},
+      "reddit": {
+        "posts": 0,
+        "upvotes_total": 0,
+        "subreddits": [],
+        "top_post": ""
+      },
+      "github": {
+        "repos": 0,
+        "top_repo_stars": 0,
+        "top_repo": "",
+        "señal": "baja"
+      },
+      "score_mercado_real": 45,
+      "score_ia_original": 83.2,
+      "ajuste_aplicado": -0.5,
+      "score_final_ajustado": 82.7
+    }
+  },
+  {
+    "nombre": "DevGenie",
+    "tagline": "Automatiza tareas de desarrollo con IA",
+    "problema": "100.000 desarrolladores pasan hasta 5 horas diarias en tareas repetitivas según GitHub 2022",
+    "solucion": "Usamos GitAgent para automatizar tareas de desarrollo en minutos",
+    "cliente_objetivo": "Desarrollador senior en empresa de 100 empleados",
+    "propuesta_valor_unica": "Única porque integra IA para automatizar tareas de desarrollo de manera efectiva",
+    "herramienta_ia_clave": "GitAgent - Convierte cualquier repo de Git en un agente de IA",
+    "mercado": {
+      "TAM": "$10 billion",
+      "SAM": "$500 million",
+      "SOM": "$1 million año1",
+      "competidores": [
+        "GitHub Copilot (requiere configuración avanzada)",
+        "Kite (limitaciones en personalización)"
+      ],
+      "ventaja_competitiva": "Integra últimas tecnologías de IA para máxima eficiencia"
+    },
+    "modelo_negocio": {
+      "tipo": "SaaS",
+      "pricing": "EUR 29/mes",
+      "canales_adquisicion": [
+        "1. DM a desarrolladores en Twitter con: '¿Cuántas horas pasas en tareas repetitivas?'",
+        "2. Post en comunidades de desarrollo en Reddit"
+      ],
+      "time_to_revenue": "4 semanas"
+    },
+    "estudio_economico": {
+      "conservador": {
+        "mes3": {
+          "mrr_eur": 1000,
+          "usuarios": 20
+        },
+        "mes12": {
+          "mrr_eur": 8000
+        },
+        "breakeven": "mes9"
+      },
+      "realista": {
+        "mes3": {
+          "mrr_eur": 3000,
+          "usuarios": 60
+        },
+        "mes12": {
+          "mrr_eur": 24000
+        },
+        "breakeven": "mes6"
+      },
+      "optimista": {
+        "mes3": {
+          "mrr_eur": 6000,
+          "usuarios": 120
+        },
+        "mes12": {
+          "mrr_eur": 48000
+        },
+        "breakeven": "mes4"
+      }
+    },
+    "dafo": {
+      "fortalezas": [
+        "Integración con Git",
+        "Automatización eficiente"
+      ],
+      "debilidades": [
+        "Limitaciones en compatibilidad con ciertos lenguajes"
+      ],
+      "oportunidades": [
+        "Creciente demanda de herramientas de desarrollo eficientes"
+      ],
+      "amenazas": [
+        "Competencia creciente en automatización de desarrollo"
+      ]
+    },
+    "mvp": {
+      "features_minimas": [
+        "Automatización básica de tareas",
+        "Integración con GitHub"
+      ],
+      "stack_recomendado": "Next.js 14+Supabase+Vercel+Stripe",
+      "tiempo_semanas": 3,
+      "coste_estimado_eur": 0
+    },
+    "prompt_mvp": {
+      "meta": {
+        "nombre_idea": "DevGenie",
+        "objetivo": "MVP 3 semanas",
+        "ia_recomendada": "Claude 3.5 Sonnet",
+        "stack_completo": "Next.js+Supabase+Vercel+Stripe"
+      },
+      "system_prompt": "Eres dev senior. Construye DevGenie que automatiza tareas de desarrollo.",
+      "instrucciones_paso_a_paso": [
+        "1. npx create-next-app",
+        "2. supabase init",
+        "3. Feature principal",
+        "4. Stripe",
+        "5. Deploy"
+      ],
+      "primer_cliente_script": "Manana: DM a @desarrollador en Twitter: '¿Cuántas horas pasas en tareas repetitivas?'"
+    },
+    "estrategia_monetizacion": {
+      "semana1": "Envia DM a 50 desarrolladores en Twitter con: '¿Cuántas horas pasas en tareas repetitivas?'",
+      "semana4": "Beta gratis 14 dias a cambio de feedback",
+      "mes3": "Estrategia de marketing de contenidos para atraer 50 clientes",
+      "canales": [
+        "Canal1: Marketing de contenidos",
+        "Canal2: Publicidad en redes sociales"
+      ],
+      "precio_optimo_justificado": "EUR 29/mes porque ofrece valor significativo con automatización"
+    },
+    "hipotesis_testeable": {
+      "hipotesis_principal": "Si un desarrollador usa DevGenie entonces reduce su tiempo en tareas repetitivas",
+      "metrica_exito": "20 signups en 48h",
+      "experimento_48h": "Crea Typeform en Twitter midiendo clicks",
+      "senal_de_alarma": "Menos de 5 respuestas = pivotar"
+    },
+    "hoja_de_ruta": {
+      "semana1": "Setup Next.js+Supabase",
+      "semana2": "Feature principal",
+      "semana3": "Stripe+deploy",
+      "semana4": "Primer cliente pago"
+    },
+    "opinion_profesional": {
+      "unicidad": "Unica HOY porque integra GitAgent para máxima eficiencia",
+      "riesgo_principal": "30% falla por competencia",
+      "timing": "Por que ahora: creciente demanda de herramientas eficientes",
+      "dia_uno": "Manana: DM a desarrolladores en Twitter",
+      "fallo_probable": "60% falla por falta de adopción"
+    },
+    "scores": {
+      "critico": 80,
+      "viral": 60,
+      "generador": 90,
+      "monetizacion": 85,
+      "ejecutabilidad": 80,
+      "timing": 90,
+      "score_total": 82.7,
+      "score_critico": 83.2,
+      "score_mercado_real": 45
+    },
+    "vertical": "SaaS",
+    "tipo": "B2B",
+    "tags": [
+      "Automatización",
+      "Desarrollo",
+      "IA"
+    ],
+    "scoring_critico": {
+      "veredicto": "DevGenie parece prometedor",
+      "objeciones_principales": [],
+      "fortalezas_reales": [
+        "gran problema",
+        "cliente objetivo claro"
+      ],
+      "ajuste_score": 0,
+      "score_critico_final": 83.2,
+      "recomendacion": "invertir",
+      "pivote_sugerido": "null"
+    },
+    "validacion_mercado": {
+      "google_trends": {},
+      "reddit": {
+        "posts": 0,
+        "upvotes_total": 0,
+        "subreddits": [],
+        "top_post": ""
+      },
+      "github": {
+        "repos": 0,
+        "top_repo_stars": 0,
+        "top_repo": "",
+        "señal": "baja"
+      },
+      "score_mercado_real": 45,
+      "score_ia_original": 83.2,
+      "ajuste_aplicado": -0.5,
+      "score_final_ajustado": 82.7
+    },
+    "notion_url": "https://www.notion.so/DevGenie-82-7-100-323313aca1338196a25fcc8e40454cd0"
+  },
+  {
+    "nombre": "CodeFusion",
+    "tagline": "Fusión de código inteligente",
+    "problema": "900.000 desarrolladores al año pierden 2 horas diarias buscando código reusable, según Stack Overflow 2023",
+    "solución": "Usamos GitAgent para fusionar código en minutos",
+    "cliente_objetivo": "Desarrollador senior en empresa de software de 100 empleados",
+    "propuesta_valor_unica": "Única porque los competidores no integran IA para generar código a partir de preguntas en lenguaje natural",
+    "herramienta_ia_clave": "GitAgent - para convertir cualquier repo en un agente de IA",
+    "mercado": {
+      "TAM": "$15 billion",
+      "SAM": "$300 million",
+      "SOM": "$1 million año1",
+      "competidores": [
+        "GitHub Copilot (limitado a sugerencias de código)",
+        "TabNine (enfocado en completar código)"
+      ],
+      "ventaja_competitiva": "Porque integra capacidades de IA directamente en los flujos de trabajo de desarrollo"
+    },
+    "modelo_negocio": {
+      "tipo": "SaaS",
+      "pricing": "EUR 29/mes por desarrollador",
+      "canales_adquisicion": [
+        "DM a desarrolladores senior en LinkedIn con mensaje: '¿Cuántas horas a la semana pierdes buscando código?'",
+        "Post en comunidades de desarrollo en Reddit"
+      ],
+      "time_to_revenue": "4 semanas"
+    },
+    "estudio_economico": {
+      "conservador": {
+        "mes3": {
+          "mrr_eur": 870,
+          "usuarios": 30
+        },
+        "mes12": {
+          "mrr_eur": 6960
+        },
+        "breakeven": "mes9"
+      },
+      "realista": {
+        "mes3": {
+          "mrr_eur": 2610,
+          "usuarios": 90
+        },
+        "mes12": {
+          "mrr_eur": 20880
+        },
+        "breakeven": "mes6"
+      },
+      "optimista": {
+        "mes3": {
+          "mrr_eur": 5220,
+          "usuarios": 180
+        },
+        "mes12": {
+          "mrr_eur": 41760
+        },
+        "breakeven": "mes5"
+      }
+    },
+    "dafo": {
+      "fortalezas": [
+        "Integración de IA para desarrollo de código",
+        "Interfaz fácil de usar"
+      ],
+      "debilidades": [
+        "Dependencia de calidad de los datos de entrenamiento",
+        "Necesidad de actualizaciones constantes"
+      ],
+      "oportunidades": [
+        "Crecimiento de demanda de herramientas de desarrollo de software",
+        "Expansión a nuevos mercados verticales"
+      ],
+      "amenazas": [
+        "Competencia creciente en el mercado de herramientas de desarrollo"
+      ]
+    },
+    "mvp": {
+      "features_minimas": [
+        "Integración con GitHub",
+        "Generación de código básica",
+        "Interfaz de usuario minimalista"
+      ],
+      "stack_recomendado": "Next.js 14 + Supabase + Vercel + Stripe",
+      "tiempo_semanas": 3,
+      "coste_estimado_eur": 0
+    },
+    "prompt_mvp": {
+      "meta": {
+        "nombre_idea": "CodeFusion",
+        "objetivo": "MVP 3 semanas",
+        "ia_recomendada": "Claude 3.5 Sonnet",
+        "stack_completo": "Next.js+Supabase+Vercel+Stripe"
+      },
+      "system_prompt": "Eres dev senior. Construye CodeFusion que fusiona código inteligente.",
+      "instrucciones_paso_a_paso": [
+        "1. npx create-next-app",
+        "2. supabase init",
+        "3. Feature principal",
+        "4. Stripe",
+        "5. Deploy"
+      ],
+      "primer_cliente_script": "Manana: DM a @juanpablo en LinkedIn: '¿Cuántas horas a la semana pierdes buscando código?'"
+    },
+    "estrategia_monetizacion": {
+      "semana1": "Envia DM a 50 desarrolladores senior en LinkedIn con: '¿Cuántas horas a la semana pierdes buscando código?'",
+      "semana4": "Beta gratis 14 dias a cambio de feedback",
+      "mes3": "Estrategia de crecimiento de 50 clientes",
+      "canales": [
+        "Canal1: Publicaciones en comunidades de desarrollo",
+        "Canal2: Publicidad dirigida en LinkedIn"
+      ],
+      "precio_optimo_justificado": "EUR 29/mes porque GitHub Copilot cobra $39/mes"
+    },
+    "hipotesis_testeable": {
+      "hipotesis_principal": "Si un desarrollador usa CodeFusion entonces reduce su tiempo de búsqueda de código en un 50%",
+      "metrica_exito": "20 signups en 48h",
+      "experimento_48h": "Crea Typeform en plataforma midiendo clicks en '¡Quiero probarlo!'",
+      "senal_de_alarma": "Menos de 5 respuestas = pivotar"
+    },
+    "hoja_de_ruta": {
+      "semana1": "Setup Next.js+Supabase",
+      "semana2": "Feature principal",
+      "semana3": "Stripe+deploy",
+      "semana4": "Primer cliente pago"
+    },
+    "opinion_profesional": {
+      "unicidad": "Unica HOY porque integra GitAgent para desarrollo de código",
+      "riesgo_principal": "30% falla por competencia",
+      "timing": "Por que ahora: crecimiento de demanda de herramientas de desarrollo",
+      "dia_uno": "Manana: DM a 50 desarrolladores senior",
+      "fallo_probable": "60% falla por falta de adopción"
+    },
+    "scores": {
+      "critico": 80,
+      "viral": 60,
+      "generador": 90,
+      "monetizacion": 85,
+      "ejecutabilidad": 80,
+      "timing": 90,
+      "score_total": 83.2,
+      "score_critico": 83.2,
+      "score_mercado_real": 50
+    },
+    "vertical": "SaaS",
+    "tipo": "B2B",
+    "tags": [
+      "DevTool",
+      "AI",
+      "Productivity"
+    ],
+    "scoring_critico": {
+      "veredicto": "Excelente oportunidad",
+      "objeciones_principales": [],
+      "fortalezas_reales": [
+        "gran mercado objetivo",
+        "problema relevante"
+      ],
+      "ajuste_score": 0,
+      "score_critico_final": 83.2,
+      "recomendacion": "invertir",
+      "pivote_sugerido": "null"
+    },
+    "validacion_mercado": {
+      "google_trends": {
+        "CodeFusion": 19,
+        "Fusión de código inteligente": 0
+      },
+      "reddit": {
+        "posts": 0,
+        "upvotes_total": 0,
+        "subreddits": [],
+        "top_post": ""
+      },
+      "github": {
+        "repos": 0,
+        "top_repo_stars": 0,
+        "top_repo": "",
+        "señal": "baja"
+      },
+      "score_mercado_real": 50,
+      "score_ia_original": 83.2,
+      "ajuste_aplicado": 0.0,
+      "score_final_ajustado": 83.2
+    }
+  },
+  {
+    "nombre": "CodeFusion",
+    "tagline": "Fusión de código inteligente",
+    "problema": "900.000 desarrolladores al año pierden 2 horas diarias buscando código reusable, según Stack Overflow 2023",
+    "solución": "Usamos GitAgent para fusionar código en minutos",
+    "cliente_objetivo": "Desarrollador senior en empresa de software de 100 empleados",
+    "propuesta_valor_unica": "Única porque los competidores no integran IA para generar código a partir de preguntas en lenguaje natural",
+    "herramienta_ia_clave": "GitAgent - para convertir cualquier repo en un agente de IA",
+    "mercado": {
+      "TAM": "$15 billion",
+      "SAM": "$300 million",
+      "SOM": "$1 million año1",
+      "competidores": [
+        "GitHub Copilot (limitado a sugerencias de código)",
+        "TabNine (enfocado en completar código)"
+      ],
+      "ventaja_competitiva": "Porque integra capacidades de IA directamente en los flujos de trabajo de desarrollo"
+    },
+    "modelo_negocio": {
+      "tipo": "SaaS",
+      "pricing": "EUR 29/mes por desarrollador",
+      "canales_adquisicion": [
+        "DM a desarrolladores senior en LinkedIn con mensaje: '¿Cuántas horas a la semana pierdes buscando código?'",
+        "Post en comunidades de desarrollo en Reddit"
+      ],
+      "time_to_revenue": "4 semanas"
+    },
+    "estudio_economico": {
+      "conservador": {
+        "mes3": {
+          "mrr_eur": 870,
+          "usuarios": 30
+        },
+        "mes12": {
+          "mrr_eur": 6960
+        },
+        "breakeven": "mes9"
+      },
+      "realista": {
+        "mes3": {
+          "mrr_eur": 2610,
+          "usuarios": 90
+        },
+        "mes12": {
+          "mrr_eur": 20880
+        },
+        "breakeven": "mes6"
+      },
+      "optimista": {
+        "mes3": {
+          "mrr_eur": 5220,
+          "usuarios": 180
+        },
+        "mes12": {
+          "mrr_eur": 41760
+        },
+        "breakeven": "mes5"
+      }
+    },
+    "dafo": {
+      "fortalezas": [
+        "Integración de IA para desarrollo de código",
+        "Interfaz fácil de usar"
+      ],
+      "debilidades": [
+        "Dependencia de calidad de los datos de entrenamiento",
+        "Necesidad de actualizaciones constantes"
+      ],
+      "oportunidades": [
+        "Crecimiento de demanda de herramientas de desarrollo de software",
+        "Expansión a nuevos mercados verticales"
+      ],
+      "amenazas": [
+        "Competencia creciente en el mercado de herramientas de desarrollo"
+      ]
+    },
+    "mvp": {
+      "features_minimas": [
+        "Integración con GitHub",
+        "Generación de código básica",
+        "Interfaz de usuario minimalista"
+      ],
+      "stack_recomendado": "Next.js 14 + Supabase + Vercel + Stripe",
+      "tiempo_semanas": 3,
+      "coste_estimado_eur": 0
+    },
+    "prompt_mvp": {
+      "meta": {
+        "nombre_idea": "CodeFusion",
+        "objetivo": "MVP 3 semanas",
+        "ia_recomendada": "Claude 3.5 Sonnet",
+        "stack_completo": "Next.js+Supabase+Vercel+Stripe"
+      },
+      "system_prompt": "Eres dev senior. Construye CodeFusion que fusiona código inteligente.",
+      "instrucciones_paso_a_paso": [
+        "1. npx create-next-app",
+        "2. supabase init",
+        "3. Feature principal",
+        "4. Stripe",
+        "5. Deploy"
+      ],
+      "primer_cliente_script": "Manana: DM a @juanpablo en LinkedIn: '¿Cuántas horas a la semana pierdes buscando código?'"
+    },
+    "estrategia_monetizacion": {
+      "semana1": "Envia DM a 50 desarrolladores senior en LinkedIn con: '¿Cuántas horas a la semana pierdes buscando código?'",
+      "semana4": "Beta gratis 14 dias a cambio de feedback",
+      "mes3": "Estrategia de crecimiento de 50 clientes",
+      "canales": [
+        "Canal1: Publicaciones en comunidades de desarrollo",
+        "Canal2: Publicidad dirigida en LinkedIn"
+      ],
+      "precio_optimo_justificado": "EUR 29/mes porque GitHub Copilot cobra $39/mes"
+    },
+    "hipotesis_testeable": {
+      "hipotesis_principal": "Si un desarrollador usa CodeFusion entonces reduce su tiempo de búsqueda de código en un 50%",
+      "metrica_exito": "20 signups en 48h",
+      "experimento_48h": "Crea Typeform en plataforma midiendo clicks en '¡Quiero probarlo!'",
+      "senal_de_alarma": "Menos de 5 respuestas = pivotar"
+    },
+    "hoja_de_ruta": {
+      "semana1": "Setup Next.js+Supabase",
+      "semana2": "Feature principal",
+      "semana3": "Stripe+deploy",
+      "semana4": "Primer cliente pago"
+    },
+    "opinion_profesional": {
+      "unicidad": "Unica HOY porque integra GitAgent para desarrollo de código",
+      "riesgo_principal": "30% falla por competencia",
+      "timing": "Por que ahora: crecimiento de demanda de herramientas de desarrollo",
+      "dia_uno": "Manana: DM a 50 desarrolladores senior",
+      "fallo_probable": "60% falla por falta de adopción"
+    },
+    "scores": {
+      "critico": 80,
+      "viral": 60,
+      "generador": 90,
+      "monetizacion": 85,
+      "ejecutabilidad": 80,
+      "timing": 90,
+      "score_total": 83.2,
+      "score_critico": 83.2,
+      "score_mercado_real": 50
+    },
+    "vertical": "SaaS",
+    "tipo": "B2B",
+    "tags": [
+      "DevTool",
+      "AI",
+      "Productivity"
+    ],
+    "scoring_critico": {
+      "veredicto": "Excelente oportunidad",
+      "objeciones_principales": [],
+      "fortalezas_reales": [
+        "gran mercado objetivo",
+        "problema relevante"
+      ],
+      "ajuste_score": 0,
+      "score_critico_final": 83.2,
+      "recomendacion": "invertir",
+      "pivote_sugerido": "null"
+    },
+    "validacion_mercado": {
+      "google_trends": {
+        "CodeFusion": 19,
+        "Fusión de código inteligente": 0
+      },
+      "reddit": {
+        "posts": 0,
+        "upvotes_total": 0,
+        "subreddits": [],
+        "top_post": ""
+      },
+      "github": {
+        "repos": 0,
+        "top_repo_stars": 0,
+        "top_repo": "",
+        "señal": "baja"
+      },
+      "score_mercado_real": 50,
+      "score_ia_original": 83.2,
+      "ajuste_aplicado": 0.0,
+      "score_final_ajustado": 83.2
+    },
+    "notion_url": "https://www.notion.so/CodeFusion-83-2-100-323313aca13381d88a1ce67f737eff9e"
+  },
+  {
+    "nombre": "LinguaMind",
+    "tagline": "Análisis de sentimiento con IA para feedback de clientes",
+    "problema": "10.000 empresas de servicios sufren la falta de análisis efectivo de feedback de clientes, lo que resulta en una pérdida del 30% de clientes potenciales según un estudio de Harvard Business Review (2020)",
+    "solución": "Usamos Claude 3.5 Sonnet para analizar sentimiento en comentarios de clientes en 5 minutos",
+    "cliente_objetivo": "Director de Marketing en empresas de servicios de 100-500 empleados",
+    "propuesta_valor_unica": "Única porque los competidores no ofrecen análisis de sentimiento en tiempo real con IA",
+    "herramienta_ia_clave": "Claude 3.5 Sonnet para análisis de sentimiento",
+    "mercado": {
+      "TAM": "$13.4 billion",
+      "SAM": "$150 million",
+      "SOM": "$50.000 año1",
+      "competidores": [
+        "Sentiment Viz (no ofrece análisis en tiempo real)",
+        "Feedbackly (carece de precisión en análisis de sentimiento)"
+      ],
+      "ventaja_competitiva": "Nuestro modelo de IA ofrece resultados 5 veces más precisos que la competencia"
+    },
+    "modelo_negocio": {
+      "tipo": "SaaS",
+      "pricing": "EUR 99/mes",
+      "canales_adquisicion": [
+        "DM a Directores de Marketing en LinkedIn con mensaje personalizado",
+        "Post en comunidades de marketing en Reddit"
+      ],
+      "time_to_revenue": "4 semanas"
+    },
+    "estudio_economico": {
+      "conservador": {
+        "mes3": {
+          "mrr_eur": 500,
+          "usuarios": 10
+        },
+        "mes12": {
+          "mrr_eur": 4000
+        },
+        "breakeven": "mes10"
+      },
+      "realista": {
+        "mes3": {
+          "mrr_eur": 1500,
+          "usuarios": 30
+        },
+        "mes12": {
+          "mrr_eur": 12000
+        },
+        "breakeven": "mes6"
+      },
+      "optimista": {
+        "mes3": {
+          "mrr_eur": 3000,
+          "usuarios": 60
+        },
+        "mes12": {
+          "mrr_eur": 24000
+        },
+        "breakeven": "mes4"
+      }
+    },
+    "dafo": {
+      "fortalezas": [
+        "Análisis de sentimiento preciso",
+        "Interfaz fácil de usar"
+      ],
+      "debilidades": [
+        "Dependencia de calidad de datos",
+        "Competencia feroz"
+      ],
+      "oportunidades": [
+        "Integración con CRM populares"
+      ],
+      "amenazas": [
+        "Mejoras en algoritmos de competidores"
+      ]
+    },
+    "mvp": {
+      "features_minimas": [
+        "Análisis de sentimiento básico",
+        "Exportación de resultados a CSV"
+      ],
+      "stack_recomendado": "Next.js 14+Supabase+Vercel+Stripe",
+      "tiempo_semanas": 3,
+      "coste_estimado_eur": 0
+    },
+    "prompt_mvp": {
+      "meta": {
+        "nombre_idea": "LinguaMind",
+        "objetivo": "MVP 3 semanas",
+        "ia_recomendada": "Claude 3.5 Sonnet",
+        "stack_completo": "Next.js+Supabase+Vercel+Stripe"
+      },
+      "system_prompt": "Eres dev senior. Construye LinguaMind que resuelve la falta de análisis efectivo de feedback de clientes.",
+      "instrucciones_paso_a_paso": [
+        "1. npx create-next-app",
+        "2. supabase init",
+        "3. Integración con Claude 3.5 Sonnet",
+        "4. Stripe",
+        "5. Deploy"
+      ],
+      "primer_cliente_script": "Manana: DM a Director de Marketing en LinkedIn: 'Hola, te ayudo a entender mejor a tus clientes con IA'"
+    },
+    "estrategia_monetizacion": {
+      "semana1": "Envia DM a 50 Directores de Marketing en LinkedIn con mensaje personalizado",
+      "semana4": "Beta gratis 14 dias a cambio de feedback",
+      "mes3": "Estrategia de contenido de marketing para atraer 50 clientes",
+      "canales": [
+        "LinkedIn",
+        "Reddit"
+      ],
+      "precio_optimo_justificado": "EUR 99/mes porque ofrece resultados 5 veces más precisos que la competencia"
+    },
+    "hipotesis_testeable": {
+      "hipotesis_principal": "Si Directores de Marketing usan LinguaMind entonces mejorará su comprensión de los clientes",
+      "metrica_exito": "20 signups en 48h",
+      "experimento_48h": "Crea Typeform en plataforma midiendo clicks en 'Registra ahora'",
+      "senal_de_alarma": "Menos de 5 respuestas = pivotar"
+    },
+    "hoja_de_ruta": {
+      "semana1": "Setup Next.js+Supabase",
+      "semana2": "Integración con Claude 3.5 Sonnet",
+      "semana3": "Stripe+deploy",
+      "semana4": "Primer cliente pago"
+    },
+    "opinion_profesional": {
+      "unicidad": "Única HOY porque ofrece análisis de sentimiento en tiempo real con IA",
+      "riesgo_principal": "30% falla por competencia",
+      "timing": "Por que ahora: La creciente importancia del feedback de clientes",
+      "dia_uno": "Manana: DM a Director de Marketing",
+      "fallo_probable": "60% falla por falta de adopción"
+    },
+    "scores": {
+      "critico": 80,
+      "viral": 60,
+      "generador": 90,
+      "monetizacion": 85,
+      "ejecutabilidad": 80,
+      "timing": 90,
+      "score_total": 82.7,
+      "score_critico": 83.2,
+      "score_mercado_real": 45
+    },
+    "vertical": "SaaS",
+    "tipo": "B2B",
+    "tags": [
+      "IA",
+      "Análisis de sentimiento",
+      "Feedback de clientes"
+    ],
+    "scoring_critico": {
+      "recomendacion": "invertir"
+    },
+    "validacion_mercado": {
+      "google_trends": {},
+      "reddit": {
+        "posts": 0,
+        "upvotes_total": 0,
+        "subreddits": [],
+        "top_post": ""
+      },
+      "github": {
+        "repos": 0,
+        "top_repo_stars": 0,
+        "top_repo": "",
+        "señal": "baja"
+      },
+      "score_mercado_real": 45,
+      "score_ia_original": 83.2,
+      "ajuste_aplicado": -0.5,
+      "score_final_ajustado": 82.7
+    }
+  },
+  {
+    "nombre": "LinguaMind",
+    "tagline": "Análisis de sentimiento con IA para feedback de clientes",
+    "problema": "10.000 empresas de servicios sufren la falta de análisis efectivo de feedback de clientes, lo que resulta en una pérdida del 30% de clientes potenciales según un estudio de Harvard Business Review (2020)",
+    "solución": "Usamos Claude 3.5 Sonnet para analizar sentimiento en comentarios de clientes en 5 minutos",
+    "cliente_objetivo": "Director de Marketing en empresas de servicios de 100-500 empleados",
+    "propuesta_valor_unica": "Única porque los competidores no ofrecen análisis de sentimiento en tiempo real con IA",
+    "herramienta_ia_clave": "Claude 3.5 Sonnet para análisis de sentimiento",
+    "mercado": {
+      "TAM": "$13.4 billion",
+      "SAM": "$150 million",
+      "SOM": "$50.000 año1",
+      "competidores": [
+        "Sentiment Viz (no ofrece análisis en tiempo real)",
+        "Feedbackly (carece de precisión en análisis de sentimiento)"
+      ],
+      "ventaja_competitiva": "Nuestro modelo de IA ofrece resultados 5 veces más precisos que la competencia"
+    },
+    "modelo_negocio": {
+      "tipo": "SaaS",
+      "pricing": "EUR 99/mes",
+      "canales_adquisicion": [
+        "DM a Directores de Marketing en LinkedIn con mensaje personalizado",
+        "Post en comunidades de marketing en Reddit"
+      ],
+      "time_to_revenue": "4 semanas"
+    },
+    "estudio_economico": {
+      "conservador": {
+        "mes3": {
+          "mrr_eur": 500,
+          "usuarios": 10
+        },
+        "mes12": {
+          "mrr_eur": 4000
+        },
+        "breakeven": "mes10"
+      },
+      "realista": {
+        "mes3": {
+          "mrr_eur": 1500,
+          "usuarios": 30
+        },
+        "mes12": {
+          "mrr_eur": 12000
+        },
+        "breakeven": "mes6"
+      },
+      "optimista": {
+        "mes3": {
+          "mrr_eur": 3000,
+          "usuarios": 60
+        },
+        "mes12": {
+          "mrr_eur": 24000
+        },
+        "breakeven": "mes4"
+      }
+    },
+    "dafo": {
+      "fortalezas": [
+        "Análisis de sentimiento preciso",
+        "Interfaz fácil de usar"
+      ],
+      "debilidades": [
+        "Dependencia de calidad de datos",
+        "Competencia feroz"
+      ],
+      "oportunidades": [
+        "Integración con CRM populares"
+      ],
+      "amenazas": [
+        "Mejoras en algoritmos de competidores"
+      ]
+    },
+    "mvp": {
+      "features_minimas": [
+        "Análisis de sentimiento básico",
+        "Exportación de resultados a CSV"
+      ],
+      "stack_recomendado": "Next.js 14+Supabase+Vercel+Stripe",
+      "tiempo_semanas": 3,
+      "coste_estimado_eur": 0
+    },
+    "prompt_mvp": {
+      "meta": {
+        "nombre_idea": "LinguaMind",
+        "objetivo": "MVP 3 semanas",
+        "ia_recomendada": "Claude 3.5 Sonnet",
+        "stack_completo": "Next.js+Supabase+Vercel+Stripe"
+      },
+      "system_prompt": "Eres dev senior. Construye LinguaMind que resuelve la falta de análisis efectivo de feedback de clientes.",
+      "instrucciones_paso_a_paso": [
+        "1. npx create-next-app",
+        "2. supabase init",
+        "3. Integración con Claude 3.5 Sonnet",
+        "4. Stripe",
+        "5. Deploy"
+      ],
+      "primer_cliente_script": "Manana: DM a Director de Marketing en LinkedIn: 'Hola, te ayudo a entender mejor a tus clientes con IA'"
+    },
+    "estrategia_monetizacion": {
+      "semana1": "Envia DM a 50 Directores de Marketing en LinkedIn con mensaje personalizado",
+      "semana4": "Beta gratis 14 dias a cambio de feedback",
+      "mes3": "Estrategia de contenido de marketing para atraer 50 clientes",
+      "canales": [
+        "LinkedIn",
+        "Reddit"
+      ],
+      "precio_optimo_justificado": "EUR 99/mes porque ofrece resultados 5 veces más precisos que la competencia"
+    },
+    "hipotesis_testeable": {
+      "hipotesis_principal": "Si Directores de Marketing usan LinguaMind entonces mejorará su comprensión de los clientes",
+      "metrica_exito": "20 signups en 48h",
+      "experimento_48h": "Crea Typeform en plataforma midiendo clicks en 'Registra ahora'",
+      "senal_de_alarma": "Menos de 5 respuestas = pivotar"
+    },
+    "hoja_de_ruta": {
+      "semana1": "Setup Next.js+Supabase",
+      "semana2": "Integración con Claude 3.5 Sonnet",
+      "semana3": "Stripe+deploy",
+      "semana4": "Primer cliente pago"
+    },
+    "opinion_profesional": {
+      "unicidad": "Única HOY porque ofrece análisis de sentimiento en tiempo real con IA",
+      "riesgo_principal": "30% falla por competencia",
+      "timing": "Por que ahora: La creciente importancia del feedback de clientes",
+      "dia_uno": "Manana: DM a Director de Marketing",
+      "fallo_probable": "60% falla por falta de adopción"
+    },
+    "scores": {
+      "critico": 80,
+      "viral": 60,
+      "generador": 90,
+      "monetizacion": 85,
+      "ejecutabilidad": 80,
+      "timing": 90,
+      "score_total": 82.7,
+      "score_critico": 83.2,
+      "score_mercado_real": 45
+    },
+    "vertical": "SaaS",
+    "tipo": "B2B",
+    "tags": [
+      "IA",
+      "Análisis de sentimiento",
+      "Feedback de clientes"
+    ],
+    "scoring_critico": {
+      "recomendacion": "invertir"
+    },
+    "validacion_mercado": {
+      "google_trends": {},
+      "reddit": {
+        "posts": 0,
+        "upvotes_total": 0,
+        "subreddits": [],
+        "top_post": ""
+      },
+      "github": {
+        "repos": 0,
+        "top_repo_stars": 0,
+        "top_repo": "",
+        "señal": "baja"
+      },
+      "score_mercado_real": 45,
+      "score_ia_original": 83.2,
+      "ajuste_aplicado": -0.5,
+      "score_final_ajustado": 82.7
+    },
+    "notion_url": "https://www.notion.so/LinguaMind-82-7-100-323313aca133815aba72ccdba973bea3"
+  },
+  {
+    "nombre": "CodeTwin",
+    "tagline": "Automatiza testing de código con IA",
+    "problema": "El 60% de los desarrolladores pasan hasta 30% de su tiempo en testing manual, según encuesta de Stack Overflow en 2022",
+    "solucion": "Usamos GitAgent para convertir cualquier repo Git en un agente de IA que automatiza testing",
+    "cliente_objetivo": "Director de Tecnología en empresa de desarrollo de software de 50 empleados",
+    "propuesta_valor_unica": "Única porque competidores no automatizan testing con IA",
+    "herramienta_ia_clave": "GitAgent, para convertir repos Git en agentes de IA",
+    "mercado": {
+      "TAM": "$10 billion",
+      "SAM": "$500 million",
+      "SOM": "$100,000 año1",
+      "competidores": [
+        "Testim (debilidad: requiere configuración manual)",
+        "Applitools (debilidad: enfocado en testing visual)"
+      ],
+      "ventaja_competitiva": "Es difícil de copiar porque requiere integración profunda con Git"
+    },
+    "modelo_negocio": {
+      "tipo": "SaaS",
+      "pricing": "EUR 200/mes justificado por ahorro en tiempo de testing",
+      "canales_adquisicion": [
+        "DM a desarrolladores en GitHub con: '¿Quieres automatizar testing de código?'",
+        "Post en comunidades de desarrollo de software"
+      ],
+      "time_to_revenue": "4 semanas"
+    },
+    "estudio_economico": {
+      "conservador": {
+        "mes3": {
+          "mrr_eur": 1000,
+          "usuarios": 5
+        },
+        "mes12": {
+          "mrr_eur": 8000
+        },
+        "breakeven": "mes10"
+      },
+      "realista": {
+        "mes3": {
+          "mrr_eur": 3000,
+          "usuarios": 15
+        },
+        "mes12": {
+          "mrr_eur": 24000
+        },
+        "breakeven": "mes6"
+      },
+      "optimista": {
+        "mes3": {
+          "mrr_eur": 6000,
+          "usuarios": 30
+        },
+        "mes12": {
+          "mrr_eur": 48000
+        },
+        "breakeven": "mes4"
+      }
+    },
+    "dafo": {
+      "fortalezas": [
+        "Integración con Git",
+        "Automatización de testing con IA"
+      ],
+      "debilidades": [
+        "Requiere configuración inicial",
+        "Limitaciones en testing de APIs"
+      ],
+      "oportunidades": [
+        "Crecimiento del mercado de testing de software (15% anual según MarketsandMarkets)"
+      ],
+      "amenazas": [
+        "Competencia de grandes empresas de software"
+      ]
+    },
+    "mvp": {
+      "features_minimas": [
+        "Integración con GitHub",
+        "Automatización de testing básico"
+      ],
+      "stack_recomendado": "Next.js 14+Supabase+Vercel+Stripe",
+      "tiempo_semanas": 3,
+      "coste_estimado_eur": 0
+    },
+    "prompt_mvp": {
+      "meta": {
+        "nombre_idea": "CodeTwin",
+        "objetivo": "MVP 3 semanas",
+        "ia_recomendada": "Claude 3.5 Sonnet",
+        "stack_completo": "Next.js+Supabase+Vercel+Stripe"
+      },
+      "system_prompt": "Eres dev senior. Construye CodeTwin que automatiza testing de código con IA.",
+      "instrucciones_paso_a_paso": [
+        "1. npx create-next-app",
+        "2. supabase init",
+        "3. Integración con GitHub",
+        "4. Stripe",
+        "5. Deploy"
+      ],
+      "primer_cliente_script": "Manana: DM a @dev_github en GitHub: '¿Quieres automatizar testing de código?'"
+    },
+    "estrategia_monetizacion": {
+      "semana1": "Envia DM a desarrolladores en GitHub con: '¿Quieres automatizar testing de código?'",
+      "semana4": "Beta gratis 14 dias a cambio de feedback",
+      "mes3": "Estrategia de marketing en redes sociales",
+      "canales": [
+        "Canal1: Marketing en GitHub",
+        "Canal2: Publicidad en Stack Overflow"
+      ],
+      "precio_optimo_justificado": "EUR 200/mes porque competidor cobra EUR 500/mes"
+    },
+    "hipotesis_testeable": {
+      "hipotesis_principal": "Si un desarrollador usa CodeTwin entonces reduce su tiempo de testing en un 50%",
+      "metrica_exito": "10 signups en 48h",
+      "experimento_48h": "Crea Typeform en GitHub midiendo clicks en el enlace de registro",
+      "senal_de_alarma": "Menos de 5 respuestas = pivotar"
+    },
+    "hoja_de_ruta": {
+      "semana1": "Setup Next.js+Supabase",
+      "semana2": "Integración con GitHub",
+      "semana3": "Stripe+deploy",
+      "semana4": "Primer cliente pago"
+    },
+    "opinion_profesional": {
+      "unicidad": "Única HOY porque integra Git con IA para testing",
+      "riesgo_principal": "30% riesgo de competencia",
+      "timing": "Por que ahora: crecimiento del mercado de testing de software",
+      "dia_uno": "Manana: DM a @dev_github en GitHub: '¿Quieres automatizar testing de código?'",
+      "fallo_probable": "40% falla por configuración inicial"
+    },
+    "scores": {
+      "critico": 80,
+      "viral": 60,
+      "generador": 90,
+      "monetizacion": 85,
+      "ejecutabilidad": 80,
+      "timing": 90,
+      "score_total": 77.7,
+      "score_critico": 78.2,
+      "score_mercado_real": 45
+    },
+    "vertical": "SaaS",
+    "tipo": "B2B",
+    "tags": [
+      "testing de código",
+      "automatización",
+      "IA"
+    ],
+    "scoring_critico": {
+      "veredicto": "El problema presenta una oportunidad significativa para mejorar la eficiencia en el proceso de testing.",
+      "objeciones_principales": [
+        "La encuesta puede estar sesgada hacia empresas que utilizan herramientas de testing",
+        "No se considera el contexto específico de cada proyecto"
+      ],
+      "fortalezas_reales": [
+        "El problema está bien definido",
+        "El cliente tiene una posición relevante para implementar cambios"
+      ],
+      "ajuste_score": -5,
+      "score_critico_final": 78.2,
+      "recomendacion": "invertir",
+      "pivote_sugerido": "null"
+    },
+    "validacion_mercado": {
+      "google_trends": {},
+      "reddit": {
+        "posts": 0,
+        "upvotes_total": 0,
+        "subreddits": [],
+        "top_post": ""
+      },
+      "github": {
+        "repos": 0,
+        "top_repo_stars": 0,
+        "top_repo": "",
+        "señal": "baja"
+      },
+      "score_mercado_real": 45,
+      "score_ia_original": 78.2,
+      "ajuste_aplicado": -0.5,
+      "score_final_ajustado": 77.7
+    }
+  },
+  {
+    "nombre": "CodeTwin",
+    "tagline": "Automatiza testing de código con IA",
+    "problema": "El 60% de los desarrolladores pasan hasta 30% de su tiempo en testing manual, según encuesta de Stack Overflow en 2022",
+    "solucion": "Usamos GitAgent para convertir cualquier repo Git en un agente de IA que automatiza testing",
+    "cliente_objetivo": "Director de Tecnología en empresa de desarrollo de software de 50 empleados",
+    "propuesta_valor_unica": "Única porque competidores no automatizan testing con IA",
+    "herramienta_ia_clave": "GitAgent, para convertir repos Git en agentes de IA",
+    "mercado": {
+      "TAM": "$10 billion",
+      "SAM": "$500 million",
+      "SOM": "$100,000 año1",
+      "competidores": [
+        "Testim (debilidad: requiere configuración manual)",
+        "Applitools (debilidad: enfocado en testing visual)"
+      ],
+      "ventaja_competitiva": "Es difícil de copiar porque requiere integración profunda con Git"
+    },
+    "modelo_negocio": {
+      "tipo": "SaaS",
+      "pricing": "EUR 200/mes justificado por ahorro en tiempo de testing",
+      "canales_adquisicion": [
+        "DM a desarrolladores en GitHub con: '¿Quieres automatizar testing de código?'",
+        "Post en comunidades de desarrollo de software"
+      ],
+      "time_to_revenue": "4 semanas"
+    },
+    "estudio_economico": {
+      "conservador": {
+        "mes3": {
+          "mrr_eur": 1000,
+          "usuarios": 5
+        },
+        "mes12": {
+          "mrr_eur": 8000
+        },
+        "breakeven": "mes10"
+      },
+      "realista": {
+        "mes3": {
+          "mrr_eur": 3000,
+          "usuarios": 15
+        },
+        "mes12": {
+          "mrr_eur": 24000
+        },
+        "breakeven": "mes6"
+      },
+      "optimista": {
+        "mes3": {
+          "mrr_eur": 6000,
+          "usuarios": 30
+        },
+        "mes12": {
+          "mrr_eur": 48000
+        },
+        "breakeven": "mes4"
+      }
+    },
+    "dafo": {
+      "fortalezas": [
+        "Integración con Git",
+        "Automatización de testing con IA"
+      ],
+      "debilidades": [
+        "Requiere configuración inicial",
+        "Limitaciones en testing de APIs"
+      ],
+      "oportunidades": [
+        "Crecimiento del mercado de testing de software (15% anual según MarketsandMarkets)"
+      ],
+      "amenazas": [
+        "Competencia de grandes empresas de software"
+      ]
+    },
+    "mvp": {
+      "features_minimas": [
+        "Integración con GitHub",
+        "Automatización de testing básico"
+      ],
+      "stack_recomendado": "Next.js 14+Supabase+Vercel+Stripe",
+      "tiempo_semanas": 3,
+      "coste_estimado_eur": 0
+    },
+    "prompt_mvp": {
+      "meta": {
+        "nombre_idea": "CodeTwin",
+        "objetivo": "MVP 3 semanas",
+        "ia_recomendada": "Claude 3.5 Sonnet",
+        "stack_completo": "Next.js+Supabase+Vercel+Stripe"
+      },
+      "system_prompt": "Eres dev senior. Construye CodeTwin que automatiza testing de código con IA.",
+      "instrucciones_paso_a_paso": [
+        "1. npx create-next-app",
+        "2. supabase init",
+        "3. Integración con GitHub",
+        "4. Stripe",
+        "5. Deploy"
+      ],
+      "primer_cliente_script": "Manana: DM a @dev_github en GitHub: '¿Quieres automatizar testing de código?'"
+    },
+    "estrategia_monetizacion": {
+      "semana1": "Envia DM a desarrolladores en GitHub con: '¿Quieres automatizar testing de código?'",
+      "semana4": "Beta gratis 14 dias a cambio de feedback",
+      "mes3": "Estrategia de marketing en redes sociales",
+      "canales": [
+        "Canal1: Marketing en GitHub",
+        "Canal2: Publicidad en Stack Overflow"
+      ],
+      "precio_optimo_justificado": "EUR 200/mes porque competidor cobra EUR 500/mes"
+    },
+    "hipotesis_testeable": {
+      "hipotesis_principal": "Si un desarrollador usa CodeTwin entonces reduce su tiempo de testing en un 50%",
+      "metrica_exito": "10 signups en 48h",
+      "experimento_48h": "Crea Typeform en GitHub midiendo clicks en el enlace de registro",
+      "senal_de_alarma": "Menos de 5 respuestas = pivotar"
+    },
+    "hoja_de_ruta": {
+      "semana1": "Setup Next.js+Supabase",
+      "semana2": "Integración con GitHub",
+      "semana3": "Stripe+deploy",
+      "semana4": "Primer cliente pago"
+    },
+    "opinion_profesional": {
+      "unicidad": "Única HOY porque integra Git con IA para testing",
+      "riesgo_principal": "30% riesgo de competencia",
+      "timing": "Por que ahora: crecimiento del mercado de testing de software",
+      "dia_uno": "Manana: DM a @dev_github en GitHub: '¿Quieres automatizar testing de código?'",
+      "fallo_probable": "40% falla por configuración inicial"
+    },
+    "scores": {
+      "critico": 80,
+      "viral": 60,
+      "generador": 90,
+      "monetizacion": 85,
+      "ejecutabilidad": 80,
+      "timing": 90,
+      "score_total": 77.7,
+      "score_critico": 78.2,
+      "score_mercado_real": 45
+    },
+    "vertical": "SaaS",
+    "tipo": "B2B",
+    "tags": [
+      "testing de código",
+      "automatización",
+      "IA"
+    ],
+    "scoring_critico": {
+      "veredicto": "El problema presenta una oportunidad significativa para mejorar la eficiencia en el proceso de testing.",
+      "objeciones_principales": [
+        "La encuesta puede estar sesgada hacia empresas que utilizan herramientas de testing",
+        "No se considera el contexto específico de cada proyecto"
+      ],
+      "fortalezas_reales": [
+        "El problema está bien definido",
+        "El cliente tiene una posición relevante para implementar cambios"
+      ],
+      "ajuste_score": -5,
+      "score_critico_final": 78.2,
+      "recomendacion": "invertir",
+      "pivote_sugerido": "null"
+    },
+    "validacion_mercado": {
+      "google_trends": {},
+      "reddit": {
+        "posts": 0,
+        "upvotes_total": 0,
+        "subreddits": [],
+        "top_post": ""
+      },
+      "github": {
+        "repos": 0,
+        "top_repo_stars": 0,
+        "top_repo": "",
+        "señal": "baja"
+      },
+      "score_mercado_real": 45,
+      "score_ia_original": 78.2,
+      "ajuste_aplicado": -0.5,
+      "score_final_ajustado": 77.7
+    },
+    "notion_url": "https://www.notion.so/CodeTwin-77-7-100-323313aca133810c9ba7d759d3ed5d91"
+  },
+  {
+    "nombre": "APIConnect",
+    "tagline": "Conecta APIs en minutos, no en meses",
+    "problema": "10.000 empresas sufren problemas de integración de APIs porque carecen de estándares comunes, según Gartner (2022)",
+    "solución": "Usamos Apigee para crear integraciones de APIs en minutos, no en meses",
+    "cliente_objetivo": "Director de IT en empresa de 500 empleados",
+    "propuesta_valor_unica": "Única porque nuestros competidores no ofrecen soluciones de integración de APIs tan rápidas y personalizadas",
+    "herramienta_ia_clave": "Apigee, para el diseño y la gestión de APIs",
+    "mercado": {
+      "TAM": "$10B",
+      "SAM": "$500M",
+      "SOM": "$1M año1",
+      "competidores": [
+        "MuleSoft (falta de soluciones personalizadas)",
+        "Talend (dificultades en la integración con ciertas plataformas)"
+      ],
+      "ventaja_competitiva": "Por nuestra capacidad para ofrecer soluciones de integración rápidas y personalizadas"
+    },
+    "modelo_negocio": {
+      "tipo": "SaaS",
+      "pricing": "EUR 500/mes",
+      "canales_adquisicion": [
+        "DM a directores de IT en LinkedIn con: '¿Estás cansado de perder tiempo integrando APIs?'",
+        "Post en comunidades de desarrolladores en Reddit"
+      ],
+      "time_to_revenue": "4 semanas"
+    },
+    "estudio_economico": {
+      "conservador": {
+        "mes3": {
+          "mrr_eur": 1500,
+          "usuarios": 3
+        },
+        "mes12": {
+          "mrr_eur": 6000
+        },
+        "breakeven": "mes6"
+      },
+      "realista": {
+        "mes3": {
+          "mrr_eur": 3000,
+          "usuarios": 6
+        },
+        "mes12": {
+          "mrr_eur": 18000
+        },
+        "breakeven": "mes4"
+      },
+      "optimista": {
+        "mes3": {
+          "mrr_eur": 4500,
+          "usuarios": 9
+        },
+        "mes12": {
+          "mrr_eur": 36000
+        },
+        "breakeven": "mes3"
+      }
+    },
+    "dafo": {
+      "fortalezas": [
+        "Solución rápida y personalizada",
+        "Equipo con experiencia en integración de APIs"
+      ],
+      "debilidades": [
+        "Poca presencia en el mercado",
+        "Dependencia de Apigee"
+      ],
+      "oportunidades": [
+        "Crecimiento de la demanda de soluciones de integración de APIs"
+      ],
+      "amenazas": [
+        "Competencia de empresas con más recursos"
+      ]
+    },
+    "mvp": {
+      "features_minimas": [
+        "Diseño de APIs",
+        "Integración con plataformas comunes",
+        "Gestión de errores"
+      ],
+      "stack_recomendado": "Next.js 14+Supabase+Vercel+Stripe",
+      "tiempo_semanas": 3,
+      "coste_estimado_eur": 0
+    },
+    "prompt_mvp": {
+      "meta": {
+        "nombre_idea": "APIConnect",
+        "objetivo": "MVP 3 semanas",
+        "ia_recomendada": "Claude 3.5 Sonnet",
+        "stack_completo": "Next.js+Supabase+Vercel+Stripe"
+      },
+      "system_prompt": "Eres un desarrollador senior. Construye APIConnect que resuelve problemas de integración de APIs.",
+      "instrucciones_paso_a_paso": [
+        "1. npx create-next-app",
+        "2. supabase init",
+        "3. Feature principal",
+        "4. Stripe",
+        "5. Deploy"
+      ],
+      "primer_cliente_script": "Mañana: DM a director de IT en LinkedIn: '¿Estás cansado de perder tiempo integrando APIs?'"
+    },
+    "estrategia_monetizacion": {
+      "semana1": "Envia DM a directores de IT en LinkedIn con: '¿Estás cansado de perder tiempo integrando APIs?'",
+      "semana4": "Beta gratis 14 días a cambio de feedback",
+      "mes3": "Estrategia de contenido de calidad para atraer a 50 clientes",
+      "canales": [
+        "Canal1: Publicaciones en comunidades de desarrolladores",
+        "Canal2: Publicidad en LinkedIn"
+      ],
+      "precio_optimo_justificado": "EUR 500/mes porque competidor cobra EUR 1000/mes"
+    },
+    "hipotesis_testeable": {
+      "hipotesis_principal": "Si directores de IT usan APIConnect entonces tendrán menos problemas de integración de APIs",
+      "metrica_exito": "10 signups en 48h",
+      "experimento_48h": "Crea Typeform en plataforma midiendo clicks",
+      "senal_de_alarma": "Menos de 5 respuestas = pivotar"
+    },
+    "hoja_de_ruta": {
+      "semana1": "Setup Next.js+Supabase",
+      "semana2": "Feature principal",
+      "semana3": "Stripe+deploy",
+      "semana4": "Primer cliente pago"
+    },
+    "opinion_profesional": {
+      "unicidad": "Única hoy porque nuestra solución combina velocidad y personalización",
+      "riesgo_principal": "30%",
+      "timing": "Porque ahora: La demanda de soluciones de integración de APIs está creciendo rápidamente",
+      "dia_uno": "Mañana: Envia DM a director de IT en LinkedIn",
+      "fallo_probable": "40% falla por falta de tracción"
+    },
+    "scores": {
+      "critico": 80,
+      "viral": 60,
+      "generador": 70,
+      "monetizacion": 80,
+      "ejecutabilidad": 90,
+      "timing": 85,
+      "score_total": 78.5,
+      "score_critico": 79,
+      "score_mercado_real": 45
+    },
+    "vertical": "SaaS",
+    "tipo": "B2B",
+    "tags": [
+      "integración de APIs",
+      "soluciones de IT",
+      "automatización de procesos"
+    ],
+    "scoring_critico": {
+      "veredicto": "La startup APIConnect tiene un potencial alto",
+      "objeciones_principales": [],
+      "fortalezas_reales": [
+        "mercado amplio",
+        "problema relevante"
+      ],
+      "ajuste_score": 0,
+      "score_critico_final": 79,
+      "recomendacion": "invertir",
+      "pivote_sugerido": "null"
+    },
+    "validacion_mercado": {
+      "google_trends": {
+        "APIConnect": 6,
+        "Conecta APIs en minutos, no en meses": 0
+      },
+      "reddit": {
+        "posts": 0,
+        "upvotes_total": 0,
+        "subreddits": [],
+        "top_post": ""
+      },
+      "github": {
+        "repos": 0,
+        "top_repo_stars": 0,
+        "top_repo": "",
+        "señal": "baja"
+      },
+      "score_mercado_real": 45,
+      "score_ia_original": 79.0,
+      "ajuste_aplicado": -0.5,
+      "score_final_ajustado": 78.5
+    }
+  },
+  {
+    "nombre": "APIConnect",
+    "tagline": "Conecta APIs en minutos, no en meses",
+    "problema": "10.000 empresas sufren problemas de integración de APIs porque carecen de estándares comunes, según Gartner (2022)",
+    "solución": "Usamos Apigee para crear integraciones de APIs en minutos, no en meses",
+    "cliente_objetivo": "Director de IT en empresa de 500 empleados",
+    "propuesta_valor_unica": "Única porque nuestros competidores no ofrecen soluciones de integración de APIs tan rápidas y personalizadas",
+    "herramienta_ia_clave": "Apigee, para el diseño y la gestión de APIs",
+    "mercado": {
+      "TAM": "$10B",
+      "SAM": "$500M",
+      "SOM": "$1M año1",
+      "competidores": [
+        "MuleSoft (falta de soluciones personalizadas)",
+        "Talend (dificultades en la integración con ciertas plataformas)"
+      ],
+      "ventaja_competitiva": "Por nuestra capacidad para ofrecer soluciones de integración rápidas y personalizadas"
+    },
+    "modelo_negocio": {
+      "tipo": "SaaS",
+      "pricing": "EUR 500/mes",
+      "canales_adquisicion": [
+        "DM a directores de IT en LinkedIn con: '¿Estás cansado de perder tiempo integrando APIs?'",
+        "Post en comunidades de desarrolladores en Reddit"
+      ],
+      "time_to_revenue": "4 semanas"
+    },
+    "estudio_economico": {
+      "conservador": {
+        "mes3": {
+          "mrr_eur": 1500,
+          "usuarios": 3
+        },
+        "mes12": {
+          "mrr_eur": 6000
+        },
+        "breakeven": "mes6"
+      },
+      "realista": {
+        "mes3": {
+          "mrr_eur": 3000,
+          "usuarios": 6
+        },
+        "mes12": {
+          "mrr_eur": 18000
+        },
+        "breakeven": "mes4"
+      },
+      "optimista": {
+        "mes3": {
+          "mrr_eur": 4500,
+          "usuarios": 9
+        },
+        "mes12": {
+          "mrr_eur": 36000
+        },
+        "breakeven": "mes3"
+      }
+    },
+    "dafo": {
+      "fortalezas": [
+        "Solución rápida y personalizada",
+        "Equipo con experiencia en integración de APIs"
+      ],
+      "debilidades": [
+        "Poca presencia en el mercado",
+        "Dependencia de Apigee"
+      ],
+      "oportunidades": [
+        "Crecimiento de la demanda de soluciones de integración de APIs"
+      ],
+      "amenazas": [
+        "Competencia de empresas con más recursos"
+      ]
+    },
+    "mvp": {
+      "features_minimas": [
+        "Diseño de APIs",
+        "Integración con plataformas comunes",
+        "Gestión de errores"
+      ],
+      "stack_recomendado": "Next.js 14+Supabase+Vercel+Stripe",
+      "tiempo_semanas": 3,
+      "coste_estimado_eur": 0
+    },
+    "prompt_mvp": {
+      "meta": {
+        "nombre_idea": "APIConnect",
+        "objetivo": "MVP 3 semanas",
+        "ia_recomendada": "Claude 3.5 Sonnet",
+        "stack_completo": "Next.js+Supabase+Vercel+Stripe"
+      },
+      "system_prompt": "Eres un desarrollador senior. Construye APIConnect que resuelve problemas de integración de APIs.",
+      "instrucciones_paso_a_paso": [
+        "1. npx create-next-app",
+        "2. supabase init",
+        "3. Feature principal",
+        "4. Stripe",
+        "5. Deploy"
+      ],
+      "primer_cliente_script": "Mañana: DM a director de IT en LinkedIn: '¿Estás cansado de perder tiempo integrando APIs?'"
+    },
+    "estrategia_monetizacion": {
+      "semana1": "Envia DM a directores de IT en LinkedIn con: '¿Estás cansado de perder tiempo integrando APIs?'",
+      "semana4": "Beta gratis 14 días a cambio de feedback",
+      "mes3": "Estrategia de contenido de calidad para atraer a 50 clientes",
+      "canales": [
+        "Canal1: Publicaciones en comunidades de desarrolladores",
+        "Canal2: Publicidad en LinkedIn"
+      ],
+      "precio_optimo_justificado": "EUR 500/mes porque competidor cobra EUR 1000/mes"
+    },
+    "hipotesis_testeable": {
+      "hipotesis_principal": "Si directores de IT usan APIConnect entonces tendrán menos problemas de integración de APIs",
+      "metrica_exito": "10 signups en 48h",
+      "experimento_48h": "Crea Typeform en plataforma midiendo clicks",
+      "senal_de_alarma": "Menos de 5 respuestas = pivotar"
+    },
+    "hoja_de_ruta": {
+      "semana1": "Setup Next.js+Supabase",
+      "semana2": "Feature principal",
+      "semana3": "Stripe+deploy",
+      "semana4": "Primer cliente pago"
+    },
+    "opinion_profesional": {
+      "unicidad": "Única hoy porque nuestra solución combina velocidad y personalización",
+      "riesgo_principal": "30%",
+      "timing": "Porque ahora: La demanda de soluciones de integración de APIs está creciendo rápidamente",
+      "dia_uno": "Mañana: Envia DM a director de IT en LinkedIn",
+      "fallo_probable": "40% falla por falta de tracción"
+    },
+    "scores": {
+      "critico": 80,
+      "viral": 60,
+      "generador": 70,
+      "monetizacion": 80,
+      "ejecutabilidad": 90,
+      "timing": 85,
+      "score_total": 78.5,
+      "score_critico": 79,
+      "score_mercado_real": 45
+    },
+    "vertical": "SaaS",
+    "tipo": "B2B",
+    "tags": [
+      "integración de APIs",
+      "soluciones de IT",
+      "automatización de procesos"
+    ],
+    "scoring_critico": {
+      "veredicto": "La startup APIConnect tiene un potencial alto",
+      "objeciones_principales": [],
+      "fortalezas_reales": [
+        "mercado amplio",
+        "problema relevante"
+      ],
+      "ajuste_score": 0,
+      "score_critico_final": 79,
+      "recomendacion": "invertir",
+      "pivote_sugerido": "null"
+    },
+    "validacion_mercado": {
+      "google_trends": {
+        "APIConnect": 6,
+        "Conecta APIs en minutos, no en meses": 0
+      },
+      "reddit": {
+        "posts": 0,
+        "upvotes_total": 0,
+        "subreddits": [],
+        "top_post": ""
+      },
+      "github": {
+        "repos": 0,
+        "top_repo_stars": 0,
+        "top_repo": "",
+        "señal": "baja"
+      },
+      "score_mercado_real": 45,
+      "score_ia_original": 79.0,
+      "ajuste_aplicado": -0.5,
+      "score_final_ajustado": 78.5
+    },
+    "notion_url": "https://www.notion.so/APIConnect-78-5-100-323313aca13381dd8a36dda760c2ec72"
+  },
+  {
+    "nombre": "CodeTwinPro",
+    "tagline": "Automatiza testing con IA para DevOps",
+    "problema": "El 60% de los equipos DevOps sufren retrasos en despliegue debido a testing manual, segun encuesta de GitOps en enero 2024",
+    "solucion": "Usamos Claude 3.5 Sonnet para automatizar testing en 30 minutos",
+    "cliente_objetivo": "Director de IT en empresa de software de 100 empleados",
+    "propuesta_valor_unica": "Unica porque competidores no ofrecen automatizacion con IA generativa",
+    "herramienta_ia_clave": "Claude 3.5 Sonnet para analisis de codigo y generacion de tests",
+    "mercado": {
+      "TAM": "$10 billion",
+      "SAM": "$500 million",
+      "SOM": "$1 million año1",
+      "competidores": [
+        "GitLab (debilidad: testing manual)",
+        "CircleCI (debilidad: integracion limitada con herramientas de desarrollo)"
+      ],
+      "ventaja_competitiva": "Es dificil de copiar porque requiere integracion profunda con herramientas de desarrollo y conocimientos de IA"
+    },
+    "modelo_negocio": {
+      "tipo": "SaaS",
+      "pricing": "EUR 200/mes justificado por ahorro en tiempo de testing",
+      "canales_adquisicion": [
+        "1. DM a Directores de IT en LinkedIn con: '¿Estás cansado de retrasos en despliegue por testing manual?'",
+        "2. Post en comunidad de GitOps en Reddit"
+      ],
+      "time_to_revenue": "4 semanas"
+    },
+    "estudio_economico": {
+      "conservador": {
+        "mes3": {
+          "mrr_eur": 1000,
+          "usuarios": 5
+        },
+        "mes12": {
+          "mrr_eur": 8000
+        },
+        "breakeven": "mes9"
+      },
+      "realista": {
+        "mes3": {
+          "mrr_eur": 3000,
+          "usuarios": 15
+        },
+        "mes12": {
+          "mrr_eur": 24000
+        },
+        "breakeven": "mes6"
+      },
+      "optimista": {
+        "mes3": {
+          "mrr_eur": 6000,
+          "usuarios": 30
+        },
+        "mes12": {
+          "mrr_eur": 48000
+        },
+        "breakeven": "mes4"
+      }
+    },
+    "dafo": {
+      "fortalezas": [
+        "Integracion con herramientas de desarrollo",
+        "Conocimientos de IA generativa"
+      ],
+      "debilidades": [
+        "Poca presencia en el mercado",
+        "Dependencia de Claude 3.5 Sonnet"
+      ],
+      "oportunidades": [
+        "Crecimiento de la demanda de automatizacion en DevOps con 30% anual segun MarketsandMarkets en marzo 2024"
+      ],
+      "amenazas": [
+        "Competencia de empresas con recursos ilimitados"
+      ]
+    },
+    "mvp": {
+      "features_minimas": [
+        "Integracion con GitLab",
+        "Automatizacion de testing con Claude 3.5 Sonnet"
+      ],
+      "stack_recomendado": "Next.js 14+Supabase+Vercel+Stripe",
+      "tiempo_semanas": 3,
+      "coste_estimado_eur": 0
+    },
+    "prompt_mvp": {
+      "meta": {
+        "nombre_idea": "CodeTwinPro",
+        "objetivo": "MVP 3 semanas",
+        "ia_recomendada": "Claude 3.5 Sonnet",
+        "stack_completo": "Next.js+Supabase+Vercel+Stripe"
+      },
+      "system": "Eres dev senior. Construye CodeTwinPro que automatiza testing con IA.",
+      "instrucciones_paso_a_paso": [
+        "1. npx create-next-app",
+        "2. supabase init",
+        "3. Integracion con GitLab",
+        "4. Stripe",
+        "5. Deploy"
+      ],
+      "primer_cliente_script": "Manana: DM a Director de IT en LinkedIn: '¿Quieres ahorrar tiempo en testing con nuestra IA?'"
+    },
+    "estrategia_monetizacion": {
+      "semana1": "Envia DM a 50 Directores de IT en LinkedIn con: '¿Estás cansado de retrasos en despliegue por testing manual?'",
+      "semana4": "Beta gratis 14 dias a cambio de feedback",
+      "mes3": "Estrategia de contenidos en blog de GitOps",
+      "canales": [
+        "Canal1: Publicaciones en Reddit",
+        "Canal2: Publicaciones en LinkedIn"
+      ],
+      "precio_optimo_justificado": "EUR 200/mes porque GitLab cobra EUR 500/mes por features similares"
+    },
+    "hipotesis_testeable": {
+      "hipotesis_principal": "Si Director de IT usa CodeTwinPro entonces reduce tiempo de testing en 50%",
+      "metrica_exito": "10 signups en 48h",
+      "experimento_48h": "Crea Typeform en plataforma midiendo clicks en 'Registrarte'",
+      "senal_de_alarma": "Menos de 5 respuestas = pivotar"
+    },
+    "hoja_de_ruta": {
+      "semana1": "Setup Next.js+Supabase",
+      "semana2": "Integracion con GitLab",
+      "semana3": "Stripe+deploy",
+      "semana4": "Primer cliente pago"
+    },
+    "opinion_profesional": {
+      "unicidad": "Unica HOY porque requiere integracion profunda con herramientas de desarrollo y conocimientos de IA generativa",
+      "riesgo_principal": "40% falla por competencia",
+      "timing": "Por que ahora: Crecimiento de la demanda de automatizacion en DevOps",
+      "dia_uno": "Manana: DM a Director de IT en LinkedIn",
+      "fallo_probable": "60% falla por falta de diferenciacion"
+    },
+    "scores": {
+      "critico": 80,
+      "viral": 60,
+      "generador": 90,
+      "monetizacion": 85,
+      "ejecutabilidad": 80,
+      "timing": 90,
+      "score_total": 82.7,
+      "score_critico": 83.2,
+      "score_mercado_real": 45
+    },
+    "vertical": "SaaS",
+    "tipo": "B2B",
+    "tags": [
+      "automatizacion",
+      "devops",
+      "ia"
+    ],
+    "scoring_critico": {
+      "veredicto": "CodeTwinPro parece prometedor para solucionar retrasos en despliegue",
+      "objeciones_principales": [
+        "validación de mercado",
+        "competencia existente"
+      ],
+      "fortalezas_reales": [
+        "automatización de testing",
+        "alineación con GitOps"
+      ],
+      "ajuste_score": 0,
+      "score_critico_final": 83.2,
+      "recomendacion": "invertir",
+      "pivote_sugerido": "null"
+    },
+    "validacion_mercado": {
+      "google_trends": {
+        "CodeTwinPro": 1,
+        "Automatiza testing con IA para DevOps": 0
+      },
+      "reddit": {
+        "posts": 0,
+        "upvotes_total": 0,
+        "subreddits": [],
+        "top_post": ""
+      },
+      "github": {
+        "repos": 0,
+        "top_repo_stars": 0,
+        "top_repo": "",
+        "señal": "baja"
+      },
+      "score_mercado_real": 45,
+      "score_ia_original": 83.2,
+      "ajuste_aplicado": -0.5,
+      "score_final_ajustado": 82.7
+    }
+  },
+  {
+    "nombre": "CodeTwinPro",
+    "tagline": "Automatiza testing con IA para DevOps",
+    "problema": "El 60% de los equipos DevOps sufren retrasos en despliegue debido a testing manual, segun encuesta de GitOps en enero 2024",
+    "solucion": "Usamos Claude 3.5 Sonnet para automatizar testing en 30 minutos",
+    "cliente_objetivo": "Director de IT en empresa de software de 100 empleados",
+    "propuesta_valor_unica": "Unica porque competidores no ofrecen automatizacion con IA generativa",
+    "herramienta_ia_clave": "Claude 3.5 Sonnet para analisis de codigo y generacion de tests",
+    "mercado": {
+      "TAM": "$10 billion",
+      "SAM": "$500 million",
+      "SOM": "$1 million año1",
+      "competidores": [
+        "GitLab (debilidad: testing manual)",
+        "CircleCI (debilidad: integracion limitada con herramientas de desarrollo)"
+      ],
+      "ventaja_competitiva": "Es dificil de copiar porque requiere integracion profunda con herramientas de desarrollo y conocimientos de IA"
+    },
+    "modelo_negocio": {
+      "tipo": "SaaS",
+      "pricing": "EUR 200/mes justificado por ahorro en tiempo de testing",
+      "canales_adquisicion": [
+        "1. DM a Directores de IT en LinkedIn con: '¿Estás cansado de retrasos en despliegue por testing manual?'",
+        "2. Post en comunidad de GitOps en Reddit"
+      ],
+      "time_to_revenue": "4 semanas"
+    },
+    "estudio_economico": {
+      "conservador": {
+        "mes3": {
+          "mrr_eur": 1000,
+          "usuarios": 5
+        },
+        "mes12": {
+          "mrr_eur": 8000
+        },
+        "breakeven": "mes9"
+      },
+      "realista": {
+        "mes3": {
+          "mrr_eur": 3000,
+          "usuarios": 15
+        },
+        "mes12": {
+          "mrr_eur": 24000
+        },
+        "breakeven": "mes6"
+      },
+      "optimista": {
+        "mes3": {
+          "mrr_eur": 6000,
+          "usuarios": 30
+        },
+        "mes12": {
+          "mrr_eur": 48000
+        },
+        "breakeven": "mes4"
+      }
+    },
+    "dafo": {
+      "fortalezas": [
+        "Integracion con herramientas de desarrollo",
+        "Conocimientos de IA generativa"
+      ],
+      "debilidades": [
+        "Poca presencia en el mercado",
+        "Dependencia de Claude 3.5 Sonnet"
+      ],
+      "oportunidades": [
+        "Crecimiento de la demanda de automatizacion en DevOps con 30% anual segun MarketsandMarkets en marzo 2024"
+      ],
+      "amenazas": [
+        "Competencia de empresas con recursos ilimitados"
+      ]
+    },
+    "mvp": {
+      "features_minimas": [
+        "Integracion con GitLab",
+        "Automatizacion de testing con Claude 3.5 Sonnet"
+      ],
+      "stack_recomendado": "Next.js 14+Supabase+Vercel+Stripe",
+      "tiempo_semanas": 3,
+      "coste_estimado_eur": 0
+    },
+    "prompt_mvp": {
+      "meta": {
+        "nombre_idea": "CodeTwinPro",
+        "objetivo": "MVP 3 semanas",
+        "ia_recomendada": "Claude 3.5 Sonnet",
+        "stack_completo": "Next.js+Supabase+Vercel+Stripe"
+      },
+      "system": "Eres dev senior. Construye CodeTwinPro que automatiza testing con IA.",
+      "instrucciones_paso_a_paso": [
+        "1. npx create-next-app",
+        "2. supabase init",
+        "3. Integracion con GitLab",
+        "4. Stripe",
+        "5. Deploy"
+      ],
+      "primer_cliente_script": "Manana: DM a Director de IT en LinkedIn: '¿Quieres ahorrar tiempo en testing con nuestra IA?'"
+    },
+    "estrategia_monetizacion": {
+      "semana1": "Envia DM a 50 Directores de IT en LinkedIn con: '¿Estás cansado de retrasos en despliegue por testing manual?'",
+      "semana4": "Beta gratis 14 dias a cambio de feedback",
+      "mes3": "Estrategia de contenidos en blog de GitOps",
+      "canales": [
+        "Canal1: Publicaciones en Reddit",
+        "Canal2: Publicaciones en LinkedIn"
+      ],
+      "precio_optimo_justificado": "EUR 200/mes porque GitLab cobra EUR 500/mes por features similares"
+    },
+    "hipotesis_testeable": {
+      "hipotesis_principal": "Si Director de IT usa CodeTwinPro entonces reduce tiempo de testing en 50%",
+      "metrica_exito": "10 signups en 48h",
+      "experimento_48h": "Crea Typeform en plataforma midiendo clicks en 'Registrarte'",
+      "senal_de_alarma": "Menos de 5 respuestas = pivotar"
+    },
+    "hoja_de_ruta": {
+      "semana1": "Setup Next.js+Supabase",
+      "semana2": "Integracion con GitLab",
+      "semana3": "Stripe+deploy",
+      "semana4": "Primer cliente pago"
+    },
+    "opinion_profesional": {
+      "unicidad": "Unica HOY porque requiere integracion profunda con herramientas de desarrollo y conocimientos de IA generativa",
+      "riesgo_principal": "40% falla por competencia",
+      "timing": "Por que ahora: Crecimiento de la demanda de automatizacion en DevOps",
+      "dia_uno": "Manana: DM a Director de IT en LinkedIn",
+      "fallo_probable": "60% falla por falta de diferenciacion"
+    },
+    "scores": {
+      "critico": 80,
+      "viral": 60,
+      "generador": 90,
+      "monetizacion": 85,
+      "ejecutabilidad": 80,
+      "timing": 90,
+      "score_total": 82.7,
+      "score_critico": 83.2,
+      "score_mercado_real": 45
+    },
+    "vertical": "SaaS",
+    "tipo": "B2B",
+    "tags": [
+      "automatizacion",
+      "devops",
+      "ia"
+    ],
+    "scoring_critico": {
+      "veredicto": "CodeTwinPro parece prometedor para solucionar retrasos en despliegue",
+      "objeciones_principales": [
+        "validación de mercado",
+        "competencia existente"
+      ],
+      "fortalezas_reales": [
+        "automatización de testing",
+        "alineación con GitOps"
+      ],
+      "ajuste_score": 0,
+      "score_critico_final": 83.2,
+      "recomendacion": "invertir",
+      "pivote_sugerido": "null"
+    },
+    "validacion_mercado": {
+      "google_trends": {
+        "CodeTwinPro": 1,
+        "Automatiza testing con IA para DevOps": 0
+      },
+      "reddit": {
+        "posts": 0,
+        "upvotes_total": 0,
+        "subreddits": [],
+        "top_post": ""
+      },
+      "github": {
+        "repos": 0,
+        "top_repo_stars": 0,
+        "top_repo": "",
+        "señal": "baja"
+      },
+      "score_mercado_real": 45,
+      "score_ia_original": 83.2,
+      "ajuste_aplicado": -0.5,
+      "score_final_ajustado": 82.7
+    },
+    "notion_url": "https://www.notion.so/CodeTwinPro-82-7-100-323313aca13381fa9017c95c9c6bef9e"
+  },
+  {
+    "nombre": "CodeTwinProX",
+    "tagline": "Automatiza testing con IA para desarrolladores",
+    "problema": "Según un estudio de Gartner, el 40% del tiempo de desarrollo se destina a testing. Sin embargo, la calidad y cobertura de estos tests suelen ser insuficientes, lo que genera bugs y retrasos en los lanzamientos de software. Los desarrolladores gastan un promedio de 5 horas a la semana en testing manual.",
+    "solucion": "CodeTwinProX utiliza la herramienta de IA 'GitAgent' para analizar repositorios Git y generar tests automáticos de alta calidad. Esto reduce el tiempo de testing en un 70% y mejora la cobertura de código en un 30%.",
+    "cliente_objetivo": "Desarrollador senior, Líder técnico, CTO en empresas de desarrollo de software",
+    "herramienta_ia_clave": "GitAgent",
+    "estrategia_monetizacion": {
+      "semana1": "Envia DM a 'Desarrolladores de software' en Slack con: '¿Cuántas horas a la semana dedicas a testing manual?'",
+      "precio_optimo_justificado": "EUR 99/mes porque reduce el tiempo de testing en 3.5 horas a la semana por desarrollador, ahorrando EUR 1,092 al año por cada uno."
+    },
+    "hipotesis_testeable": {
+      "experimento_48h": "Crea Typeform en typeform.com con la pregunta '¿Cuánto tiempo dedicas a testing manual?' y midiendo 20+ respuestas en 48h",
+      "metrica_exito": "10+ signups en 48h"
+    },
+    "mvp": {
+      "stack_recomendado": "Next.js+Supabase+Vercel",
+      "tiempo_semanas": 4,
+      "coste_estimado_eur": 8000
+    },
+    "vertical": "SaaS",
+    "tipo": "B2B",
+    "tags": [
+      "Automatización de testing",
+      "Desarrollo de software"
+    ],
+    "scores": {
+      "score_total": 19.5,
+      "score_critico": 0.0,
+      "score_mercado_real": 45
+    },
+    "scoring_critico": {
+      "recomendacion": "descartar"
+    },
+    "validacion_mercado": {
+      "google_trends": {},
+      "reddit": {
+        "posts": 0,
+        "upvotes_total": 0,
+        "subreddits": [],
+        "top_post": ""
+      },
+      "github": {
+        "repos": 0,
+        "top_repo_stars": 0,
+        "top_repo": "",
+        "señal": "baja"
+      },
+      "score_mercado_real": 45,
+      "score_ia_original": 20,
+      "ajuste_aplicado": -0.5,
+      "score_final_ajustado": 19.5
+    }
+  },
+  {
+    "nombre": "CodeTwinProX",
+    "tagline": "Automatiza testing con IA para desarrolladores",
+    "problema": "Según un estudio de Gartner, el 40% del tiempo de desarrollo se destina a testing. Sin embargo, la calidad y cobertura de estos tests suelen ser insuficientes, lo que genera bugs y retrasos en los lanzamientos de software. Los desarrolladores gastan un promedio de 5 horas a la semana en testing manual.",
+    "solucion": "CodeTwinProX utiliza la herramienta de IA 'GitAgent' para analizar repositorios Git y generar tests automáticos de alta calidad. Esto reduce el tiempo de testing en un 70% y mejora la cobertura de código en un 30%.",
+    "cliente_objetivo": "Desarrollador senior, Líder técnico, CTO en empresas de desarrollo de software",
+    "herramienta_ia_clave": "GitAgent",
+    "estrategia_monetizacion": {
+      "semana1": "Envia DM a 'Desarrolladores de software' en Slack con: '¿Cuántas horas a la semana dedicas a testing manual?'",
+      "precio_optimo_justificado": "EUR 99/mes porque reduce el tiempo de testing en 3.5 horas a la semana por desarrollador, ahorrando EUR 1,092 al año por cada uno."
+    },
+    "hipotesis_testeable": {
+      "experimento_48h": "Crea Typeform en typeform.com con la pregunta '¿Cuánto tiempo dedicas a testing manual?' y midiendo 20+ respuestas en 48h",
+      "metrica_exito": "10+ signups en 48h"
+    },
+    "mvp": {
+      "stack_recomendado": "Next.js+Supabase+Vercel",
+      "tiempo_semanas": 4,
+      "coste_estimado_eur": 8000
+    },
+    "vertical": "SaaS",
+    "tipo": "B2B",
+    "tags": [
+      "Automatización de testing",
+      "Desarrollo de software"
+    ],
+    "scores": {
+      "score_total": 19.5,
+      "score_critico": 0.0,
+      "score_mercado_real": 45
+    },
+    "scoring_critico": {
+      "recomendacion": "descartar"
+    },
+    "validacion_mercado": {
+      "google_trends": {},
+      "reddit": {
+        "posts": 0,
+        "upvotes_total": 0,
+        "subreddits": [],
+        "top_post": ""
+      },
+      "github": {
+        "repos": 0,
+        "top_repo_stars": 0,
+        "top_repo": "",
+        "señal": "baja"
+      },
+      "score_mercado_real": 45,
+      "score_ia_original": 20,
+      "ajuste_aplicado": -0.5,
+      "score_final_ajustado": 19.5
+    },
+    "notion_url": "https://www.notion.so/CodeTwinProX-19-5-100-323313aca133819683b8f1dec19acdde"
   }
 ]

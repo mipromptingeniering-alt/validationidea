@@ -29,25 +29,24 @@ def _reddit_evidencia(problema: str) -> dict:
         headers = {"User-Agent": "ValidationIdea/3.0"}
         import re as _re
         palabras = _re.sub(r"[^a-zA-Z0-9 ]","",problema[:60].replace("helio","helium").replace("escasez","shortage").replace("cadena de suministro","supply chain"))
-        query    = " ".join(palabras.split()[:6])
-        resp    = requests.get(
-            f"https://www.reddit.com/search.json?q={query}+startup+SaaS&sort=relevance&t=month&limit=10&type=link",
+        query = f"{palabras} (startup OR SaaS OR devtool OR SaaS OR product)"[:100]
+        resp = requests.get(
+            f"https://www.reddit.com/search.json?q={query}&sort=relevance&t=month&limit=10&type=link",
             headers=headers, timeout=8
         )
         if resp.status_code != 200:
             return {"posts": 0, "upvotes_total": 0}
-        posts     = resp.json().get("data", {}).get("children", [])
-        upvotes   = sum(p["data"].get("score", 0) for p in posts)
+        posts = resp.json().get("data", {}).get("children", [])
+        upvotes = sum(p["data"].get("score", 0) for p in posts)
         subs_list = list(set(p["data"].get("subreddit","") for p in posts[:5]))
         return {
-            "posts":         len(posts),
+            "posts": len(posts),
             "upvotes_total": upvotes,
-            "subreddits":    subs_list[:4],
-            "top_post":      posts[0]["data"].get("title","")[:120] if posts else ""
+            "subreddits": subs_list[:4],
+            "top_post": posts[0]["data"].get("title","")[:120] if posts else ""
         }
     except Exception as e:
         return {"posts": 0, "upvotes_total": 0, "error": str(e)[:80]}
-
 def _github_demanda(nombre: str, tags: list) -> dict:
     """Repositorios existentes como señal de demanda técnica."""
     try:

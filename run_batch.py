@@ -342,7 +342,7 @@ def _validar_calidad(idea):
     # Anti-generico: rechazar nombres de producto demasiado genericos
     NOMBRES_GENERICOS = [
         "ai assistant","ai platform","ai tool","ai coach","code assistant",
-        "codecompanion","smart assistant","app","platform","saas","tool",
+        "codexcompanion","smart assistant","app","platform","saas","tool",
         "ai solution","digital assistant","virtual assistant","chatbot","bot"
     ]
     nombre_check = str(idea.get("nombre","")).strip().lower()
@@ -458,6 +458,12 @@ def calcular_score_ponderado(scores):
 
 # ── Prompts ──────────────────────────────────────────────────────────────────
 
+
+# FORZAR SOSTENIBILIDAD
+    system += "\n*** VERTICAL OBLIGATORIA: sostenibilidad***\n"
+    system += "- PROBLEMA: CO2, ESG, huella carbono, regulacion verde\n"
+    system += "- CLIENTE: CSO, Director Sostenibilidad, ESG Manager\n"
+    system += "- NUNCA devtools/coding\n"
 def get_prompt_idea(contexto, tendencias, tema="", modo_emergencia=False):
     pesos         = _cargar_pesos()
     score_obj     = int(os.environ.get("SCORE_MINIMO", pesos.get("score_objetivo", 75)))
@@ -495,7 +501,7 @@ def get_prompt_idea(contexto, tendencias, tema="", modo_emergencia=False):
             '"herramienta_ia_clave":"herramienta real",'
             '"estrategia_monetizacion":{"semana1":"DM a [grupo] en [plataforma]",'
             '"precio_optimo_justificado":"EUR X/mes porque [razon]"},'
-            '"hipotesis_testeable":{"experimento_48h":"Crea [typeform] midiendo [metrica]",'
+            '"hipotesis_testeable":{"experimento_48h":"Crea Typeform en typeform.com midiendo 15+ clics en 48h",'
             '"metrica_exito":"X signups en 48h"},'
             '"mvp":{"stack_recomendado":"Next.js+Supabase+Vercel","tiempo_semanas":3,"coste_estimado_eur":0},'
             '"vertical":"SaaS","tipo":"B2B","tags":["categoria_real","vertical_real"]}'
