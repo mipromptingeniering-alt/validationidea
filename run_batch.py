@@ -316,6 +316,22 @@ def _validar_calidad(idea):
     except ImportError:
         def registrar_placeholder(x): pass
 
+    # Bloqueo sector saturado: max 3 ideas del mismo sector en KB
+    try:
+        from agents.knowledge_base import cargar_kb
+        sector_nuevo = str(idea.get("sector","")).strip().lower()
+        if sector_nuevo and sector_nuevo not in ("", "general"):
+            kb_ideas = cargar_kb()
+            count_sector = sum(
+                1 for x in kb_ideas
+                if isinstance(x, dict) and
+                str(x.get("sector","")).strip().lower() == sector_nuevo
+            )
+            if count_sector >= 3:
+                return False, f"Sector saturado ({count_sector} ideas): {sector_nuevo}"
+    except Exception:
+        pass
+
     # Anti-generico: rechazar nombres de producto demasiado genericos
     NOMBRES_GENERICOS = [
         "ai assistant","ai platform","ai tool","ai coach","code assistant",
