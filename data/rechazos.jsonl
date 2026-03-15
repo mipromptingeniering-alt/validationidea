@@ -25,3 +25,9 @@
 {"ts": "2026-03-14T17:35:12.173816", "nombre": "CodeCompanion", "motivo": "Nombre demasiado generico: codecompanion", "sector": ""}
 {"ts": "2026-03-14T17:35:14.097188", "nombre": "CodeCompanion", "motivo": "Nombre demasiado generico: codecompanion", "sector": ""}
 {"ts": "2026-03-14T17:49:07.379720", "nombre": "CodeTwinPro", "motivo": "Nombre duplicado exacto: codetwinpro", "sector": ""}
+{"ts": "2026-03-15T18:09:31.462837", "nombre": "CybroMind Insights", "motivo": "Nombre duplicado exacto: cybromind insights", "sector": ""}
+{"ts": "2026-03-15T18:12:39.250178", "nombre": "EcoCycle", "motivo": "Nombre duplicado exacto: ecocycle", "sector": ""}
+{"ts": "2026-03-15T18:16:48.190328", "nombre": "CybroMind Insights", "motivo": "Nombre duplicado exacto: cybromind insights", "sector": ""}
+{"ts": "2026-03-15T18:21:05.298199", "nombre": "CodeTwinProX", "motivo": "Nombre duplicado exacto: codetwinprox", "sector": ""}
+{"ts": "2026-03-15T18:21:38.878264", "nombre": "HydroMind", "motivo": "Nombre duplicado exacto: hydromind", "sector": ""}
+{"ts": "2026-03-15T18:31:34.809474", "nombre": "SaaS Forge", "motivo": "Nombre contiene termino generico: saas", "sector": ""}

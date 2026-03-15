@@ -10,22 +10,22 @@
   "tags_exitosos": [
     "ia",
     "automatización",
-    "desarrollo",
     "desarrollo de software",
+    "sostenibilidad",
+    "desarrollo",
+    "seguridad",
+    "data centers",
     "git",
     "devops",
-    "gestión de stock",
-    "farmacia",
-    "semiconductores",
-    "detección de fallos"
+    "centros de datos"
   ],
   "score_objetivo": 70,
-  "ultimo_ciclo": 26,
-  "ultimo_aprendizaje": "2026-03-14T18:49:21.166554",
+  "ultimo_ciclo": 48,
+  "ultimo_aprendizaje": "2026-03-15T21:23:42.027602",
   "estadisticas": {
-    "total_ideas": 49,
-    "ideas_exitosas": 14,
-    "pct_exito": 28.6,
-    "score_promedio": 52.2
+    "total_ideas": 71,
+    "ideas_exitosas": 30,
+    "pct_exito": 42.3,
+    "score_promedio": 56.3
   }
 }

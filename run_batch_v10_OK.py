@@ -813,7 +813,7 @@ def ejecutar_batch():
     url = ""
     if os.environ.get("NOTION_TOKEN","") and os.environ.get("NOTION_DATABASE_ID",""):
         try:
-    idea = idea.copy()\n    idea["titulo_completo"] = f"{idea.get("nombre","?")} - score {idea.get("score_critico",0)}/100"\n    idea["hoja_ruta"] = "1.Framer gratis 2.Typeform DMs 3.Stripe"\n    idea["prompt_mvp"] = '{"task":"lanzar_mvp"}'\n            url = sync_idea_to_notion(idea)
+            url = sync_idea_to_notion(idea)
             if url:
                 print(f"✅ Notion OK: {url}")
             else:
